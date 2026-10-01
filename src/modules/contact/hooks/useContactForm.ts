@@ -1,0 +1,54 @@
+"use client";
+
+import { useMutation } from "@tanstack/react-query";
+import { useState, type ChangeEvent, type FormEvent } from "react";
+import { ApiError } from "@/shared/lib/api";
+import { toast } from "@/shared/ui/Toast";
+import { contactService } from "../services/contact.service";
+import type { ContactErrors, ContactInput } from "../types";
+
+const EMPTY: ContactInput = { name: "", email: "", phone: "", subject: "commande", message: "" };
+
+export function validateContact(v: ContactInput): ContactErrors {
+  const e: ContactErrors = {};
+  if (v.name.trim().length < 2) e.name = "Entrez votre nom complet.";
+  if (!/^\S+@\S+\.\S+$/.test(v.email)) e.email = "Adresse e-mail invalide.";
+  if (v.phone && !/^[+\d\s().-]{8,}$/.test(v.phone)) e.phone = "Numéro de téléphone invalide.";
+  if (v.message.trim().length < 10) e.message = "Votre message doit contenir au moins 10 caractères.";
+  return e;
+}
+
+export function useContactForm() {
+  const [values, setValues] = useState<ContactInput>(EMPTY);
+  const [errors, setErrors] = useState<ContactErrors>({});
+  const [sent, setSent] = useState(false);
+  const mutation = useMutation({ mutationFn: contactService.send });
+
+  const onChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setValues((v) => ({ ...v, [name]: value }));
+    if (errors[name as keyof ContactInput]) setErrors((er) => ({ ...er, [name]: undefined }));
+  };
+
+  const onSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    const errs = validateContact(values);
+    setErrors(errs);
+    if (Object.values(errs).some(Boolean)) return;
+    mutation.mutate(values, {
+      onSuccess: () => {
+        setSent(true);
+        setValues(EMPTY);
+        toast.success("Message envoyé", "Nous vous répondons sous 24 h.");
+      },
+      onError: (err) => {
+        if (err instanceof ApiError && err.status === 400) {
+          const fe = err.fieldErrors;
+          setErrors(Object.fromEntries(Object.entries(fe).map(([k, m]) => [k, Array.isArray(m) ? m[0] : m])) as ContactErrors);
+        } else toast.error("Envoi impossible", "Réessayez dans un instant.");
+      },
+    });
+  };
+
+  return { values, errors, sent, loading: mutation.isPending, onChange, onSubmit, reset: () => setSent(false) };
+}
