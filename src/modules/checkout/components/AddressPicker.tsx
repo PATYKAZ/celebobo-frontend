@@ -26,8 +26,8 @@ export function AddressPicker({ form, errors, set, onPick }: Props) {
   const isNew = form.addressId === null;
 
   return (
-    <div className="space-y-5">
-      <h2 className="text-[18px]">Où devons-nous livrer ?</h2>
+    <div className="space-y-4 sm:space-y-5">
+      <h2 className="text-[17px] sm:text-[18px]">Où devons-nous livrer ?</h2>
 
       <div role="radiogroup" aria-label="Adresse de livraison" className="grid gap-3 sm:grid-cols-2">
         {isLoading && (
@@ -66,7 +66,7 @@ export function AddressPicker({ form, errors, set, onPick }: Props) {
           role="radio"
           aria-checked={isNew}
           onClick={() => onPick(null)}
-          className={cn("flex min-h-[120px] flex-col items-center justify-center gap-2 rounded-box border-2 border-dashed p-4 text-[14px] font-bold transition-all", isNew ? "border-primary bg-primary-50 text-primary-dark" : "border-line hover:border-primary/60 hover:text-primary")}
+          className={cn("flex min-h-[72px] flex-col items-center justify-center gap-2 rounded-box border-2 border-dashed p-4 sm:min-h-[120px] text-[14px] font-bold transition-all", isNew ? "border-primary bg-primary-50 text-primary-dark" : "border-line hover:border-primary/60 hover:text-primary")}
         >
           <span className="grid size-10 place-items-center rounded-full bg-white"><Add size={20} /></span>
           Nouvelle adresse
@@ -76,20 +76,20 @@ export function AddressPicker({ form, errors, set, onPick }: Props) {
       <AnimatePresence initial={false}>
         {isNew && (
           <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.3 }} className="overflow-hidden">
-            <div className="space-y-5 pt-1">
-              <div className="grid gap-5 sm:grid-cols-2">
+            <div className="space-y-4 pt-1 sm:space-y-5">
+              <div className="grid gap-4 sm:grid-cols-2 sm:gap-5">
                 <Input label="Destinataire" required value={form.recipient} onChange={(e) => set("recipient", e.target.value)} error={errors.recipient} leftIcon={<User size={17} />} autoComplete="name" />
-                <Input label="Téléphone" required value={form.phone} onChange={(e) => set("phone", e.target.value)} error={errors.phone} leftIcon={<Call size={17} />} placeholder="+243 …" autoComplete="tel" />
+                <Input label="Téléphone" required value={form.phone} onChange={(e) => set("phone", e.target.value)} error={errors.phone} leftIcon={<Call size={17} />} placeholder="+243 …" autoComplete="tel" inputMode="tel" enterKeyHint="next" />
               </div>
               <Input label="Adresse" required value={form.address} onChange={(e) => set("address", e.target.value)} error={errors.address} leftIcon={<Location size={17} />} placeholder="N°, avenue, rue" autoComplete="street-address" />
-              <div className="grid gap-5 sm:grid-cols-3">
+              <div className="grid gap-4 sm:grid-cols-3 sm:gap-5">
                 <Input label="Quartier / Commune" required value={form.quarter} onChange={(e) => set("quarter", e.target.value)} error={errors.quarter} leftIcon={<Map1 size={17} />} />
                 <Input label="Ville" value={form.city} onChange={(e) => set("city", e.target.value)} />
                 <Input label="Pays" required value={form.country} onChange={(e) => set("country", e.target.value)} error={errors.country} />
               </div>
               <div className="flex flex-wrap items-center gap-4">
                 <Checkbox label="Enregistrer cette adresse dans mon carnet" checked={form.saveToBook} onChange={(e) => set("saveToBook", e.target.checked)} />
-                {form.saveToBook && <Select aria-label="Libellé" value={form.addressLabel} onChange={(e) => set("addressLabel", e.target.value)} options={ADDRESS_LABELS.map((l) => ({ value: l, label: l }))} wrapperClassName="w-[160px]" className="!h-9" />}
+                {form.saveToBook && <Select aria-label="Libellé" value={form.addressLabel} onChange={(e) => set("addressLabel", e.target.value)} options={ADDRESS_LABELS.map((l) => ({ value: l, label: l }))} wrapperClassName="w-full sm:w-[160px]" className="sm:!h-9" />}
               </div>
             </div>
           </motion.div>

@@ -71,7 +71,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
             type="button"
             onClick={() => setShow((s) => !s)}
             aria-label={show ? "Masquer le mot de passe" : "Afficher le mot de passe"}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-3 hover:text-ink"
+            className="absolute right-0 top-1/2 grid size-12 -translate-y-1/2 place-items-center text-ink-3 hover:text-ink sm:size-11"
           >
             {show ? <EyeSlash size={18} /> : <Eye size={18} />}
           </button>
@@ -152,8 +152,8 @@ interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "typ
 
 export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Checkbox({ label, className, ...rest }, ref) {
   return (
-    <label className={cn("flex cursor-pointer items-start gap-2.5 text-[13px] leading-[19.5px] text-ink-2", className)}>
-      <input ref={ref} type="checkbox" className="mt-0.5 size-4 shrink-0 cursor-pointer accent-primary" {...rest} />
+    <label className={cn("flex min-h-11 cursor-pointer items-start gap-3 py-1.5 text-[13px] leading-[19.5px] text-ink-2 sm:min-h-0 sm:gap-2.5 sm:py-0", className)}>
+      <input ref={ref} type="checkbox" className="mt-0.5 size-5 shrink-0 cursor-pointer accent-primary sm:size-4" {...rest} />
       <span>{label}</span>
     </label>
   );
@@ -168,9 +168,9 @@ export function Switch({ checked, onChange, label }: { checked: boolean; onChang
       aria-checked={checked}
       aria-label={label}
       onClick={() => onChange(!checked)}
-      className={cn("relative h-6 w-11 rounded-full transition-colors", checked ? "bg-primary" : "bg-line")}
+      className={cn("relative h-7 w-12 rounded-full transition-colors sm:h-6 sm:w-11", checked ? "bg-primary" : "bg-line")}
     >
-      <span className={cn("absolute top-0.5 size-5 rounded-full bg-white transition-all", checked ? "left-[22px]" : "left-0.5")} />
+      <span className={cn("absolute top-0.5 size-6 rounded-full bg-white transition-all sm:size-5", checked ? "left-[22px] max-sm:left-[22px]" : "left-0.5")} />
     </button>
   );
 }

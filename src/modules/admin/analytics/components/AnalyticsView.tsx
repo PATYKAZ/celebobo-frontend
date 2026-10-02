@@ -42,26 +42,28 @@ function AnalyticsContent() {
   return (
     <>
       <PageHeader title="Analytique" description={data ? `Période analysée : ${data.periodLabel} · comparée à ${data.previousPeriodLabel}` : "Analysez vos ventes, vos marges et les habitudes d'achat."}>
-        <div className="flex flex-wrap items-end gap-4">
+        <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:gap-4">
           <Tabs variant="pill" tabs={RANGES} value={filters.range} onChange={(range) => set({ range })} />
+          <div className="grid grid-cols-2 gap-3 sm:contents">
           <Select
             label="Catégorie"
-            wrapperClassName="w-[200px]"
+            wrapperClassName="sm:w-[200px]"
             value={String(filters.category)}
             onChange={(e) => set({ category: e.target.value === "all" ? "all" : Number(e.target.value) })}
             options={[{ value: "all", label: "Toutes" }, ...(categories ?? []).map((c) => ({ value: c.id, label: c.name }))]}
           />
           <Select
             label="Paiement"
-            wrapperClassName="w-[200px]"
+            wrapperClassName="sm:w-[200px]"
             value={filters.method}
             onChange={(e) => set({ method: e.target.value as PaymentMethod | "all" })}
             options={[{ value: "all", label: "Tous" }, ...(Object.keys(PAYMENT_LABELS) as PaymentMethod[]).map((m) => ({ value: m, label: PAYMENT_LABELS[m] }))]}
           />
+          </div>
         </div>
       </PageHeader>
 
-      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <section className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
         {s ? (
           <>
             <StatCard label={`Chiffre d'affaires · ${rangeLabel}`} value={s.revenue} format={formatPrice} icon={<MoneyRecive size={22} variant="Bold" />} delta={s.revenueDelta} deltaLabel="vs période préc." />
@@ -74,7 +76,7 @@ function AnalyticsContent() {
         )}
       </section>
 
-      <div className="grid gap-4 xl:grid-cols-3">
+      <div className="grid min-w-0 gap-3 sm:gap-4 xl:grid-cols-3">
         <ChartCard title="Ventes par période" subtitle="Revenu (barres) et bénéfice (ligne)" className="xl:col-span-2" legend={<><LegendDot color="#1ABA1A" label="Revenu" /><LegendDot color="#222222" label="Bénéfice" /></>}>
           {data ? (
             <BarChart title="Ventes par période" format={money} lineLabel="Bénéfice" data={data.monthly.labels.map((l, i) => ({ label: l, value: data.monthly.revenue[i], line: data.monthly.profit[i] }))} />
@@ -91,7 +93,7 @@ function AnalyticsContent() {
         </ChartCard>
       </div>
 
-      <div className="grid gap-4 xl:grid-cols-2">
+      <div className="grid min-w-0 gap-3 sm:gap-4 xl:grid-cols-2">
         <ChartCard title="Meilleures ventes" subtitle="Produits générant le plus de revenu">
           {data ? (
             <BarChart orientation="horizontal" title="Meilleures ventes" format={formatPrice} data={data.topProducts.slice(0, 6).map((p) => ({ label: p.name, value: p.revenue, image: p.image }))} />
@@ -108,7 +110,7 @@ function AnalyticsContent() {
         </ChartCard>
       </div>
 
-      <div className="grid gap-4 xl:grid-cols-3">
+      <div className="grid min-w-0 gap-3 sm:gap-4 xl:grid-cols-3">
         <ChartCard title="Évolution du panier moyen" subtitle="Montant moyen par vente" legend={<LegendDot color="#0D6EFD" label="Panier moyen" />}>
           {data ? (
             <AreaLineChart title="Évolution du panier moyen" height={260} labels={data.basket.labels} format={money} series={[{ key: "basket", label: "Panier moyen", color: "#0D6EFD", data: data.basket.values }]} />
@@ -121,7 +123,7 @@ function AnalyticsContent() {
         </ChartCard>
       </div>
 
-      <div className="grid gap-4 xl:grid-cols-3">
+      <div className="grid min-w-0 gap-3 sm:gap-4 xl:grid-cols-3">
         <StockValueCard data={data} />
         <div className="rounded-box bg-white p-6 sm:p-[26px]">
           <h2 className="text-[18px] font-bold leading-[21.6px]">Stock actuel</h2>

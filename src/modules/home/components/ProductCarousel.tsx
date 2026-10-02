@@ -23,7 +23,7 @@ export function ProductCarousel({ products, loading, perView = 5 }: Props) {
   const sync = (s: SwiperType) => setEdge({ begin: s.isBeginning, end: s.isEnd });
 
   return (
-    <div className="relative lg:px-[50px]">
+    <div className="relative min-w-0 lg:px-[50px]">
       <SideArrow dir="prev" onClick={() => swiper?.slidePrev()} disabled={edge.begin} />
       <SideArrow dir="next" onClick={() => swiper?.slideNext()} disabled={edge.end} />
       {loading || !products ? (
@@ -40,10 +40,10 @@ export function ProductCarousel({ products, loading, perView = 5 }: Props) {
           }}
           onSlideChange={sync}
           onResize={sync}
-          slidesPerView={2}
-          breakpoints={{ 640: { slidesPerView: 3 }, 1024: { slidesPerView: 4 }, 1280: { slidesPerView: perView } }}
+          slidesPerView={1.6}
+          breakpoints={{ 480: { slidesPerView: 2.2 }, 640: { slidesPerView: 3 }, 1024: { slidesPerView: 4 }, 1280: { slidesPerView: perView } }}
           spaceBetween={0}
-          className="!overflow-hidden"
+          className="w-full !overflow-hidden"
         >
           {products.map((p, i) => (
             <SwiperSlide key={p.id} className="!h-auto">

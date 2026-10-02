@@ -34,7 +34,7 @@ function Totals({ data }: { data?: CommissionsOverview }) {
   const t = data?.totals;
   const own = data?.scope === "own";
   return (
-    <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <section className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
       {t ? (
         <>
           <StatCard label={`Gagné · ${data?.monthLabel}`} value={t.earnedMonth} format={formatPrice} icon={<Calendar size={22} variant="Bold" />} tone="blue" />
@@ -95,8 +95,8 @@ function AllCommissions({ data }: { data?: CommissionsOverview }) {
       align: "right",
       cell: (r) => (
         <div className="flex justify-end gap-2" onClick={(e) => e.stopPropagation()}>
-          <Button size="xs" variant="chip" upper={false} onClick={() => setHistory(r.resellerId)}>Historique</Button>
-          {canPay && <Button size="xs" upper={false} disabled={r.due <= 0.005} onClick={() => setPaying(r)}>Payer</Button>}
+          <Button size="xs" variant="chip" upper={false} className="max-md:min-h-11 max-md:px-5" onClick={() => setHistory(r.resellerId)}>Historique</Button>
+          {canPay && <Button size="xs" upper={false} className="max-md:min-h-11 max-md:px-5" disabled={r.due <= 0.005} onClick={() => setPaying(r)}>Payer</Button>}
         </div>
       ),
     },
@@ -136,7 +136,7 @@ function OwnCommissions({ data }: { data: CommissionsOverview }) {
     <>
       <PageHeader title="Mes commissions" description={`${data.asOfLabel} · taux appliqué : ${(row.rate * 100).toFixed(1)} % de vos ventes validées`} />
       <Totals data={data} />
-      <div className="grid gap-4 xl:grid-cols-3">
+      <div className="grid min-w-0 gap-3 sm:gap-4 xl:grid-cols-3">
         <ChartCard title="Commissions gagnées par mois" subtitle="6 derniers mois (ventes validées × votre taux)" className="xl:col-span-2">
           {data.monthly ? <BarChart title="Commissions par mois" format={money} data={data.monthly.labels.map((l, i) => ({ label: l, value: data.monthly!.values[i] }))} /> : <Skeleton className="h-[260px] w-full" />}
         </ChartCard>

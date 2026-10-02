@@ -35,20 +35,23 @@ export function ProductTabs() {
   const [tab, setTab] = useState<Tab>("best");
   return (
     <Reveal>
-      <Block pad="none" className="px-4 pb-8 pt-7 sm:px-[30px]">
+      <Block pad="none" className="min-w-0 px-3 pb-4 pt-4 sm:px-[30px] sm:pb-8 sm:pt-7">
         <div className="flex items-start justify-between gap-4">
-          <Tabs tabs={TABS} value={tab} onChange={setTab} />
+          <Tabs tabs={TABS} value={tab} onChange={setTab} className="min-w-0 flex-1" />
           <Link href={ROUTES.products} className="group hidden items-center gap-0.5 pt-1 text-link capitalize text-ink-2 hover:text-primary sm:inline-flex">
             Voir tout <ArrowRight2 size={13} variant="Bold" className="transition-transform group-hover:translate-x-1" />
           </Link>
         </div>
-        <div className="mt-6">
+        <div className="mt-3 sm:mt-6">
           <AnimatePresence mode="wait" initial={false}>
             <motion.div key={tab} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.25 }}>
               <TabPanel tab={tab} />
             </motion.div>
           </AnimatePresence>
         </div>
+        <Link href={ROUTES.products} className="mt-3 flex h-12 items-center justify-center gap-1 rounded-box bg-chip text-[13px] font-semibold active:scale-[0.98] sm:hidden">
+          Voir tous les produits <ArrowRight2 size={14} variant="Bold" />
+        </Link>
       </Block>
     </Reveal>
   );

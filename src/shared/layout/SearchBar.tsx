@@ -122,8 +122,8 @@ export function SearchBar({ className, compact }: { className?: string; compact?
   const listId = `${uid}-list`;
 
   return (
-    <form ref={box} onSubmit={submit} role="search" className={cn("relative", className)}>
-      <div className="flex h-[45px] overflow-hidden rounded-pill bg-white">
+    <form ref={box} onSubmit={submit} role="search" className={cn("relative scroll-mt-20", className)}>
+      <div className="flex h-[48px] overflow-hidden rounded-pill bg-white sm:h-[45px]">
         {!compact && (
           <div className="relative hidden w-[143px] shrink-0 sm:block">
             <select
@@ -159,7 +159,7 @@ export function SearchBar({ className, compact }: { className?: string; compact?
           aria-autocomplete="list"
           aria-activedescendant={active >= 0 ? `${uid}-${options[active]?.id}` : undefined}
           autoComplete="off"
-          className="min-w-0 flex-1 bg-white px-3 text-[13px] text-ink outline-none placeholder:text-ink-3 sm:border-l sm:border-line-3"
+          className="min-w-0 flex-1 bg-white px-4 text-[16px] text-ink outline-none placeholder:text-ink-3 sm:border-l sm:border-line-3 sm:px-3 sm:text-[13px]"
         />
         {q && (
           <button
@@ -174,7 +174,7 @@ export function SearchBar({ className, compact }: { className?: string; compact?
             <CloseCircle size={16} variant="Bold" />
           </button>
         )}
-        <button type="submit" aria-label="Lancer la recherche" className="grid w-12 shrink-0 place-items-center bg-white text-ink transition-colors hover:text-primary">
+        <button type="submit" aria-label="Lancer la recherche" className="grid w-14 shrink-0 place-items-center bg-white text-ink transition-colors hover:text-primary active:text-primary sm:w-12">
           <SearchNormal1 size={16} variant="Bold" />
         </button>
       </div>

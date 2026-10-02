@@ -45,7 +45,7 @@ export function MessageBubble({ message, mine, showSender, onOpenImage, conversa
       className={cn("flex items-end gap-2", mine ? "justify-end" : "justify-start")}
     >
       {!mine && <div className="w-8 shrink-0">{showSender && <Avatar src={message.sender.avatar} name={message.sender.name} size={32} />}</div>}
-      <div className={cn("flex max-w-[86%] flex-col sm:max-w-[72%]", mine ? "items-end" : "items-start")}>
+      <div className={cn("flex min-w-0 max-w-[82%] flex-col sm:max-w-[72%]", mine ? "items-end" : "items-start")}>
         {!mine && showSender && (
           <span className="mb-1 ml-1 text-[12px] font-semibold text-ink-2">
             {message.sender.name}
@@ -55,11 +55,11 @@ export function MessageBubble({ message, mine, showSender, onOpenImage, conversa
         {proposal ? (
           <PriceProposalCard conversationId={conversationId} messageId={message.id} meta={proposal} canRespond={isBuyer && !mine} mine={mine} />
         ) : (
-          <div className={cn("rounded-2xl px-4 py-2.5 text-[14px] leading-[21px]", mine ? "rounded-br-md bg-primary text-white" : "rounded-bl-md bg-chip text-ink", pending && "opacity-70")}>
+          <div className={cn("max-w-full rounded-2xl px-3.5 py-2 text-[15px] leading-[22px] sm:px-4 sm:py-2.5 sm:text-[14px] sm:leading-[21px]", mine ? "rounded-br-md bg-primary text-white" : "rounded-bl-md bg-chip text-ink", pending && "opacity-70")}>
             {message.image && (
-              <button type="button" onClick={() => onOpenImage(message.image as string)} className="mb-2 block overflow-hidden rounded-lg">
+              <button type="button" onClick={() => onOpenImage(message.image as string)} className="mb-2 block max-w-full overflow-hidden rounded-lg">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={message.image} alt="Pièce jointe" className="max-h-[220px] w-full max-w-[260px] object-cover transition-transform duration-500 hover:scale-105" />
+                <img src={message.image} alt="Pièce jointe" className="max-h-[240px] w-full max-w-[min(260px,100%)] object-cover transition-transform duration-500 active:scale-[0.98] sm:hover:scale-105" />
               </button>
             )}
             {message.content &&

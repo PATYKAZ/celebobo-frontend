@@ -62,7 +62,7 @@ export function CategoryFormModal({ open, category, existingNames, onClose }: Pr
         <Input label="Nom" required value={v.name} onChange={(e) => { setV({ ...v, name: e.target.value }); setErrors((x) => ({ ...x, name: undefined })); }} error={errors.name} placeholder="Ex : Smartphones" />
         <Textarea label="Description" className="min-h-[80px]" value={v.description} onChange={(e) => setV({ ...v, description: e.target.value })} />
         <div className="grid items-start gap-4 sm:grid-cols-[170px_1fr]">
-          <ImageSlot label="Image" main value={image} error={errors.image} onChange={(x) => { setImage(x); setErrors((e) => ({ ...e, image: undefined })); }} />
+          <div className="w-40 sm:w-auto"><ImageSlot label="Image" main value={image} error={errors.image} onChange={(x) => { setImage(x); setErrors((e) => ({ ...e, image: undefined })); }} /></div>
           <div>
             <p className="mb-1.5 text-[13px] font-semibold">Icône (menu boutique)</p>
             <div className="grid grid-cols-5 gap-2">
@@ -79,13 +79,13 @@ export function CategoryFormModal({ open, category, existingNames, onClose }: Pr
                 </button>
               ))}
             </div>
-            <div className="mt-4 flex items-center justify-between rounded-box border border-line px-4 py-3">
+            <label className="mt-4 flex min-h-14 cursor-pointer items-center justify-between rounded-box border border-line px-4 py-3 active:bg-chip">
               <span className="text-[14px] font-semibold">Visible en boutique</span>
               <Switch label="Visible en boutique" checked={v.active} onChange={(a) => setV({ ...v, active: a })} />
-            </div>
+            </label>
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-[1fr_1.5fr] gap-3 sm:grid-cols-2">
           <Button variant="chip" upper={false} onClick={onClose}>Annuler</Button>
           <Button upper={false} onClick={submit} loading={save.isPending}>{category ? "Enregistrer" : "Créer"}</Button>
         </div>

@@ -30,12 +30,12 @@ export function PaymentMethodCards({ value, onChange }: Props) {
             role="radio"
             aria-checked={selected}
             onClick={() => onChange(m.value)}
-            className={cn("relative flex items-center gap-3 rounded-box border-2 p-4 text-left transition-all duration-300", selected ? "border-primary bg-primary-50" : "border-line-3 bg-white hover:border-primary/50")}
+            className={cn("relative flex min-h-[72px] items-center gap-3 rounded-box border-2 p-3.5 text-left transition-all duration-300 active:scale-[0.99] sm:p-4", selected ? "border-primary bg-primary-50" : "border-line-3 bg-white hover:border-primary/50")}
           >
             <span className={cn("grid size-11 shrink-0 place-items-center rounded-full", b.chip)}>
               {b.icon === "mobile" ? <Mobile size={20} variant="Bold" /> : <Money size={20} variant="Bold" />}
             </span>
-            <span className="min-w-0">
+            <span className="min-w-0 pr-7">
               <span className="block text-[15px] font-bold leading-[20px]">{m.label}</span>
               <span className="block text-[12px] leading-[17px] text-ink-3">{b.hint}</span>
             </span>

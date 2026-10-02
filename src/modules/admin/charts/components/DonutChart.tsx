@@ -60,7 +60,7 @@ export function DonutChart({ segments, size = 190, centerLabel = "Total", format
                 animate={inView ? { strokeDasharray: `${Math.max(0, len - gap)} ${100 - Math.max(0, len - gap)}` } : {}}
                 transition={{ duration: 0.9, delay: i * 0.12, ease: "easeOut" }}
                 style={{ transition: "stroke-width .2s, opacity .2s", cursor: "pointer" }}
-                onPointerEnter={() => setActive(i)}
+                onPointerEnter={() => setActive(i)} onPointerDown={() => setActive(i)}
                 onPointerLeave={() => setActive(null)}
               />
             );
@@ -75,7 +75,7 @@ export function DonutChart({ segments, size = 190, centerLabel = "Total", format
       </div>
       <ul className="grid w-full max-w-[280px] gap-2.5">
         {segments.map((s, i) => (
-          <li key={s.label} onPointerEnter={() => setActive(i)} onPointerLeave={() => setActive(null)} className={cn("flex cursor-default items-center gap-2.5 rounded-md px-2 py-1 text-[13px] transition-colors", active === i && "bg-chip")}>
+          <li key={s.label} onPointerEnter={() => setActive(i)} onPointerDown={() => setActive(i)} onPointerLeave={() => setActive(null)} className={cn("flex cursor-default items-center gap-2.5 min-h-9 rounded-md px-2 py-1 text-[13px] transition-colors", active === i && "bg-chip")}>
             <span className="size-3 shrink-0 rounded-full" style={{ background: s.color }} />
             <span className="min-w-0 flex-1 truncate">{s.label}</span>
             <span className="font-bold">{Math.round((s.value / total) * 100)}%</span>

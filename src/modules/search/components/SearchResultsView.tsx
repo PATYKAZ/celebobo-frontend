@@ -15,7 +15,7 @@ import { useProducts } from "@/modules/products/hooks/useProducts";
 function PopularSuggestions() {
   const { data, isLoading } = useProducts({ ordering: "-sales", pageSize: 5 });
   return (
-    <div className="mt-6 border-t border-line-3 pt-6">
+    <div className="mt-4 border-t border-line-3 pt-4 sm:mt-6 sm:pt-6">
       <SectionHeader title="Produits populaires" viewAllHref={ROUTES.products} />
       <ProductGrid products={data?.results} loading={isLoading} skeletons={5} columns={5} className="mt-4" />
     </div>
@@ -28,15 +28,15 @@ function Inner() {
     <>
       <Breadcrumb items={[{ label: "Recherche" }]} />
       <Reveal>
-        <Block pad="none" className="px-5 py-6 sm:px-[30px]">
-          <h1 className="text-h-page">
+        <Block pad="none" className="px-4 py-4 sm:px-[30px] sm:py-6">
+          <h1 className="break-words text-[22px] leading-[28px] sm:text-h-page">
             {q ? (
               <>Résultats pour « <span className="rounded-md bg-primary-50 px-1.5 text-primary">{q}</span> »</>
             ) : (
               "Rechercher un produit"
             )}
           </h1>
-          <p className="mt-1 text-[14px] text-ink-2">Affinez avec les filtres ou changez le tri.</p>
+          <p className="mt-1 text-[13px] text-ink-2 sm:text-[14px]">Affinez avec les filtres ou changez le tri.</p>
         </Block>
       </Reveal>
       <ProductListView emptyExtra={<PopularSuggestions />} />

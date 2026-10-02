@@ -33,16 +33,16 @@ export function FavoritesView() {
     <>
       <Breadcrumb items={[{ label: "Mes favoris" }]} />
       <Reveal>
-        <Block pad="none" className="flex flex-wrap items-center justify-between gap-4 px-5 py-6 sm:px-[30px]">
-          <div className="flex items-center gap-4">
-            <span className="grid size-12 place-items-center rounded-full bg-danger-100 text-danger"><Heart size={24} variant="Bold" /></span>
+        <Block pad="none" className="flex flex-col gap-3 px-4 py-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-4 sm:px-[30px] sm:py-6">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <span className="grid size-11 shrink-0 place-items-center rounded-full bg-danger-100 text-danger sm:size-12"><Heart size={24} variant="Bold" /></span>
             <div>
-              <h1 className="text-h-page">Mes favoris</h1>
-              <p className="text-[14px] text-ink-2">{pluralize(products?.length ?? ids.length, "produit")} enregistré{(products?.length ?? ids.length) > 1 ? "s" : ""}</p>
+              <h1 className="text-[22px] leading-[28px] sm:text-h-page">Mes favoris</h1>
+              <p className="text-[13px] text-ink-2 sm:text-[14px]">{pluralize(products?.length ?? ids.length, "produit")} enregistré{(products?.length ?? ids.length) > 1 ? "s" : ""}</p>
             </div>
           </div>
           {!!products?.length && (
-            <Button onClick={addAll} leftIcon={<Bag2 size={17} variant="Bold" />} upper={false}>Tout ajouter au panier</Button>
+            <Button onClick={addAll} leftIcon={<Bag2 size={17} variant="Bold" />} upper={false} className="max-sm:w-full">Tout ajouter au panier</Button>
           )}
         </Block>
       </Reveal>

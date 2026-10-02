@@ -48,7 +48,7 @@ function CopyCode({ code }: { code: string }) {
         navigator.clipboard?.writeText(code).then(() => toast.success("Code copié", code), () => toast.error("Copie impossible"));
       }}
       aria-label={`Copier le code ${code}`}
-      className="group inline-flex items-center gap-1.5 rounded-md bg-chip px-2.5 py-1 text-[13px] font-bold tracking-widest transition-colors hover:bg-primary hover:text-white"
+      className="group inline-flex items-center gap-1.5 rounded-md bg-chip px-2.5 py-1 text-[13px] font-bold tracking-widest transition-colors hover:bg-primary hover:text-white max-md:min-h-10 max-md:px-3"
     >
       {code}
       <Copy size={14} className="transition-transform group-hover:scale-110" />
@@ -98,8 +98,8 @@ function ResellersContent() {
     { key: "invited", header: "Invités", align: "center", cell: (r) => <strong>{r.invitedCount}</strong> },
     { key: "rate", header: "Commission", hideBelow: "lg", align: "center", cell: (r) => <span className="text-ink-2">{(r.commissionRate * 100).toFixed(1)}%</span> },
     { key: "sales", header: "Ventes générées", hideBelow: "md", align: "right", cell: (r) => <strong>{formatPrice(r.salesTotal)}</strong> },
-    { key: "conv", header: "Conversion", hideBelow: "xl", align: "center", cell: (r) => <span className="text-ink-2">{r.conversionRate.toFixed(0)}%</span> },
-    { key: "joined", header: "Inscrit le", hideBelow: "xl", cell: (r) => <span className="text-ink-2">{formatDate(r.joinedAt)}</span> },
+    { key: "conv", header: "Conversion", hideBelow: "xl", mobile: "hide", align: "center", cell: (r) => <span className="text-ink-2">{r.conversionRate.toFixed(0)}%</span> },
+    { key: "joined", header: "Inscrit le", hideBelow: "xl", mobile: "hide", cell: (r) => <span className="text-ink-2">{formatDate(r.joinedAt)}</span> },
     { key: "status", header: "Statut", hideBelow: "md", cell: (r) => <StatusDot tone={r.status === "actif" ? "green" : "gray"}>{r.status === "actif" ? "Actif" : "Désactivé"}</StatusDot> },
   ];
 
@@ -118,7 +118,7 @@ function ResellersContent() {
         <Tabs variant="pill" tabs={PERIOD_OPTIONS} value={period} onChange={(p) => { setPeriod(p); setPage(1); }} />
       </PageHeader>
 
-      <section className="grid gap-4 sm:grid-cols-3">
+      <section className="grid grid-cols-2 gap-3 sm:gap-4 sm:grid-cols-3 [&>*:last-child:nth-child(odd)]:col-span-2 sm:[&>*:last-child:nth-child(odd)]:col-span-1">
         {stats ? (
           <>
             <StatCard label={`Revendeurs (${stats.active} actifs)`} value={stats.total} icon={<People size={22} variant="Bold" />} />
@@ -131,9 +131,9 @@ function ResellersContent() {
       </section>
 
       <Block pad="none">
-        <div className="flex flex-wrap items-end gap-4 p-5 sm:px-[30px]">
-          <Input wrapperClassName="min-w-[240px] flex-1" placeholder="Rechercher un nom, e-mail ou code…" aria-label="Rechercher" leftIcon={<SearchNormal1 size={16} />} value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} />
-          <Select wrapperClassName="w-[190px]" aria-label="Trier par" value={ordering} onChange={(e) => { setOrdering(e.target.value as ResellerOrdering); setPage(1); }} options={ORDERINGS} />
+        <div className="flex flex-col gap-3 p-3 sm:flex-row sm:flex-wrap sm:items-end sm:gap-4 sm:p-5 sm:px-[30px]">
+          <Input wrapperClassName="sm:min-w-[240px] sm:flex-1" placeholder="Rechercher un nom, e-mail ou code…" aria-label="Rechercher" leftIcon={<SearchNormal1 size={16} />} value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} />
+          <Select wrapperClassName="sm:w-[190px]" aria-label="Trier par" value={ordering} onChange={(e) => { setOrdering(e.target.value as ResellerOrdering); setPage(1); }} options={ORDERINGS} />
           <Tabs variant="pill" tabs={STATUSES.map((s) => ({ value: s.value, label: s.label }))} value={status} onChange={(s) => { setStatus(s); setPage(1); }} />
         </div>
         <DataTable

@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { Bag2, CloseCircle, Heart, Refresh2, ShieldTick, TickCircle, Truck } from "iconsax-reactjs";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { ROUTES } from "@/config/routes";
 import { cn } from "@/shared/lib/cn";
 import { formatPrice } from "@/shared/lib/format";
@@ -32,11 +32,10 @@ function stockLabel(stock: number, threshold: number) {
   return stock <= threshold ? `Plus que ${stock} en stock` : "En stock";
 }
 
-export function ProductInfo({ product, selection }: { product: Product; selection: VariantSelection }) {
+export function ProductInfo({ product, selection, qty, onQtyChange }: { product: Product; selection: VariantSelection; qty: number; onQtyChange: (n: number) => void }) {
   const router = useRouter();
   const { add } = useCart();
   const { isFavorite, toggle } = useFavoriteToggle();
-  const [qty, setQty] = useState(1);
   const base = getPricing(product);
   const fav = isFavorite(product.id);
   const { hasVariants, options, selected, variant, select, isAvailable, stock, inStock, priceDelta } = selection;
@@ -47,8 +46,8 @@ export function ProductInfo({ product, selection }: { product: Product; selectio
 
   // la quantité ne dépasse jamais le stock de la variante choisie
   useEffect(() => {
-    if (stock > 0 && qty > stock) setQty(stock);
-  }, [stock, qty]);
+    if (stock > 0 && qty > stock) onQtyChange(stock);
+  }, [stock, qty, onQtyChange]);
 
   const addToCart = (silent?: boolean) =>
     add(product, qty, { silent, variantId: variant?.id ?? null, variantLabel: variant?.label ?? null, priceDelta });
@@ -56,20 +55,20 @@ export function ProductInfo({ product, selection }: { product: Product; selectio
   return (
     <div className="flex min-w-0 flex-col">
       <p className="text-[12px] font-bold uppercase tracking-wider text-primary">{product.category}</p>
-      <h1 className="mt-2 text-[24px] leading-[30px] sm:text-[28px] sm:leading-[34px]">{product.name}</h1>
+      <h1 className="mt-1.5 text-[22px] leading-[28px] sm:mt-2 sm:text-[28px] sm:leading-[34px]">{product.name}</h1>
 
       <div className="mt-3 flex flex-wrap items-center gap-3">
         <Stars rating={product.rating} count={product.reviewsCount} size={15} />
         <a href="#avis" className="text-[13px] text-ink-2 underline-offset-2 hover:text-primary hover:underline">Voir les avis</a>
       </div>
 
-      <div className="mt-5 flex flex-wrap items-center gap-3 border-y border-line-3 py-5">
-        <Price current={current} original={original} size="xl" />
+      <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 border-y border-line-3 py-4 sm:mt-5 sm:py-5">
+        <Price current={current} original={original} size="xl" className="[&>span:first-child]:max-sm:text-[26px]" />
         {base.onSale && <Pill tone="red" className="h-[26px] text-[12px]">-{base.percent}%</Pill>}
         {base.onSale && <span className="text-[13px] font-semibold text-primary">Vous économisez {formatPrice(base.saving)}</span>}
       </div>
 
-      <p className="mt-5 text-[14px] leading-[24px] text-ink-2">{product.description}</p>
+      <p className="mt-4 text-[14px] leading-[23px] text-ink-2 sm:mt-5 sm:leading-[24px]">{product.description}</p>
 
       {product.features.length > 0 && (
         <ul className="mt-4 flex flex-col gap-2">
@@ -103,7 +102,7 @@ export function ProductInfo({ product, selection }: { product: Product; selectio
                       disabled={!available && !active}
                       onClick={() => select(o.name, val)}
                       className={cn(
-                        "relative flex h-10 items-center gap-2 rounded-md border-2 px-3.5 text-[13px] font-semibold transition-all",
+                        "relative flex h-12 min-w-12 items-center justify-center gap-2 rounded-box border-2 px-4 text-[14px] font-semibold transition-all active:scale-95 sm:h-10 sm:min-w-0 sm:rounded-md sm:px-3.5 sm:text-[13px]",
                         active ? "border-primary bg-primary-50 text-primary-dark" : "border-line-3 hover:border-primary/50",
                         !available && "cursor-not-allowed opacity-45 line-through",
                       )}
@@ -127,9 +126,10 @@ export function ProductInfo({ product, selection }: { product: Product; selectio
         {product.freeShipping ? <Pill tone="green">Livraison offerte</Pill> : product.shippingFee ? <Pill tone="dark">{formatPrice(product.shippingFee)} livraison</Pill> : null}
       </div>
 
-      <div className="mt-6 flex flex-wrap items-center gap-3">
-        <QuantityStepper value={qty} onChange={setQty} max={Math.max(1, stock)} />
-        <Button size="md" disabled={!inStock} onClick={() => addToCart()} leftIcon={<Bag2 size={18} variant="Bold" />} className="flex-1 sm:flex-none">
+      <div className="mt-5 flex flex-wrap items-center gap-3 sm:mt-6">
+        {/* mobile : quantité + « Ajouter » vivent dans la barre d'achat collante */}
+        <QuantityStepper value={qty} onChange={onQtyChange} max={Math.max(1, stock)} className="max-lg:hidden" />
+        <Button size="md" disabled={!inStock} onClick={() => addToCart()} leftIcon={<Bag2 size={18} variant="Bold" />} className="flex-1 max-lg:hidden sm:flex-none">
           Ajouter au panier
         </Button>
         <Button
@@ -139,7 +139,7 @@ export function ProductInfo({ product, selection }: { product: Product; selectio
             addToCart(true);
             router.push(ROUTES.cart);
           }}
-          className="flex-1 sm:flex-none"
+          className="min-w-0 max-sm:basis-full sm:flex-none"
         >
           Commander maintenant
         </Button>
@@ -147,20 +147,20 @@ export function ProductInfo({ product, selection }: { product: Product; selectio
           aria-label={fav ? "Retirer des favoris" : "Ajouter aux favoris"}
           aria-pressed={fav}
           onClick={() => toggle(product.id, product.name)}
-          className={cn("grid size-[45px] place-items-center rounded-box bg-chip transition-colors hover:bg-danger-100", fav && "bg-danger-100")}
+          className={cn("grid size-12 place-items-center rounded-box bg-chip transition-colors hover:bg-danger-100 active:scale-90 sm:size-[45px]", fav && "bg-danger-100")}
         >
           <Heart size={20} variant={fav ? "Bold" : "Linear"} color={fav ? "#F1352B" : "currentColor"} />
         </button>
         <ProductShareMenu name={product.name} />
       </div>
 
-      <div className="mt-6 grid gap-3 sm:grid-cols-3">
+      <div className="mt-5 grid grid-cols-3 gap-2 sm:mt-6 sm:gap-3">
         {TRUST.map(({ icon: Icon, title, text }) => (
-          <div key={title} className="flex items-center gap-3 rounded-box bg-page/60 p-3">
+          <div key={title} className="flex flex-col items-center gap-1.5 rounded-box bg-page/60 p-2.5 text-center sm:flex-row sm:gap-3 sm:p-3 sm:text-left">
             <span className="grid size-10 shrink-0 place-items-center rounded-full bg-white text-primary"><Icon size={20} variant="Bold" /></span>
-            <span className="leading-[18px]">
-              <span className="block text-[13px] font-bold">{title}</span>
-              <span className="text-[12px] text-ink-2">{text}</span>
+            <span className="leading-[16px] sm:leading-[18px]">
+              <span className="block text-[12px] font-bold sm:text-[13px]">{title}</span>
+              <span className="hidden text-[12px] text-ink-2 sm:inline">{text}</span>
             </span>
           </div>
         ))}

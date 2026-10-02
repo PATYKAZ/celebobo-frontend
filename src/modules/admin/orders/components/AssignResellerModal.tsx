@@ -67,10 +67,10 @@ export function AssignResellerModal({ order, onClose }: Props) {
 
   return (
     <Modal open={open} onClose={onClose} title={order ? `${reassign ? "Réassigner" : "Assigner"} la commande #${order.id}` : undefined} className="max-w-[560px]">
-      <Input placeholder="Rechercher par nom ou code…" value={q} onChange={(e) => setQ(e.target.value)} leftIcon={<SearchNormal1 size={16} />} aria-label="Rechercher un revendeur" />
+      <Input placeholder="Rechercher par nom ou code…" inputMode="search" value={q} onChange={(e) => setQ(e.target.value)} leftIcon={<SearchNormal1 size={16} />} aria-label="Rechercher un revendeur" />
       <p className="mt-3 text-[12px] text-ink-3">{data ? `${data.filter((r) => r.active).length} revendeurs actifs sur ${data.length}` : "Chargement…"} · triés par disponibilité puis par charge</p>
 
-      <ul className="mt-2 max-h-[340px] space-y-1 overflow-y-auto pr-1">
+      <ul className="mt-2 max-h-[40vh] space-y-1 overflow-y-auto overscroll-contain pr-1 sm:max-h-[340px]">
         {isLoading && Array.from({ length: 5 }, (_, i) => <Skeleton key={i} className="h-14 w-full" />)}
         {list.map((r) => {
           const reason = disabledReason(r);
@@ -83,7 +83,7 @@ export function AssignResellerModal({ order, onClose }: Props) {
                 onClick={() => setPicked(r.id)}
                 aria-pressed={on}
                 title={reason ?? undefined}
-                className={cn("flex w-full items-center gap-3 rounded-box border p-2.5 text-left transition-colors", on ? "border-primary bg-primary-50" : "border-transparent hover:bg-chip", reason && "cursor-not-allowed opacity-50 hover:bg-transparent")}
+                className={cn("flex min-h-14 w-full items-center gap-3 rounded-box border p-2.5 text-left transition-colors active:bg-chip", on ? "border-primary bg-primary-50" : "border-transparent hover:bg-chip", reason && "cursor-not-allowed opacity-50 hover:bg-transparent")}
               >
                 <Avatar src={r.avatar} name={r.name} size={38} />
                 <span className="min-w-0 flex-1">
@@ -106,7 +106,7 @@ export function AssignResellerModal({ order, onClose }: Props) {
       </ul>
 
       <Textarea label="Note (optionnel)" value={note} onChange={(e) => setNote(e.target.value)} className="mt-4 min-h-[70px]" placeholder="Consigne pour le revendeur…" />
-      <div className="mt-5 grid grid-cols-2 gap-3">
+      <div className="sticky bottom-0 -mx-5 mt-4 grid grid-cols-[1fr_1.5fr] gap-3 border-t border-line-3 bg-white px-5 py-3 sm:static sm:mx-0 sm:mt-5 sm:grid-cols-2 sm:border-0 sm:p-0">
         <Button variant="chip" upper={false} onClick={onClose}>Annuler</Button>
         <Button upper={false} disabled={picked == null} loading={assign.isPending} onClick={submit}>{reassign ? "Réassigner" : "Assigner"}</Button>
       </div>

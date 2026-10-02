@@ -18,12 +18,12 @@ interface Props {
 export function SectionHeader({ title, viewAllHref, viewAllLabel = "Voir tout", right, onPrimary, className }: Props) {
   return (
     <div className={cn("flex items-center justify-between gap-4", className)}>
-      <div className="flex min-w-0 items-center gap-6">
-        <h2 className={cn("truncate text-section uppercase", onPrimary && "text-white")}>{title}</h2>
+      <div className="flex min-w-0 flex-1 items-center gap-3 sm:gap-6">
+        <h2 className={cn("line-clamp-2 text-[16px] leading-[20px] text-section uppercase sm:truncate sm:text-section", onPrimary && "text-white")}>{title}</h2>
         {viewAllHref && (
           <Link
             href={viewAllHref}
-            className={cn("group hidden items-center gap-0.5 text-link capitalize sm:inline-flex", onPrimary ? "text-white" : "text-ink-2 hover:text-primary")}
+            className={cn("group inline-flex shrink-0 items-center gap-0.5 text-link capitalize", onPrimary ? "text-white" : "text-ink-2 hover:text-primary")}
           >
             {viewAllLabel}
             <ArrowRight2 size={13} variant="Bold" className="transition-transform group-hover:translate-x-1" />

@@ -22,20 +22,20 @@ export function OrderCard({ order, defaultOpen = false }: { order: Order; defaul
 
   return (
     <article className="overflow-hidden rounded-box border border-line-3 bg-white transition-colors hover:border-primary/40">
-      <div className="flex flex-wrap items-center gap-x-8 gap-y-3 p-4 sm:px-6">
-        <div className="min-w-[110px]">
+      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-3 p-4 sm:flex sm:flex-wrap sm:gap-x-8 sm:px-6">
+        <div className="min-w-0 max-sm:col-start-1 max-sm:row-start-1 sm:min-w-[110px]">
           <p className="text-[12px] uppercase text-ink-3">Commande</p>
-          <Link href={ROUTES.orderDetail(order.id)} className="text-[16px] font-bold hover:text-primary">#{order.id}</Link>
+          <Link href={ROUTES.orderDetail(order.id)} className="inline-flex min-h-9 items-center pr-3 text-[16px] font-bold hover:text-primary">#{order.id}</Link>
         </div>
-        <div className="min-w-[130px]">
+        <div className="min-w-0 max-sm:col-start-1 max-sm:row-start-2 sm:min-w-[130px]">
           <p className="text-[12px] uppercase text-ink-3">Passée le</p>
           <p className="text-[14px] font-semibold">{formatDateTime(order.createdAt)}</p>
         </div>
-        <div>
+        <div className="max-sm:col-start-2 max-sm:row-start-2 max-sm:text-right">
           <p className="text-[12px] uppercase text-ink-3">Total</p>
           <p className="text-[16px] font-bold text-primary">{formatPrice(order.totalPrice)}</p>
         </div>
-        <div className="flex -space-x-3">
+        <div className="flex -space-x-3 max-sm:col-span-2 max-sm:row-start-3">
           {order.items.slice(0, 3).map((it) => (
             <span key={it.id} className="relative size-11 overflow-hidden rounded-full border-2 border-white bg-page">
               {it.productImage && <Image src={it.productImage} alt={it.productName} fill sizes="44px" className="object-cover" />}
@@ -43,9 +43,9 @@ export function OrderCard({ order, defaultOpen = false }: { order: Order; defaul
           ))}
           {order.items.length > 3 && <span className="grid size-11 place-items-center rounded-full border-2 border-white bg-chip text-[12px] font-bold">+{order.items.length - 3}</span>}
         </div>
-        <div className="ml-auto flex items-center gap-3">
+        <div className="flex items-center justify-end gap-2 max-sm:col-start-2 max-sm:row-start-1 sm:ml-auto sm:gap-3">
           <OrderStatusBadge status={order.status} />
-          <button onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-label="Détails de la commande" className="grid size-9 place-items-center rounded-full bg-chip transition-colors hover:bg-primary hover:text-white">
+          <button onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-label="Détails de la commande" className="grid size-11 place-items-center rounded-full bg-chip transition-colors hover:bg-primary hover:text-white active:scale-90 sm:size-9">
             <ArrowDown2 size={16} className={cn("transition-transform duration-300", open && "rotate-180")} />
           </button>
         </div>
@@ -54,7 +54,7 @@ export function OrderCard({ order, defaultOpen = false }: { order: Order; defaul
       <AnimatePresence initial={false}>
         {open && (
           <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }} className="overflow-hidden">
-            <div className="grid gap-6 border-t border-line-3 p-4 sm:p-6 lg:grid-cols-[1fr_320px]">
+            <div className="grid gap-5 border-t border-line-3 p-4 sm:gap-6 sm:p-6 lg:grid-cols-[minmax(0,1fr)_320px]">
               <div>
                 <p className="mb-3 text-[13px] font-bold uppercase text-ink-2">{pluralize(count, "article")}</p>
                 <ul className="divide-y divide-line-3">

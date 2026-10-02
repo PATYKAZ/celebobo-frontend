@@ -8,6 +8,8 @@ const mediaHost = process.env.NEXT_PUBLIC_MEDIA_HOST;
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  /** Le rond « N » de dev recouvrait les boutons (retour du chat, barre d'onglets) : on le masque. */
+  devIndicators: false,
   images: {
     formats: ["image/avif", "image/webp"],
     remotePatterns: [

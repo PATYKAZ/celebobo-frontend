@@ -25,7 +25,7 @@ export function OrderSummaryCard({ content, orderId, mine }: { content: string; 
   const { lines, total } = parseCartMessage(content);
   if (!lines.length) return <p className="whitespace-pre-wrap">{content}</p>;
   return (
-    <div className="min-w-[240px]">
+    <div className="w-[min(280px,100%)] min-w-[220px] max-w-full">
       <div className="mb-2 flex items-center gap-2 text-[12px] font-bold uppercase tracking-wide opacity-90">
         <Receipt2 size={16} variant="Bold" /> Demande de commande{orderId ? ` #${orderId}` : ""}
       </div>
@@ -33,7 +33,7 @@ export function OrderSummaryCard({ content, orderId, mine }: { content: string; 
         {lines.map((l, i) => (
           <li key={i} className="flex items-start justify-between gap-3 py-2 text-[13px] leading-[18px]">
             <span className="min-w-0">
-              <span className="block font-semibold">{l.name}</span>
+              <span className="block break-words font-semibold">{l.name}</span>
               <span className="opacity-70">Quantité : {l.qty}</span>
             </span>
             <span className="shrink-0 font-bold">{l.amount}</span>

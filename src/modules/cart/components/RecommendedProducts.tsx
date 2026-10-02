@@ -19,13 +19,13 @@ export function RecommendedProducts({ excludeIds = [] }: { excludeIds?: number[]
 
   return (
     <Reveal>
-      <Block>
-        <SectionHeader title="Vous aimerez aussi" viewAllHref={ROUTES.products} right={<SliderArrows onPrev={() => scroll(-1)} onNext={() => scroll(1)} />} />
-        <div ref={track} className="no-scrollbar -mx-2 mt-6 flex snap-x snap-mandatory gap-1 overflow-x-auto px-2">
+      <Block pad="none" className="p-4 sm:p-[30px]">
+        <SectionHeader title="Vous aimerez aussi" viewAllHref={ROUTES.products} right={<SliderArrows onPrev={() => scroll(-1)} onNext={() => scroll(1)} className="max-sm:hidden" />} />
+        <div ref={track} className="no-scrollbar -mx-4 mt-4 flex snap-x snap-mandatory gap-2 overflow-x-auto scroll-px-4 px-4 sm:-mx-2 sm:mt-6 sm:scroll-px-2 sm:gap-1 sm:px-2">
           {isLoading
-            ? Array.from({ length: 5 }, (_, i) => <div key={i} className="w-[224px] shrink-0"><ProductCardSkeleton /></div>)
+            ? Array.from({ length: 5 }, (_, i) => <div key={i} className="w-[168px] shrink-0 sm:w-[224px]"><ProductCardSkeleton /></div>)
             : items?.map((p) => (
-                <div key={p.id} className="w-[224px] shrink-0 snap-start">
+                <div key={p.id} className="w-[168px] shrink-0 snap-start sm:w-[224px]">
                   <ProductCard product={p} />
                 </div>
               ))}

@@ -31,10 +31,10 @@ function Wordmark({ brand }: { brand: Brand }) {
 
 function FeaturedBrands({ brands }: { brands?: Brand[] }) {
   return (
-    <Block pad="none" className="min-h-[227px] px-5 py-6 sm:px-[30px]">
+    <Block pad="none" className="min-w-0 overflow-hidden px-4 py-4 sm:px-[30px] sm:py-6 lg:min-h-[227px]">
       <SectionHeader title="Marques à la une" viewAllHref={ROUTES.products} />
       {!brands ? (
-        <Skeleton className="mt-8 h-[110px]" />
+        <Skeleton className="mt-5 h-[60px] sm:mt-8 sm:h-[110px]" />
       ) : (
         <>
           <RevealGroup stagger={0.05} className="mt-8 hidden grid-cols-5 items-center gap-y-9 md:grid">
@@ -46,7 +46,7 @@ function FeaturedBrands({ brands }: { brands?: Brand[] }) {
               </RevealItem>
             ))}
           </RevealGroup>
-          <Marquee className="mt-8 md:hidden">
+          <Marquee className="mt-4 md:hidden">
             {brands.map((b) => (
               <Wordmark key={b.name} brand={b} />
             ))}
@@ -57,6 +57,18 @@ function FeaturedBrands({ brands }: { brands?: Brand[] }) {
   );
 }
 
+/** Pastille ronde « lanceur d'app » (mobile) / vignette 84 px (desktop). */
+function CategoryDot({ id, name, image, size }: { id: number; name: string; image: string | null; size: number }) {
+  return (
+    <Link href={ROUTES.category(id)} className="group flex flex-col items-center gap-2 py-1 active:scale-95">
+      <span className="relative block overflow-hidden rounded-full bg-chip ring-2 ring-transparent transition-all duration-500 group-hover:-translate-y-1 group-hover:ring-primary" style={{ width: size, height: size }}>
+        {image && <Image src={image} alt="" fill sizes={`${size}px`} className="object-cover transition-transform duration-700 group-hover:scale-125" />}
+      </span>
+      <span className="line-clamp-2 text-center text-[12px] font-semibold leading-[16px] transition-colors group-hover:text-primary sm:text-[14px] sm:leading-[20px]">{name}</span>
+    </Link>
+  );
+}
+
 function TopCategories() {
   const { data: categories, isLoading } = useCategories();
   const [swiper, setSwiper] = useState<SwiperType | null>(null);
@@ -64,48 +76,60 @@ function TopCategories() {
   const sync = (s: SwiperType) => setEdge({ begin: s.isBeginning, end: s.isEnd });
 
   return (
-    <Block pad="none" className="min-h-[227px] px-5 py-6 sm:px-[30px]">
+    <Block pad="none" className="min-w-0 overflow-hidden px-4 py-4 sm:px-[30px] sm:py-6 lg:min-h-[227px]">
       <SectionHeader
-        title="Top catégories"
+        title={<><span className="sm:hidden">Catégories</span><span className="hidden sm:inline">Top catégories</span></>}
         viewAllHref={ROUTES.products}
-        right={<SliderArrows onPrev={() => swiper?.slidePrev()} onNext={() => swiper?.slideNext()} canPrev={!edge.begin} canNext={!edge.end} />}
+        right={<SliderArrows className="hidden md:flex" onPrev={() => swiper?.slidePrev()} onNext={() => swiper?.slideNext()} canPrev={!edge.begin} canNext={!edge.end} />}
       />
-      <div className="mt-7">
-        {isLoading || !categories ? (
-          <Skeleton className="h-[130px]" />
-        ) : (
-          <Swiper
-            onSwiper={(s) => {
-              setSwiper(s);
-              sync(s);
-            }}
-            onSlideChange={sync}
-            slidesPerView={2}
-            spaceBetween={12}
-            breakpoints={{ 480: { slidesPerView: 3 }, 768: { slidesPerView: 4 } }}
-          >
+      {isLoading || !categories ? (
+        <Skeleton className="mt-4 h-[96px] sm:mt-7 sm:h-[130px]" />
+      ) : (
+        <>
+          {/* mobile : lanceurs défilants */}
+          <div className="snap-row -mx-4 mt-3 scroll-px-4 gap-1 px-4 md:hidden">
             {categories.map((c) => (
-              <SwiperSlide key={c.id}>
-                <Link href={ROUTES.category(c.id)} className="group flex flex-col items-center gap-3 py-1">
-                  <span className="relative block size-[84px] overflow-hidden rounded-full bg-chip ring-2 ring-transparent transition-all duration-500 group-hover:-translate-y-1 group-hover:ring-primary">
-                    {c.image && <Image src={c.image} alt="" fill sizes="84px" className="object-cover transition-transform duration-700 group-hover:scale-125" />}
-                  </span>
-                  <span className="text-center text-[14px] font-semibold leading-[20px] transition-colors group-hover:text-primary">{c.name}</span>
-                </Link>
-              </SwiperSlide>
+              <div key={c.id} className="w-[76px]">
+                <CategoryDot id={c.id} name={c.name} image={c.image} size={64} />
+              </div>
             ))}
-          </Swiper>
-        )}
-      </div>
+          </div>
+          {/* tablette / desktop : carrousel */}
+          <div className="mt-7 hidden md:block">
+            <Swiper
+              onSwiper={(s) => {
+                setSwiper(s);
+                sync(s);
+              }}
+              onSlideChange={sync}
+              slidesPerView={3}
+              spaceBetween={12}
+              breakpoints={{ 768: { slidesPerView: 4 } }}
+              className="w-full"
+            >
+              {categories.map((c) => (
+                <SwiperSlide key={c.id}>
+                  <CategoryDot id={c.id} name={c.name} image={c.image} size={84} />
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </div>
+        </>
+      )}
     </Block>
   );
 }
 
 export function BrandsAndCategories({ brands }: { brands?: Brand[] }) {
   return (
-    <Reveal className="grid gap-4 lg:grid-cols-2">
-      <FeaturedBrands brands={brands} />
-      <TopCategories />
+    <Reveal className="grid grid-cols-[minmax(0,1fr)] gap-3 sm:gap-4 lg:grid-cols-2">
+      {/* mobile : catégories d'abord (accès rapide) */}
+      <div className="min-w-0 max-lg:order-2">
+        <FeaturedBrands brands={brands} />
+      </div>
+      <div className="min-w-0 max-lg:order-1">
+        <TopCategories />
+      </div>
     </Reveal>
   );
 }

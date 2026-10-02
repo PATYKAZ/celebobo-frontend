@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { InfoCircle, Lock, SearchNormal1, TickCircle } from "iconsax-reactjs";
 import { ROUTES } from "@/config/routes";
@@ -56,10 +56,10 @@ function ConvertPanel({ co, onDone }: { co: ConvertibleOrder; onDone: () => void
   };
 
   return (
-    <motion.form onSubmit={submit} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <div>
-          <h3 className="text-[18px]">Commande #{o.id} — {o.user.name}</h3>
+    <motion.form onSubmit={submit} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} className="min-w-0 space-y-4 sm:space-y-5">
+      <div className="flex flex-wrap items-start justify-between gap-2">
+        <div className="min-w-0">
+          <h3 className="text-[17px] leading-[24px] sm:text-[18px]">Commande #{o.id} — {o.user.name}</h3>
           <p className="text-[13px] text-ink-3">Passée le {formatDate(o.createdAt)}{o.assignedRevendeur ? ` · revendeur : ${o.assignedRevendeur.name}` : ""}</p>
         </div>
         <StatusDot tone={ORDER_STATUS_TONE[o.status]}>{ORDER_STATUS_LABEL[o.status]}</StatusDot>
@@ -69,33 +69,44 @@ function ConvertPanel({ co, onDone }: { co: ConvertibleOrder; onDone: () => void
         {o.items.map((i) => {
           const price = Number(prices[i.id]) || 0;
           return (
-            <li key={i.id} className="flex flex-wrap items-center gap-4 p-3">
+            <li key={i.id} className="grid grid-cols-[56px_minmax(0,1fr)] items-center gap-x-3 gap-y-3 p-3 sm:grid-cols-[56px_minmax(0,1fr)_140px_90px] sm:gap-4">
               <span className="relative size-14 shrink-0 overflow-hidden rounded-md bg-page">{i.productImage && <Image src={i.productImage} alt="" fill sizes="56px" className="object-cover" />}</span>
-              <div className="min-w-[160px] flex-1">
-                <p className="line-clamp-2 text-[14px] font-bold">{i.productName}</p>
+              <div className="min-w-0">
+                <p className="line-clamp-2 text-[14px] font-bold leading-[19px]">{i.productName}</p>
                 <p className="text-[12px] text-ink-3">Quantité {i.quantity} · prix commande {formatPrice(i.unitPrice)}</p>
               </div>
-              <div className="w-[140px]">
-                <Input label="Prix final unitaire ($)" type="number" min={0} step="0.01" value={prices[i.id]} onChange={(e) => setPrices((p) => ({ ...p, [i.id]: e.target.value }))} />
+              <div className="col-span-2 flex items-end justify-between gap-3 sm:contents">
+                <div className="min-w-0 flex-1 sm:w-[140px] sm:flex-none">
+                  <Input label="Prix final unitaire ($)" type="number" inputMode="decimal" min={0} step="0.01" value={prices[i.id]} onChange={(e) => setPrices((p) => ({ ...p, [i.id]: e.target.value }))} />
+                </div>
+                <p className="pb-3 text-right text-[16px] font-bold sm:w-[90px] sm:pb-0 sm:text-[15px]">{formatPrice(price * i.quantity)}</p>
               </div>
-              <p className="w-[90px] text-right text-[15px] font-bold">{formatPrice(price * i.quantity)}</p>
             </li>
           );
         })}
       </ul>
 
-      <div className="grid gap-5 sm:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-3 sm:gap-5">
         <Input label="Date de la vente" type="date" max={todayStr()} value={soldAt} onChange={(e) => setSoldAt(e.target.value)} />
         <Select label="Moyen de paiement" value={method} onChange={(e) => setMethod(e.target.value as PaymentMethod)} options={PAYMENT_METHODS.map((m) => ({ value: m.value, label: m.label }))} />
         <Input label="Vendu à" value={venduA} onChange={(e) => setVenduA(e.target.value)} maxLength={50} />
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-4 rounded-box bg-page/60 p-4">
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-box bg-page/60 p-4">
         <p className="text-[14px] text-ink-2">
           Total des ventes <strong className="ml-1 text-[20px] text-primary">{formatPrice(total)}</strong>
-          {diff !== 0 && <span className={cn("ml-2 text-[12px] font-semibold", diff < 0 ? "text-danger" : "text-primary-dark")}>({diff > 0 ? "+" : ""}{formatPrice(diff)} vs commande {formatPrice(o.totalPrice)})</span>}
+          {diff !== 0 && <span className={cn("block text-[12px] font-semibold sm:ml-2 sm:inline", diff < 0 ? "text-danger" : "text-primary-dark")}>({diff > 0 ? "+" : ""}{formatPrice(diff)} vs commande {formatPrice(o.totalPrice)})</span>}
         </p>
-        <Button type="submit" loading={convert.isPending} upper={false} leftIcon={<TickCircle size={18} variant="Bold" />}>Convertir en ventes</Button>
+        <Button type="submit" loading={convert.isPending} upper={false} leftIcon={<TickCircle size={18} variant="Bold" />} className="hidden sm:inline-flex">Convertir en ventes</Button>
+      </div>
+      {/* mobile : barre d'action fixe au-dessus de la barre d'onglets */}
+      <div className="h-20 sm:hidden" aria-hidden />
+      <div className="fixed inset-x-0 bottom-[max(var(--tabbar-h),env(safe-area-inset-bottom))] z-40 flex items-center gap-3 border-t border-line-3 bg-white/95 px-4 py-3 backdrop-blur-xl sm:hidden">
+        <div className="min-w-0 flex-1">
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-ink-3">Total des ventes</p>
+          <p className="truncate text-[20px] font-bold leading-[24px] text-primary">{formatPrice(total)}</p>
+        </div>
+        <Button type="submit" loading={convert.isPending} upper={false} leftIcon={<TickCircle size={18} variant="Bold" />}>Convertir</Button>
       </div>
       <p className="flex items-start gap-2 text-[12px] text-ink-3"><InfoCircle size={15} className="mt-0.5 shrink-0" /> La commande passera au statut « Livrée » et ne pourra plus être convertie une seconde fois. Le stock est mis à jour.</p>
       {error && <p role="alert" className="text-[13px] text-danger">{error}</p>}
@@ -112,7 +123,7 @@ function ResultCard({ co, active, onSelect }: { co: ConvertibleOrder; active: bo
       disabled={!co.convertible}
       aria-pressed={active}
       className={cn(
-        "flex w-full items-center gap-3 rounded-box border p-3 text-left transition-all",
+        "flex w-full min-w-0 items-center gap-3 rounded-box border p-3 text-left transition-all active:scale-[0.99]",
         co.convertible ? "hover:border-primary hover:bg-primary-50" : "cursor-not-allowed bg-page/50 opacity-70",
         active ? "border-primary bg-primary-50" : "border-line-3",
       )}
@@ -140,11 +151,17 @@ function ConvertOrderContent() {
   const { data: results, isFetching } = useOrderSearch(dq);
   const { data: preset } = useConvertibleOrder(initial);
   const [picked, setPicked] = useState<ConvertibleOrder | null>(null);
+  const panel = useRef<HTMLDivElement>(null);
 
   // ?order=<id> : sélection automatique
   useEffect(() => {
     if (preset && !picked) setPicked(preset);
   }, [preset, picked]);
+
+  // mobile / tablette : le panneau est sous la liste → on le fait défiler dans la vue au choix d'une commande
+  useEffect(() => {
+    if (picked && window.matchMedia("(max-width: 1279px)").matches) panel.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [picked]);
 
   const current = picked?.convertible ? picked : null;
   const blockedPreset = picked && !picked.convertible ? picked : null;
@@ -152,8 +169,8 @@ function ConvertOrderContent() {
   return (
     <>
       <PageHeader title="Convertir une commande en ventes" description="Retrouvez la commande d'un client, ajustez les prix finaux, puis enregistrez les ventes en une fois." />
-      <div className="grid gap-4 xl:grid-cols-[400px_1fr]">
-        <Block className="space-y-4">
+      <div className="grid grid-cols-1 gap-3 sm:gap-4 xl:grid-cols-[400px_minmax(0,1fr)]">
+        <Block pad="none" className="min-w-0 space-y-4 p-4 sm:p-[30px]">
           <div className="relative">
             <SearchNormal1 size={16} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-ink-3" />
             <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Nom, e-mail du client ou n° de commande…" aria-label="Rechercher une commande" className="field pl-10" />
@@ -176,7 +193,8 @@ function ConvertOrderContent() {
           </div>
         </Block>
 
-        <Block>
+        <Block pad="none" className="min-w-0 scroll-mt-4 p-4 sm:p-[30px]">
+          <div ref={panel} className="scroll-mt-4" />
           {current ? (
             <ConvertPanel key={current.order.id} co={current} onDone={() => router.push(ROUTES.admin.sales)} />
           ) : (

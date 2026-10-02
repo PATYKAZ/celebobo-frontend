@@ -36,6 +36,12 @@ export function StatusStepper({ order }: { order: Order }) {
           );
         })}
       </ol>
+      {/* mobile : libellé de l'étape courante (les libellés de la frise sont masqués) */}
+      {!terminal && (
+        <p className="mt-3 text-center text-[13px] sm:hidden">
+          Étape {Math.max(reached, 0) + 1}/{ORDER_FLOW.length} · <strong className="text-primary-dark">{ORDER_STATUS_LABEL[ORDER_FLOW[Math.max(reached, 0)]]}</strong>
+        </p>
+      )}
       {terminal && (
         <p className={cn("mt-4 rounded-box px-4 py-3 text-[13px] font-semibold", order.status === "annulee" ? "bg-danger-100 text-danger" : "bg-chip text-ink-2")}>
           {ORDER_STATUS_LABEL[order.status]}

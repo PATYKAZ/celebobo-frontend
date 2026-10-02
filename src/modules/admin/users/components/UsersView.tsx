@@ -122,8 +122,8 @@ function UsersContent() {
     },
     { key: "role", header: "Rôle", cell: (u) => <StatusDot tone={ROLE_TONE[u.role]}>{ROLE_LABEL[u.role]}</StatusDot> },
     { key: "phone", header: "Téléphone", hideBelow: "lg", cell: (u) => <span className="text-ink-2">{u.phone ?? "—"}</span> },
-    { key: "inv", header: "Invité par", hideBelow: "lg", cell: (u) => <span className="text-ink-2">{u.invitedBy?.name ?? "—"}</span> },
-    { key: "code", header: "Code", hideBelow: "xl", cell: (u) => (u.codeRevendeur ? <strong className="tracking-widest">{u.codeRevendeur}</strong> : <span className="text-ink-3">—</span>) },
+    { key: "inv", header: "Invité par", hideBelow: "lg", mobile: "hide", cell: (u) => <span className="text-ink-2">{u.invitedBy?.name ?? "—"}</span> },
+    { key: "code", header: "Code", hideBelow: "xl", mobile: "hide", cell: (u) => (u.codeRevendeur ? <strong className="tracking-widest">{u.codeRevendeur}</strong> : <span className="text-ink-3">—</span>) },
     { key: "joined", header: "Inscrit le", hideBelow: "md", cell: (u) => <span className="text-ink-2">{formatDate(u.joinedAt)}</span> },
     { key: "st", header: "Statut", hideBelow: "sm", cell: (u) => <StatusDot tone={u.active ? "green" : "gray"}>{u.active ? "Actif" : "Désactivé"}</StatusDot> },
     {
@@ -134,8 +134,8 @@ function UsersContent() {
         const self = u.id === me?.id;
         return (
           <div className="flex justify-end gap-2">
-            <Button size="xs" variant="chip" upper={false} disabled={self} onClick={() => setRoleFor(u)} title={self ? "Vous ne pouvez pas modifier votre propre rôle" : undefined}>Rôle</Button>
-            <Button size="xs" variant={u.active ? "ghost" : "outline"} upper={false} disabled={self} onClick={() => setToggleFor(u)}>{u.active ? "Désactiver" : "Activer"}</Button>
+            <Button size="xs" variant="chip" upper={false} className="max-md:min-h-11 max-md:px-5" disabled={self} onClick={() => setRoleFor(u)} title={self ? "Vous ne pouvez pas modifier votre propre rôle" : undefined}>Rôle</Button>
+            <Button size="xs" variant={u.active ? "ghost" : "outline"} upper={false} className="max-md:min-h-11 max-md:px-5" disabled={self} onClick={() => setToggleFor(u)}>{u.active ? "Désactiver" : "Activer"}</Button>
           </div>
         );
       },
@@ -148,10 +148,10 @@ function UsersContent() {
     <>
       <PageHeader title="Utilisateurs & rôles" description="Gérez les comptes, les rôles (client, revendeur, responsable, administrateur) et l'accès au back-office." />
       <Block pad="none">
-        <div className="flex flex-wrap items-end gap-4 p-5 sm:px-[30px]">
+        <div className="flex flex-col gap-3 p-3 sm:flex-row sm:flex-wrap sm:items-end sm:gap-4 sm:p-5 sm:px-[30px]">
           <Tabs variant="pill" tabs={tabs} value={role} onChange={(r) => { setRole(r); setPage(1); }} />
-          <Input wrapperClassName="min-w-[220px] flex-1" placeholder="Rechercher un nom, e-mail, téléphone, code…" aria-label="Rechercher" leftIcon={<SearchNormal1 size={16} />} value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} />
-          <Select wrapperClassName="w-[170px]" aria-label="Statut" value={active} onChange={(e) => { setActive(e.target.value as typeof active); setPage(1); }} options={[{ value: "all", label: "Tous statuts" }, { value: "actif", label: "Actifs" }, { value: "inactif", label: "Désactivés" }]} />
+          <Input wrapperClassName="sm:min-w-[220px] sm:flex-1" placeholder="Rechercher un nom, e-mail, téléphone, code…" aria-label="Rechercher" leftIcon={<SearchNormal1 size={16} />} value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} />
+          <Select wrapperClassName="sm:w-[170px]" aria-label="Statut" value={active} onChange={(e) => { setActive(e.target.value as typeof active); setPage(1); }} options={[{ value: "all", label: "Tous statuts" }, { value: "actif", label: "Actifs" }, { value: "inactif", label: "Désactivés" }]} />
         </div>
         <DataTable
           columns={columns}

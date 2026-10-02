@@ -23,23 +23,34 @@ function MiniCard({ p }: { p: ViewedProduct }) {
   const { isFavorite, toggle } = useFavoriteToggle();
   const fav = isFavorite(p.id);
   const sale = p.priceSolde != null && p.priceSolde < p.price;
+  const heart = (
+    <button
+      onClick={() => toggle(p.id, p.name)}
+      aria-label={fav ? "Retirer des favoris" : "Ajouter aux favoris"}
+      className="grid size-8 place-items-center rounded-full bg-white/95 text-ink-3 shadow-[0_2px_8px_rgba(0,0,0,.12)] transition-colors hover:text-danger active:scale-90 sm:size-[30px] sm:bg-page sm:shadow-none"
+    >
+      <Heart size={14} variant={fav ? "Bold" : "Linear"} color={fav ? "#F1352B" : "currentColor"} />
+    </button>
+  );
   return (
-    <div className="group relative flex h-[117px] items-center gap-3 rounded-box border border-line-2/20 p-[11px] transition-all duration-300 hover:border-primary hover:shadow-[0_8px_24px_rgba(0,0,0,.07)]">
-      <Link href={ROUTES.product(p.id)} className="relative h-[90px] w-[120px] shrink-0 overflow-hidden rounded-md bg-page/50" aria-label={p.name}>
-        {p.image && <Image src={p.image} alt="" fill sizes="120px" className="object-cover transition-transform duration-500 group-hover:scale-110" />}
-        {p.currentBadge === "Nouveauté" && <NewBadge className="absolute left-1 top-1 scale-90" />}
-      </Link>
-      <div className="min-w-0 flex-1 pr-6">
+    <div className="group relative flex min-h-[117px] items-start gap-3 rounded-box border border-line-2/20 p-[11px] transition-all duration-300 hover:border-primary hover:shadow-[0_8px_24px_rgba(0,0,0,.07)] sm:items-center">
+      <div className="relative shrink-0">
+        <Link href={ROUTES.product(p.id)} className="relative block h-[92px] w-[92px] overflow-hidden rounded-md bg-page/50 sm:h-[90px] sm:w-[120px]" aria-label={p.name}>
+          {p.image && <Image src={p.image} alt="" fill sizes="120px" className="object-cover transition-transform duration-500 group-hover:scale-110" />}
+          {p.currentBadge === "Nouveauté" && <NewBadge className="absolute left-1 top-1 scale-90" />}
+        </Link>
+        {/* mobile : le cœur flotte sur l'image (ne recouvre plus le texte) */}
+        <span className="absolute -right-1.5 -top-1.5 sm:hidden">{heart}</span>
+      </div>
+      <div className="min-w-0 flex-1 sm:pr-10">
         {p.reviewsCount > 0 && <Stars rating={p.rating} count={p.reviewsCount} size={11} />}
-        <Link href={ROUTES.product(p.id)} className="mt-1 line-clamp-2 text-[13px] font-bold leading-[19.5px] hover:text-primary">{p.name}</Link>
-        <p className="mt-1 text-[16px] font-bold leading-[19.2px]">
+        <Link href={ROUTES.product(p.id)} className="mt-1 line-clamp-3 text-[13px] font-bold leading-[18px] hover:text-primary sm:line-clamp-2 sm:leading-[19.5px]">{p.name}</Link>
+        <p className="mt-1.5 flex flex-wrap items-baseline gap-x-1.5 text-[16px] font-bold leading-[19.2px]">
           <span className={sale ? "text-danger" : undefined}>{formatPrice(p.priceSolde ?? p.price)}</span>
-          {sale && <span className="ml-1.5 text-[13px] font-bold text-ink-2 line-through">{formatPrice(p.price)}</span>}
+          {sale && <span className="text-[13px] font-bold text-ink-2 line-through">{formatPrice(p.price)}</span>}
         </p>
       </div>
-      <button onClick={() => toggle(p.id, p.name)} aria-label="Favori" className="absolute right-[11px] top-[11px] grid size-[30px] place-items-center rounded-full bg-page text-ink-3 transition-colors hover:text-danger">
-        <Heart size={14} variant={fav ? "Bold" : "Linear"} color={fav ? "#F1352B" : "currentColor"} />
-      </button>
+      <span className="absolute right-[11px] top-[11px] hidden sm:block">{heart}</span>
     </div>
   );
 }
@@ -56,20 +67,21 @@ export function RecentlyViewed() {
   if (!items.length) return null;
   return (
     <Reveal>
-      <Block pad="none" className="px-5 pb-[30px] pt-[30px] sm:px-[30px]">
+      <Block pad="none" className="min-w-0 overflow-hidden px-4 pb-5 pt-4 sm:px-[30px] sm:pb-[30px] sm:pt-[30px]">
         <SectionHeader
           title={viewed.length ? "Récemment consultés" : "Vous pourriez aimer"}
           viewAllHref={ROUTES.products}
-          right={<SliderArrows onPrev={() => swiper?.slidePrev()} onNext={() => swiper?.slideNext()} canPrev={!edge.begin} canNext={!edge.end} />}
+          right={<SliderArrows className="hidden md:flex" onPrev={() => swiper?.slidePrev()} onNext={() => swiper?.slideNext()} canPrev={!edge.begin} canNext={!edge.end} />}
         />
-        <div className="mt-6">
+        <div className="mt-4 sm:mt-6">
           <Swiper
+            className="w-full"
             onSwiper={(s) => {
               setSwiper(s);
               sync(s);
             }}
             onSlideChange={sync}
-            slidesPerView={1}
+            slidesPerView={1.15}
             spaceBetween={0}
             breakpoints={{ 640: { slidesPerView: 2 }, 1024: { slidesPerView: 3 }, 1280: { slidesPerView: 4 } }}
           >

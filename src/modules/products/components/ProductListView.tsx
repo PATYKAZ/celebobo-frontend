@@ -7,7 +7,7 @@ import { RevealGroup, RevealItem } from "@/shared/animations/Reveal";
 import { Block } from "@/shared/ui/Block";
 import { Button } from "@/shared/ui/Button";
 import { EmptyState } from "@/shared/ui/EmptyState";
-import { Drawer } from "@/shared/ui/Overlay";
+import { BottomSheet } from "@/shared/ui/BottomSheet";
 import { Pagination } from "@/shared/ui/Pagination";
 import { useCategories } from "@/modules/categories/hooks/useCategories";
 import { PAGE_SIZE, useProductFilters, type LockedFilters } from "../hooks/useProductFilters";
@@ -39,19 +39,25 @@ export function ProductListView({ locked, emptyExtra }: Props) {
   );
 
   return (
-    <Block pad="none" className="grid gap-0 p-4 sm:p-[30px] lg:grid-cols-[250px_1fr] lg:gap-8">
+    <Block pad="none" className="grid grid-cols-[minmax(0,1fr)] gap-0 p-3 sm:p-[30px] lg:grid-cols-[250px_minmax(0,1fr)] lg:gap-8">
       <aside className="hidden lg:block">
         <div className="sticky top-4">{filters}</div>
       </aside>
 
-      <Drawer open={drawer} onClose={() => setDrawer(false)} title="Filtres" side="left">
-        <div className="p-5">{filters}</div>
-        <div className="sticky bottom-0 border-t border-line-3 bg-white p-4">
+      <BottomSheet open={drawer} onClose={() => setDrawer(false)} title="Filtres" maxVh={90}>
+        <div className="pt-1">{filters}</div>
+        {/* actions collées en bas de la feuille */}
+        <div className="sticky bottom-0 -mx-5 mt-3 flex gap-2.5 border-t border-line-3 bg-white px-5 pb-safe pt-3">
+          {activeCount > 0 && (
+            <Button variant="chip" onClick={reset} upper={false} className="shrink-0">
+              Réinitialiser
+            </Button>
+          )}
           <Button fullWidth onClick={() => setDrawer(false)} upper={false}>
             Voir {total != null ? `${total} résultat${total > 1 ? "s" : ""}` : "les résultats"}
           </Button>
         </div>
-      </Drawer>
+      </BottomSheet>
 
       <div className="min-w-0">
         <ProductToolbar
@@ -102,7 +108,7 @@ export function ProductListView({ locked, emptyExtra }: Props) {
             set({ page: p });
             window.scrollTo({ top: 0, behavior: "smooth" });
           }}
-          className="pt-8"
+          className="pt-6 sm:pt-8"
         />
       </div>
     </Block>

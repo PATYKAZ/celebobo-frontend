@@ -43,14 +43,14 @@ export function NewsletterForm() {
                 setEmail(e.target.value);
                 setError(null);
               }}
-              placeholder="Entrez votre adresse e-mail"
+              placeholder="Votre adresse e-mail"
               aria-label="Adresse e-mail"
               aria-invalid={!!error}
-              className="min-w-0 flex-1 bg-transparent text-[14px] outline-none placeholder:text-ink-4"
+              className="min-w-0 flex-1 bg-transparent text-[16px] outline-none placeholder:text-ink-4 sm:text-[14px]"
             />
             <button disabled={subscribe.isPending} className="group flex items-center gap-2 text-[14px] font-bold uppercase text-primary disabled:opacity-50">
               {subscribe.isPending ? "…" : "S'abonner"}
-              <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
+              <ArrowRight size={18} className="hidden transition-transform group-hover:translate-x-1 sm:block" />
             </button>
           </div>
           {error && <p role="alert" className="mt-1.5 text-[12px] text-danger">{error}</p>}

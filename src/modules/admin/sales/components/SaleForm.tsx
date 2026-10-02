@@ -73,21 +73,21 @@ export function SaleForm({ sale }: { sale?: Sale }) {
   };
 
   return (
-    <form onSubmit={submit} className="grid gap-4 xl:grid-cols-[1fr_340px]">
-      <Block className="space-y-5">
+    <form onSubmit={submit} className="grid grid-cols-1 gap-3 sm:gap-4 xl:grid-cols-[minmax(0,1fr)_340px]">
+      <Block pad="none" className="min-w-0 space-y-4 p-4 sm:space-y-5 sm:p-[30px]">
         <ProductCombobox value={product} onChange={pick} error={errors.productId} label="Produit" />
-        <div className="grid gap-5 sm:grid-cols-2">
+        <div className="grid gap-4 sm:grid-cols-2 sm:gap-5">
           <FormField label="Quantité" required error={errors.quantity} hint={available != null ? `Stock disponible : ${available}` : undefined}>
             <QuantityStepper value={quantity} onChange={setQuantity} max={999} />
           </FormField>
-          <Input label="Prix final unitaire ($)" required type="number" min={0} step="0.01" value={price} onChange={(e) => setPrice(e.target.value)} error={errors.unitPrice} hint={product ? `Prix catalogue : ${formatPrice(getPricing(product).current)}` : undefined} />
+          <Input label="Prix final unitaire ($)" required type="number" inputMode="decimal" min={0} step="0.01" value={price} onChange={(e) => setPrice(e.target.value)} error={errors.unitPrice} hint={product ? `Prix catalogue : ${formatPrice(getPricing(product).current)}` : undefined} />
           <Input label="Date de la vente" required type="date" max={todayStr()} value={soldAt} onChange={(e) => setSoldAt(e.target.value)} error={errors.soldAt} />
           <Select label="Moyen de paiement" value={method} onChange={(e) => setMethod(e.target.value as PaymentMethod)} options={METHOD_OPTIONS} />
         </div>
         <Input label="Vendu à" value={venduA} onChange={(e) => setVenduA(e.target.value)} maxLength={50} placeholder="Nom du client (facultatif)" />
       </Block>
 
-      <Block className="h-fit space-y-4 xl:sticky xl:top-4">
+      <Block pad="none" className="h-fit min-w-0 space-y-4 p-4 sm:p-[30px] xl:sticky xl:top-4">
         <h3 className="text-[16px]">Récapitulatif</h3>
         <dl className="space-y-2.5 text-[14px]">
           <div className="flex justify-between"><dt className="text-ink-2">Prix unitaire</dt><dd className="font-semibold">{formatPrice(unit)}</dd></div>
@@ -97,11 +97,22 @@ export function SaleForm({ sale }: { sale?: Sale }) {
             <div className="flex justify-between"><dt className="text-ink-2">Bénéfice estimé</dt><dd className={`font-semibold ${total - cost < 0 ? "text-danger" : "text-primary-dark"}`}>{formatPrice(total - cost)}</dd></div>
           )}
         </dl>
-        <div className="flex gap-2 pt-2">
+        <div className="hidden gap-2 pt-2 xl:flex">
           <Button variant="chip" upper={false} href={ROUTES.admin.sales} className="flex-1">Annuler</Button>
           <Button type="submit" loading={save.isPending} upper={false} className="flex-1">{sale ? "Enregistrer" : "Valider la vente"}</Button>
         </div>
       </Block>
+
+      {/* < xl : barre d'actions fixe au-dessus de la barre d'onglets, avec le total */}
+      <div className="h-20 xl:hidden" aria-hidden />
+      <div className="fixed inset-x-0 bottom-[max(var(--tabbar-h),env(safe-area-inset-bottom))] z-40 flex items-center gap-3 border-t border-line-3 bg-white/95 px-4 py-3 backdrop-blur-xl xl:hidden">
+        <div className="min-w-0 flex-1">
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-ink-3">Total</p>
+          <p className="truncate text-[20px] font-bold leading-[24px] text-primary">{formatPrice(total)}</p>
+        </div>
+        <Button variant="chip" upper={false} href={ROUTES.admin.sales}>Annuler</Button>
+        <Button type="submit" loading={save.isPending} upper={false} className="min-w-[132px]">{sale ? "Enregistrer" : "Valider"}</Button>
+      </div>
     </form>
   );
 }

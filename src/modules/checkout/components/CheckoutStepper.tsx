@@ -7,7 +7,29 @@ import { CHECKOUT_STEPS } from "../types";
 
 export function CheckoutStepper({ step }: { step: number }) {
   return (
-    <ol className="flex items-center" aria-label="Étapes de la commande">
+    <>
+      {/* Mobile : titre d'étape + barre segmentée */}
+      <div className="sm:hidden" role="group" aria-label={`Étape ${step + 1} sur ${CHECKOUT_STEPS.length}`}>
+        <div className="flex items-baseline justify-between">
+          <p className="text-[16px] font-bold leading-[22px]">{CHECKOUT_STEPS[step]}</p>
+          <p className="text-[12px] font-semibold text-ink-3">Étape {step + 1}/{CHECKOUT_STEPS.length}</p>
+        </div>
+        <div className="mt-2.5 flex gap-1.5">
+          {CHECKOUT_STEPS.map((l, i) => (
+            <span key={l} className="h-1.5 flex-1 overflow-hidden rounded-full bg-line-3">
+              <motion.span className="block h-full origin-left bg-primary" initial={false} animate={{ scaleX: i <= step ? 1 : 0 }} transition={{ duration: 0.45 }} />
+            </span>
+          ))}
+        </div>
+      </div>
+      <Desktop step={step} />
+    </>
+  );
+}
+
+function Desktop({ step }: { step: number }) {
+  return (
+    <ol className="hidden items-center sm:flex" aria-label="Étapes de la commande">
       {CHECKOUT_STEPS.map((label, i) => {
         const done = i < step;
         const active = i === step;

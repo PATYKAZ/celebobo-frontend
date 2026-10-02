@@ -7,7 +7,7 @@ import { AnimatePresence, motion } from "motion/react";
 import {
   ArrowDown2, Bag2, Call, Heart, HamburgerMenu, Logout, Messages2, Notification, Profile, Receipt2, Setting2, User,
 } from "iconsax-reactjs";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { ROUTES } from "@/config/routes";
 import { SITE } from "@/config/site";
 import { cn } from "@/shared/lib/cn";
@@ -22,7 +22,6 @@ import { CategoryIcon } from "@/modules/categories/components/CategoryIcon";
 import { useCategories } from "@/modules/categories/hooks/useCategories";
 import { useFavoritesStore } from "@/modules/favorites/store/favorites.store";
 import { Logo } from "./Logo";
-import { MobileMenu } from "./MobileMenu";
 import { SearchBar } from "./SearchBar";
 
 const NAV = [
@@ -193,12 +192,11 @@ function AccountMenu() {
 
 /** En-tête principal : ligne info + navigation (bloc blanc rad 10, hauteur 144 desktop). */
 export function Header() {
-  const [menu, setMenu] = useState(false);
   const favCount = useFavoritesStore((s) => s.ids.length);
   const { isStaff } = useAuth();
 
   return (
-    <header className="rounded-box bg-white">
+    <header className="rounded-box bg-white max-lg:sticky max-lg:top-0 max-lg:z-40 max-lg:-mx-[15px] max-lg:rounded-none max-lg:border-b max-lg:border-line-3/70 max-lg:pt-[env(safe-area-inset-top)] max-lg:bg-white/95 max-lg:backdrop-blur-md">
       {/* Ligne 1 */}
       <div className="hidden items-center justify-between px-[30px] pt-[15px] lg:flex">
         <div className="flex items-center gap-5">
@@ -219,10 +217,7 @@ export function Header() {
       </div>
 
       {/* Ligne 2 */}
-      <div className="flex min-h-[70px] items-center gap-3 px-4 py-3 lg:min-h-0 lg:px-[30px] lg:pb-[23px] lg:pt-[15px]">
-        <button onClick={() => setMenu(true)} aria-label="Ouvrir le menu" className="grid size-10 place-items-center rounded-full bg-chip lg:hidden">
-          <HamburgerMenu size={20} />
-        </button>
+      <div className="flex min-h-[60px] items-center gap-3 px-4 py-2 lg:min-h-0 lg:px-[30px] lg:pb-[23px] lg:pt-[15px]">
         <Logo className="mr-auto lg:mr-0" />
 
         <nav aria-label="Navigation principale" className="ml-8 hidden items-center lg:flex">
@@ -232,20 +227,17 @@ export function Header() {
         </nav>
 
         <div className="ml-auto flex items-center gap-3 sm:gap-[14px]">
-          <span className="hidden sm:contents">
-            <CircleButton href={ROUTES.messages} label="Messages" className="hidden md:grid"><Messages2 size={19} variant="Bold" /></CircleButton>
-            <span className="relative hidden md:block">
-              <CircleButton href={ROUTES.favorites} label="Favoris"><Heart size={19} variant="Bold" /></CircleButton>
+          <span className="contents">
+            <CircleButton href={ROUTES.messages} label="Messages" className="hidden lg:grid"><Messages2 size={19} variant="Bold" /></CircleButton>
+            <span className="relative">
+              <CircleButton href={ROUTES.favorites} label="Favoris" className="max-lg:!size-11"><Heart size={19} variant="Bold" /></CircleButton>
               {favCount > 0 && <span className="pointer-events-none absolute -right-1 -top-1 grid min-w-[18px] place-items-center rounded-full bg-danger px-1 text-[10px] leading-[18px] text-white ring-2 ring-white">{favCount}</span>}
             </span>
-            {isStaff && <CircleButton href={ROUTES.admin.notifications} label="Notifications" className="hidden md:grid"><Notification size={19} variant="Bold" /></CircleButton>}
+            {isStaff && <CircleButton href={ROUTES.admin.notifications} label="Notifications" className="max-lg:!size-11"><Notification size={19} variant="Bold" /></CircleButton>}
           </span>
-          <AccountMenu />
-          <CartButton />
+          <span className="hidden lg:contents"><AccountMenu /><CartButton /></span>
         </div>
       </div>
-
-      <MobileMenu open={menu} onClose={() => setMenu(false)} />
     </header>
   );
 }

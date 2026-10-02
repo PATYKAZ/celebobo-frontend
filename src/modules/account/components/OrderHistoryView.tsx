@@ -37,13 +37,14 @@ function Content() {
   const countOf = (f: Filter) => (data?.results ?? []).filter((o) => f === "all" || GROUPS[f].includes(o.status)).length;
 
   return (
-    <Block>
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h1 className="text-h-page text-primary">Mes commandes</h1>
-          <p className="mt-1 text-[14px] text-ink-2">Suivez l&apos;avancement de vos commandes et échangez avec votre revendeur.</p>
+    <Block pad="none" className="p-4 sm:p-[30px]">
+      <div className="flex flex-wrap items-center justify-between gap-3 sm:gap-4">
+        <div className="min-w-0">
+          <h1 className="text-[22px] leading-[28px] text-primary sm:text-h-page">Mes commandes</h1>
+          <p className="mt-1 text-[13px] leading-[19px] text-ink-2 sm:text-[14px]">Suivez l&apos;avancement de vos commandes et échangez avec votre revendeur.</p>
         </div>
         <Tabs
+          className="w-full min-w-0 lg:w-auto"
           variant="pill"
           value={status}
           onChange={(v) => {
@@ -60,13 +61,13 @@ function Content() {
         />
       </div>
 
-      <div className="mt-6 space-y-4">
+      <div className="mt-4 space-y-3 sm:mt-6 sm:space-y-4">
         {isLoading ? (
           Array.from({ length: 3 }, (_, i) => <Skeleton key={i} className="h-[92px] w-full !rounded-box" />)
         ) : isError ? (
           <EmptyState icon={<Bag2 size={44} />} title="Chargement impossible" description="Une erreur est survenue lors de la récupération de vos commandes." action={<Button onClick={() => refetch()}>Réessayer</Button>} />
         ) : rows.length > 0 ? (
-          <RevealGroup key={`${status}-${page}`} stagger={0.07} className="space-y-4">
+          <RevealGroup key={`${status}-${page}`} stagger={0.07} className="space-y-3 sm:space-y-4">
             {rows.map((o, i) => (
               <RevealItem key={o.id}>
                 <OrderCard order={o} defaultOpen={i === 0 && page === 1 && status === "all"} />

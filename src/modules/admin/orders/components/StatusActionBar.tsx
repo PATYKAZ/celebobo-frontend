@@ -61,9 +61,34 @@ export function StatusActionBar({ order, onAssign }: { order: Order; onAssign?: 
     );
   };
 
+  // actions réellement possibles → barre fixe en bas sur mobile (action principale + icônes pour annuler / retour)
+  const doable = candidates.filter((s) => ACTIONS[s] && orderWorkflow.canTransition(user, order, s).ok);
+  const primary = doable.find((s) => ACTIONS[s]?.variant === "primary");
+  const secondary = doable.filter((s) => s !== primary);
+  const showAssign = order.status === "attente" && !!onAssign;
+  const hasMobileBar = showAssign || doable.length > 0;
+
   return (
     <>
-      <div className="flex flex-wrap items-center gap-2">
+      {/* Mobile (< lg) : barre fixe au-dessus de la barre d'onglets */}
+      {hasMobileBar && (
+        <>
+          <div className="fixed inset-x-0 bottom-[max(var(--tabbar-h),env(safe-area-inset-bottom))] z-40 flex items-center gap-2 border-t border-line-3 bg-white/95 px-4 py-3 backdrop-blur-xl lg:hidden">
+            {secondary.map((s) => {
+              const a = ACTIONS[s]!;
+              return (
+                <button key={s} type="button" aria-label={a.label} title={a.label} onClick={() => setPending(s)} className={`grid size-12 shrink-0 place-items-center rounded-box active:scale-95 ${a.variant === "danger" ? "bg-danger-100 text-danger" : "bg-ink-dark text-white"}`}>
+                  {a.icon}
+                </button>
+              );
+            })}
+            {showAssign && <Button upper={false} onClick={onAssign} className="flex-1">Assigner à un revendeur</Button>}
+            {primary && <Button upper={false} leftIcon={ACTIONS[primary]!.icon} onClick={() => setPending(primary)} className="flex-1">{ACTIONS[primary]!.label}</Button>}
+          </div>
+        </>
+      )}
+
+      <div className="hidden flex-wrap items-center gap-2 lg:flex">
         {order.status === "attente" && onAssign && (
           <Button size="sm" upper={false} onClick={onAssign}>Assigner à un revendeur</Button>
         )}
@@ -81,6 +106,7 @@ export function StatusActionBar({ order, onAssign }: { order: Order; onAssign?: 
         })}
         {candidates.length === 0 && order.status !== "attente" && <p className="text-[13px] text-ink-3">Commande clôturée — aucune action possible.</p>}
       </div>
+      {candidates.length === 0 && order.status !== "attente" && <p className="text-[13px] text-ink-3 lg:hidden">Commande clôturée — aucune action possible.</p>}
 
       <Modal open={!!pending} onClose={close} title={def?.label} className="max-w-[460px]">
         <p className="text-[14px] leading-[22px] text-ink-2">{def?.confirm}</p>

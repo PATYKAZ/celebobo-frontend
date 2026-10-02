@@ -35,9 +35,9 @@ function Content() {
 
   if (!user) return null;
   return (
-    <div className="grid gap-4 lg:grid-cols-[360px_1fr]">
-      <Reveal direction="right">
-        <div className="space-y-4">
+    <div className="grid gap-3 sm:gap-4 lg:grid-cols-[360px_minmax(0,1fr)]">
+      <Reveal direction="up" className="min-w-0">
+        <div className="space-y-3 sm:space-y-4">
           <ProfileSummaryCard user={user} profile={profile} previewAvatar={preview} onPickAvatar={setFile} />
           <Block pad="sm" className="!p-2">
             {[
@@ -45,7 +45,7 @@ function Content() {
               { href: ROUTES.addresses, label: "Mon carnet d'adresses", icon: Location },
               { href: ROUTES.settings, label: "Notifications & préférences", icon: Notification },
             ].map(({ href, label, icon: Icon }) => (
-              <Link key={href} href={href} className="group flex items-center gap-3 rounded-box px-3 py-3 text-[14px] font-semibold transition-colors hover:bg-chip">
+              <Link key={href} href={href} className="group flex min-h-12 items-center gap-3 rounded-box px-3 py-2 text-[14px] font-semibold transition-colors hover:bg-chip active:bg-chip">
                 <span className="grid size-9 place-items-center rounded-full bg-chip transition-colors group-hover:bg-primary group-hover:text-white"><Icon size={17} /></span>
                 <span className="flex-1">{label}</span>
                 <ArrowRight2 size={14} className="text-ink-3 transition-transform group-hover:translate-x-1" />
@@ -54,10 +54,10 @@ function Content() {
           </Block>
         </div>
       </Reveal>
-      <Reveal delay={0.1}>
-        <Block>
-          <h1 className="text-h-page text-primary">Mon profil</h1>
-          <p className="mb-6 mt-1 text-[14px] text-ink-2">Gérez vos informations personnelles et vos adresses de livraison.</p>
+      <Reveal delay={0.1} className="min-w-0">
+        <Block pad="none" className="p-4 sm:p-[30px]">
+          <h1 className="text-[22px] leading-[28px] text-primary sm:text-h-page">Mon profil</h1>
+          <p className="mb-4 mt-1 text-[13px] leading-[19px] text-ink-2 sm:mb-6 sm:text-[14px]">Gérez vos informations personnelles et vos adresses de livraison.</p>
           <Tabs
             variant="pill"
             value={tab}
@@ -68,7 +68,7 @@ function Content() {
               { value: "security", label: "Sécurité" },
             ]}
           />
-          <div className="mt-6">
+          <div className="mt-4 sm:mt-6">
             {isLoading ? (
               <div className="space-y-4">
                 <Skeleton className="h-[45px]" />
@@ -81,14 +81,14 @@ function Content() {
                   {tab === "info" && <PersonalInfoForm profile={profile} avatarFile={file} onSaved={() => setFile(null)} />}
                   {tab === "addresses" && (
                     <div className="space-y-6">
-                      <Link href={ROUTES.addresses} className="flex items-center gap-3 rounded-box bg-primary-50 p-4 text-[14px] font-semibold text-primary-dark transition-colors hover:bg-primary-100">
-                        <Location size={20} variant="Bold" /> Gérer mon carnet d&apos;adresses (plusieurs adresses, adresse par défaut) <ArrowRight2 size={14} className="ml-auto" />
+                      <Link href={ROUTES.addresses} className="flex min-h-14 items-center gap-3 rounded-box bg-primary-50 p-3.5 text-[14px] font-semibold text-primary-dark transition-colors hover:bg-primary-100 active:scale-[0.99] sm:p-4">
+                        <Location size={20} variant="Bold" className="shrink-0" /> <span className="min-w-0 flex-1">Gérer mon carnet d&apos;adresses <span className="hidden sm:inline">(plusieurs adresses, adresse par défaut)</span></span> <ArrowRight2 size={14} className="shrink-0" />
                       </Link>
                       <AddressesForm profile={profile} />
                     </div>
                   )}
                   {tab === "security" && (
-                    <div className="flex items-start gap-4 rounded-box bg-page/60 p-5">
+                    <div className="flex items-start gap-3 rounded-box bg-page/60 p-4 sm:gap-4 sm:p-5">
                       <span className="grid size-11 shrink-0 place-items-center rounded-full bg-primary-100 text-primary"><Lock size={22} variant="Bold" /></span>
                       <div>
                         <h3 className="flex items-center gap-2 text-[16px]"><Key size={16} /> Mot de passe</h3>

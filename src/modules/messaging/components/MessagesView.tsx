@@ -1,12 +1,13 @@
 "use client";
 
 import { Messages3 } from "iconsax-reactjs";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ROUTES } from "@/config/routes";
 import { Breadcrumb } from "@/shared/layout/Breadcrumb";
 import { cn } from "@/shared/lib/cn";
 import { Block } from "@/shared/ui/Block";
 import { AuthGuard } from "@/modules/auth/components/AuthGuard";
+import { useVisualViewport } from "../hooks/useVisualViewport";
 import { ChatWindow } from "./ChatWindow";
 import { ConversationList } from "./ConversationList";
 
@@ -17,13 +18,18 @@ interface Props {
 }
 
 /**
- * Messagerie à deux volets. La sélection est locale (+ history.replaceState) afin d'éviter
- * le remontage de page (template) à chaque clic ; /messages/[id] ouvre directement une conversation.
+ * Messagerie.
+ *  - Desktop (≥ lg) : deux volets (liste | discussion).
+ *  - Mobile : deux ÉCRANS — la liste (dans la page), puis la discussion en PLEIN ÉCRAN (fixe, ancrée au viewport visuel
+ *    pour que le clavier ne cache pas la zone de saisie). `← Retour` revient à la liste.
+ * La sélection est locale (+ history.replaceState) afin d'éviter le remontage de page (template) à chaque clic ;
+ * /messages/[id] et /admin/messages/[id] ouvrent directement une conversation.
  */
 export function MessagesView({ initialId = null, embedded }: Props) {
   const [activeId, setActiveId] = useState<number | null>(initialId);
   const base = embedded ? ROUTES.admin.inbox : ROUTES.messages;
   const one = embedded ? ROUTES.admin.conversation : ROUTES.conversation;
+  const vv = useVisualViewport();
 
   const select = useCallback(
     (id: number | null) => {
@@ -33,15 +39,31 @@ export function MessagesView({ initialId = null, embedded }: Props) {
     [base, one],
   );
 
+  // Chat plein écran sur mobile : on fige le défilement de la page derrière.
+  useEffect(() => {
+    if (!activeId || !vv) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [activeId, vv]);
+
+  const fullScreen = !!activeId;
   const body = (
-    <Block pad="none" className="overflow-hidden">
-      <div className={cn("grid min-h-[560px] lg:grid-cols-[360px_1fr]", embedded ? "h-[calc(100vh-150px)]" : "h-[calc(100vh-120px)] max-h-[760px]")}>
-        <div className={cn("min-h-0 border-line-3 lg:flex lg:flex-col lg:border-r", activeId ? "hidden" : "flex flex-col")}>
+    <Block pad="none" className="max-lg:overflow-visible max-lg:rounded-box lg:overflow-hidden">
+      <div className={cn("lg:grid lg:min-h-[560px] lg:grid-cols-[360px_1fr]", embedded ? "lg:h-[calc(100vh-150px)]" : "lg:h-[calc(100vh-120px)] lg:max-h-[760px]")}>
+        <div className={cn("min-h-0 border-line-3 lg:flex lg:flex-col lg:border-r", activeId ? "hidden" : "block")}>
           <ConversationList activeId={activeId} onSelect={select} inbox={embedded} />
         </div>
-        <div className={cn("min-h-0", activeId ? "flex flex-col" : "hidden lg:flex lg:flex-col")}>
+        <div className={cn("min-h-0", activeId ? "block" : "hidden lg:flex lg:flex-col")}>
           {activeId ? (
-            <ChatWindow key={activeId} conversationId={activeId} onBack={() => select(null)} className="h-full" />
+            <div
+              className={cn("flex min-h-0 flex-col bg-white", fullScreen && "max-lg:fixed max-lg:inset-x-0 max-lg:top-0 max-lg:z-[60] max-lg:h-dvh lg:h-full")}
+              style={vv ? { top: vv.top, height: vv.height } : undefined}
+            >
+              <ChatWindow key={activeId} conversationId={activeId} onBack={() => select(null)} className="h-full min-h-0 flex-1" />
+            </div>
           ) : (
             <div className="grid h-full place-items-center p-8 text-center">
               <div>
@@ -60,7 +82,11 @@ export function MessagesView({ initialId = null, embedded }: Props) {
 
   return (
     <AuthGuard>
-      {!embedded && <Breadcrumb items={[{ label: "Messages", href: activeId ? ROUTES.messages : undefined }, ...(activeId ? [{ label: `Discussion #${activeId}` }] : [])]} />}
+      {!embedded && (
+        <div className="hidden lg:block">
+          <Breadcrumb items={[{ label: "Messages", href: activeId ? ROUTES.messages : undefined }, ...(activeId ? [{ label: `Discussion #${activeId}` }] : [])]} />
+        </div>
+      )}
       {body}
     </AuthGuard>
   );

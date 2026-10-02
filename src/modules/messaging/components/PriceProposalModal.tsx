@@ -6,7 +6,7 @@ import { formatPrice } from "@/shared/lib/format";
 import { getErrorMessage } from "@/shared/lib/api";
 import { Button } from "@/shared/ui/Button";
 import { Input, Select, Textarea } from "@/shared/ui/Form";
-import { Modal } from "@/shared/ui/Overlay";
+import { BottomSheet } from "@/shared/ui/BottomSheet";
 import { toast } from "@/shared/ui/Toast";
 import { conversationsService } from "../services/conversations.service";
 import { usePriceProposal } from "../hooks/useConversations";
@@ -56,8 +56,8 @@ export function PriceProposalModal({ open, onClose, conversationId, orderId }: P
   };
 
   return (
-    <Modal open={open} onClose={onClose} title="Proposer un prix final">
-      <div className="space-y-4">
+    <BottomSheet open={open} onClose={onClose} title="Proposer un prix final">
+      <div className="space-y-4 pb-2 pt-1">
         <p className="text-[13px] leading-[19px] text-ink-2">Le client recevra une carte avec Accepter / Refuser. Le prix de la commande n'est modifié qu'après son accord.</p>
         <Select
           label="Article de la commande"
@@ -65,13 +65,13 @@ export function PriceProposalModal({ open, onClose, conversationId, orderId }: P
           onChange={(e) => setItemId(e.target.value)}
           options={(order?.items ?? []).map((i) => ({ value: i.id, label: `${i.productName} — ${formatPrice(i.unitPrice)} × ${i.quantity}` }))}
         />
-        <Input label="Nouveau prix unitaire ($)" type="number" min="1" step="0.01" value={price} onChange={(e) => setPrice(e.target.value)} hint={item ? `Prix actuel : ${formatPrice(item.unitPrice)}` : undefined} error={error} />
+        <Input label="Nouveau prix unitaire ($)" type="number" inputMode="decimal" min="1" step="0.01" value={price} onChange={(e) => setPrice(e.target.value)} hint={item ? `Prix actuel : ${formatPrice(item.unitPrice)}` : undefined} error={error} />
         <Textarea label="Motif (optionnel)" value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Ex. : remise fidélité, produit reconditionné…" className="min-h-[80px]" />
-        <div className="flex justify-end gap-2 pt-1">
+        <div className="flex flex-col-reverse gap-2.5 pt-1 sm:flex-row sm:justify-end">
           <Button variant="chip" upper={false} onClick={onClose}>Annuler</Button>
           <Button upper={false} loading={propose.isPending} onClick={submit}>Envoyer la proposition</Button>
         </div>
       </div>
-    </Modal>
+    </BottomSheet>
   );
 }

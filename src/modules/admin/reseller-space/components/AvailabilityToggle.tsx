@@ -18,7 +18,7 @@ export function AvailabilityToggle({ value }: { value: Availability }) {
   const id = useId();
   const set = useAvailability();
   return (
-    <div role="radiogroup" aria-label="Ma disponibilité" className="inline-flex gap-1 rounded-full bg-chip p-1">
+    <div role="radiogroup" aria-label="Ma disponibilité" className="flex w-full gap-1 rounded-full bg-chip p-1 sm:inline-flex sm:w-auto">
       {OPTIONS.map((o) => {
         const active = o.value === value;
         return (
@@ -28,7 +28,7 @@ export function AvailabilityToggle({ value }: { value: Availability }) {
             aria-checked={active}
             disabled={set.isPending}
             onClick={() => !active && set.mutate(o.value, { onSuccess: () => toast.success(`Vous êtes « ${o.label.toLowerCase()} »`, o.value === "online" ? "Les nouvelles commandes peuvent vous être assignées." : "Les responsables le voient avant d'assigner.") })}
-            className={cn("relative flex items-center gap-2 rounded-full px-3.5 py-1.5 text-[13px] font-semibold transition-colors", active ? "text-ink" : "text-ink-2 hover:text-ink")}
+            className={cn("relative flex min-h-11 flex-1 items-center justify-center gap-2 rounded-full px-2 text-[13px] font-semibold transition-colors active:scale-[0.97] sm:min-h-0 sm:flex-none sm:px-3.5 sm:py-1.5", active ? "text-ink" : "text-ink-2 hover:text-ink")}
           >
             {active && <motion.span layoutId={`avail-${id}`} className="absolute inset-0 rounded-full bg-white shadow-[0_1px_4px_rgba(0,0,0,.12)]" transition={{ type: "spring", stiffness: 420, damping: 32 }} />}
             <span className="relative flex items-center gap-2">

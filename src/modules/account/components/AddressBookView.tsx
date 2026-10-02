@@ -38,16 +38,16 @@ function Content() {
   };
 
   return (
-    <Block>
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h1 className="text-h-page text-primary">Mes adresses</h1>
-          <p className="mt-1 text-[14px] text-ink-2">Enregistrez plusieurs adresses et choisissez-en une à chaque commande.</p>
+    <Block pad="none" className="p-4 sm:p-[30px]">
+      <div className="flex flex-wrap items-center justify-between gap-3 sm:gap-4">
+        <div className="min-w-0">
+          <h1 className="text-[22px] leading-[28px] text-primary sm:text-h-page">Mes adresses</h1>
+          <p className="mt-1 text-[13px] leading-[19px] text-ink-2 sm:text-[14px]">Enregistrez plusieurs adresses et choisissez-en une à chaque commande.</p>
         </div>
-        <Button onClick={() => open(null)} leftIcon={<Add size={16} />}>Ajouter une adresse</Button>
+        <Button onClick={() => open(null)} leftIcon={<Add size={16} />} className="max-sm:w-full">Ajouter une adresse</Button>
       </div>
 
-      <div className="mt-6 grid gap-4 md:grid-cols-2">
+      <div className="mt-5 grid gap-3 sm:mt-6 sm:gap-4 md:grid-cols-2">
         {isLoading ? (
           <>
             <Skeleton className="h-[170px] !rounded-box" />
@@ -64,7 +64,7 @@ function Content() {
                   initial={{ opacity: 0, y: 14 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95 }}
-                  className={cn("relative rounded-box border-2 p-5 transition-colors", a.isDefault ? "border-primary bg-primary-50" : "border-line-3 hover:border-primary/40")}
+                  className={cn("relative rounded-box border-2 p-4 transition-colors sm:p-5", a.isDefault ? "border-primary bg-primary-50" : "border-line-3 hover:border-primary/40")}
                 >
                   <div className="flex items-start gap-3">
                     <span className={cn("grid size-11 shrink-0 place-items-center rounded-full", a.isDefault ? "bg-primary text-white" : "bg-chip")}><Icon size={20} variant="Bold" /></span>
@@ -78,7 +78,7 @@ function Content() {
                       <p className="mt-1 flex items-start gap-2 text-[13px] leading-[19px] text-ink-2"><Location size={14} className="mt-0.5 shrink-0" /> {a.line1}, {a.quarter}, {a.city}, {a.country}</p>
                     </div>
                   </div>
-                  <div className="mt-4 flex flex-wrap gap-2">
+                  <div className="mt-3 flex flex-wrap gap-2 sm:mt-4">
                     {!a.isDefault && (
                       <Button size="xs" variant="outline" upper={false} loading={setDefault.isPending && setDefault.variables === a.id} leftIcon={<Star1 size={13} />} onClick={() => setDefault.mutate(a.id, { onSuccess: () => toast.success("Adresse par défaut mise à jour") })}>
                         Définir par défaut

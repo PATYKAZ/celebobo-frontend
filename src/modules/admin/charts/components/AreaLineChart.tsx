@@ -22,6 +22,7 @@ interface Props {
 }
 
 const PAD = { t: 14, r: 14, b: 28, l: 52 };
+const PAD_SM = { t: 12, r: 10, b: 26, l: 40 };
 
 function niceMax(v: number) {
   if (v <= 0) return 10;
@@ -47,8 +48,11 @@ function smooth(pts: [number, number][]): string {
 }
 
 /** Graphique en aires/lignes multi-séries, trait animé, croix + infobulle au survol. */
-export function AreaLineChart({ labels, series, height = 280, format = (n) => String(Math.round(n)), title }: Props) {
+export function AreaLineChart({ labels, series, height: heightProp = 280, format = (n) => String(Math.round(n)), title }: Props) {
   const { ref, width } = useChartWidth();
+  const narrow = width < 480;
+  const P = narrow ? PAD_SM : PAD;
+  const height = narrow ? Math.min(heightProp, 220) : heightProp;
   const gid = useId().replace(/:/g, "");
   const inView = useInView(ref, { once: true, amount: 0.3 });
   const [hover, setHover] = useState<number | null>(null);
@@ -56,25 +60,25 @@ export function AreaLineChart({ labels, series, height = 280, format = (n) => St
 
   const n = labels.length;
   const max = niceMax(Math.max(1, ...series.flatMap((s) => s.data)));
-  const w = width - PAD.l - PAD.r;
-  const h = height - PAD.t - PAD.b;
-  const x = (i: number) => PAD.l + (n <= 1 ? w / 2 : (i / (n - 1)) * w);
-  const y = (v: number) => PAD.t + h - (v / max) * h;
+  const w = width - P.l - P.r;
+  const h = height - P.t - P.b;
+  const x = (i: number) => P.l + (n <= 1 ? w / 2 : (i / (n - 1)) * w);
+  const y = (v: number) => P.t + h - (v / max) * h;
   const ticks = [0, 0.25, 0.5, 0.75, 1].map((t) => t * max);
-  const step = Math.max(1, Math.ceil(n / Math.max(2, Math.floor(w / 64))));
+  const step = Math.max(1, Math.ceil(n / Math.max(2, Math.floor(w / (narrow ? 56 : 64)))));
 
   const onMove = (e: PointerEvent<SVGSVGElement>) => {
     const r = svgRef.current?.getBoundingClientRect();
     if (!r) return;
-    const px = e.clientX - r.left - PAD.l;
+    const px = e.clientX - r.left - P.l;
     setHover(Math.max(0, Math.min(n - 1, Math.round((px / w) * (n - 1)))));
   };
 
-  const tipLeft = hover != null ? Math.min(Math.max(x(hover), 90), width - 90) : 0;
+  const tipLeft = hover != null ? Math.min(Math.max(x(hover), 80), width - 80) : 0;
 
   return (
-    <div ref={ref} className="relative w-full select-none">
-      <svg ref={svgRef} width={width} height={height} role="img" aria-label={title} onPointerMove={onMove} onPointerLeave={() => setHover(null)} className="touch-pan-y overflow-visible">
+    <div ref={ref} className="relative w-full min-w-0 max-w-full select-none">
+      <svg ref={svgRef} width={width} height={height} role="img" aria-label={title} onPointerDown={onMove} onPointerMove={onMove} onPointerLeave={() => setHover(null)} className="max-w-full touch-pan-y overflow-visible">
         <title>{title}</title>
         <defs>
           {series.map((s) => (
@@ -86,8 +90,8 @@ export function AreaLineChart({ labels, series, height = 280, format = (n) => St
         </defs>
         {ticks.map((t) => (
           <g key={t}>
-            <line x1={PAD.l} x2={width - PAD.r} y1={y(t)} y2={y(t)} stroke="#DEE2E6" strokeDasharray={t === 0 ? undefined : "3 4"} />
-            <text x={PAD.l - 8} y={y(t) + 4} textAnchor="end" fontSize="11" fill="#999">{format(t)}</text>
+            <line x1={P.l} x2={width - P.r} y1={y(t)} y2={y(t)} stroke="#DEE2E6" strokeDasharray={t === 0 ? undefined : "3 4"} />
+            <text x={P.l - 6} y={y(t) + 4} textAnchor="end" fontSize="11" fill="#999">{format(t)}</text>
           </g>
         ))}
         {labels.map((l, i) => (i % step === 0 ? <text key={i} x={x(i)} y={height - 8} textAnchor="middle" fontSize="11" fill="#999">{l}</text> : null))}
@@ -106,7 +110,7 @@ export function AreaLineChart({ labels, series, height = 280, format = (n) => St
 
         {hover != null && (
           <g pointerEvents="none">
-            <line x1={x(hover)} x2={x(hover)} y1={PAD.t} y2={y(0)} stroke="#999" strokeOpacity={0.5} strokeDasharray="4 4" />
+            <line x1={x(hover)} x2={x(hover)} y1={P.t} y2={y(0)} stroke="#999" strokeOpacity={0.5} strokeDasharray="4 4" />
             {series.map((s) => (
               <circle key={s.key} cx={x(hover)} cy={y(s.data[hover])} r={5} fill="#fff" stroke={s.color} strokeWidth={3} />
             ))}
@@ -114,7 +118,7 @@ export function AreaLineChart({ labels, series, height = 280, format = (n) => St
         )}
       </svg>
       {hover != null && (
-        <div className="pointer-events-none absolute top-2 z-10 min-w-[150px] -translate-x-1/2 rounded-box border border-line-3 bg-white p-3 shadow-[0_8px_30px_rgba(0,0,0,.12)]" style={{ left: tipLeft }}>
+        <div className="pointer-events-none absolute top-2 z-10 min-w-[140px] -translate-x-1/2 rounded-box border border-line-3 bg-white p-3 shadow-[0_8px_30px_rgba(0,0,0,.12)]" style={{ left: tipLeft }}>
           <p className="mb-1.5 text-[12px] font-bold">{labels[hover]}</p>
           {series.map((s) => (
             <p key={s.key} className="flex items-center justify-between gap-4 text-[12px] leading-[18px]">

@@ -30,16 +30,16 @@ export function ConversationItem({ conversation: c, active, myId, onSelect, staf
     <button
       onClick={() => onSelect(c.id)}
       aria-current={active}
-      className={cn("relative flex w-full items-start gap-3 rounded-box px-3 py-3 text-left transition-colors", active ? "bg-primary-50" : "hover:bg-chip")}
+      className={cn("relative flex min-h-[76px] w-full items-start gap-3 rounded-box px-3 py-3 text-left transition-all active:scale-[0.985] active:bg-chip", active ? "bg-primary-50" : "hover:bg-chip")}
     >
       {active && <span className="absolute inset-y-3 left-0 w-[3px] rounded-full bg-primary" />}
       <span className="relative shrink-0">
-        <Avatar src={lead?.avatar} name={lead?.name ?? "Celebobo"} size={44} />
-        {presence && !c.concluded && <span className={cn("absolute -bottom-0.5 -right-0.5 size-3 rounded-full ring-2 ring-white", DOT[presence])} />}
+        <Avatar src={lead?.avatar} name={lead?.name ?? "Celebobo"} size={48} />
+        {presence && !c.concluded && <span className={cn("absolute -bottom-0.5 -right-0.5 size-3.5 rounded-full ring-2 ring-white", DOT[presence])} />}
       </span>
       <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between gap-2">
-          <span className={cn("truncate text-[14px] leading-[20px]", unread ? "font-extrabold" : "font-bold")}>{lead?.name ?? "Équipe Celebobo"}</span>
+          <span className={cn("truncate text-[15px] leading-[20px] lg:text-[14px]", unread ? "font-extrabold" : "font-bold")}>{lead?.name ?? "Équipe Celebobo"}</span>
           {last && <span className={cn("shrink-0 text-[11px]", unread ? "font-bold text-primary" : "text-ink-3")}>{formatRelative(last.timestamp)}</span>}
         </div>
         <p className={cn("mt-0.5 flex items-center gap-1 truncate text-[13px] leading-[19px]", unread ? "font-semibold text-ink" : "text-ink-2")}>
@@ -58,7 +58,7 @@ export function ConversationItem({ conversation: c, active, myId, onSelect, staf
           {staff && c.awaitingReply && <span className="rounded bg-star/15 px-1.5 py-0.5 text-[10px] font-bold uppercase text-[#b87400]">Réponse attendue</span>}
         </div>
       </div>
-      {unread && <span className="mt-1 grid min-w-5 place-items-center rounded-full bg-primary px-1.5 text-[11px] font-bold leading-5 text-white">{c.unreadCount}</span>}
+      {unread && <span className="mt-1 grid min-w-6 shrink-0 place-items-center rounded-full bg-primary px-1.5 text-[12px] font-bold leading-6 text-white">{c.unreadCount}</span>}
     </button>
   );
 }

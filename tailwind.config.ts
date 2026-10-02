@@ -47,6 +47,12 @@ const config: Config = {
         "h-hero": ["30px", { lineHeight: "36px" }],
         "h-page": ["28px", { lineHeight: "33.6px", fontWeight: "700" }],
       },
+      spacing: {
+        /** Hauteur de la barre d'onglets mobile (0 sur desktop) — voir globals.css */
+        tabbar: "var(--tabbar-h)",
+        "safe-b": "env(safe-area-inset-bottom)",
+        "safe-t": "env(safe-area-inset-top)",
+      },
       borderRadius: {
         box: "10px",
         pill: "30px",

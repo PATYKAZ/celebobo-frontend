@@ -87,3 +87,21 @@ Modules : `products`, `categories`, `auth`, `cart`, `favorites`, `orders`, `mess
   Mock = bus mémoire ; API = WebSocket (`NEXT_PUBLIC_WS_URL`). Les services mock émettent des événements lorsqu'ils mutent un état.
 - **Panier par utilisateur** : `cart.store` (`owner`, `carts`, fusion invité → compte dans `CartOwnerSync`).
 - **Pré-rendu** : les pages `[id]` exportent `generateStaticParams` (mode mock) pour éviter les démarrages à froid.
+
+## Mobile (mobile-first, breakpoints Tailwind : sm 640 · md 768 · lg 1024)
+
+- **Navigation** : < lg = barre d'onglets basse (`shared/ui/TabBar`) + feuille « Plus de pages » (`MoreSheet`, grille 4 colonnes groupée par section) ;
+  ≥ lg = header/sidebar. Boutique : `shared/layout/ShopTabBar` · Back-office : `modules/admin/layout/AdminTabBar` (entrées filtrées par permission).
+- **Espace réservé à la barre d'onglets** : variable CSS `--tabbar-h` (0 sur desktop ou quand la barre est masquée) → classes `pb-tabbar` / `bottom-tabbar`.
+- **Primitives** (`shared/ui`) :
+  - `BottomSheet` — feuille ancrée en bas (poignée, glisser pour fermer, zone sûre iOS) ; `Modal` et `ConfirmDialog` s'affichent déjà ainsi sur mobile ; `Popover` (menus « clic ») aussi (prop `sheetOnMobile`, `sheetTitle`).
+  - `StickyActionBar` — barre d'actions fixe au-dessus de la barre d'onglets (formulaires, panier, paiement). Ajouter `<div className="h-20 lg:hidden" />` sous le contenu.
+  - `SegmentedControl` — 2–4 choix (période, vue grille/liste) ; `Tabs` défile en rangée avec fondu et recentre l'onglet actif.
+  - `ScrollRow` — rangée horizontale à accroche (chips, mini-cartes) : `<ScrollRow bleed className="gap-2">…</ScrollRow>`.
+  - `Pagination` — « Précédent · 2 / 8 · Suivant » sur mobile ; `SectionHeader` garde « Voir tout › » visible.
+  - `Button` : min 44–48 px de haut sous `sm` ; `QuantityStepper` 48 px ; champs `.field` 48 px / texte 16 px (pas de zoom iOS).
+- **Tableaux admin** : `DataTable` devient une liste de cartes sous `md`. Indices par colonne : `mobile: "title" | "footer" | "hide"`, `mobileLabel`.
+  Colonnes `select`/`checkbox` → case en haut à droite de la carte ; colonne sans en-tête / `actions` → pied de carte (boutons : `max-md:min-h-11`).
+- **Règles** : jamais de défilement horizontal de page (`min-w-0` sur les enfants de grid/flex, Swiper dans un conteneur `min-w-0`) ; cibles tactiles ≥ 44 px ;
+  blocs `p-4` sur mobile ; graphiques SVG mesurent leur conteneur (`useChartWidth`, largeur initiale 300) ; les infobulles de graphique s'ouvrent au toucher.
+- **Contrôle** : `node mcheck.mjs <rôle> [--w=390] <chemin…>` (voir le dossier d'audit) liste débordements, petites cibles et erreurs, et sauvegarde des captures.

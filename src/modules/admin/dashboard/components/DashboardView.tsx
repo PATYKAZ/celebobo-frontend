@@ -55,7 +55,7 @@ function DashboardContent() {
         <Tabs variant="pill" tabs={PERIODS} value={period} onChange={setPeriod} />
       </PageHeader>
 
-      <section aria-label="Indicateurs clés" className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
+      <section aria-label="Indicateurs clés" className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-3 2xl:grid-cols-6">
         {k ? (
           <>
             <StatCard label={`Revenu · ${p}`} value={k.revenue} format={formatPrice} icon={<MoneyRecive size={22} variant="Bold" />} delta={k.revenueDelta} deltaLabel={vs} />
@@ -70,15 +70,15 @@ function DashboardContent() {
         )}
       </section>
 
-      <div className="grid gap-4 xl:grid-cols-3">
+      <div className="grid min-w-0 gap-3 sm:gap-4 xl:grid-cols-3">
         <RevenueChart data={data} />
         <MethodsDonut data={data} />
       </div>
-      <div className="grid gap-4 xl:grid-cols-3">
+      <div className="grid min-w-0 gap-3 sm:gap-4 xl:grid-cols-3">
         <RecentSalesTable data={data} />
         <PendingOrdersCard data={data} />
       </div>
-      <div className="grid gap-4 xl:grid-cols-3">
+      <div className="grid min-w-0 gap-3 sm:gap-4 xl:grid-cols-3">
         <TopProductsCard data={data} />
         <TopResellerCard data={data} />
         <div className="flex items-center justify-center rounded-box bg-primary p-8 text-white">

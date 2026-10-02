@@ -72,7 +72,7 @@ export function AddressFormModal({ open, onClose, address, defaults, onSaved }: 
           <Select label="Libellé" value={form.label} onChange={(e) => set("label", e.target.value)} options={ADDRESS_LABELS.map((l) => ({ value: l, label: l }))} />
           <Input label="Destinataire" required value={form.recipient} onChange={(e) => set("recipient", e.target.value)} error={errors.recipient} leftIcon={<User size={17} />} />
         </div>
-        <Input label="Téléphone" required value={form.phone} onChange={(e) => set("phone", e.target.value)} error={errors.phone} leftIcon={<Call size={17} />} placeholder="+243 …" />
+        <Input label="Téléphone" required value={form.phone} onChange={(e) => set("phone", e.target.value)} error={errors.phone} leftIcon={<Call size={17} />} placeholder="+243 …" inputMode="tel" autoComplete="tel" enterKeyHint="next" />
         <Input label="Adresse" required value={form.line1} onChange={(e) => set("line1", e.target.value)} error={errors.line1} leftIcon={<Location size={17} />} placeholder="N°, avenue, rue" />
         <div className="grid gap-4 sm:grid-cols-3">
           <Input label="Quartier / Commune" required value={form.quarter} onChange={(e) => set("quarter", e.target.value)} error={errors.quarter} leftIcon={<Map1 size={17} />} />
@@ -80,7 +80,7 @@ export function AddressFormModal({ open, onClose, address, defaults, onSaved }: 
           <Input label="Pays" value={form.country} onChange={(e) => set("country", e.target.value)} />
         </div>
         <Checkbox label="Définir comme adresse par défaut" checked={!!form.isDefault} onChange={(e) => set("isDefault", e.target.checked)} />
-        <div className="grid grid-cols-2 gap-3 pt-2">
+        <div className="flex flex-col-reverse gap-2.5 pt-2 sm:grid sm:grid-cols-2 sm:gap-3">
           <Button variant="chip" upper={false} onClick={onClose}>Annuler</Button>
           <Button upper={false} loading={save.isPending} onClick={submit}>Enregistrer</Button>
         </div>

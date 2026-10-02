@@ -46,15 +46,15 @@ function Content() {
         actions={canManage && <Button onClick={() => setCreating(true)} leftIcon={<Add size={18} />}>Nouvelle catégorie</Button>}
       />
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
         <StatCard label="Catégories" value={list.length} icon={<Category2 size={22} variant="Bold" />} />
         <StatCard label="Visibles en boutique" value={actives} icon={<Category2 size={22} variant="Bold" />} tone="blue" delay={0.05} />
-        <StatCard label="Produits classés" value={products} icon={<Category2 size={22} variant="Bold" />} tone="orange" delay={0.1} />
+        <StatCard label="Produits classés" value={products} icon={<Category2 size={22} variant="Bold" />} tone="orange" delay={0.1} className="col-span-2 sm:col-span-1" />
       </div>
 
       <Block pad="none" className="overflow-hidden">
         {isLoading ? (
-          <div className="space-y-3 p-5">{Array.from({ length: 5 }, (_, i) => <Skeleton key={i} className="h-[84px] w-full" />)}</div>
+          <div className="space-y-3 p-4 sm:p-5">{Array.from({ length: 5 }, (_, i) => <Skeleton key={i} className="h-[120px] w-full sm:h-[84px]" />)}</div>
         ) : list.length === 0 ? (
           <EmptyState icon={<Category2 size={38} variant="Bulk" />} title="Aucune catégorie" description="Créez votre première catégorie pour organiser le catalogue." action={canManage ? <Button onClick={() => setCreating(true)}>Créer une catégorie</Button> : undefined} />
         ) : (
@@ -68,35 +68,47 @@ function Content() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, x: -30 }}
-                  className={cn("flex items-center gap-3 border-b border-line-3/70 p-4 last:border-0 sm:gap-4 sm:px-5", !c.active && "bg-page/40")}
+                  className={cn("flex flex-col gap-3 border-b border-line-3/70 p-4 last:border-0 sm:flex-row sm:items-center sm:gap-4 sm:px-5", !c.active && "bg-page/40")}
                 >
-                  {canManage && (
-                    <div className="flex flex-col">
-                      <button aria-label="Monter" disabled={i === 0 || move.isPending} onClick={() => move.mutate({ id: c.id, dir: "up" })} className="grid size-7 place-items-center rounded-md text-ink-3 transition-colors hover:bg-chip hover:text-primary disabled:opacity-30"><ArrowUp2 size={16} variant="Bold" /></button>
-                      <button aria-label="Descendre" disabled={i === list.length - 1 || move.isPending} onClick={() => move.mutate({ id: c.id, dir: "down" })} className="grid size-7 place-items-center rounded-md text-ink-3 transition-colors hover:bg-chip hover:text-primary disabled:opacity-30"><ArrowDown2 size={16} variant="Bold" /></button>
+                  {/* Identité */}
+                  <div className="flex min-w-0 flex-1 items-center gap-3 sm:gap-4">
+                    {canManage && (
+                      <div className="hidden flex-col sm:flex">
+                        <button aria-label="Monter" disabled={i === 0 || move.isPending} onClick={() => move.mutate({ id: c.id, dir: "up" })} className="grid size-7 place-items-center rounded-md text-ink-3 transition-colors hover:bg-chip hover:text-primary disabled:opacity-30"><ArrowUp2 size={16} variant="Bold" /></button>
+                        <button aria-label="Descendre" disabled={i === list.length - 1 || move.isPending} onClick={() => move.mutate({ id: c.id, dir: "down" })} className="grid size-7 place-items-center rounded-md text-ink-3 transition-colors hover:bg-chip hover:text-primary disabled:opacity-30"><ArrowDown2 size={16} variant="Bold" /></button>
+                      </div>
+                    )}
+                    <span className="hidden w-6 text-center text-[13px] font-bold tabular-nums text-ink-3 sm:block">{c.order}</span>
+                    <span className={cn("relative size-14 shrink-0 overflow-hidden rounded-box bg-page transition-opacity sm:size-16", !c.active && "opacity-50 grayscale")}>
+                      {c.image && <Image src={c.image} alt="" fill sizes="64px" className="object-cover" />}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="flex items-center gap-2 text-[15px] font-bold">
+                        <CategoryIcon name={c.icon} size={17} className="shrink-0 text-primary" />
+                        <span className="truncate">{c.name}</span>
+                        {!c.active && <EyeSlash size={15} className="shrink-0 text-ink-3" />}
+                      </p>
+                      <p className="line-clamp-1 text-[13px] text-ink-2">{c.description || "—"}</p>
+                      <p className="mt-0.5 text-[12px] font-semibold text-ink-3 sm:hidden">{c.productsCount} produit{c.productsCount > 1 ? "s" : ""} · n°{c.order}</p>
                     </div>
-                  )}
-                  <span className="hidden w-6 text-center text-[13px] font-bold tabular-nums text-ink-3 sm:block">{c.order}</span>
-                  <span className={cn("relative size-16 shrink-0 overflow-hidden rounded-box bg-page transition-opacity", !c.active && "opacity-50 grayscale")}>
-                    {c.image && <Image src={c.image} alt="" fill sizes="64px" className="object-cover" />}
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <p className="flex items-center gap-2 text-[15px] font-bold">
-                      <CategoryIcon name={c.icon} size={17} className="shrink-0 text-primary" />
-                      <span className="truncate">{c.name}</span>
-                      {!c.active && <EyeSlash size={15} className="shrink-0 text-ink-3" />}
-                    </p>
-                    <p className="line-clamp-1 text-[13px] text-ink-2">{c.description || "—"}</p>
                   </div>
                   <Pill tone={c.productsCount ? "green" : "gray"} className="hidden sm:inline-flex">{c.productsCount} produit{c.productsCount > 1 ? "s" : ""}</Pill>
+                  {/* Contrôles : sur mobile, ligne dédiée avec grandes cibles tactiles */}
                   {canManage ? (
-                    <>
-                      <Switch label={`${c.name} visible`} checked={c.active} onChange={(a) => toggle(c, a)} />
-                      <div className="flex gap-1.5">
-                        <button onClick={() => setEditing(c)} aria-label="Modifier" title="Modifier" className="grid size-9 place-items-center rounded-full bg-chip transition-colors hover:bg-primary hover:text-white"><Edit2 size={17} /></button>
-                        <button onClick={() => setDeleting(c)} aria-label="Supprimer" title="Supprimer" className="grid size-9 place-items-center rounded-full bg-chip transition-colors hover:bg-danger hover:text-white"><Trash size={17} /></button>
+                    <div className="flex items-center justify-between gap-2 border-t border-line-3/70 pt-3 sm:justify-end sm:gap-3 sm:border-0 sm:pt-0">
+                      <div className="flex gap-1.5 sm:hidden">
+                        <button aria-label="Monter" disabled={i === 0 || move.isPending} onClick={() => move.mutate({ id: c.id, dir: "up" })} className="grid size-11 place-items-center rounded-full bg-chip transition-colors active:scale-90 disabled:opacity-30"><ArrowUp2 size={18} variant="Bold" /></button>
+                        <button aria-label="Descendre" disabled={i === list.length - 1 || move.isPending} onClick={() => move.mutate({ id: c.id, dir: "down" })} className="grid size-11 place-items-center rounded-full bg-chip transition-colors active:scale-90 disabled:opacity-30"><ArrowDown2 size={18} variant="Bold" /></button>
                       </div>
-                    </>
+                      <label className="flex min-h-11 items-center gap-2 text-[13px] font-semibold sm:min-h-0">
+                        <span className="sm:hidden">Visible</span>
+                        <Switch label={`${c.name} visible`} checked={c.active} onChange={(a) => toggle(c, a)} />
+                      </label>
+                      <div className="flex gap-1.5">
+                        <button onClick={() => setEditing(c)} aria-label="Modifier" title="Modifier" className="grid size-11 place-items-center rounded-full bg-chip transition-colors hover:bg-primary hover:text-white active:scale-90 sm:size-9"><Edit2 size={17} /></button>
+                        <button onClick={() => setDeleting(c)} aria-label="Supprimer" title="Supprimer" className="grid size-11 place-items-center rounded-full bg-chip transition-colors hover:bg-danger hover:text-white active:scale-90 sm:size-9"><Trash size={17} /></button>
+                      </div>
+                    </div>
                   ) : (
                     <Pill tone={c.active ? "green" : "gray"}>{c.active ? "Visible" : "Masquée"}</Pill>
                   )}

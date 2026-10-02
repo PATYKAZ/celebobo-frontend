@@ -72,10 +72,10 @@ export function CsvImportModal({ open, onClose }: { open: boolean; onClose: () =
               role="button"
               tabIndex={0}
               onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && input.current?.click()}
-              className={cn("grid cursor-pointer place-items-center gap-2 rounded-box border-2 border-dashed px-6 py-12 text-center transition-all", drag ? "scale-[1.01] border-primary bg-primary-50" : "border-line bg-page/40 hover:border-primary")}
+              className={cn("grid cursor-pointer place-items-center gap-2 rounded-box border-2 border-dashed px-4 py-9 text-center transition-all sm:px-6 sm:py-12", drag ? "scale-[1.01] border-primary bg-primary-50" : "border-line bg-page/40 hover:border-primary")}
             >
               <DocumentUpload size={40} variant="Bulk" className="text-primary" />
-              <p className="text-[15px] font-bold">Déposez votre fichier CSV ici ou cliquez pour parcourir</p>
+              <p className="text-[15px] font-bold"><span className="sm:hidden">Touchez pour choisir un fichier CSV</span><span className="hidden sm:inline">Déposez votre fichier CSV ici ou cliquez pour parcourir</span></p>
               <p className="text-[13px] text-ink-3">Séparateur « ; » ou « , » · encodage UTF-8 · une ligne par produit</p>
               <input ref={input} type="file" accept=".csv,text/csv" hidden onChange={(e) => { void take(e.target.files?.[0]); e.target.value = ""; }} />
             </div>
@@ -97,7 +97,20 @@ export function CsvImportModal({ open, onClose }: { open: boolean; onClose: () =
               </div>
             </div>
             {missing.length > 0 && <p role="alert" className="rounded-box bg-danger-50 p-3 text-[13px] text-danger">Colonnes obligatoires manquantes : {missing.join(", ")}.</p>}
-            <div className="max-h-[380px] overflow-auto rounded-box border border-line">
+            {/* Mobile : une carte par ligne importée */}
+            <ul className="grid max-h-[46vh] gap-2 overflow-y-auto sm:hidden">
+              {rows.map((r) => (
+                <li key={r.line} className={cn("rounded-box border p-3", r.data ? "border-line-3" : "border-danger/30 bg-danger-50/60")}>
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="min-w-0 truncate text-[14px] font-bold">{r.raw.nom || "—"}</p>
+                    {r.data ? <span className={cn("shrink-0 rounded-md px-2 py-0.5 text-[11px] font-bold", r.id ? "bg-info/10 text-info" : "bg-primary-100 text-primary-dark")}>{r.id ? "Mise à jour" : "Création"}</span> : <span className="shrink-0 text-[11px] font-bold text-danger">Erreur</span>}
+                  </div>
+                  <p className="mt-1 text-[12px] text-ink-2">Ligne {r.line} · {r.raw.categorie || "—"} · {r.data ? formatPrice(r.data.price) : r.raw.prix || "—"} · stock {r.data ? r.data.stock : r.raw.stock || "—"}</p>
+                  {r.errors.length > 0 && <ul className="mt-1.5 space-y-0.5 text-[12px] text-danger">{r.errors.map((e) => <li key={e}>• {e}</li>)}</ul>}
+                </li>
+              ))}
+            </ul>
+            <div className="hidden max-h-[380px] overflow-auto rounded-box border border-line sm:block">
               <table className="w-full min-w-[640px] text-[13px]">
                 <thead className="sticky top-0 bg-page text-left text-[11px] uppercase tracking-wide text-ink-3">
                   <tr><th className="px-3 py-2">Ligne</th><th className="px-3 py-2">Action</th><th className="px-3 py-2">Produit</th><th className="px-3 py-2">Catégorie</th><th className="px-3 py-2 text-right">Prix</th><th className="px-3 py-2 text-right">Stock</th><th className="px-3 py-2">Contrôle</th></tr>
@@ -120,7 +133,7 @@ export function CsvImportModal({ open, onClose }: { open: boolean; onClose: () =
             {invalid.length > 0 && <p className="text-[12px] text-ink-3">Les lignes en erreur seront ignorées. Corrigez-les dans le fichier puis réimportez-les.</p>}
           </>
         )}
-        <div className="grid grid-cols-2 gap-3 sm:ml-auto sm:w-[360px]">
+        <div className="grid grid-cols-[1fr_1.5fr] gap-3 sm:ml-auto sm:w-[360px] sm:grid-cols-2">
           <Button variant="chip" upper={false} onClick={close}>Annuler</Button>
           <Button upper={false} disabled={!valid.length || missing.length > 0} loading={imp.isPending} onClick={confirm}>Importer {valid.length ? `(${valid.length})` : ""}</Button>
         </div>

@@ -37,18 +37,18 @@ export function ProductCard({ product, className, priority }: Props) {
   return (
     <motion.article
       layout
-      className={cn("group relative flex h-full flex-col rounded-box p-4 transition-shadow duration-300 hover:shadow-[0_10px_34px_rgba(0,0,0,.09)]", className)}
+      className={cn("group relative flex h-full min-w-0 flex-col rounded-box p-2.5 transition-shadow duration-300 hover:shadow-[0_10px_34px_rgba(0,0,0,.09)] sm:p-4", className)}
     >
       {/* Image */}
       <div className="relative">
-        <Link href={href} className="relative block aspect-[192/200] overflow-hidden rounded-md border-b border-line-2/10 bg-page/40" aria-label={product.name}>
+        <Link href={href} className="relative block aspect-[4/3] overflow-hidden sm:aspect-[192/200] rounded-md border-b border-line-2/10 bg-page/40" aria-label={product.name}>
           {product.image ? (
             <Image
               src={product.image}
               alt={product.name}
               fill
               priority={priority}
-              sizes="(min-width:1280px) 224px, (min-width:640px) 33vw, 50vw"
+              sizes="(min-width:1280px) 224px, (min-width:640px) 33vw, 60vw"
               className={cn("object-cover transition-all duration-700 ease-out group-hover:scale-110", second && "group-hover:opacity-0")}
             />
           ) : (
@@ -71,7 +71,7 @@ export function ProductCard({ product, className, priority }: Props) {
           aria-label={fav ? "Retirer des favoris" : "Ajouter aux favoris"}
           aria-pressed={fav}
           onClick={() => toggle(product.id, product.name)}
-          className="absolute right-0 top-0 grid size-[30px] place-items-center rounded-full bg-page text-ink-3 transition-colors hover:bg-danger-100 hover:text-danger"
+          className="absolute right-1 top-1 grid size-9 place-items-center rounded-full bg-white/90 text-ink-3 backdrop-blur transition-colors hover:bg-danger-100 hover:text-danger active:scale-90 sm:right-0 sm:top-0 sm:size-[30px] sm:bg-page"
         >
           <motion.span key={String(fav)} initial={{ scale: 0.4 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 500, damping: 12 }} className="grid">
             <Heart size={15} variant={fav ? "Bold" : "Linear"} color={fav ? "#F1352B" : "currentColor"} />
@@ -82,26 +82,39 @@ export function ProductCard({ product, className, priority }: Props) {
         <button
           onClick={() => add(product)}
           disabled={!product.inStock}
-          className="absolute inset-x-2 bottom-2 flex h-9 translate-y-[140%] items-center justify-center gap-2 rounded-md bg-primary text-[12px] font-semibold uppercase text-white opacity-0 transition-all duration-300 hover:bg-primary-dark group-hover:translate-y-0 group-hover:opacity-100 disabled:bg-ink-3"
+          className="absolute inset-x-2 bottom-2 hidden h-9 translate-y-[140%] items-center justify-center gap-2 rounded-md bg-primary text-[12px] font-semibold uppercase text-white opacity-0 transition-all duration-300 hover:bg-primary-dark group-hover:translate-y-0 group-hover:opacity-100 disabled:bg-ink-3 sm:flex"
         >
           <Bag2 size={15} variant="Bold" /> {product.inStock ? "Ajouter" : "Indisponible"}
+        </button>
+        {/* tactile : pas de survol → bouton panier toujours visible */}
+        <button
+          onClick={() => add(product)}
+          disabled={!product.inStock}
+          aria-label="Ajouter au panier"
+          className="absolute bottom-1.5 right-1.5 grid size-10 place-items-center rounded-full bg-primary text-white shadow-[0_4px_14px_rgba(26,186,26,.45)] transition-transform active:scale-90 disabled:bg-ink-3 disabled:shadow-none sm:hidden"
+        >
+          <Bag2 size={18} variant="Bold" />
         </button>
       </div>
 
       {/* Contenu */}
-      <div className="mt-[19px] flex flex-1 flex-col">
+      <div className="mt-2.5 flex flex-1 flex-col sm:mt-[19px]">
         {product.reviewsCount > 0 || product.rating ? <Stars rating={product.rating} count={product.reviewsCount} /> : <div className="h-[19.5px]" />}
-        <Link href={href} className="mt-[10px] line-clamp-3 min-h-[50px] text-name transition-colors hover:text-primary">
+        <Link href={href} className="mt-2 line-clamp-2 min-h-[34px] text-[13px] font-bold leading-[17px] transition-colors hover:text-primary sm:mt-[10px] sm:line-clamp-3 sm:min-h-[50px] sm:text-name">
           {product.name}
         </Link>
-        <Price current={pricing.current} original={pricing.original} className="mt-3" />
+        <Price current={pricing.current} original={pricing.original} size="sm" className="mt-1.5 sm:mt-3 sm:[&>span:first-child]:text-[18px]" />
 
-        <div className="mt-3 flex flex-wrap gap-[6px]">
+        {/* mobile : une simple ligne de texte (pas de pastilles empilées) ; desktop : pastilles du design */}
+        <p className="mt-1.5 text-[11px] font-semibold leading-[15px] text-primary sm:hidden">
+          {product.freeShipping ? "Livraison offerte" : product.shippingFee ? `${formatPrice(product.shippingFee)} livraison` : " "}
+        </p>
+        <div className="mt-3 hidden flex-wrap gap-[6px] sm:flex">
           {product.freeShipping ? <Pill tone="green">Livraison offerte</Pill> : product.shippingFee ? <Pill tone="dark">{formatPrice(product.shippingFee)} livraison</Pill> : null}
           {pricing.onSale && pricing.percent > 0 && <Pill tone="red">-{pricing.percent}%</Pill>}
         </div>
 
-        <p className="mt-auto flex items-center gap-1.5 pt-3 text-[12px] leading-[20.4px]">
+        <p className={cn("mt-auto items-center gap-1.5 pt-2 text-[12px] leading-[20.4px] sm:flex sm:pt-3", product.inStock ? "hidden" : "flex")}>
           {product.inStock ? (
             <>
               <TickCircle size={13} variant="Bold" color="#1ABA1A" /> En stock

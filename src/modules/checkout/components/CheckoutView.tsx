@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowLeft, ArrowRight, Bag2, Send2 } from "iconsax-reactjs";
+import { ArrowDown2, ArrowLeft, ArrowRight, Bag2, Send2 } from "iconsax-reactjs";
 import { useEffect, useRef, useState } from "react";
 import { ROUTES } from "@/config/routes";
 import { Breadcrumb } from "@/shared/layout/Breadcrumb";
@@ -10,6 +10,7 @@ import { Reveal } from "@/shared/animations/Reveal";
 import { getErrorMessage } from "@/shared/lib/api";
 import { formatPrice } from "@/shared/lib/format";
 import { Block } from "@/shared/ui/Block";
+import { BottomSheet } from "@/shared/ui/BottomSheet";
 import { Button } from "@/shared/ui/Button";
 import { EmptyState } from "@/shared/ui/EmptyState";
 import { Textarea } from "@/shared/ui/Form";
@@ -59,6 +60,7 @@ function Content() {
   const [errors, setErrors] = useState<Errors>({});
   const [done, setDone] = useState<{ order: Order; conversationId: number } | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [recap, setRecap] = useState(false);
   const [form, setForm] = useState<CheckoutForm>(EMPTY_FORM);
   const initialised = useRef(false);
 
@@ -160,11 +162,23 @@ function Content() {
   const pending = createOrder.isPending || saveAddress.isPending;
 
   return (
-    <div className="grid gap-4 lg:grid-cols-[1fr_380px]">
-      <Reveal>
-        <Block>
-          <h1 className="text-h-page">Finaliser la commande</h1>
-          <div className="mb-8 mt-6"><CheckoutStepper step={step} /></div>
+    <div className="grid gap-3 sm:gap-4 lg:grid-cols-[1fr_380px]">
+      <Reveal className="min-w-0">
+        <Block pad="none" className="p-4 sm:p-[30px]">
+          <h1 className="text-[22px] leading-[28px] sm:text-h-page">Finaliser la commande</h1>
+
+          {/* Mobile : récapitulatif repliable (s'ouvre en feuille) */}
+          <button onClick={() => setRecap(true)} className="mt-4 flex min-h-14 w-full items-center gap-3 rounded-box bg-primary-50 px-4 py-2.5 text-left active:scale-[0.99] lg:hidden">
+            <Bag2 size={20} variant="Bold" className="shrink-0 text-primary" />
+            <span className="min-w-0 flex-1">
+              <span className="block text-[13px] font-bold leading-[18px]">Récapitulatif · {count} article{count > 1 ? "s" : ""}</span>
+              <span className="block text-[12px] leading-[16px] text-ink-2">Appuyez pour voir le détail</span>
+            </span>
+            <span className="text-[16px] font-extrabold text-primary">{formatPrice(total)}</span>
+            <ArrowDown2 size={16} className="text-ink-3" />
+          </button>
+
+          <div className="mb-6 mt-5 sm:mb-8 sm:mt-6"><CheckoutStepper step={step} /></div>
 
           <AnimatePresence mode="wait" custom={dir}>
             <motion.div
@@ -178,27 +192,27 @@ function Content() {
               {step === 0 && <AddressPicker form={form} errors={errors} set={set} onPick={pickAddress} />}
 
               {step === 1 && (
-                <div className="space-y-5">
-                  <h2 className="text-[18px]">Comment souhaitez-vous payer ?</h2>
+                <div className="space-y-4 sm:space-y-5">
+                  <h2 className="text-[17px] sm:text-[18px]">Comment souhaitez-vous payer ?</h2>
                   <PaymentMethodCards value={form.paymentMethod} onChange={(v) => set("paymentMethod", v)} />
                   <Textarea label="Note pour le revendeur (optionnel)" value={form.note} onChange={(e) => set("note", e.target.value)} placeholder="Horaires de livraison, point de repère…" maxLength={500} />
                 </div>
               )}
 
               {step === 2 && (
-                <div className="space-y-5">
-                  <h2 className="text-[18px]">Vérifiez votre commande</h2>
+                <div className="space-y-4 sm:space-y-5">
+                  <h2 className="text-[17px] sm:text-[18px]">Vérifiez votre commande</h2>
                   <div className="grid gap-3 sm:grid-cols-2">
                     <div className="rounded-box bg-page/60 p-4 text-[14px] leading-[22px]">
                       <p className="mb-1 text-[12px] font-bold uppercase text-ink-3">Livraison</p>
                       {form.recipient}<br />{form.address}<br />{form.quarter}, {form.city}, {form.country}<br />{form.phone}
-                      <button onClick={() => go(0)} className="mt-2 block text-[13px] font-semibold text-primary hover:underline">Modifier</button>
+                      <button onClick={() => go(0)} className="mt-1 flex min-h-11 items-center text-[13px] font-semibold text-primary hover:underline">Modifier</button>
                     </div>
                     <div className="rounded-box bg-page/60 p-4 text-[14px] leading-[22px]">
                       <p className="mb-1 text-[12px] font-bold uppercase text-ink-3">Paiement</p>
                       {paymentLabel}
                       {form.note && <span className="mt-1 block text-ink-2">« {form.note} »</span>}
-                      <button onClick={() => go(1)} className="mt-2 block text-[13px] font-semibold text-primary hover:underline">Modifier</button>
+                      <button onClick={() => go(1)} className="mt-1 flex min-h-11 items-center text-[13px] font-semibold text-primary hover:underline">Modifier</button>
                     </div>
                   </div>
                   <ul className="divide-y divide-line-3 rounded-box border border-line-3">
@@ -219,24 +233,34 @@ function Content() {
             </motion.div>
           </AnimatePresence>
 
-          <div className="mt-8 flex items-center justify-between gap-3">
-            {step > 0 ? (
-              <Button variant="chip" onClick={() => go(step - 1)} leftIcon={<ArrowLeft size={16} />} disabled={pending}>Retour</Button>
-            ) : (
-              <Button variant="chip" href={ROUTES.cart} leftIcon={<ArrowLeft size={16} />}>Panier</Button>
-            )}
-            {step < CHECKOUT_STEPS.length - 1 ? (
-              <Button onClick={next} rightIcon={<ArrowRight size={16} />}>Continuer</Button>
-            ) : (
-              <Button onClick={submit} loading={pending} size="lg" leftIcon={<Send2 size={17} variant="Bold" />}>Envoyer la commande</Button>
-            )}
+          {/* spacer : réserve la place de la barre collante (mobile) */}
+          <div aria-hidden className="h-24 lg:hidden" />
+          <div className="max-lg:fixed max-lg:inset-x-0 max-lg:bottom-tabbar max-lg:z-40 max-lg:border-t max-lg:border-line-3 max-lg:bg-white/95 max-lg:px-4 max-lg:pb-safe max-lg:pt-3 max-lg:backdrop-blur-xl lg:mt-8">
+            <div className="mx-auto flex max-w-[640px] items-center gap-3 lg:mx-0 lg:max-w-none lg:justify-between">
+              {step > 0 ? (
+                <Button variant="chip" onClick={() => go(step - 1)} leftIcon={<ArrowLeft size={16} />} disabled={pending} className="max-lg:px-4">Retour</Button>
+              ) : (
+                <Button variant="chip" href={ROUTES.cart} leftIcon={<ArrowLeft size={16} />} className="max-lg:px-4">Panier</Button>
+              )}
+              {step < CHECKOUT_STEPS.length - 1 ? (
+                <Button onClick={next} rightIcon={<ArrowRight size={16} />} className="max-lg:flex-1">Continuer</Button>
+              ) : (
+                <Button onClick={submit} loading={pending} size="lg" leftIcon={<Send2 size={17} variant="Bold" />} className="max-lg:flex-1">Envoyer la commande</Button>
+              )}
+            </div>
           </div>
         </Block>
       </Reveal>
 
-      <Reveal delay={0.1} direction="left">
+      <Reveal delay={0.1} direction="up" className="hidden min-w-0 lg:block">
         <CartSummary title="Votre commande" subtotal={total} savings={savings} count={count} />
       </Reveal>
+
+      <BottomSheet open={recap} onClose={() => setRecap(false)} title="Votre commande">
+        <div className="-mx-5 pb-2">
+          <CartSummary title="Récapitulatif" subtotal={total} savings={savings} count={count} />
+        </div>
+      </BottomSheet>
     </div>
   );
 }

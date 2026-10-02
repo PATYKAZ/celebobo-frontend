@@ -61,7 +61,7 @@ export function ImageSlot({ label, value, onChange, main, error }: Props) {
                 e.stopPropagation();
                 onChange({ url: null, file: null });
               }}
-              className="absolute right-2 top-2 grid size-8 place-items-center rounded-full bg-white text-danger opacity-0 transition-opacity hover:bg-danger hover:text-white group-hover:opacity-100"
+              className="absolute right-2 top-2 grid size-10 place-items-center rounded-full bg-white text-danger shadow transition-opacity hover:bg-danger hover:text-white active:scale-90 sm:size-8 sm:opacity-0 sm:group-hover:opacity-100"
             >
               <Trash size={16} />
             </button>
@@ -69,7 +69,7 @@ export function ImageSlot({ label, value, onChange, main, error }: Props) {
         ) : (
           <div className="flex flex-col items-center gap-1.5 px-3 text-center text-ink-3 transition-colors group-hover:text-primary">
             <Gallery size={main ? 34 : 26} variant="Bulk" />
-            <span className="text-[12px] leading-[16px]">Cliquez ou déposez une image</span>
+            <span className="text-[12px] leading-[16px]"><span className="sm:hidden">Touchez pour ajouter</span><span className="hidden sm:inline">Cliquez ou déposez une image</span></span>
           </div>
         )}
         <input ref={input} type="file" accept="image/*" hidden onChange={(e) => { take(e.target.files?.[0]); e.target.value = ""; }} />

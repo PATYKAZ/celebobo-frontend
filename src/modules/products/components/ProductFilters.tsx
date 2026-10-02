@@ -48,11 +48,11 @@ function PriceRange({ min, max, onCommit }: { min: number | null; max: number | 
   }, [lo, hi]);
 
   const thumb =
-    "pointer-events-none absolute inset-0 h-5 w-full appearance-none bg-transparent [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:size-[18px] [&::-webkit-slider-thumb]:cursor-grab [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-primary [&::-webkit-slider-thumb]:bg-white [&::-moz-range-thumb]:pointer-events-auto [&::-moz-range-thumb]:size-[16px] [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-primary [&::-moz-range-thumb]:bg-white";
+    "pointer-events-none absolute inset-0 h-7 w-full appearance-none bg-transparent [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:size-[26px] [&::-webkit-slider-thumb]:cursor-grab [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-primary [&::-webkit-slider-thumb]:bg-white [&::-moz-range-thumb]:pointer-events-auto [&::-moz-range-thumb]:size-[24px] [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-primary [&::-moz-range-thumb]:bg-white";
 
   return (
     <div>
-      <div className="relative mx-1 mt-2 h-5">
+      <div className="relative mx-3 mt-2 h-7">
         <div className="absolute inset-x-0 top-1/2 h-1 -translate-y-1/2 rounded-full bg-line-3" />
         <div
           className="absolute top-1/2 h-1 -translate-y-1/2 rounded-full bg-primary"
@@ -79,7 +79,7 @@ export function ProductFilters({ state, categories, hideCategories, onChange, on
             <li>
               <button
                 onClick={() => onChange({ category: null })}
-                className={cn("flex w-full items-center justify-between rounded-md px-2 py-1.5 text-[13px] transition-colors hover:bg-chip", !state.category && "font-bold text-primary")}
+                className={cn("flex w-full items-center justify-between rounded-md px-2 py-2.5 text-[14px] transition-colors hover:bg-chip active:bg-chip sm:py-1.5 sm:text-[13px]", !state.category && "font-bold text-primary")}
               >
                 Toutes les catégories
               </button>
@@ -90,7 +90,7 @@ export function ProductFilters({ state, categories, hideCategories, onChange, on
                 <li key={c.id}>
                   <button
                     onClick={() => onChange({ category: active ? null : c.id })}
-                    className={cn("flex w-full items-center justify-between rounded-md px-2 py-1.5 text-[13px] transition-colors hover:bg-chip", active && "bg-primary-50 font-bold text-primary")}
+                    className={cn("flex w-full items-center justify-between rounded-md px-2 py-2.5 text-[14px] transition-colors hover:bg-chip active:bg-chip sm:py-1.5 sm:text-[13px]", active && "bg-primary-50 font-bold text-primary")}
                   >
                     <span className="truncate">{c.name}</span>
                     <span className={cn("ml-2 rounded-full px-2 text-[11px]", active ? "bg-primary text-white" : "bg-chip text-ink-2")}>{c.productsCount}</span>
@@ -107,7 +107,7 @@ export function ProductFilters({ state, categories, hideCategories, onChange, on
       </Group>
 
       <Group title="Disponibilité">
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-4 sm:gap-3">
           <Checkbox label="En stock uniquement" checked={state.inStock} onChange={(e) => onChange({ inStock: e.target.checked })} />
           <Checkbox label="En promotion" checked={state.onSale} onChange={(e) => onChange({ onSale: e.target.checked })} />
         </div>

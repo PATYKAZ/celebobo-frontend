@@ -15,7 +15,7 @@ import { MethodBadge } from "./MethodBadge";
 
 function Row({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <div className="flex items-start justify-between gap-4 border-b border-line-3/70 py-2.5 text-[14px]">
+    <div className="flex items-start justify-between gap-3 border-b border-line-3/70 py-2.5 text-[14px]">
       <dt className="text-ink-2">{label}</dt>
       <dd className="text-right font-semibold">{children}</dd>
     </div>
@@ -37,7 +37,7 @@ export function SaleDetailDrawer({ sale, onClose, canEdit, canRefund, canDelete,
   return (
     <Drawer open={!!sale} onClose={onClose} title={sale ? `Vente #${sale.id}` : ""} side="right">
       {sale && (
-        <div className="space-y-5 p-5">
+        <div className="space-y-5 p-4 sm:p-5">
           <div className="flex items-center gap-4">
             <span className="relative size-20 shrink-0 overflow-hidden rounded-box bg-page">{sale.productImage && <Image src={sale.productImage} alt="" fill sizes="80px" className="object-cover" />}</span>
             <div className="min-w-0">
@@ -68,7 +68,7 @@ export function SaleDetailDrawer({ sale, onClose, canEdit, canRefund, canDelete,
             </div>
           )}
 
-          <div className="flex flex-wrap gap-2 pt-1">
+          <div className="grid gap-2 pt-1 sm:flex sm:flex-wrap">
             {canEdit && <Button href={ROUTES.admin.saleEdit(sale.id)} variant="chip" upper={false} leftIcon={<Edit2 size={16} />}>Modifier</Button>}
             {canRefund && <Button variant="chip" upper={false} leftIcon={<Refresh2 size={16} />} onClick={() => onRefund(sale)}>Rembourser / retour</Button>}
             {canDelete && <Button variant="danger" upper={false} leftIcon={<Trash size={16} />} onClick={() => onDelete(sale)}>Supprimer</Button>}

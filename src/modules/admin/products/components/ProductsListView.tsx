@@ -32,6 +32,7 @@ import { adminProductsService } from "../services/admin-products.service";
 import type { BulkAction, ProductStatusFilter } from "../types";
 import { downloadText, productsToCsv } from "../utils/csv";
 import { BulkBar } from "./BulkBar";
+import { ActiveChips, FilterSheet, FilterTrigger, MobileSearchRow, type FilterChip } from "./FilterSheet";
 import { CsvImportModal } from "./CsvImportModal";
 import { DeadlineBadge, StockPill } from "./StockBadges";
 import { StockAdjustModal } from "./StockAdjustModal";
@@ -45,14 +46,14 @@ function Toggle({ active, onClick, children }: { active: boolean; onClick: () =>
       type="button"
       aria-pressed={active}
       onClick={onClick}
-      className={cn("h-[45px] rounded-box border px-4 text-[13px] font-semibold transition-colors", active ? "border-primary bg-primary text-white" : "border-line bg-white hover:border-primary hover:text-primary")}
+      className={cn("h-12 rounded-box border px-3 text-[13px] font-semibold transition-colors active:scale-[0.97] sm:h-[45px] sm:px-4", active ? "border-primary bg-primary text-white" : "border-line bg-white hover:border-primary hover:text-primary")}
     >
       {children}
     </button>
   );
 }
 
-const iconBtn = "grid size-9 place-items-center rounded-full bg-chip transition-colors";
+const iconBtn = "grid size-11 place-items-center rounded-full bg-chip transition-colors active:scale-90 sm:size-9";
 
 function Content() {
   const { params, set, reset, activeCount } = useAdminProductFilters();
@@ -70,6 +71,7 @@ function Content() {
   }, [debounced]);
 
   const [advanced, setAdvanced] = useState(false);
+  const [sheet, setSheet] = useState(false);
   const { data, isLoading } = useAdminProducts(params);
   const trash = useTrashProducts();
   const restore = useRestoreProducts();
@@ -89,6 +91,18 @@ function Content() {
   // la sélection ne survit pas à un changement de filtre / page
   const key = JSON.stringify(params);
   useEffect(() => setSelected(new Set()), [key]);
+
+  const catName = (categories ?? []).find((c) => c.id === params.category)?.name;
+  const chips: FilterChip[] = [
+    ...(params.category ? [{ key: "cat", label: catName ?? "Catégorie", onRemove: () => set({ cat: "" }) }] : []),
+    ...(params.onSale ? [{ key: "sale", label: "En promo", onRemove: () => set({ sale: false }) }] : []),
+    ...(params.lowStock ? [{ key: "low", label: "Stock bas", onRemove: () => set({ low: false }) }] : []),
+    ...(params.outOfStock ? [{ key: "out", label: "Rupture", onRemove: () => set({ out: false }) }] : []),
+    ...(params.badge ? [{ key: "badge", label: params.badge, onRemove: () => set({ badge: "" }) }] : []),
+    ...(params.minPrice != null ? [{ key: "min", label: `≥ ${formatPrice(params.minPrice)}`, onRemove: () => set({ min: "" }) }] : []),
+    ...(params.maxPrice != null ? [{ key: "max", label: `≤ ${formatPrice(params.maxPrice)}`, onRemove: () => set({ max: "" }) }] : []),
+    ...(params.minDiscount != null ? [{ key: "disc", label: `Remise ≥ ${params.minDiscount}%`, onRemove: () => set({ disc: "" }) }] : []),
+  ];
 
   const rows = data?.results ?? [];
   const allChecked = rows.length > 0 && rows.every((p) => selected.has(p.id));
@@ -117,17 +131,21 @@ function Content() {
           key: "select",
           header: <input type="checkbox" aria-label="Tout sélectionner" checked={allChecked} onChange={toggleAll} className="size-4 cursor-pointer accent-primary" />,
           className: "w-10",
-          cell: (p: Product) => <input type="checkbox" aria-label={`Sélectionner ${p.name}`} checked={selected.has(p.id)} onChange={() => toggleOne(p.id)} onClick={(e) => e.stopPropagation()} className="size-4 cursor-pointer accent-primary" />,
+          cell: (p: Product) => (
+            <label className="-m-3 grid size-11 cursor-pointer place-items-center sm:m-0 sm:size-auto" onClick={(e) => e.stopPropagation()}>
+              <input type="checkbox" aria-label={`Sélectionner ${p.name}`} checked={selected.has(p.id)} onChange={() => toggleOne(p.id)} className="size-5 cursor-pointer accent-primary sm:size-4" />
+            </label>
+          ),
         } satisfies Column<Product>]
       : []),
     {
       key: "product",
       header: "Produit",
       cell: (p) => (
-        <div className="flex min-w-[220px] items-center gap-3">
-          <span className={cn("relative size-12 shrink-0 overflow-hidden rounded-md bg-page", p.isActive === false && "opacity-50 grayscale")}>{p.image && <Image src={p.image} alt="" fill sizes="48px" className="object-cover" />}</span>
+        <div className="flex min-w-0 items-center gap-3 sm:min-w-[220px]">
+          <span className={cn("relative size-14 shrink-0 sm:size-12 overflow-hidden rounded-md bg-page", p.isActive === false && "opacity-50 grayscale")}>{p.image && <Image src={p.image} alt="" fill sizes="48px" className="object-cover" />}</span>
           <div className="min-w-0">
-            <Link href={ROUTES.admin.product(p.id)} className="line-clamp-1 font-bold hover:text-primary">{p.name}</Link>
+            <Link href={ROUTES.admin.product(p.id)} className="-my-1.5 line-clamp-2 py-1.5 font-bold leading-[19px] hover:text-primary sm:line-clamp-1">{p.name}</Link>
             <p className="flex items-center gap-1.5 text-[12px] text-ink-3">
               {p.category}
               {p.isActive === false && <span className="inline-flex items-center gap-0.5 font-semibold text-ink-2"><EyeSlash size={12} /> masqué</span>}
@@ -153,12 +171,13 @@ function Content() {
     },
     ...(canManage
       ? [
-          { key: "cost", header: "Achat", align: "right", hideBelow: "lg", cell: (p: Product) => <span className="text-ink-2">{p.pricePrimary != null ? formatPrice(p.pricePrimary) : "—"}</span> } satisfies Column<Product>,
+          { key: "cost", header: "Achat", align: "right", hideBelow: "lg", mobile: "hide", cell: (p: Product) => <span className="text-ink-2">{p.pricePrimary != null ? formatPrice(p.pricePrimary) : "—"}</span> } satisfies Column<Product>,
           {
             key: "margin",
             header: "Marge",
             align: "right",
             hideBelow: "lg",
+            mobile: "hide",
             cell: (p: Product) => {
               if (p.pricePrimary == null) return <span className="text-ink-3">—</span>;
               const cur = getPricing(p).current;
@@ -180,6 +199,7 @@ function Content() {
       key: "rating",
       header: "Note",
       hideBelow: "xl",
+      mobile: "hide",
       cell: (p) => (p.rating ? <span className="inline-flex items-center gap-1 font-semibold"><Star1 size={14} variant="Bold" color="#FFA500" />{p.rating.toFixed(1)} <span className="font-normal text-ink-3">({p.reviewsCount})</span></span> : <span className="text-ink-3">—</span>),
     },
     {
@@ -187,7 +207,7 @@ function Content() {
       header: "",
       align: "right",
       cell: (p) => (
-        <div className="flex justify-end gap-1.5" onClick={(e) => e.stopPropagation()}>
+        <div className="flex flex-wrap justify-end gap-2 sm:flex-nowrap sm:gap-1.5" onClick={(e) => e.stopPropagation()}>
           {params.status === "trash" ? (
             <>
               {canManage && <button onClick={() => restore.mutate([p.id], { onSuccess: () => toast.success("Produit restauré", p.name), onError: (e) => toast.error("Restauration impossible", getErrorMessage(e)) })} aria-label="Restaurer" title="Restaurer" className={cn(iconBtn, "hover:bg-primary hover:text-white")}><Refresh2 size={17} /></button>}
@@ -221,7 +241,7 @@ function Content() {
         }
       />
 
-      <div className="grid grid-cols-2 gap-4 xl:grid-cols-5">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-5">
         <StatCard label="Produits actifs" value={stats?.total ?? 0} icon={<Box size={22} variant="Bold" />} tone="green" />
         <StatCard label="En promotion" value={stats?.onSale ?? 0} icon={<Tag size={22} variant="Bold" />} tone="red" delay={0.05} />
         <StatCard label="Stock bas" value={stats?.lowStock ?? 0} icon={<Warning2 size={22} variant="Bold" />} tone="orange" delay={0.1} />
@@ -238,7 +258,32 @@ function Content() {
             tabs={[{ value: "active", label: "Actifs" }, { value: "trash", label: "Corbeille", count: stats?.trashed ?? 0 }]}
           />
         </div>
-        <div className="flex flex-wrap items-center gap-3 border-b border-line-3 p-4 sm:p-5">
+        {/* Mobile : recherche + « Filtrer » (feuille) + pastilles des filtres actifs */}
+        <div className="space-y-3 border-b border-line-3 p-4 sm:hidden">
+          <MobileSearchRow>
+            <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Rechercher un produit…" aria-label="Rechercher" inputMode="search" className="field min-w-0 flex-1" />
+            <FilterTrigger count={activeCount} onClick={() => setSheet(true)} />
+          </MobileSearchRow>
+          <ActiveChips chips={chips} />
+        </div>
+        <FilterSheet open={sheet} onClose={() => setSheet(false)} title="Filtrer les produits" onReset={() => { reset(); setSearch(""); }} resetDisabled={activeCount === 0}>
+          <Select label="Catégorie" value={params.category ? String(params.category) : ""} onChange={(e) => set({ cat: e.target.value })} options={[{ value: "", label: "Toutes les catégories" }, ...(categories ?? []).map((c) => ({ value: c.id, label: c.name }))]} />
+          <div>
+            <p className="mb-2 text-[13px] font-semibold">Disponibilité</p>
+            <div className="grid grid-cols-3 gap-2">
+              <Toggle active={!!params.onSale} onClick={() => set({ sale: !params.onSale })}>En promo</Toggle>
+              <Toggle active={!!params.lowStock} onClick={() => set({ low: !params.lowStock, out: undefined })}>Stock bas</Toggle>
+              <Toggle active={!!params.outOfStock} onClick={() => set({ out: !params.outOfStock, low: undefined })}>Rupture</Toggle>
+            </div>
+          </div>
+          <Select label="Badge" value={params.badge ?? ""} onChange={(e) => set({ badge: e.target.value })} options={[{ value: "", label: "Tous" }, ...BADGES.map((b) => ({ value: b, label: b }))]} />
+          <div className="grid grid-cols-2 gap-3">
+            <Input label="Prix min ($)" type="number" inputMode="decimal" min="0" value={params.minPrice ?? ""} onChange={(e) => set({ min: e.target.value })} />
+            <Input label="Prix max ($)" type="number" inputMode="decimal" min="0" value={params.maxPrice ?? ""} onChange={(e) => set({ max: e.target.value })} />
+          </div>
+          <Input label="Remise minimum (%)" type="number" inputMode="numeric" min="0" max="90" value={params.minDiscount ?? ""} onChange={(e) => set({ disc: e.target.value })} />
+        </FilterSheet>
+        <div className="hidden flex-wrap items-center gap-3 border-b border-line-3 p-5 sm:flex">
           <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Rechercher un produit…" aria-label="Rechercher" className="field w-full sm:w-[260px]" />
           <Select
             aria-label="Catégorie"
@@ -257,7 +302,7 @@ function Content() {
         </div>
         <AnimatePresence initial={false}>
           {advanced && (
-            <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden border-b border-line-3">
+            <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="hidden overflow-hidden border-b border-line-3 sm:block">
               <div className="grid gap-4 p-4 sm:grid-cols-2 sm:p-5 lg:grid-cols-4">
                 <Select label="Badge" value={params.badge ?? ""} onChange={(e) => set({ badge: e.target.value })} options={[{ value: "", label: "Tous" }, ...BADGES.map((b) => ({ value: b, label: b }))]} />
                 <Input label="Prix min ($)" type="number" min="0" value={params.minPrice ?? ""} onChange={(e) => set({ min: e.target.value })} />

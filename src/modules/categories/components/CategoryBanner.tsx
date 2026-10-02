@@ -11,14 +11,14 @@ export function CategoryBanner({ category }: { category: Category }) {
   return (
     <div className="relative overflow-hidden rounded-box">
       {category.image && (
-        <ParallaxImage src={category.image} alt="" fill sizes="1300px" priority wrapperClassName="absolute inset-0" strength={50} />
+        <ParallaxImage src={category.image} alt="" fill sizes="1300px" priority wrapperClassName="!absolute inset-0" strength={50} />
       )}
       <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent" />
-      <div className="relative flex min-h-[200px] flex-col justify-center gap-3 px-6 py-10 text-white sm:min-h-[240px] sm:px-[60px]">
-        <motion.span initial={{ scale: 0, rotate: -30 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: "spring", delay: 0.1 }} className="grid size-12 place-items-center rounded-full bg-primary">
+      <div className="relative flex min-h-[170px] flex-col justify-center gap-2 px-5 py-6 text-white sm:min-h-[240px] sm:gap-3 sm:px-[60px] sm:py-10">
+        <motion.span initial={{ scale: 0, rotate: -30 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: "spring", delay: 0.1 }} className="grid size-11 place-items-center rounded-full bg-primary sm:size-12">
           <CategoryIcon name={category.icon} size={24} variant="Bold" />
         </motion.span>
-        <motion.h1 initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2, duration: 0.6 }} className="text-[30px] leading-[36px] sm:text-[40px] sm:leading-[48px]">
+        <motion.h1 initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2, duration: 0.6 }} className="text-[26px] leading-[32px] sm:text-[40px] sm:leading-[48px]">
           {category.name}
         </motion.h1>
         {category.description && (

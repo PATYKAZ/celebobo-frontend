@@ -52,12 +52,12 @@ export function LoginView() {
         headline="Votre high-tech, livré en toute confiance."
         footer={<>Pas encore de compte ? <Link href={`${ROUTES.register}${searchSuffix}`} className="font-bold text-primary hover:underline">Créer un compte</Link></>}
       >
-        <form onSubmit={submit} noValidate className="space-y-5">
-          <Input label="E-mail ou nom d'utilisateur" required value={form.login} onChange={(e) => setForm({ ...form, login: e.target.value })} error={errors.login ?? fieldError(login.error, "login", "email", "username")} leftIcon={<Profile size={17} />} autoComplete="username" />
-          <Input label="Mot de passe" required type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} error={errors.password ?? fieldError(login.error, "password")} leftIcon={<Lock size={17} />} autoComplete="current-password" />
+        <form onSubmit={submit} noValidate className="space-y-4 sm:space-y-5">
+          <Input label="E-mail ou nom d'utilisateur" required value={form.login} onChange={(e) => setForm({ ...form, login: e.target.value })} error={errors.login ?? fieldError(login.error, "login", "email", "username")} leftIcon={<Profile size={17} />} autoComplete="username" autoCapitalize="none" autoCorrect="off" spellCheck={false} enterKeyHint="next" />
+          <Input label="Mot de passe" required type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} error={errors.password ?? fieldError(login.error, "password")} leftIcon={<Lock size={17} />} autoComplete="current-password" enterKeyHint="go" />
           <div className="flex items-center justify-between gap-3">
             <Checkbox checked={form.remember} onChange={(e) => setForm({ ...form, remember: e.target.checked })} label="Se souvenir de moi" />
-            <button type="button" onClick={() => setForgot(true)} className="text-[13px] font-semibold text-primary hover:underline">Mot de passe oublié ?</button>
+            <button type="button" onClick={() => setForgot(true)} className="inline-flex min-h-11 items-center text-[13px] font-semibold text-primary hover:underline">Mot de passe oublié ?</button>
           </div>
           {general && <p role="alert" className="rounded-md bg-danger-50 px-3 py-2 text-[13px] text-danger">{general}</p>}
           <Button type="submit" size="lg" fullWidth loading={login.isPending}>Se connecter</Button>

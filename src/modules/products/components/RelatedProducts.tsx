@@ -20,21 +20,22 @@ export function RelatedProducts({ productId }: { productId: number }) {
   if (!isLoading && !data?.length) return null;
 
   return (
-    <Block pad="none" className="p-5 sm:p-[30px]">
+    <Block pad="none" className="min-w-0 overflow-hidden p-3 sm:p-[30px]">
       <SectionHeader
         title="Produits similaires"
         viewAllHref={ROUTES.products}
-        right={<SliderArrows onPrev={() => sw?.slidePrev()} onNext={() => sw?.slideNext()} canPrev={!edge.begin} canNext={!edge.end} />}
+        right={<SliderArrows className="hidden md:flex" onPrev={() => sw?.slidePrev()} onNext={() => sw?.slideNext()} canPrev={!edge.begin} canNext={!edge.end} />}
       />
-      <div className="mt-5">
+      <div className="mt-3 sm:mt-5">
         {isLoading ? (
           <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-5">{Array.from({ length: 5 }, (_, i) => <ProductCardSkeleton key={i} />)}</div>
         ) : (
           <Swiper
             onSwiper={setSw}
             onSlideChange={(s) => setEdge({ begin: s.isBeginning, end: s.isEnd })}
-            slidesPerView={2}
-            breakpoints={{ 640: { slidesPerView: 3 }, 1024: { slidesPerView: 4 }, 1280: { slidesPerView: 5 } }}
+            slidesPerView={1.6}
+            className="w-full"
+            breakpoints={{ 480: { slidesPerView: 2.2 }, 640: { slidesPerView: 3 }, 1024: { slidesPerView: 4 }, 1280: { slidesPerView: 5 } }}
           >
             {data?.map((p) => (
               <SwiperSlide key={p.id} className="!h-auto">

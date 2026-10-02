@@ -35,27 +35,30 @@ function OrderRow({ o }: { o: ResellerOpenOrder }) {
   const advance = useSetOrderStatus();
   const next = o.nextStatus;
   return (
-    <li className="flex flex-col gap-3 rounded-box border border-line-3 p-4 transition-colors hover:border-primary/40 sm:flex-row sm:items-center">
+    <li className="rounded-box border border-line-3 p-4 transition-colors hover:border-primary/40 sm:flex sm:items-center sm:gap-3">
       <div className="min-w-0 flex-1">
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-          <Link href={ROUTES.admin.order(o.id)} className="text-[15px] font-bold hover:text-primary">Commande #{o.id}</Link>
-          <StatusDot tone={ORDER_STATUS_TONE[o.status]}>{ORDER_STATUS_LABEL[o.status]}</StatusDot>
-          <span className="text-[12px] text-ink-3">{formatRelative(o.createdAt)}</span>
+        <div className="flex items-start justify-between gap-3 sm:block">
+          <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
+            <Link href={ROUTES.admin.order(o.id)} className="inline-flex min-h-9 items-center text-[16px] font-bold hover:text-primary sm:min-h-0 sm:text-[15px]">Commande #{o.id}</Link>
+            <StatusDot tone={ORDER_STATUS_TONE[o.status]}>{ORDER_STATUS_LABEL[o.status]}</StatusDot>
+            <span className="text-[12px] text-ink-3">{formatRelative(o.createdAt)}</span>
+          </div>
+          <span className="shrink-0 text-[17px] font-bold sm:hidden">{formatPrice(o.total)}</span>
         </div>
-        <p className="mt-1 truncate text-[13px] text-ink-2"><strong className="text-ink">{o.clientName}</strong> · {o.itemsSummary}</p>
+        <p className="mt-1 line-clamp-2 text-[13px] leading-[19px] text-ink-2 sm:truncate"><strong className="text-ink">{o.clientName}</strong> · {o.itemsSummary}</p>
       </div>
-      <div className="flex shrink-0 flex-wrap items-center gap-2 sm:justify-end">
-        <span className="mr-1 text-[16px] font-bold">{formatPrice(o.total)}</span>
+      <div className="mt-3.5 flex items-center gap-2 sm:mt-0 sm:shrink-0 sm:justify-end">
+        <span className="mr-1 hidden text-[16px] font-bold sm:inline">{formatPrice(o.total)}</span>
         {o.conversationId != null && (
-          <Link href={ROUTES.admin.conversation(o.conversationId)} className="relative inline-flex h-9 items-center gap-1.5 rounded-md bg-chip px-3 text-[12px] font-bold transition-colors hover:bg-primary hover:text-white">
-            <Messages2 size={15} variant="Bold" /> Discussion
-            {o.unread > 0 && <span className="absolute -right-1.5 -top-1.5 grid min-w-[18px] place-items-center rounded-full bg-danger px-1 text-[10px] leading-[18px] text-white">{o.unread}</span>}
+          <Link href={ROUTES.admin.conversation(o.conversationId)} className="relative inline-flex h-12 flex-1 items-center justify-center gap-1.5 rounded-box bg-chip px-3 text-[13px] font-bold transition-all hover:bg-primary hover:text-white active:scale-95 sm:h-9 sm:flex-none sm:rounded-md sm:text-[12px]">
+            <Messages2 size={16} variant="Bold" /> Discussion
+            {o.unread > 0 && <span className="absolute -right-1.5 -top-1.5 grid min-w-[20px] place-items-center rounded-full bg-danger px-1 text-[11px] leading-[20px] text-white ring-2 ring-white">{o.unread}</span>}
           </Link>
         )}
         {next && (
           <Button
-            size="xs"
-            className="h-9"
+            size="sm"
+            className="max-sm:min-h-12 max-sm:flex-[2] sm:h-9"
             upper={false}
             loading={advance.isPending}
             leftIcon={<TickCircle size={14} variant="Bold" />}
@@ -84,7 +87,7 @@ export function ResellerDashboardView() {
     return (
       <>
         <PageHeader title={`Bonjour, ${first}`} description="Chargement de votre espace…" />
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">{Array.from({ length: 4 }, (_, i) => <Skeleton key={i} className="h-[132px] rounded-box" />)}</div>
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">{Array.from({ length: 4 }, (_, i) => <Skeleton key={i} className="h-[112px] rounded-box sm:h-[132px]" />)}</div>
         <Skeleton className="h-[320px] rounded-box" />
       </>
     );
@@ -96,8 +99,8 @@ export function ResellerDashboardView() {
     <>
       <PageHeader title={`Bonjour, ${first} 👋`} description={`Votre espace revendeur · ${data.period.label}`} actions={<AvailabilityToggle value={data.availability} />} />
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard label={`Commandes ouvertes · ${data.orders.assigned} assignées`} value={data.orders.open} icon={<Box size={22} variant="Bold" />} tone="blue" />
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
+        <StatCard label="Commandes ouvertes" value={data.orders.open} icon={<Box size={22} variant="Bold" />} tone="blue" />
         <StatCard label="Discussions à répondre" value={data.awaitingReply} icon={<Messages2 size={22} variant="Bold" />} tone={data.awaitingReply ? "orange" : "green"} delay={0.05} />
         <StatCard
           label={`Mes ventes · ${data.period.label}`}
@@ -111,21 +114,21 @@ export function ResellerDashboardView() {
         <StatCard label={`Commission due (taux ${Math.round(data.commission.rate * 100)} %)`} value={data.commission.due} format={formatPrice} icon={<Wallet3 size={22} variant="Bold" />} tone="green" deltaLabel="" delay={0.15} />
       </div>
 
-      <div className="grid items-start gap-4 xl:grid-cols-[1fr_390px]">
-        <div className="flex min-w-0 flex-col gap-4">
+      <div className="grid items-start gap-3 sm:gap-4 xl:grid-cols-[1fr_390px]">
+        <div className="flex min-w-0 flex-col gap-3 sm:gap-4">
           <Reveal>
             <Block pad="sm">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <h2 className="text-[16px] font-bold leading-[22px]">Mes commandes par statut</h2>
-                <Link href={ROUTES.admin.orders} className="group inline-flex items-center gap-1 text-[13px] font-bold text-primary">
+                <Link href={ROUTES.admin.orders} className="group -mr-2 inline-flex min-h-11 items-center gap-1 px-2 text-[13px] font-bold text-primary">
                   Tout voir <ArrowRight2 size={14} className="transition-transform group-hover:translate-x-1" />
                 </Link>
               </div>
               {statuses.length ? (
-                <RevealGroup className="mt-3 flex flex-wrap gap-2">
+                <RevealGroup className="no-scrollbar -mx-4 mt-3 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0">
                   {statuses.map((s) => (
-                    <RevealItem key={s}>
-                      <span className="inline-flex items-center gap-2 rounded-full bg-chip py-1 pl-1 pr-3 text-[13px] font-semibold">
+                    <RevealItem key={s} className="shrink-0">
+                      <span className="inline-flex items-center gap-2 whitespace-nowrap rounded-full bg-chip py-1.5 pl-1.5 pr-3 text-[13px] font-semibold">
                         <span className="grid min-w-7 place-items-center rounded-full bg-white px-1.5 py-0.5 text-[13px] font-bold">{data.orders.byStatus[s]}</span>
                         <StatusDot tone={ORDER_STATUS_TONE[s]}>{ORDER_STATUS_LABEL[s]}</StatusDot>
                       </span>
@@ -150,20 +153,20 @@ export function ResellerDashboardView() {
           </Reveal>
         </div>
 
-        <div className="flex min-w-0 flex-col gap-4">
+        <div className="flex min-w-0 flex-col gap-3 sm:gap-4">
           <InviteCard code={data.code} invitedCount={data.invitedCount} />
           <Reveal>
             <Block pad="sm">
               <div className="mb-3 flex items-center justify-between">
                 <h2 className="text-[16px] font-bold leading-[22px]">Mes dernières ventes</h2>
-                <Link href={ROUTES.admin.sales} className="text-[13px] font-bold text-primary hover:underline">Voir tout</Link>
+                <Link href={ROUTES.admin.sales} className="-mr-2 inline-flex min-h-11 items-center px-2 text-[13px] font-bold text-primary hover:underline">Voir tout</Link>
               </div>
               {data.recentSales.length === 0 ? (
                 <p className="py-6 text-center text-[13px] text-ink-3">Aucune vente enregistrée.</p>
               ) : (
                 <ul className="divide-y divide-line-3">
                   {data.recentSales.map((s) => (
-                    <li key={s.id} className="flex items-center gap-3 py-3">
+                    <li key={s.id} className="flex min-w-0 items-center gap-3 py-3">
                       <span className="relative size-11 shrink-0 overflow-hidden rounded-md bg-page">{s.productImage && <Image src={s.productImage} alt="" fill sizes="44px" className="object-cover" />}</span>
                       <div className="min-w-0 flex-1">
                         <p className="truncate text-[13px] font-semibold leading-[18px]">{s.productName}{s.quantity > 1 ? ` ×${s.quantity}` : ""}</p>

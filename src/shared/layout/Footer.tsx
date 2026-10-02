@@ -3,6 +3,7 @@ import { ArrowDown2, Call, Facebook, Instagram, Location, Sms, Tenx, Whatsapp, Y
 import { ROUTES } from "@/config/routes";
 import { SITE } from "@/config/site";
 import { CircleButton } from "@/shared/ui/CircleButton";
+import { FooterColumn } from "./FooterColumn";
 import { NewsletterForm } from "./NewsletterForm";
 
 const COLUMNS = [
@@ -58,9 +59,9 @@ const PAYMENTS = [
 
 export function Footer() {
   return (
-    <footer className="mt-[40px] bg-white">
-      <div className="container pt-[60px] lg:pt-[79px]">
-        <div className="grid gap-10 lg:grid-cols-[293px_repeat(4,1fr)] lg:gap-8">
+    <footer className="mt-6 bg-white lg:mt-[40px]">
+      <div className="container pt-8 lg:pt-[79px]">
+        <div className="grid gap-8 lg:grid-cols-[293px_repeat(4,1fr)] lg:gap-8">
           {/* Colonne 1 */}
           <div>
             <h3 className="text-section uppercase">Celebobo — la tech en confiance</h3>
@@ -81,16 +82,7 @@ export function Footer() {
           </div>
 
           {COLUMNS.map((col) => (
-            <div key={col.title}>
-              <h3 className="text-section uppercase">{col.title}</h3>
-              <ul className="mt-[30px]">
-                {col.links.map(([label, href]) => (
-                  <li key={label}>
-                    <Link href={href} className="link-underline text-[14px] leading-[29.4px] text-ink-2 transition-colors hover:text-primary">{label}</Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <FooterColumn key={col.title} title={col.title} links={col.links} />
           ))}
         </div>
 

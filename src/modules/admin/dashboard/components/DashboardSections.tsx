@@ -92,7 +92,7 @@ export function RecentSalesTable({ data }: { data?: DashboardData }) {
     { key: "price", header: "Montant", align: "right", cell: (s) => <strong>{formatPrice(s.priceFinal)}</strong> },
   ];
   return (
-    <ChartCard title="Ventes récentes" subtitle="Dernières transactions enregistrées" className="xl:col-span-2" legend={<Link href={ROUTES.admin.sales} className="group inline-flex items-center gap-1 text-[13px] font-semibold text-primary">Tout voir <ArrowRight2 size={13} className="transition-transform group-hover:translate-x-1" /></Link>}>
+    <ChartCard title="Ventes récentes" subtitle="Dernières transactions enregistrées" className="xl:col-span-2" legend={<Link href={ROUTES.admin.sales} className="group inline-flex min-h-10 items-center gap-1 text-[13px] font-semibold text-primary">Tout voir <ArrowRight2 size={13} className="transition-transform group-hover:translate-x-1" /></Link>}>
       <div className="-mx-5 -mb-5 sm:-mx-[26px] sm:-mb-[26px]">
         <DataTable columns={columns} rows={data?.recentSales} loading={!data} rowKey={(s) => s.id} skeletonRows={5} />
       </div>
@@ -148,7 +148,7 @@ export function TopResellerCard({ data }: { data?: DashboardData }) {
           <span className="grid size-16 place-items-center rounded-full bg-star/15 text-[#b87400]"><Crown size={32} variant="Bold" /></span>
           <p className="text-[18px] font-bold leading-[24px]">{t.name}</p>
           <p className="text-[28px] font-bold leading-[34px] text-primary">{formatPrice(t.revenue)}</p>
-          <Link href={`${ROUTES.admin.resellers}?period=${data.periodKey}`} className="group inline-flex items-center gap-1 text-[13px] font-semibold text-primary">
+          <Link href={`${ROUTES.admin.resellers}?period=${data.periodKey}`} className="group inline-flex min-h-10 items-center gap-1 text-[13px] font-semibold text-primary">
             Voir le classement <ArrowRight2 size={13} className="transition-transform group-hover:translate-x-1" />
           </Link>
         </div>

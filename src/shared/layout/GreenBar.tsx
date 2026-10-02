@@ -12,7 +12,7 @@ const PERKS = [
 /** Barre verte `nav-style3` : recherche à gauche + 3 arguments à droite (1300×75, #1ABA1A, rad 10). */
 export function GreenBar() {
   return (
-    <div className="mt-px rounded-box bg-primary px-4 py-[15px] sm:px-[30px]">
+    <div className="mt-px rounded-box bg-primary px-4 py-3 max-lg:-mx-[15px] max-lg:rounded-none max-lg:px-[19px] sm:px-[30px] lg:py-[15px]">
       <div className="flex flex-col gap-4 lg:h-[45px] lg:flex-row lg:items-center lg:justify-between">
         <SearchBar className="w-full lg:w-[517px]" />
         <ul className="hidden items-center gap-8 text-[13px] font-medium uppercase leading-[19.5px] text-white xl:flex">

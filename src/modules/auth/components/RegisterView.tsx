@@ -74,13 +74,13 @@ export function RegisterView() {
             <Input label="Prénom" required value={form.firstName} onChange={set("firstName")} error={e("firstName", "first_name")} leftIcon={<Profile size={17} />} autoComplete="given-name" />
             <Input label="Nom" required value={form.lastName} onChange={set("lastName")} error={e("lastName", "last_name")} leftIcon={<Profile size={17} />} autoComplete="family-name" />
           </div>
-          <Input label="E-mail" required type="email" value={form.email} onChange={set("email")} error={e("email")} leftIcon={<Sms size={17} />} autoComplete="email" />
-          <Input label="Téléphone" value={form.phoneNumber} onChange={set("phoneNumber")} error={e("phoneNumber", "phone")} leftIcon={<Call size={17} />} placeholder="+243 …" autoComplete="tel" />
+          <Input label="E-mail" required type="email" value={form.email} onChange={set("email")} error={e("email")} leftIcon={<Sms size={17} />} autoComplete="email" inputMode="email" autoCapitalize="none" enterKeyHint="next" />
+          <Input label="Téléphone" value={form.phoneNumber} onChange={set("phoneNumber")} error={e("phoneNumber", "phone")} leftIcon={<Call size={17} />} placeholder="+243 …" autoComplete="tel" inputMode="tel" enterKeyHint="next" />
           <div className="grid gap-4 sm:grid-cols-2">
             <Input label="Mot de passe" required type="password" value={form.password} onChange={set("password")} error={e("password")} leftIcon={<Lock size={17} />} autoComplete="new-password" />
-            <Input label="Confirmation" required type="password" value={form.passwordConfirm} onChange={set("passwordConfirm")} error={e("passwordConfirm", "password2")} leftIcon={<Lock size={17} />} autoComplete="new-password" />
+            <Input label="Confirmation" required type="password" value={form.passwordConfirm} onChange={set("passwordConfirm")} error={e("passwordConfirm", "password2")} leftIcon={<Lock size={17} />} autoComplete="new-password" enterKeyHint="next" />
           </div>
-          <Input label="Code revendeur (optionnel)" value={form.codeRevendeur} onChange={set("codeRevendeur")} error={e("codeRevendeur")} inputMode="numeric" maxLength={4} placeholder="Ex. 4821" leftIcon={<UserTick size={17} />} hint="Si un revendeur vous a invité, saisissez son code." />
+          <Input label="Code revendeur (optionnel)" value={form.codeRevendeur} onChange={set("codeRevendeur")} error={e("codeRevendeur")} inputMode="numeric" pattern="[0-9]*" maxLength={4} enterKeyHint="go" placeholder="Ex. 4821" leftIcon={<UserTick size={17} />} hint="Si un revendeur vous a invité, saisissez son code." />
           <div>
             <Checkbox checked={terms} onChange={(ev) => { setTerms(ev.target.checked); setErrors((er) => ({ ...er, terms: undefined })); }} label={<>J&apos;accepte les <Link href={ROUTES.guide} className="font-semibold text-ink underline">conditions d&apos;utilisation</Link> et la politique de confidentialité.</>} />
             {errors.terms && <p role="alert" className="mt-1 text-[12px] text-danger">{errors.terms}</p>}

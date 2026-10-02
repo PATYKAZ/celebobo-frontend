@@ -41,7 +41,7 @@ export function Toaster() {
   const items = useToastStore((s) => s.items);
   const dismiss = useToastStore((s) => s.dismiss);
   return (
-    <div aria-live="polite" className="pointer-events-none fixed inset-x-0 bottom-4 z-[100] flex flex-col items-center gap-2 px-4 sm:bottom-auto sm:left-auto sm:right-5 sm:top-5 sm:items-end">
+    <div aria-live="polite" className="pointer-events-none fixed inset-x-0 top-[max(12px,env(safe-area-inset-top))] z-[100] flex flex-col items-center gap-2 px-4 sm:left-auto sm:right-5 sm:top-5 sm:items-end">
       <AnimatePresence initial={false}>
         {items.map((t) => (
           <motion.div

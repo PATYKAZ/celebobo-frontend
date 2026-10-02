@@ -7,7 +7,7 @@ import { SITE } from "@/config/site";
 /** Carte décorative (SVG pur, sans embed externe) : quartier stylisé + épingle animée. */
 export function ContactMap() {
   return (
-    <div className="relative h-[320px] overflow-hidden rounded-box bg-[#E8F2EA] sm:h-[400px]">
+    <div className="relative h-[280px] overflow-hidden rounded-box bg-[#E8F2EA] sm:h-[400px]">
       <svg viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice" className="absolute inset-0 size-full" aria-hidden>
         <defs>
           <pattern id="blocks" width="80" height="80" patternUnits="userSpaceOnUse">
@@ -32,7 +32,7 @@ export function ContactMap() {
       <div className="absolute bottom-4 left-4 right-4 rounded-box bg-white p-4 sm:right-auto sm:max-w-[320px]">
         <p className="text-[14px] font-bold">{SITE.name} Business</p>
         <p className="mt-0.5 text-[13px] text-ink-2">{SITE.address[0]}, {SITE.address[1]}</p>
-        <a href={`https://www.google.com/maps/search/${encodeURIComponent(SITE.address.join(", "))}`} target="_blank" rel="noreferrer" className="mt-2 inline-block text-[13px] font-bold text-primary hover:underline">Itinéraire →</a>
+        <a href={`https://www.google.com/maps/search/${encodeURIComponent(SITE.address.join(", "))}`} target="_blank" rel="noreferrer" className="mt-1 inline-flex min-h-11 items-center text-[13px] font-bold text-primary hover:underline">Itinéraire →</a>
       </div>
     </div>
   );

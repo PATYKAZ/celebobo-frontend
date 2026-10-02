@@ -15,7 +15,7 @@ interface Props {
 export function SliderArrows({ onPrev, onNext, canPrev = true, canNext = true, className }: Props) {
   const b = "grid h-full flex-1 place-items-center transition-all hover:text-primary disabled:opacity-35 disabled:hover:text-ink";
   return (
-    <div className={cn("flex h-[25px] w-[70px] items-center overflow-hidden rounded-pill bg-chip-2", className)}>
+    <div className={cn("flex h-[25px] w-[70px] items-center overflow-hidden rounded-pill bg-chip-2 max-sm:h-9 max-sm:w-[92px]", className)}>
       <button aria-label="Précédent" onClick={onPrev} disabled={!canPrev} className={b}>
         <ArrowLeft2 size={12} variant="Bold" />
       </button>

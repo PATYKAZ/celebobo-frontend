@@ -103,10 +103,10 @@ function Content({ id }: { id: number }) {
         </Reveal>
       )}
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
         <StatCard label="Unités vendues" value={st?.units ?? 0} icon={<Chart2 size={22} variant="Bold" />} />
         <StatCard label="Chiffre d'affaires" value={st?.revenue ?? 0} format={formatPrice} icon={<MoneyRecive size={22} variant="Bold" />} tone="blue" delay={0.05} />
-        {canManage && <StatCard label="Bénéfice généré" value={st?.profit ?? 0} format={formatPrice} icon={<MoneyRecive size={22} variant="Bold" />} tone="orange" delay={0.1} />}
+        {canManage && <StatCard label="Bénéfice généré" value={st?.profit ?? 0} format={formatPrice} icon={<MoneyRecive size={22} variant="Bold" />} tone="orange" delay={0.1} className="col-span-2 sm:col-span-1" />}
       </div>
 
       <div className="grid gap-4 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
@@ -116,9 +116,9 @@ function Content({ id }: { id: number }) {
               {p.images[active] && <Image key={p.images[active]} src={p.images[active]} alt={p.name} fill sizes="(min-width:1024px) 40vw, 100vw" className="animate-fade-in object-cover" />}
             </div>
             {p.images.length > 1 && (
-              <div className="mt-3 flex gap-2">
+              <div className="no-scrollbar mt-3 flex gap-2 overflow-x-auto">
                 {p.images.map((src, i) => (
-                  <button key={src} onClick={() => setActive(i)} aria-label={`Image ${i + 1}`} className={cn("relative size-16 overflow-hidden rounded-md border-2 transition-all", i === active ? "border-primary" : "border-transparent opacity-70 hover:opacity-100")}>
+                  <button key={src} onClick={() => setActive(i)} aria-label={`Image ${i + 1}`} className={cn("relative size-16 shrink-0 overflow-hidden rounded-md border-2 transition-all active:scale-95", i === active ? "border-primary" : "border-transparent opacity-70 hover:opacity-100")}>
                     <Image src={src} alt="" fill sizes="64px" className="object-cover" />
                   </button>
                 ))}
@@ -130,11 +130,11 @@ function Content({ id }: { id: number }) {
         <div className="flex flex-col gap-4">
           <Reveal>
             <Block>
-              <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-2">
                 <h2 className="text-[18px]">Informations clés</h2>
-                <div className="flex gap-2">
-                  <Button size="xs" variant="chip" upper={false} leftIcon={<Clock size={14} />} onClick={() => setHistory(true)}>Historique du stock</Button>
-                  {canStock && !trashed && <Button size="xs" upper={false} leftIcon={<ArrowSwapVertical size={14} />} onClick={() => setAdjust(true)}>Ajuster le stock</Button>}
+                <div className="grid grid-cols-2 gap-2 sm:flex">
+                  <Button size="sm" variant="chip" upper={false} leftIcon={<Clock size={14} />} onClick={() => setHistory(true)}>Historique</Button>
+                  {canStock && !trashed && <Button size="sm" upper={false} leftIcon={<ArrowSwapVertical size={14} />} onClick={() => setAdjust(true)}>Ajuster le stock</Button>}
                 </div>
               </div>
               <dl className="mt-4 divide-y divide-line-3">
@@ -166,7 +166,21 @@ function Content({ id }: { id: number }) {
         <Reveal>
           <Block>
             <h2 className="text-[18px]">Variantes <span className="text-ink-3">({p.variants.length})</span></h2>
-            <div className="mt-4 overflow-x-auto rounded-box border border-line">
+            <ul className="mt-4 grid gap-2.5 sm:hidden">
+              {p.variants.map((v) => (
+                <li key={v.id} className="flex items-center justify-between gap-3 rounded-box border border-line p-3.5">
+                  <div className="min-w-0">
+                    <p className="truncate text-[14px] font-bold">{v.label}</p>
+                    <p className="mt-0.5 font-mono text-[11px] text-ink-3">{v.sku ?? "—"}</p>
+                  </div>
+                  <div className="shrink-0 text-right">
+                    <p className="text-[14px] font-bold">{formatPrice(v.price ?? p.price)}</p>
+                    <div className="mt-1"><StockPill product={{ stock: v.stock, stockThreshold: p.stockThreshold }} /></div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+            <div className="mt-4 hidden overflow-x-auto rounded-box border border-line sm:block">
               <table className="w-full min-w-[520px] text-[14px]">
                 <thead className="bg-page/60 text-left text-[11px] uppercase tracking-wide text-ink-3">
                   <tr><th className="px-4 py-2.5">Variante</th><th className="px-4 py-2.5">SKU</th><th className="px-4 py-2.5 text-right">Prix</th><th className="px-4 py-2.5 text-right">Stock</th></tr>

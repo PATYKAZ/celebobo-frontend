@@ -50,13 +50,13 @@ export function PersonalInfoForm({ profile, avatarFile, onSaved }: Props) {
   const general = generalError(mutation.error);
 
   return (
-    <form onSubmit={submit} noValidate className="space-y-5">
-      <div className="grid gap-5 sm:grid-cols-2">
+    <form onSubmit={submit} noValidate className="space-y-4 sm:space-y-5">
+      <div className="grid gap-4 sm:grid-cols-2 sm:gap-5">
         <Input label="Prénom" required value={form.firstName} onChange={set("firstName")} error={err("firstName")} leftIcon={<ProfileIcon size={17} />} autoComplete="given-name" />
         <Input label="Nom" required value={form.lastName} onChange={set("lastName")} error={err("lastName")} leftIcon={<ProfileIcon size={17} />} autoComplete="family-name" />
       </div>
-      <div className="grid gap-5 sm:grid-cols-2">
-        <Input label="Téléphone" value={form.phoneNumber} onChange={set("phoneNumber")} error={err("phoneNumber") ?? fieldError(mutation.error, "phone")} leftIcon={<Call size={17} />} placeholder="+243 …" autoComplete="tel" />
+      <div className="grid gap-4 sm:grid-cols-2 sm:gap-5">
+        <Input label="Téléphone" value={form.phoneNumber} onChange={set("phoneNumber")} error={err("phoneNumber") ?? fieldError(mutation.error, "phone")} leftIcon={<Call size={17} />} placeholder="+243 …" autoComplete="tel" inputMode="tel" enterKeyHint="next" />
         <Input label="E-mail" value={profile?.email ?? ""} disabled readOnly leftIcon={<Lock size={17} />} hint="Non modifiable." />
       </div>
       <Input
@@ -65,13 +65,15 @@ export function PersonalInfoForm({ profile, avatarFile, onSaved }: Props) {
         onChange={set("revendeurCode")}
         error={err("revendeurCode")}
         inputMode="numeric"
+        pattern="[0-9]*"
+        enterKeyHint="go"
         maxLength={4}
         placeholder="Ex. 4821"
         leftIcon={<UserTick size={17} />}
         hint="Optionnel — il sera lié à vos futures commandes."
       />
       {general && <p role="alert" className="rounded-md bg-danger-50 px-3 py-2 text-[13px] text-danger">{general}</p>}
-      <div className="flex justify-end">
+      <div className="sticky bottom-[calc(var(--tabbar-h)+8px)] z-10 -mx-4 flex justify-end bg-white/90 px-4 py-2 backdrop-blur-md max-sm:[&>button]:w-full sm:static sm:mx-0 sm:bg-transparent sm:p-0 sm:backdrop-blur-none">
         <Button type="submit" loading={mutation.isPending}>Enregistrer</Button>
       </div>
     </form>

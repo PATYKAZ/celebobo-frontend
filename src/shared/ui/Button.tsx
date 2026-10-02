@@ -17,10 +17,10 @@ const VARIANTS: Record<ButtonVariant, string> = {
 };
 
 const SIZES: Record<ButtonSize, string> = {
-  xs: "h-[28px] px-3 text-[11px] leading-[16px] rounded-md",
-  sm: "h-[34px] px-4 text-[12px] leading-[18px] rounded-box",
-  md: "h-[45px] px-6 text-[13px] leading-[19px] rounded-box",
-  lg: "h-[52px] px-8 text-[14px] leading-[21px] rounded-box",
+  xs: "h-[28px] px-3 text-[11px] leading-[16px] rounded-md max-sm:min-h-9",
+  sm: "h-[34px] px-4 text-[12px] leading-[18px] rounded-box max-sm:min-h-11",
+  md: "h-[45px] px-6 text-[13px] leading-[19px] rounded-box max-sm:min-h-12",
+  lg: "h-[52px] px-8 text-[14px] leading-[21px] rounded-box max-sm:min-h-12",
 };
 
 interface BaseProps {

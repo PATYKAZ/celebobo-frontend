@@ -1,12 +1,13 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowDown2, ArrowRight, SearchNormal1 } from "iconsax-reactjs";
+import { ArrowDown2, ArrowRight, Filter, SearchNormal1 } from "iconsax-reactjs";
 import { Fragment, useState } from "react";
 import { useDebounce } from "@/shared/hooks/useDebounce";
 import { cn } from "@/shared/lib/cn";
 import { formatDateTime, formatRelative } from "@/shared/lib/format";
 import { Block } from "@/shared/ui/Block";
+import { BottomSheet } from "@/shared/ui/BottomSheet";
 import { Button } from "@/shared/ui/Button";
 import { Input, Select } from "@/shared/ui/Form";
 import { Pagination } from "@/shared/ui/Pagination";
@@ -75,6 +76,51 @@ function Row({ e, open, onToggle }: { e: AuditEntry; open: boolean; onToggle: ()
   );
 }
 
+function DiffList({ e }: { e: AuditEntry }) {
+  return (
+    <div className="grid gap-2">
+      {e.diff!.map((d) => (
+        <div key={d.field} className="flex flex-wrap items-center gap-2 text-[13px]">
+          <code className="rounded bg-white px-2 py-0.5 font-semibold">{d.field}</code>
+          <span className="rounded bg-danger-100 px-2 py-0.5 text-danger line-through">{String(d.from ?? "—")}</span>
+          <ArrowRight size={14} className="text-ink-3" />
+          <span className="rounded bg-primary-100 px-2 py-0.5 font-semibold text-primary-dark">{String(d.to ?? "—")}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/** Carte mobile d'une entrée d'audit : action, résumé, auteur, élément ; le diff se déplie au toucher. */
+function AuditCard({ e, open, onToggle }: { e: AuditEntry; open: boolean; onToggle: () => void }) {
+  const hasDiff = !!e.diff?.length;
+  return (
+    <article className="rounded-box border border-line-3 bg-white">
+      <button onClick={hasDiff ? onToggle : undefined} disabled={!hasDiff} aria-expanded={hasDiff ? open : undefined} className="block w-full p-4 text-left disabled:cursor-default">
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <p className="text-[15px] font-bold leading-[20px]">{e.action}</p>
+            <p className="mt-0.5 text-[13px] leading-[19px] text-ink-2">{e.summary}</p>
+          </div>
+          {hasDiff && <ArrowDown2 size={18} className={cn("mt-0.5 shrink-0 text-ink-3 transition-transform", open && "rotate-180")} />}
+        </div>
+        <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[12px] text-ink-3">
+          <span className={cn("rounded-full px-2.5 py-1 font-semibold capitalize", ENTITY_STYLE[e.entity])}>{e.entity}{e.entityId != null ? ` #${e.entityId}` : ""}</span>
+          <span><strong className="text-ink">{e.actor.name}</strong> · {ROLE_LABEL[e.actor.role]}</span>
+          <span>{formatDateTime(e.at)} · {formatRelative(e.at)}</span>
+        </div>
+      </button>
+      <AnimatePresence initial={false}>
+        {open && hasDiff && (
+          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.25 }} className="overflow-hidden rounded-b-box bg-page/50">
+            <div className="p-4"><DiffList e={e} /></div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </article>
+  );
+}
+
 function AuditContent() {
   const [search, setSearch] = useState("");
   const [entity, setEntity] = useState<AuditEntity | "all">("all");
@@ -83,25 +129,58 @@ function AuditContent() {
   const [to, setTo] = useState("");
   const [page, setPage] = useState(1);
   const [openId, setOpenId] = useState<number | null>(null);
+  const [sheet, setSheet] = useState(false);
   const debounced = useDebounce(search, 300);
   const { data, isLoading } = useAuditLog({ search: debounced, entity, actorId, from: from || undefined, to: to || undefined, page, pageSize: PAGE_SIZE });
   const reset = () => { setSearch(""); setEntity("all"); setActorId("all"); setFrom(""); setTo(""); setPage(1); };
   const reg = <T,>(set: (v: T) => void) => (v: T) => { set(v); setPage(1); };
+  const activeFilters = [entity !== "all", actorId !== "all", !!from, !!to].filter(Boolean).length;
+  /** Champs de filtre partagés par la grille desktop et la feuille mobile */
+  const filterFields = (labels: boolean) => (
+    <>
+      <Select aria-label="Type d'élément" value={entity} onChange={(e) => reg(setEntity)(e.target.value as AuditEntity | "all")} options={[{ value: "all", label: "Tous les éléments" }, ...AUDIT_ENTITIES]} />
+      <Select aria-label="Auteur" value={String(actorId)} onChange={(e) => reg(setActorId)(e.target.value === "all" ? "all" : Number(e.target.value))} options={[{ value: "all", label: "Tous les auteurs" }, ...(data?.actors ?? []).map((a) => ({ value: a.id, label: a.name }))]} />
+      <Input type="date" label={labels ? "Du" : undefined} aria-label="Du" value={from} onChange={(e) => reg(setFrom)(e.target.value)} />
+      <Input type="date" label={labels ? "Au" : undefined} aria-label="Au" value={to} onChange={(e) => reg(setTo)(e.target.value)} />
+    </>
+  );
 
   return (
     <>
       <PageHeader title="Journal d'audit" description="Historique des actions sensibles : suppressions, modifications de prix, changements de statut, rôles et paiements." />
       <Block pad="none">
-        <div className="grid gap-4 p-5 sm:px-[30px] md:grid-cols-2 xl:grid-cols-[1.4fr_1fr_1fr_0.8fr_0.8fr_auto] xl:items-end">
+        {/* mobile : recherche + bouton « Filtres » (feuille) */}
+        <div className="flex items-center gap-2 p-3 md:hidden">
+          <Input wrapperClassName="flex-1" placeholder="Rechercher…" aria-label="Rechercher" leftIcon={<SearchNormal1 size={16} />} value={search} onChange={(e) => reg(setSearch)(e.target.value)} />
+          <button onClick={() => setSheet(true)} aria-label="Filtres" className="relative grid size-12 shrink-0 place-items-center rounded-md border border-line bg-white active:scale-95">
+            <Filter size={20} />
+            {activeFilters > 0 && <span className="absolute -right-1 -top-1 grid size-[18px] place-items-center rounded-full bg-primary text-[10px] font-bold text-white">{activeFilters}</span>}
+          </button>
+        </div>
+        <BottomSheet open={sheet} onClose={() => setSheet(false)} title="Filtres">
+          <div className="grid gap-3 pb-2 pt-1">
+            {filterFields(true)}
+            <div className="mt-1 grid grid-cols-2 gap-2.5">
+              <Button variant="chip" upper={false} onClick={reset}>Réinitialiser</Button>
+              <Button upper={false} onClick={() => setSheet(false)}>Appliquer</Button>
+            </div>
+          </div>
+        </BottomSheet>
+        {/* desktop / tablette : grille de filtres */}
+        <div className="hidden gap-4 p-5 sm:px-[30px] md:grid md:grid-cols-2 xl:grid-cols-[1.4fr_1fr_1fr_0.8fr_0.8fr_auto] xl:items-end">
           <Input placeholder="Rechercher une action, un auteur…" aria-label="Rechercher" leftIcon={<SearchNormal1 size={16} />} value={search} onChange={(e) => reg(setSearch)(e.target.value)} />
-          <Select aria-label="Type d'élément" value={entity} onChange={(e) => reg(setEntity)(e.target.value as AuditEntity | "all")} options={[{ value: "all", label: "Tous les éléments" }, ...AUDIT_ENTITIES]} />
-          <Select aria-label="Auteur" value={String(actorId)} onChange={(e) => reg(setActorId)(e.target.value === "all" ? "all" : Number(e.target.value))} options={[{ value: "all", label: "Tous les auteurs" }, ...(data?.actors ?? []).map((a) => ({ value: a.id, label: a.name }))]} />
-          <Input type="date" aria-label="Du" value={from} onChange={(e) => reg(setFrom)(e.target.value)} />
-          <Input type="date" aria-label="Au" value={to} onChange={(e) => reg(setTo)(e.target.value)} />
+          {filterFields(false)}
           <Button variant="chip" upper={false} onClick={reset}>Réinitialiser</Button>
         </div>
 
-        <div className="overflow-x-auto">
+        {/* mobile : cartes */}
+        <div className="flex flex-col gap-2.5 p-3 pt-1 md:hidden">
+          {isLoading
+            ? Array.from({ length: 4 }, (_, i) => <div key={i} className="space-y-2.5 rounded-box border border-line-3 p-4"><Skeleton className="h-5 w-2/3" /><Skeleton className="h-4 w-full" /><Skeleton className="h-4 w-1/2" /></div>)
+            : data?.results.map((e) => <AuditCard key={e.id} e={e} open={openId === e.id} onToggle={() => setOpenId(openId === e.id ? null : e.id)} />)}
+        </div>
+
+        <div className="hidden overflow-x-auto md:block">
           <table className="w-full min-w-[640px] border-collapse">
             <thead>
               <tr className="border-b border-line-3 bg-page/50 text-left text-[12px] font-semibold uppercase tracking-wide text-ink-3">

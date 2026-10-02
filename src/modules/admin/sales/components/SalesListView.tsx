@@ -26,6 +26,7 @@ import { StatCard } from "../../ui/StatCard";
 import { useDeleteSale, useSales, useSellers } from "../hooks/useSales";
 import { salesCsv, salesService } from "../services/sales.service";
 import { METHOD_STYLE, PRESET_LABEL, SALE_STATUS_LABEL, type PaymentMethod, type Sale, type SaleListParams, type SaleStatus } from "../types";
+import { ActiveChips, FilterSheet, FilterTrigger, MobileSearchRow, type FilterChip } from "../../products/components/FilterSheet";
 import { MethodBadge } from "./MethodBadge";
 import { RefundDialog } from "./RefundDialog";
 import { SaleDetailDrawer } from "./SaleDetailDrawer";
@@ -36,7 +37,7 @@ const PRESETS: NonNullable<SaleListParams["preset"]>[] = ["", "2", "7", "30", "9
 
 export { MethodBadge };
 
-const chip = (on: boolean) => cn("rounded-full border px-3.5 py-2 text-[12px] font-semibold transition-all", on ? "border-primary bg-primary text-white" : "border-line bg-white hover:border-primary hover:text-primary");
+const chip = (on: boolean) => cn("min-h-10 rounded-full border px-4 py-2 text-[13px] font-semibold transition-all active:scale-95 sm:min-h-0 sm:px-3.5 sm:text-[12px]", on ? "border-primary bg-primary text-white" : "border-line bg-white hover:border-primary hover:text-primary");
 
 function SalesListContent() {
   const { user } = useAuth();
@@ -61,6 +62,7 @@ function SalesListContent() {
   const [sellerId, setSellerId] = useState<number | null>(null);
   const [view, setView] = useState<"all" | "revendeur">("all");
   const [page, setPage] = useState(1);
+  const [sheet, setSheet] = useState(false);
   const q = useDebounce(search, 300);
 
   const params: SaleListParams = { search: q, method, status, preset: custom ? "" : preset, dateFrom: custom ? dateFrom : "", dateTo: custom ? dateTo : "", recordedOn: custom ? recordedOn : "", sellerId, view, page, pageSize: PAGE_SIZE };
@@ -72,6 +74,21 @@ function SalesListContent() {
   const [detail, setDetail] = useState<Sale | null>(null);
   const stats = data?.stats;
   const short = custom ? "période perso." : PRESET_LABEL[preset].toLowerCase();
+
+  const sellerName = (sellers ?? []).find((x) => x.id === sellerId)?.name;
+  const chips: FilterChip[] = [
+    ...(custom
+      ? [{ key: "custom", label: "Période perso.", onRemove: () => { setCustom(false); setDateFrom(""); setDateTo(""); setRecordedOn(""); setPage(1); } }]
+      : preset
+        ? [{ key: "preset", label: `${preset} j`, onRemove: () => { setPreset(""); setPage(1); } }]
+        : []),
+    ...(method ? [{ key: "method", label: METHOD_STYLE[method].label, onRemove: () => { setMethod(""); setPage(1); } }] : []),
+    ...(status ? [{ key: "status", label: SALE_STATUS_LABEL[status], onRemove: () => { setStatus(""); setPage(1); } }] : []),
+    ...(sellerId != null ? [{ key: "seller", label: sellerName ?? "Vendeur", onRemove: () => { setSellerId(null); setPage(1); } }] : []),
+  ];
+  const resetAll = () => {
+    setMethod(""); setStatus(""); setPreset(""); setCustom(false); setDateFrom(""); setDateTo(""); setRecordedOn(""); setSellerId(null); setSearch(""); setPage(1);
+  };
 
   const reset = <T,>(set: (v: T) => void) => (v: T) => {
     set(v);
@@ -104,11 +121,11 @@ function SalesListContent() {
       key: "product",
       header: "Produit",
       cell: (s) => (
-        <div className="flex min-w-[210px] items-center gap-3">
-          <span className="relative size-11 shrink-0 overflow-hidden rounded-md bg-page">{s.productImage && <Image src={s.productImage} alt="" fill sizes="44px" className={cn("object-cover", s.status !== "valide" && "grayscale")} />}</span>
+        <div className="flex min-w-0 items-center gap-3 sm:min-w-[210px]">
+          <span className="relative size-12 shrink-0 sm:size-11 overflow-hidden rounded-md bg-page">{s.productImage && <Image src={s.productImage} alt="" fill sizes="44px" className={cn("object-cover", s.status !== "valide" && "grayscale")} />}</span>
           <div className="min-w-0">
-            <p className={cn("line-clamp-1 font-bold", dim(s))}>{s.productName}{s.quantity > 1 && <span className="ml-1.5 rounded bg-chip px-1.5 py-0.5 text-[11px] no-underline">× {s.quantity}</span>}</p>
-            <p className="text-[12px] text-ink-3">{s.category}{s.orderId && <> · <Link href={ROUTES.admin.order(s.orderId)} className="text-primary hover:underline">Cmd #{s.orderId}</Link></>}</p>
+            <p className={cn("line-clamp-2 font-bold leading-[19px] sm:line-clamp-1", dim(s))}>{s.productName}{s.quantity > 1 && <span className="ml-1.5 rounded bg-chip px-1.5 py-0.5 text-[11px] no-underline">× {s.quantity}</span>}</p>
+            <p className="text-[12px] text-ink-3">{s.status !== "valide" && <span className="mr-1.5 rounded bg-chip px-1.5 py-0.5 font-semibold text-ink-2 sm:hidden">{SALE_STATUS_LABEL[s.status]}</span>}{s.category}{s.orderId && <> · <Link href={ROUTES.admin.order(s.orderId)} className="-my-2 inline-block px-1 py-2 text-primary hover:underline">Cmd #{s.orderId}</Link></>}</p>
           </div>
         </div>
       ),
@@ -128,11 +145,12 @@ function SalesListContent() {
         </div>
       ),
     },
-    { key: "profit", header: "Bénéfice", align: "right", hideBelow: "lg", cell: (s) => <span className={cn("font-semibold", s.profit < 0 ? "text-danger" : "text-primary-dark", dim(s))}>{formatPrice(s.profit)}</span> },
+    { key: "profit", header: "Bénéfice", align: "right", hideBelow: "lg", mobile: "hide", cell: (s) => <span className={cn("font-semibold", s.profit < 0 ? "text-danger" : "text-primary-dark", dim(s))}>{formatPrice(s.profit)}</span> },
     {
       key: "status",
       header: "Statut",
       hideBelow: "xl",
+      mobile: "hide",
       cell: (s) => (s.status === "valide" ? <StatusDot tone="green">Valide</StatusDot> : <StatusDot tone={s.status === "remboursée" ? "orange" : "gray"}>{SALE_STATUS_LABEL[s.status]}</StatusDot>),
     },
     {
@@ -140,11 +158,11 @@ function SalesListContent() {
       header: "",
       align: "right",
       cell: (s) => (
-        <div className="flex justify-end gap-1.5" onClick={(e) => e.stopPropagation()}>
-          <button onClick={() => setDetail(s)} aria-label="Détails" title="Détails" className="grid size-9 place-items-center rounded-full bg-chip transition-colors hover:bg-primary hover:text-white"><Eye size={17} /></button>
-          {editable(s) && <Link href={ROUTES.admin.saleEdit(s.id)} aria-label="Modifier" title="Modifier" className="grid size-9 place-items-center rounded-full bg-chip transition-colors hover:bg-primary hover:text-white"><Edit2 size={17} /></Link>}
-          {canRefund && s.status === "valide" && <button onClick={() => setToRefund(s)} aria-label="Rembourser" title="Rembourser / retour" className="grid size-9 place-items-center rounded-full bg-chip transition-colors hover:bg-star hover:text-white"><Refresh2 size={17} /></button>}
-          {canDelete && <button onClick={() => setToDelete(s)} aria-label="Supprimer" title="Supprimer" className="grid size-9 place-items-center rounded-full bg-chip transition-colors hover:bg-danger hover:text-white"><Trash size={17} /></button>}
+        <div className="flex flex-wrap justify-end gap-2 sm:flex-nowrap sm:gap-1.5" onClick={(e) => e.stopPropagation()}>
+          <button onClick={() => setDetail(s)} aria-label="Détails" title="Détails" className="grid size-11 place-items-center rounded-full bg-chip transition-colors active:scale-90 sm:size-9 hover:bg-primary hover:text-white"><Eye size={17} /></button>
+          {editable(s) && <Link href={ROUTES.admin.saleEdit(s.id)} aria-label="Modifier" title="Modifier" className="grid size-11 place-items-center rounded-full bg-chip transition-colors active:scale-90 sm:size-9 hover:bg-primary hover:text-white"><Edit2 size={17} /></Link>}
+          {canRefund && s.status === "valide" && <button onClick={() => setToRefund(s)} aria-label="Rembourser" title="Rembourser / retour" className="grid size-11 place-items-center rounded-full bg-chip transition-colors active:scale-90 sm:size-9 hover:bg-star hover:text-white"><Refresh2 size={17} /></button>}
+          {canDelete && <button onClick={() => setToDelete(s)} aria-label="Supprimer" title="Supprimer" className="grid size-11 place-items-center rounded-full bg-chip transition-colors active:scale-90 sm:size-9 hover:bg-danger hover:text-white"><Trash size={17} /></button>}
         </div>
       ),
     },
@@ -169,15 +187,15 @@ function SalesListContent() {
         description={isReseller ? "Les ventes que vous avez enregistrées, avec leur marge et leur moyen de paiement." : "Suivez toutes les ventes, leur marge et leur moyen de paiement."}
         actions={
           <>
-            <Button variant="chip" upper={false} leftIcon={<DocumentDownload size={17} />} onClick={exportCsv}>CSV</Button>
+            <Button variant="chip" upper={false} leftIcon={<DocumentDownload size={17} />} onClick={exportCsv} className="max-sm:order-3">CSV</Button>
             {canExport && (
               <>
-                <Button variant="chip" upper={false} leftIcon={<DocumentDownload size={17} />} onClick={() => exportFile("excel")}>Excel</Button>
-                <Button variant="chip" upper={false} leftIcon={<DocumentDownload size={17} />} onClick={() => exportFile("pdf")}>PDF</Button>
+                <Button variant="chip" upper={false} leftIcon={<DocumentDownload size={17} />} onClick={() => exportFile("excel")} className="max-sm:order-3">Excel</Button>
+                <Button variant="chip" upper={false} leftIcon={<DocumentDownload size={17} />} onClick={() => exportFile("pdf")} className="max-sm:order-3">PDF</Button>
               </>
             )}
-            {canConvert && <Button href={ROUTES.admin.saleConvert} variant="dark" upper={false} leftIcon={<ReceiptItem size={18} />}>Convertir une commande</Button>}
-            {canCreate && <Button href={ROUTES.admin.saleNew} leftIcon={<Add size={18} />}>Nouvelle vente</Button>}
+            {canConvert && <Button href={ROUTES.admin.saleConvert} variant="dark" upper={false} leftIcon={<ReceiptItem size={18} />} className="max-sm:order-2 max-sm:!col-span-2">Convertir une commande</Button>}
+            {canCreate && <Button href={ROUTES.admin.saleNew} leftIcon={<Add size={18} />} className="max-sm:order-1 max-sm:!col-span-2">Nouvelle vente</Button>}
           </>
         }
       >
@@ -189,7 +207,7 @@ function SalesListContent() {
           Période : <strong className="text-ink">{data?.periodLabel ?? "…"}</strong>
           {stats && <> · {stats.count} vente{stats.count > 1 ? "s" : ""} valide{stats.count > 1 ? "s" : ""} · {stats.units} unité{stats.units > 1 ? "s" : ""}</>}
         </p>
-        <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
           <StatCard label={`Chiffre d'affaires · ${short}`} value={stats?.revenue ?? 0} format={formatPrice} icon={<MoneyRecive size={22} variant="Bold" />} />
           <StatCard label={`Bénéfice · ${short}`} value={stats?.profit ?? 0} format={formatPrice} icon={<Wallet3 size={22} variant="Bold" />} tone="blue" delay={0.05} />
           <StatCard label={`Nombre de ventes · ${short}`} value={stats?.count ?? 0} icon={<ReceiptItem size={22} variant="Bold" />} tone="orange" delay={0.1} />
@@ -198,7 +216,44 @@ function SalesListContent() {
       </div>
 
       <Block pad="none" className="overflow-hidden">
-        <div className="space-y-3 border-b border-line-3 p-4 sm:p-5">
+        {/* Mobile : recherche + « Filtrer » + pastilles actives */}
+        <div className="space-y-3 border-b border-line-3 p-4 sm:hidden">
+          <MobileSearchRow>
+            <input value={search} onChange={(e) => reset(setSearch)(e.target.value)} placeholder="Produit, client, n°…" aria-label="Rechercher" inputMode="search" className="field min-w-0 flex-1" />
+            <FilterTrigger count={chips.length} onClick={() => setSheet(true)} />
+          </MobileSearchRow>
+          <ActiveChips chips={chips} />
+        </div>
+        <FilterSheet open={sheet} onClose={() => setSheet(false)} title="Filtrer les ventes" onReset={resetAll} resetDisabled={chips.length === 0}>
+          <div>
+            <p className="mb-2 text-[13px] font-semibold">Période</p>
+            <div className="flex flex-wrap gap-2" role="group" aria-label="Période">
+              {PRESETS.map((p) => (
+                <button key={p || "all"} type="button" aria-pressed={!custom && preset === p} onClick={() => { setCustom(false); reset(setPreset)(p); }} className={chip(!custom && preset === p)}>{p ? `${p} j` : "Tout"}</button>
+              ))}
+              <button type="button" aria-pressed={custom} onClick={() => { setCustom(true); setPage(1); }} className={chip(custom)}>Personnalisé</button>
+            </div>
+            {custom && (
+              <div className="mt-3 grid gap-3">
+                <label className="grid gap-1 text-[12px] font-semibold text-ink-2">Vente du<input type="date" value={dateFrom} onChange={(e) => reset(setDateFrom)(e.target.value)} className="field" /></label>
+                <label className="grid gap-1 text-[12px] font-semibold text-ink-2">au<input type="date" value={dateTo} onChange={(e) => reset(setDateTo)(e.target.value)} className="field" /></label>
+                <label className="grid gap-1 text-[12px] font-semibold text-ink-2">Enregistrée le<input type="date" value={recordedOn} onChange={(e) => reset(setRecordedOn)(e.target.value)} className="field" /></label>
+              </div>
+            )}
+          </div>
+          <div>
+            <p className="mb-2 text-[13px] font-semibold">Moyen de paiement</p>
+            <div className="flex flex-wrap gap-2" role="group" aria-label="Moyen de paiement">
+              {METHODS.map((m) => (
+                <button key={m} type="button" aria-pressed={method === m} onClick={() => reset(setMethod)(method === m ? "" : m)} className={cn("min-h-10 rounded-full border px-4 py-2 text-[13px] font-semibold transition-all active:scale-95", method === m ? "border-transparent " + METHOD_STYLE[m].cls : "border-line bg-white")}>{METHOD_STYLE[m].label}</button>
+              ))}
+            </div>
+          </div>
+          <Select label="Statut" value={status} onChange={(e) => reset(setStatus)(e.target.value as SaleStatus | "")} options={[{ value: "", label: "Tous les statuts" }, ...(Object.keys(SALE_STATUS_LABEL) as SaleStatus[]).map((x) => ({ value: x, label: SALE_STATUS_LABEL[x] }))]} />
+          {canAll && <Select label="Vendeur" value={sellerId ?? ""} onChange={(e) => reset(setSellerId)(e.target.value ? Number(e.target.value) : null)} options={[{ value: "", label: "Tous les vendeurs" }, ...(sellers ?? []).map((x) => ({ value: x.id, label: x.name }))]} />}
+        </FilterSheet>
+        {/* Desktop / tablette */}
+        <div className="hidden space-y-3 border-b border-line-3 p-5 sm:block">
           <div className="flex flex-wrap items-center gap-3">
             <input value={search} onChange={(e) => reset(setSearch)(e.target.value)} placeholder="Produit, client, vendeur ou n°…" aria-label="Rechercher" className="field w-full sm:w-[260px]" />
             <div className="flex flex-wrap gap-2" role="group" aria-label="Période">

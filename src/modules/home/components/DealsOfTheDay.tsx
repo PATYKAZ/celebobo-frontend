@@ -53,9 +53,9 @@ function Countdown({ endsAt }: { endsAt: string }) {
     { v: c.seconds, u: "s" },
   ];
   return (
-    <div className="flex gap-2.5">
+    <div className="grid grid-cols-4 gap-2 sm:flex sm:gap-2.5">
       {cells.map((x) => (
-        <div key={x.u} className="flex h-[74px] w-[56px] flex-col items-center rounded-md bg-chip-2 pt-[7px]">
+        <div key={x.u} className="flex h-[74px] w-full flex-col items-center rounded-md bg-chip-2 pt-[7px] sm:w-[56px]">
           <span className="text-[20px] font-bold leading-[30px]">
             <FlipNumber value={x.v} />
           </span>
@@ -92,20 +92,20 @@ function DealCard({ product, content }: { product: Product; content: HomeContent
   const pct = Math.round((content.dealSold.sold / content.dealSold.total) * 100);
 
   return (
-    <div className="grid gap-6 rounded-b-box bg-white p-5 sm:p-[30px] md:grid-cols-[minmax(0,441px)_minmax(0,1fr)] md:gap-[34px]">
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-5 rounded-b-box bg-white p-4 sm:gap-6 sm:p-[30px] lg:grid-cols-[minmax(0,441px)_minmax(0,1fr)] lg:gap-[34px]">
       {/* Galerie */}
-      <div className="flex gap-3">
-        <div className="flex w-[35px] shrink-0 flex-col gap-4">
+      <div className="flex min-w-0 flex-col-reverse gap-3 sm:flex-row">
+        <div className="no-scrollbar flex shrink-0 gap-2.5 overflow-x-auto sm:w-[35px] sm:flex-col sm:gap-4 sm:overflow-visible">
           {gallery.map((g, i) => (
-            <button key={g} onClick={() => setActive(i)} aria-label={`Image ${i + 1}`} className={cn("relative h-[60px] w-[35px] overflow-hidden rounded-md border transition-all", i === active ? "border-primary" : "border-transparent opacity-60 hover:opacity-100")}>
-              <Image src={g} alt="" fill sizes="35px" className="object-cover" />
+            <button key={g} onClick={() => setActive(i)} aria-label={`Image ${i + 1}`} className={cn("relative h-16 w-16 shrink-0 overflow-hidden rounded-md border-2 transition-all sm:h-[60px] sm:w-[35px] sm:border", i === active ? "border-primary" : "border-transparent opacity-60 hover:opacity-100")}>
+              <Image src={g} alt="" fill sizes="64px" className="object-cover" />
             </button>
           ))}
         </div>
-        <div className="relative aspect-[405/330] min-w-0 flex-1">
+        <div className="relative aspect-[4/3] w-full min-w-0 sm:aspect-[405/330] sm:flex-1">
           {gallery[active] && <ZoomImage src={gallery[active]} alt={product.name} />}
           {pricing.onSale && <SaveBadge large amount={pricing.saving} className="absolute left-3 top-3 z-10" />}
-          <button onClick={() => add(product)} aria-label="Ajouter au panier" className="absolute right-3 top-3 z-10 grid size-[30px] place-items-center rounded-pill bg-chip-2 transition-all hover:rotate-90 hover:bg-primary hover:text-white">
+          <button onClick={() => add(product)} aria-label="Ajouter au panier" className="absolute right-3 top-3 z-10 grid size-11 place-items-center rounded-pill bg-chip-2 sm:size-[30px] transition-all hover:rotate-90 hover:bg-primary hover:text-white">
             <Add size={16} />
           </button>
         </div>
@@ -130,12 +130,12 @@ function DealCard({ product, content }: { product: Product; content: HomeContent
           <Pill tone="red" className="h-7 px-[15px] text-[12px]">Cadeau offert</Pill>
         </div>
 
-        <div className="mt-5 flex flex-wrap items-center gap-5">
-          <p className="max-w-[130px] text-[13px] font-medium uppercase leading-[19.5px]">Dépêchez-vous ! La promo expire dans</p>
+        <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-5">
+          <p className="text-[13px] sm:max-w-[130px] font-medium uppercase leading-[19.5px]">Dépêchez-vous ! La promo expire dans</p>
           <Countdown endsAt={content.dealEndsAt} />
         </div>
 
-        <div className="mt-6 border-t border-line-3 pt-5">
+        <div className="mt-5 border-t border-line-3 pt-5 sm:mt-6">
           <div className="h-2 overflow-hidden rounded-full bg-page">
             <motion.div initial={{ width: 0 }} whileInView={{ width: `${pct}%` }} viewport={{ once: true }} transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }} className="relative h-full rounded-full bg-primary">
               <span className="absolute inset-y-0 right-0 w-8 animate-shimmer bg-gradient-to-r from-transparent via-white/50 to-transparent bg-[length:200%_100%]" />
@@ -145,7 +145,7 @@ function DealCard({ product, content }: { product: Product; content: HomeContent
             <p className="text-[13px] leading-[22px] text-ink-2">
               Vendus : <strong className="text-ink"><CountUp to={content.dealSold.sold} />/{content.dealSold.total}</strong>
             </p>
-            <Button size="sm" onClick={() => add(product)} disabled={!product.inStock}>Ajouter</Button>
+            <Button size="sm" onClick={() => add(product)} disabled={!product.inStock} className="max-sm:px-8">Ajouter</Button>
           </div>
         </div>
       </div>
@@ -158,25 +158,25 @@ export function DealsOfTheDay({ content }: { content?: HomeContent }) {
   const deal = useMemo(() => data?.results.find((p) => p.images.length >= 2) ?? data?.results[0], [data]);
 
   return (
-    <section className="grid gap-4 xl:grid-cols-[minmax(0,971px)_minmax(0,1fr)]">
+    <section className="grid grid-cols-[minmax(0,1fr)] gap-3 sm:gap-4 xl:grid-cols-[minmax(0,971px)_minmax(0,1fr)]">
       <div>
-        <div className="flex h-[62px] items-center rounded-t-box bg-primary px-5 sm:px-[30px]">
+        <div className="flex h-14 items-center rounded-t-box bg-primary px-4 sm:h-[62px] sm:px-[30px]">
           <SectionHeader title="Offres du jour" viewAllHref={`${ROUTES.products}?onSale=1`} onPrimary className="w-full" />
         </div>
         {content && deal ? <DealCard product={deal} content={content} /> : <Skeleton className="h-[420px] rounded-b-box rounded-t-none" />}
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-3 xl:grid-cols-1 xl:grid-rows-3">
+      <div className="max-sm:snap-row max-sm:-mx-[15px] max-sm:scroll-px-[15px] max-sm:px-[15px] sm:grid sm:grid-cols-3 sm:gap-4 xl:grid-cols-1 xl:grid-rows-3">
         {content
           ? content.sideBanners.map((b, i) => (
-              <Reveal key={b.id} direction="left" delay={i * 0.1} className="h-full min-h-[170px]">
+              <Reveal key={b.id} delay={i * 0.1} className="h-full min-h-[150px] max-sm:w-[78%] sm:min-h-[170px]">
                 <PhotoBanner image={b.image} href={b.href} label={b.title} overlay="from-black/75 via-black/35 to-transparent" className="h-full rounded-[12px]" sizes="296px" contentClassName="flex flex-col justify-end p-5">
                   <p className="text-[10px] uppercase tracking-[0.2em] text-white/80">{b.eyebrow}</p>
                   <p className="mt-1 whitespace-pre-line text-[17px] font-semibold leading-[21px] text-white">{b.title}</p>
                 </PhotoBanner>
               </Reveal>
             ))
-          : [0, 1, 2].map((i) => <Skeleton key={i} className="min-h-[170px] rounded-[12px]" />)}
+          : [0, 1, 2].map((i) => <Skeleton key={i} className="min-h-[150px] rounded-[12px] max-sm:w-[78%] sm:min-h-[170px]" />)}
       </div>
     </section>
   );

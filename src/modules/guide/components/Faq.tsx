@@ -15,14 +15,14 @@ export function Faq() {
         const isOpen = open === i;
         return (
           <div key={f.q}>
-            <button onClick={() => setOpen(isOpen ? null : i)} aria-expanded={isOpen} className="flex w-full items-center justify-between gap-4 py-5 text-left">
-              <span className={cn("text-[16px] font-bold leading-[24px] transition-colors", isOpen && "text-primary")}>{f.q}</span>
-              <span className={cn("grid size-8 shrink-0 place-items-center rounded-full transition-all duration-300", isOpen ? "rotate-45 bg-primary text-white" : "bg-chip")}><Add size={18} /></span>
+            <button onClick={() => setOpen(isOpen ? null : i)} aria-expanded={isOpen} className="flex min-h-14 w-full items-center justify-between gap-4 py-3.5 text-left active:bg-chip sm:py-5">
+              <span className={cn("text-[15px] font-bold leading-[22px] transition-colors sm:text-[16px] sm:leading-[24px]", isOpen && "text-primary")}>{f.q}</span>
+              <span className={cn("grid size-9 shrink-0 sm:size-8 place-items-center rounded-full transition-all duration-300", isOpen ? "rotate-45 bg-primary text-white" : "bg-chip")}><Add size={18} /></span>
             </button>
             <AnimatePresence initial={false}>
               {isOpen && (
                 <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }} className="overflow-hidden">
-                  <p className="pb-5 pr-12 text-[14px] leading-[24px] text-ink-2">{f.a}</p>
+                  <p className="pb-4 pr-2 text-[14px] leading-[23px] text-ink-2 sm:pb-5 sm:pr-12 sm:leading-[24px]">{f.a}</p>
                 </motion.div>
               )}
             </AnimatePresence>

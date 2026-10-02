@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Eye, Messages2, SearchNormal1, UserAdd, UserTick } from "iconsax-reactjs";
 import { ROUTES } from "@/config/routes";
@@ -8,11 +9,12 @@ import { formatDate, formatPrice } from "@/shared/lib/format";
 import { useDebounce } from "@/shared/hooks/useDebounce";
 import { Block } from "@/shared/ui/Block";
 import { Button } from "@/shared/ui/Button";
-import { Input } from "@/shared/ui/Form";
+import { Input, Select } from "@/shared/ui/Form";
 import { EmptyState } from "@/shared/ui/EmptyState";
 import { Tabs } from "@/shared/ui/Tabs";
 import { PermissionGuard, useCan } from "@/modules/auth/hooks/useCan";
 import { ORDER_STATUS_LABEL, type Order } from "@/modules/orders/types";
+import { ActiveChips, FilterSheet, FilterTrigger, MobileSearchRow, type FilterChip } from "../../products/components/FilterSheet";
 import { DataTable, type Column } from "../../ui/DataTable";
 import { PageHeader } from "../../ui/PageHeader";
 import { StatCard } from "../../ui/StatCard";
@@ -35,6 +37,7 @@ export function OrdersView() {
 }
 
 function OrdersContent() {
+  const router = useRouter();
   const canAll = useCan("orders.view.all");
   const canAssign = useCan("orders.assign");
   const [tab, setTab] = useState<OrderTab>("all");
@@ -46,6 +49,8 @@ function OrdersContent() {
   const [min, setMin] = useState("");
   const [max, setMax] = useState("");
   const [assigning, setAssigning] = useState<Order | null>(null);
+  const [sheet, setSheet] = useState(false);
+  const { data: resellers } = useResellerOptions();
   const q = useDebounce(search, 300);
   const dMin = useDebounce(min, 400);
   const dMax = useDebounce(max, 400);
@@ -72,6 +77,12 @@ function OrdersContent() {
     ...STATUS_TABS.map((s) => ({ value: s, label: ORDER_STATUS_LABEL[s as keyof typeof ORDER_STATUS_LABEL], count: counts?.[s] })),
   ];
   const filtered = !!(search || resellerId || dateFrom || dateTo || min || max);
+  const fmtD = (d: string) => new Date(d).toLocaleDateString("fr-FR", { day: "2-digit", month: "short" });
+  const chips: FilterChip[] = [
+    ...(resellerId ? [{ key: "reseller", label: resellers?.find((r) => r.id === resellerId)?.name ?? "Revendeur", onRemove: () => setResellerId(undefined) }] : []),
+    ...(dateFrom || dateTo ? [{ key: "date", label: `${dateFrom ? fmtD(dateFrom) : "…"} → ${dateTo ? fmtD(dateTo) : "…"}`, onRemove: () => { setDateFrom(""); setDateTo(""); } }] : []),
+    ...(min || max ? [{ key: "amount", label: `${min ? `≥ ${min}` : ""}${min && max ? " · " : ""}${max ? `≤ ${max}` : ""}`, onRemove: () => { setMin(""); setMax(""); } }] : []),
+  ];
   const reset = () => {
     setSearch("");
     setResellerId(undefined);
@@ -82,12 +93,18 @@ function OrdersContent() {
   };
 
   const columns: Column<Order>[] = [
-    { key: "id", header: "N°", cell: (o) => <Link href={ROUTES.admin.order(o.id)} className="font-bold text-primary hover:underline">#{o.id}</Link> },
+    { key: "id", header: "N°", mobile: "hide", cell: (o) => <Link href={ROUTES.admin.order(o.id)} className="font-bold text-primary hover:underline">#{o.id}</Link> },
     {
       key: "client",
       header: "Client",
+      mobile: "title",
       cell: (o) => (
         <div className="min-w-0">
+          {/* mobile : n° + statut en en-tête de carte */}
+          <div className="mb-1 flex items-center justify-between gap-2 sm:hidden">
+            <span className="text-[15px] font-bold text-primary">#{o.id}</span>
+            <OrderStatusDot status={o.status} />
+          </div>
           <p className="truncate font-semibold">{o.user.name}</p>
           <p className="truncate text-[12px] text-ink-3">{o.user.email}</p>
         </div>
@@ -95,14 +112,14 @@ function OrdersContent() {
     },
     { key: "items", header: "Articles", hideBelow: "md", cell: (o) => <Thumbs order={o} /> },
     { key: "total", header: "Total", align: "right", cell: (o) => <span className="font-bold">{formatPrice(o.totalPrice)}</span> },
-    { key: "status", header: "Statut", cell: (o) => <OrderStatusDot status={o.status} /> },
+    { key: "status", header: "Statut", mobile: "hide", cell: (o) => <OrderStatusDot status={o.status} /> },
     {
       key: "reseller",
       header: "Revendeur",
       hideBelow: "lg",
       cell: (o) => <ResellerCell order={o} />,
     },
-    { key: "pay", header: "Paiement", hideBelow: "xl", cell: (o) => <span className="text-[13px] text-ink-2">{o.paymentMethod ? PAYMENT_LABEL[o.paymentMethod] : "—"}</span> },
+    { key: "pay", header: "Paiement", hideBelow: "xl", mobile: "hide", cell: (o) => <span className="text-[13px] text-ink-2">{o.paymentMethod ? PAYMENT_LABEL[o.paymentMethod] : "—"}</span> },
     { key: "date", header: "Date", hideBelow: "sm", cell: (o) => <span className="whitespace-nowrap text-[13px] text-ink-2">{formatDate(o.createdAt)}</span> },
     {
       key: "actions",
@@ -110,14 +127,14 @@ function OrdersContent() {
       align: "right",
       cell: (o) => (
         <div className="flex items-center justify-end gap-1.5" onClick={(e) => e.stopPropagation()}>
-          <Link href={ROUTES.admin.order(o.id)} aria-label={`Voir la commande #${o.id}`} title="Voir" className="grid size-8 place-items-center rounded-full bg-chip transition-colors hover:bg-primary hover:text-white"><Eye size={16} /></Link>
+          <Link href={ROUTES.admin.order(o.id)} aria-label={`Voir la commande #${o.id}`} title="Voir" className="grid size-11 place-items-center rounded-full bg-chip transition-colors hover:bg-primary hover:text-white active:scale-90 sm:size-8"><Eye size={16} /></Link>
           {canAssign && !["livree", "annulee", "retournee"].includes(o.status) && (
-            <button onClick={() => setAssigning(o)} aria-label={o.assignedRevendeur ? "Réassigner" : "Assigner"} title={o.assignedRevendeur ? "Réassigner" : "Assigner"} className="grid size-8 place-items-center rounded-full bg-chip transition-colors hover:bg-primary hover:text-white">
+            <button onClick={() => setAssigning(o)} aria-label={o.assignedRevendeur ? "Réassigner" : "Assigner"} title={o.assignedRevendeur ? "Réassigner" : "Assigner"} className="grid size-11 place-items-center rounded-full bg-chip transition-colors hover:bg-primary hover:text-white active:scale-90 sm:size-8">
               {o.assignedRevendeur ? <UserTick size={16} /> : <UserAdd size={16} />}
             </button>
           )}
           {o.conversationId != null && (
-            <Link href={ROUTES.admin.conversation(o.conversationId)} aria-label="Ouvrir la discussion" title="Discussion" className="grid size-8 place-items-center rounded-full bg-chip transition-colors hover:bg-primary hover:text-white"><Messages2 size={16} /></Link>
+            <Link href={ROUTES.admin.conversation(o.conversationId)} aria-label="Ouvrir la discussion" title="Discussion" className="grid size-11 place-items-center rounded-full bg-chip transition-colors hover:bg-primary hover:text-white active:scale-90 sm:size-8"><Messages2 size={16} /></Link>
           )}
         </div>
       ),
@@ -128,18 +145,38 @@ function OrdersContent() {
     <>
       <PageHeader title={canAll ? "Commandes & discussions" : "Mes commandes"} description={canAll ? "Suivez, assignez et faites avancer les commandes clients." : "Les commandes qui vous sont assignées."} />
 
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 max-sm:[&>*:last-child:nth-child(odd)]:col-span-2">
         {canAll && <StatCard label="À assigner" value={data?.kpis.toAssign ?? 0} icon={<UserAdd size={22} variant="Bold" />} tone="orange" />}
         <StatCard label="En cours" value={data?.kpis.inProgress ?? 0} icon={<Messages2 size={22} variant="Bold" />} tone="blue" delay={0.05} />
         <StatCard label={`Livrées — ${data?.kpis.periodLabel ?? "ce mois"}`} value={data?.kpis.deliveredThisMonth ?? 0} icon={<UserTick size={22} variant="Bold" />} tone="green" delay={0.1} />
       </div>
 
       <Block pad="none">
-        <div className="space-y-4 p-4 sm:p-6">
-          <div className="-mx-1 overflow-x-auto px-1 no-scrollbar">
-            <Tabs variant="pill" tabs={tabs} value={tab} onChange={setTab} className="whitespace-nowrap" />
+        <div className="space-y-3 p-4 sm:space-y-4 sm:p-6">
+          <Tabs variant="pill" tabs={tabs} value={tab} onChange={setTab} />
+
+          {/* Mobile : recherche + « Filtrer » (feuille) + pastilles */}
+          <div className="space-y-3 sm:hidden">
+            <MobileSearchRow>
+              <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Client, e-mail, n°…" aria-label="Rechercher" inputMode="search" className="field min-w-0 flex-1" />
+              <FilterTrigger count={chips.length} onClick={() => setSheet(true)} />
+            </MobileSearchRow>
+            <ActiveChips chips={chips} />
           </div>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
+          <FilterSheet open={sheet} onClose={() => setSheet(false)} title="Filtrer les commandes" onReset={reset} resetDisabled={!filtered}>
+            {canAll && <Select label="Revendeur" value={resellerId ?? ""} onChange={(e) => setResellerId(e.target.value ? Number(e.target.value) : undefined)} options={[{ value: "", label: "Tous les revendeurs" }, ...(resellers ?? []).map((r) => ({ value: r.id, label: r.name }))]} />}
+            <div className="grid grid-cols-2 gap-3">
+              <Input label="Du" type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} />
+              <Input label="Au" type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <Input label="Montant min ($)" type="number" inputMode="decimal" min={0} value={min} onChange={(e) => setMin(e.target.value)} />
+              <Input label="Montant max ($)" type="number" inputMode="decimal" min={0} value={max} onChange={(e) => setMax(e.target.value)} />
+            </div>
+          </FilterSheet>
+
+          {/* Desktop / tablette */}
+          <div className="hidden gap-3 sm:grid sm:grid-cols-2 lg:grid-cols-6">
             <Input wrapperClassName="lg:col-span-2" placeholder="Client, e-mail ou n° de commande…" value={search} onChange={(e) => setSearch(e.target.value)} leftIcon={<SearchNormal1 size={16} />} aria-label="Rechercher" />
             {canAll && <div className="lg:col-span-1"><ResellerFilter value={resellerId} onChange={setResellerId} /></div>}
             <Input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} aria-label="Du" title="Du" />
@@ -162,6 +199,7 @@ function OrdersContent() {
             columns={columns}
             rows={data?.results}
             rowKey={(o) => o.id}
+            onRowClick={(o) => router.push(ROUTES.admin.order(o.id))}
             loading={isLoading}
             skeletonRows={PAGE_SIZE}
             page={page}

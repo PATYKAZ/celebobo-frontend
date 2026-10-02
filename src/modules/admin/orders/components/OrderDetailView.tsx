@@ -83,17 +83,35 @@ function Content({ id }: { id: number }) {
         }
       >
         <StatusStepper order={order} />
-        <div className="mt-6 border-t border-line-3 pt-4">
+        <div className="mt-4 lg:mt-6 lg:border-t lg:border-line-3 lg:pt-4">
           <StatusActionBar order={order} onAssign={canAssign ? () => setAssigning(order) : undefined} />
         </div>
       </PageHeader>
 
-      <div className="grid gap-4 xl:grid-cols-[1fr_380px]">
-        <div className="flex flex-col gap-4">
+      <div className="grid grid-cols-1 gap-3 sm:gap-4 xl:grid-cols-[minmax(0,1fr)_380px]">
+        <div className="flex min-w-0 flex-col gap-3 sm:gap-4">
           <Reveal>
             <Block pad="none" className="overflow-hidden">
-              <h3 className="px-5 pb-3 pt-5 text-[16px] sm:px-6">Articles ({order.items.reduce((n, i) => n + i.quantity, 0)})</h3>
-              <div className="overflow-x-auto">
+              <h3 className="px-4 pb-3 pt-4 text-[16px] sm:px-6 sm:pt-5">Articles ({order.items.reduce((n, i) => n + i.quantity, 0)})</h3>
+              {/* Mobile : un article par ligne-carte */}
+              <ul className="divide-y divide-line-3/70 border-t border-line-3 sm:hidden">
+                {order.items.map((it) => (
+                  <li key={it.id} className="flex items-center gap-3 p-4">
+                    <span className="relative size-14 shrink-0 overflow-hidden rounded-md bg-page">{it.productImage && <Image src={it.productImage} alt="" fill sizes="56px" className="object-cover" />}</span>
+                    <div className="min-w-0 flex-1">
+                      {it.productId ? <Link href={ROUTES.product(it.productId)} className="-my-1 line-clamp-2 py-1 text-[14px] font-semibold leading-[19px]">{it.productName}</Link> : <span className="text-[14px] font-semibold">{it.productName}</span>}
+                      {it.variantLabel && <p className="text-[12px] text-ink-3">{it.variantLabel}</p>}
+                      <p className="mt-0.5 text-[12px] text-ink-2">{it.quantity} × {formatPrice(it.unitPrice)}</p>
+                    </div>
+                    <p className="shrink-0 text-[15px] font-bold">{formatPrice(it.unitPrice * it.quantity)}</p>
+                  </li>
+                ))}
+                <li className="flex items-center justify-between bg-page/50 px-4 py-3.5">
+                  <span className="text-[13px] text-ink-2">Total de la commande</span>
+                  <span className="text-[18px] font-bold text-primary">{formatPrice(order.totalPrice)}</span>
+                </li>
+              </ul>
+              <div className="hidden overflow-x-auto sm:block">
                 <table className="w-full min-w-[520px] text-[14px]">
                   <thead>
                     <tr className="border-y border-line-3 bg-page/50 text-left text-[12px] uppercase tracking-wide text-ink-3">
@@ -140,7 +158,7 @@ function Content({ id }: { id: number }) {
           </Reveal>
         </div>
 
-        <div className="flex flex-col gap-4">
+        <div className="flex min-w-0 flex-col gap-3 sm:gap-4">
           <Card title="Client" icon={<User size={17} variant="Bold" />}>
             <p className="text-[14px] font-bold">{order.user.name}</p>
             <ul className="mt-2 space-y-1.5 text-[13px] text-ink-2">
@@ -185,6 +203,8 @@ function Content({ id }: { id: number }) {
       </div>
 
       <AssignResellerModal order={assigning} onClose={() => setAssigning(null)} />
+      {/* réserve la place de la barre d'actions fixe (mobile) pour que le dernier bloc reste visible */}
+      <div className="h-20 lg:hidden" aria-hidden />
     </>
   );
 }
@@ -204,12 +224,12 @@ function ResellerCard({ order, canAssign, onAssign }: { order: Order; canAssign:
               {opt && <span>· code {opt.code}</span>}
             </div>
           </div>
-          {canAssign && <Button size="xs" variant="chip" upper={false} onClick={onAssign}>Réassigner</Button>}
+          {canAssign && <Button size="sm" variant="chip" upper={false} onClick={onAssign}>Réassigner</Button>}
         </div>
       ) : (
         <div className="flex items-center justify-between gap-3">
           <p className="text-[13px] text-ink-3">Aucun revendeur assigné.</p>
-          {canAssign && <Button size="xs" upper={false} onClick={onAssign}>Assigner</Button>}
+          {canAssign && <Button size="sm" upper={false} onClick={onAssign}>Assigner</Button>}
         </div>
       )}
     </Card>

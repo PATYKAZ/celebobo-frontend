@@ -66,11 +66,11 @@ function Inner() {
     <>
       <PageHeader title="Mes invités" description="Les clients inscrits avec votre code d'invitation." />
 
-      <div className="grid items-start gap-4 xl:grid-cols-[1fr_390px]">
-        <div className="flex min-w-0 flex-col gap-4">
-          <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid items-start gap-3 sm:gap-4 xl:grid-cols-[1fr_390px]">
+        <div className="flex min-w-0 flex-col gap-3 sm:gap-4">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4">
             <StatCard label="Clients invités" value={data?.invitedCount ?? 0} icon={<People size={22} variant="Bold" />} />
-            <StatCard label="Commandes générées (total)" value={data?.ordersTotal ?? 0} format={formatPrice} icon={<ShoppingBag size={22} variant="Bold" />} tone="blue" delay={0.05} />
+            <StatCard label="Commandes générées" value={data?.ordersTotal ?? 0} format={formatPrice} icon={<ShoppingBag size={22} variant="Bold" />} tone="blue" delay={0.05} />
           </div>
           <Reveal>
             <Block pad="none" className="overflow-hidden">
@@ -95,7 +95,7 @@ function Inner() {
               <h2 className="mb-3 text-[16px] font-bold leading-[22px]">Bien inviter</h2>
               <ul className="space-y-3">
                 {TIPS.map((t) => (
-                  <li key={t} className="flex gap-3 text-[13px] leading-[19px] text-ink-2">
+                  <li key={t} className="flex gap-3 text-[14px] leading-[21px] text-ink-2 sm:text-[13px] sm:leading-[19px]">
                     <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary" />
                     {t}
                   </li>

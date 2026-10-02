@@ -8,8 +8,9 @@ type Direction = "up" | "down" | "left" | "right" | "none";
 const OFFSET: Record<Direction, { x?: number; y?: number }> = {
   up: { y: 28 },
   down: { y: -28 },
-  left: { x: 36 },
-  right: { x: -36 },
+  // décalage vertical (et non latéral) : un translateX hors-champ élargit la page sur mobile
+  left: { y: 24 },
+  right: { y: 24 },
   none: {},
 };
 

@@ -23,7 +23,7 @@ export function BulkBar({ count, status, busy, onClear, onAction }: Props) {
   const [categoryId, setCategoryId] = useState("");
   const [percent, setPercent] = useState("10");
   const { data: categories } = useAdminCategories(dialog === "category");
-  const btn = "inline-flex h-9 items-center gap-1.5 rounded-full bg-white/10 px-3.5 text-[13px] font-semibold text-white transition-colors hover:bg-white/20 disabled:opacity-50";
+  const btn = "inline-flex h-11 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full bg-white/10 px-4 text-[13px] font-semibold text-white transition-colors hover:bg-white/20 active:scale-95 disabled:opacity-50 sm:h-9 sm:px-3.5";
 
   return (
     <>
@@ -34,9 +34,9 @@ export function BulkBar({ count, status, busy, onClear, onAction }: Props) {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 80, opacity: 0 }}
             transition={{ type: "spring", stiffness: 380, damping: 30 }}
-            className="sticky bottom-3 z-30 mx-auto flex w-fit max-w-full flex-wrap items-center gap-2 rounded-[20px] bg-ink-dark p-2.5 pl-4 shadow-[0_12px_40px_rgba(0,0,0,.35)]"
+            className="no-scrollbar fixed inset-x-3 bottom-[calc(var(--tabbar-h)+12px)] z-40 flex items-center gap-2 overflow-x-auto rounded-[22px] bg-ink-dark p-2.5 pl-4 shadow-[0_12px_40px_rgba(0,0,0,.35)] sm:sticky sm:inset-x-auto sm:bottom-3 sm:z-30 sm:mx-auto sm:w-fit sm:max-w-full sm:flex-wrap sm:overflow-visible sm:rounded-[20px]"
           >
-            <span className="mr-1 text-[13px] font-bold text-white">{count} sélectionné{count > 1 ? "s" : ""}</span>
+            <span className="mr-1 shrink-0 whitespace-nowrap text-[13px] font-bold text-white">{count} sélectionné{count > 1 ? "s" : ""}</span>
             {status === "trash" ? (
               <button className={btn} disabled={busy} onClick={() => onAction({ type: "restore" })}><Refresh2 size={15} /> Restaurer</button>
             ) : (
@@ -48,7 +48,7 @@ export function BulkBar({ count, status, busy, onClear, onAction }: Props) {
                 <button className={`${btn} !bg-danger/80 hover:!bg-danger`} disabled={busy} onClick={() => onAction({ type: "trash" })}><Trash size={15} /> Corbeille</button>
               </>
             )}
-            <button aria-label="Tout désélectionner" onClick={onClear} className="grid size-9 place-items-center rounded-full text-white/70 hover:text-white"><CloseCircle size={20} /></button>
+            <button aria-label="Tout désélectionner" onClick={onClear} className="grid size-11 shrink-0 place-items-center rounded-full text-white/70 hover:text-white sm:size-9"><CloseCircle size={20} /></button>
           </motion.div>
         )}
       </AnimatePresence>
