@@ -5,7 +5,7 @@ import { useState, type ChangeEvent, type FormEvent } from "react";
 import { ApiError } from "@/shared/lib/api";
 import { toast } from "@/shared/ui/Toast";
 import { contactService } from "../services/contact.service";
-import type { ContactErrors, ContactInput } from "../types";
+import type { ContactErrors, ContactInput, ContactReceipt } from "../types";
 
 const EMPTY: ContactInput = { name: "", email: "", phone: "", subject: "commande", message: "" };
 
@@ -21,7 +21,7 @@ export function validateContact(v: ContactInput): ContactErrors {
 export function useContactForm() {
   const [values, setValues] = useState<ContactInput>(EMPTY);
   const [errors, setErrors] = useState<ContactErrors>({});
-  const [sent, setSent] = useState(false);
+  const [receipt, setReceipt] = useState<(ContactReceipt & { input: ContactInput }) | null>(null);
   const mutation = useMutation({ mutationFn: contactService.send });
 
   const onChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -36,10 +36,10 @@ export function useContactForm() {
     setErrors(errs);
     if (Object.values(errs).some(Boolean)) return;
     mutation.mutate(values, {
-      onSuccess: () => {
-        setSent(true);
+      onSuccess: (r) => {
+        setReceipt({ ...r, input: values });
         setValues(EMPTY);
-        toast.success("Message envoyé", "Nous vous répondons sous 24 h.");
+        toast.success("Message envoyé", `Référence ${r.reference}`);
       },
       onError: (err) => {
         if (err instanceof ApiError && err.status === 400) {
@@ -50,5 +50,5 @@ export function useContactForm() {
     });
   };
 
-  return { values, errors, sent, loading: mutation.isPending, onChange, onSubmit, reset: () => setSent(false) };
+  return { values, errors, sent: !!receipt, receipt, loading: mutation.isPending, onChange, onSubmit, reset: () => setReceipt(null) };
 }

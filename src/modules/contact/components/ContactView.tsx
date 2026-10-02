@@ -9,6 +9,7 @@ import { Block } from "@/shared/ui/Block";
 import { Button } from "@/shared/ui/Button";
 import { Input, Select, Textarea } from "@/shared/ui/Form";
 import { useContactForm } from "../hooks/useContactForm";
+import { formatDateTime } from "@/shared/lib/format";
 import { CONTACT_SUBJECTS } from "../types";
 import { ContactMap } from "./ContactMap";
 
@@ -26,7 +27,7 @@ const HOURS = [
 ];
 
 export function ContactView() {
-  const { values, errors, sent, loading, onChange, onSubmit, reset } = useContactForm();
+  const { values, errors, sent, receipt, loading, onChange, onSubmit, reset } = useContactForm();
 
   return (
     <>
@@ -57,7 +58,15 @@ export function ContactView() {
                 <motion.div key="ok" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center py-14 text-center">
                   <motion.span initial={{ scale: 0, rotate: -90 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: "spring", stiffness: 300, damping: 12 }} className="grid size-20 place-items-center rounded-full bg-primary text-white"><TickCircle size={42} variant="Bold" /></motion.span>
                   <h2 className="mt-5 text-[22px]">Message envoyé !</h2>
-                  <p className="mt-2 max-w-[360px] text-[14px] text-ink-2">Merci de nous avoir contactés, nous revenons vers vous très rapidement.</p>
+                  <p className="mt-2 max-w-[400px] text-[14px] text-ink-2">Merci de nous avoir contactés, nous revenons vers vous sous 24 h à l&apos;adresse <strong className="text-ink">{receipt?.input.email}</strong>.</p>
+                  {receipt && (
+                    <dl className="mt-6 w-full max-w-[400px] divide-y divide-line-3 rounded-box bg-page/60 text-left text-[13px]">
+                      <div className="flex justify-between gap-4 px-4 py-3"><dt className="text-ink-3">Référence</dt><dd className="font-bold tracking-wide text-primary">{receipt.reference}</dd></div>
+                      <div className="flex justify-between gap-4 px-4 py-3"><dt className="text-ink-3">Sujet</dt><dd className="font-semibold">{CONTACT_SUBJECTS.find((s) => s.value === receipt.input.subject)?.label ?? receipt.input.subject}</dd></div>
+                      <div className="flex justify-between gap-4 px-4 py-3"><dt className="text-ink-3">Envoyé le</dt><dd className="font-semibold">{formatDateTime(receipt.sentAt)}</dd></div>
+                      <div className="px-4 py-3"><dt className="text-ink-3">Votre message</dt><dd className="mt-1 line-clamp-3 italic text-ink-2">« {receipt.input.message} »</dd></div>
+                    </dl>
+                  )}
                   <Button className="mt-6" variant="chip" upper={false} onClick={reset}>Envoyer un autre message</Button>
                 </motion.div>
               ) : (

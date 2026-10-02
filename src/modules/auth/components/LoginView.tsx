@@ -11,6 +11,7 @@ import { toast } from "@/shared/ui/Toast";
 import { useLogin } from "../hooks/useAuth";
 import { AuthLayoutCard } from "./AuthLayoutCard";
 import { DemoAccounts } from "./DemoAccounts";
+import { GoogleButton } from "./GoogleButton";
 import { fieldError, generalError } from "./fieldErrors";
 import { ForgotPasswordModal } from "./ForgotPasswordModal";
 import { useAuthRedirect } from "./useAuthRedirect";
@@ -61,6 +62,7 @@ export function LoginView() {
           {general && <p role="alert" className="rounded-md bg-danger-50 px-3 py-2 text-[13px] text-danger">{general}</p>}
           <Button type="submit" size="lg" fullWidth loading={login.isPending}>Se connecter</Button>
         </form>
+        <GoogleButton />
         <DemoAccounts disabled={login.isPending} onPick={(l) => run({ login: l, password: "demo1234", remember: true })} />
       </AuthLayoutCard>
       <ForgotPasswordModal open={forgot} onClose={() => setForgot(false)} initialEmail={form.login.includes("@") ? form.login : ""} />

@@ -8,7 +8,7 @@ import { formatPrice } from "@/shared/lib/format";
 import { useDebounce } from "@/shared/hooks/useDebounce";
 import type { Product } from "@/modules/products/types";
 import { getPricing } from "@/modules/products/utils";
-import { useAdminProducts } from "../../products/hooks/useAdminProducts";
+import { useProducts } from "@/modules/products/hooks/useProducts";
 
 interface Props {
   value: Product | null;
@@ -23,7 +23,7 @@ export function ProductCombobox({ value, onChange, error, label, compact }: Prop
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
   const dq = useDebounce(q, 250);
-  const { data, isFetching } = useAdminProducts({ search: dq, pageSize: 6 }, );
+  const { data, isFetching } = useProducts({ search: dq, pageSize: 8 }, open);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -78,7 +78,7 @@ export function ProductCombobox({ value, onChange, error, label, compact }: Prop
                   <span className="relative size-10 shrink-0 overflow-hidden rounded-md bg-page">{p.image && <Image src={p.image} alt="" fill sizes="40px" className="object-cover" />}</span>
                   <span className="min-w-0 flex-1">
                     <span className="block truncate text-[13px] font-bold">{p.name}</span>
-                    <span className="text-[12px] text-ink-3">{p.category}</span>
+                    <span className="text-[12px] text-ink-3">{p.category} · <span className={p.stock <= 0 ? "text-danger" : p.stock <= p.stockThreshold ? "text-[#b87400]" : ""}>stock {p.stock}</span></span>
                   </span>
                   <span className="text-[13px] font-semibold text-primary">{formatPrice(getPricing(p).current)}</span>
                 </button>

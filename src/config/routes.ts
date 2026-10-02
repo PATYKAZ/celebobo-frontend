@@ -19,6 +19,11 @@ export const ROUTES = {
   about: "/a-propos",
   contact: "/contact",
   guide: "/guide",
+  becomeReseller: "/devenir-revendeur",
+  track: "/suivi",
+  orderDetail: (id: number | string) => `/compte/commandes/${id}`,
+  addresses: "/compte/adresses",
+  settings: "/compte/parametres",
 
   admin: {
     root: "/admin",
@@ -32,5 +37,15 @@ export const ROUTES = {
     analytics: "/admin/analytique",
     resellers: "/admin/revendeurs",
     orders: "/admin/commandes",
+    order: (id: number | string) => `/admin/commandes/${id}`,
+    categories: "/admin/categories",
+    saleConvert: "/admin/ventes/convertir",
+    inbox: "/admin/messages",
+    conversation: (id: number | string) => `/admin/messages/${id}`,
+    notifications: "/admin/notifications",
+    commissions: "/admin/commissions",
+    users: "/admin/utilisateurs",
+    audit: "/admin/audit",
+    invites: "/admin/invites",
   },
 } as const;

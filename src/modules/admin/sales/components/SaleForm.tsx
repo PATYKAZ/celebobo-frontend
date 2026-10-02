@@ -1,122 +1,107 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { ROUTES } from "@/config/routes";
-import { ApiError, getErrorMessage } from "@/shared/lib/api";
-import { formatPrice, formatDate } from "@/shared/lib/format";
-import { useDebounce } from "@/shared/hooks/useDebounce";
+import { formatPrice } from "@/shared/lib/format";
+import { getErrorMessage } from "@/shared/lib/api";
 import { Block } from "@/shared/ui/Block";
 import { Button } from "@/shared/ui/Button";
-import { Input, Select } from "@/shared/ui/Form";
+import { FormField, Input, Select } from "@/shared/ui/Form";
+import { QuantityStepper } from "@/shared/ui/QuantityStepper";
 import { toast } from "@/shared/ui/Toast";
-import { cn } from "@/shared/lib/cn";
-import { PAYMENT_METHODS, type PaymentMethod } from "@/modules/orders/types";
+import { useProduct } from "@/modules/products/hooks/useProducts";
 import type { Product } from "@/modules/products/types";
 import { getPricing } from "@/modules/products/utils";
-import { useAdminProduct } from "../../products/hooks/useAdminProducts";
-import { useOrderSearch, useSaveSale } from "../hooks/useSales";
-import type { Sale } from "../types";
+import { useSaveSale } from "../hooks/useSales";
+import { METHOD_STYLE, type PaymentMethod, type Sale } from "../types";
+import { fieldErrorsOf, todayStr, toDateInput } from "../utils";
 import { ProductCombobox } from "./ProductCombobox";
 
-/** Formulaire d'une vente unique (création / édition). */
+const METHOD_OPTIONS = (Object.keys(METHOD_STYLE) as PaymentMethod[]).map((m) => ({ value: m, label: METHOD_STYLE[m].label }));
+
+/** Vente unique : création ou modification (date de la vente, quantité, prix final, moyen de paiement, « vendu à »). */
 export function SaleForm({ sale }: { sale?: Sale }) {
   const router = useRouter();
   const save = useSaveSale(sale?.id ?? null);
-  const { data: initialProduct } = useAdminProduct(sale?.productId);
-
+  const { data: existing } = useProduct(sale?.productId);
   const [product, setProduct] = useState<Product | null>(null);
-  const [price, setPrice] = useState(sale ? String(sale.priceFinal) : "");
+  const [quantity, setQuantity] = useState(sale?.quantity ?? 1);
+  const [price, setPrice] = useState(sale ? String(sale.unitPrice) : "");
   const [method, setMethod] = useState<PaymentMethod>(sale?.method ?? "Cash");
+  const [soldAt, setSoldAt] = useState(sale ? toDateInput(sale.dateAchat) : todayStr());
   const [venduA, setVenduA] = useState(sale?.venduA ?? "");
-  const [orderId, setOrderId] = useState<number | null>(sale?.orderId ?? null);
-  const [orderQ, setOrderQ] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const dq = useDebounce(orderQ, 250);
-  const { data: orders } = useOrderSearch(dq);
 
   useEffect(() => {
-    if (initialProduct && !product) setProduct(initialProduct);
-  }, [initialProduct, product]);
+    if (existing && !product) setProduct(existing);
+  }, [existing, product]);
 
   const pick = (p: Product) => {
     setProduct(p);
+    setPrice(String(getPricing(p).current));
     setErrors((e) => ({ ...e, productId: "" }));
-    setPrice(String(getPricing(p).current)); // prix suggéré
   };
 
-  const cost = product?.pricePrimary ?? null;
-  const profit = cost != null && price ? Number(price) - cost : null;
+  const unit = Number(price) || 0;
+  const total = unit * quantity;
+  const cost = product?.pricePrimary != null ? product.pricePrimary * quantity : null;
+  const available = product ? product.stock + (sale && sale.productId === product.id ? sale.quantity : 0) : null;
 
-  const submit = () => {
-    const e: Record<string, string> = {};
-    if (!product) e.productId = "Choisissez un produit.";
-    if (!price || Number(price) <= 0) e.priceFinal = "Prix final invalide.";
-    setErrors(e);
-    if (Object.keys(e).length || !product) return;
+  const submit = (e: FormEvent) => {
+    e.preventDefault();
+    const err: Record<string, string> = {};
+    if (!product) err.productId = "Choisissez un produit.";
+    if (price === "" || !(unit >= 0)) err.unitPrice = "Prix final requis.";
+    if (!soldAt) err.soldAt = "Date requise.";
+    if (available != null && quantity > available) err.quantity = `Stock insuffisant (${available} disponible${available > 1 ? "s" : ""}).`;
+    setErrors(err);
+    if (Object.keys(err).length || !product) return;
     save.mutate(
-      { productId: product.id, priceFinal: Number(price), method, venduA, orderId },
+      { productId: product.id, quantity, unitPrice: unit, method, soldAt, venduA },
       {
         onSuccess: () => {
-          toast.success(sale ? "Vente mise à jour" : "Vente enregistrée", product.name);
+          toast.success(sale ? "Vente modifiée" : "Vente enregistrée", `${product.name} × ${quantity}`);
           router.push(ROUTES.admin.sales);
         },
-        onError: (err) => {
-          if (err instanceof ApiError && err.status === 400) {
-            const fe: Record<string, string> = {};
-            for (const [k, m] of Object.entries(err.fieldErrors)) fe[k] = Array.isArray(m) ? m[0] : String(m);
-            setErrors(fe);
-          }
-          toast.error("Enregistrement impossible", getErrorMessage(err));
+        onError: (er) => {
+          setErrors(fieldErrorsOf(er));
+          toast.error("Enregistrement impossible", getErrorMessage(er));
         },
       },
     );
   };
 
   return (
-    <Block className="grid gap-5">
-      <ProductCombobox label="Produit" value={product} onChange={pick} error={errors.productId} />
-      <div className="grid gap-5 sm:grid-cols-2">
-        <Input label="Prix final ($)" required type="number" min="0" step="0.01" value={price} onChange={(e) => setPrice(e.target.value)} error={errors.priceFinal} hint={product ? `Prix catalogue : ${formatPrice(getPricing(product).current)}` : undefined} />
-        <Select label="Moyen de paiement" value={method} onChange={(e) => setMethod(e.target.value as PaymentMethod)} options={PAYMENT_METHODS.map((m) => ({ value: m.value, label: m.label }))} />
-      </div>
-      {profit != null && (
-        <div className="flex items-center justify-between rounded-box bg-page/60 px-4 py-3 text-[14px]">
-          <span className="text-ink-2">Bénéfice estimé</span>
-          <span className={cn("font-bold", profit < 0 ? "text-danger" : "text-primary-dark")}>{formatPrice(profit)}</span>
+    <form onSubmit={submit} className="grid gap-4 xl:grid-cols-[1fr_340px]">
+      <Block className="space-y-5">
+        <ProductCombobox value={product} onChange={pick} error={errors.productId} label="Produit" />
+        <div className="grid gap-5 sm:grid-cols-2">
+          <FormField label="Quantité" required error={errors.quantity} hint={available != null ? `Stock disponible : ${available}` : undefined}>
+            <QuantityStepper value={quantity} onChange={setQuantity} max={999} />
+          </FormField>
+          <Input label="Prix final unitaire ($)" required type="number" min={0} step="0.01" value={price} onChange={(e) => setPrice(e.target.value)} error={errors.unitPrice} hint={product ? `Prix catalogue : ${formatPrice(getPricing(product).current)}` : undefined} />
+          <Input label="Date de la vente" required type="date" max={todayStr()} value={soldAt} onChange={(e) => setSoldAt(e.target.value)} error={errors.soldAt} />
+          <Select label="Moyen de paiement" value={method} onChange={(e) => setMethod(e.target.value as PaymentMethod)} options={METHOD_OPTIONS} />
         </div>
-      )}
-      <Input label="Vendu à" value={venduA} onChange={(e) => setVenduA(e.target.value)} placeholder="Nom du client" />
+        <Input label="Vendu à" value={venduA} onChange={(e) => setVenduA(e.target.value)} maxLength={50} placeholder="Nom du client (facultatif)" />
+      </Block>
 
-      <div>
-        <Input label="Lier à une commande client (optionnel)" value={orderQ} onChange={(e) => setOrderQ(e.target.value)} placeholder="Nom, e-mail ou n° de commande…" />
-        {orderId && <p className="mt-2 text-[13px]">Commande liée : <strong className="text-primary">#{orderId}</strong> <button type="button" onClick={() => setOrderId(null)} className="ml-2 text-danger underline">retirer</button></p>}
-        {orders && orders.length > 0 && orderQ && (
-          <ul className="mt-2 grid gap-1.5">
-            {orders.map((o) => (
-              <li key={o.id}>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setOrderId(o.id);
-                    if (!venduA) setVenduA(o.user.name);
-                    setOrderQ("");
-                  }}
-                  className="flex w-full items-center justify-between rounded-md border border-line-3 px-3 py-2 text-left text-[13px] transition-colors hover:border-primary hover:bg-primary-50"
-                >
-                  <span><strong>#{o.id}</strong> · {o.user.name} · {formatDate(o.createdAt)}</span>
-                  <span className="font-semibold">{formatPrice(o.totalPrice)}</span>
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-
-      <div className="flex justify-end gap-3 border-t border-line-3 pt-5">
-        <Button variant="chip" upper={false} onClick={() => router.push(ROUTES.admin.sales)}>Annuler</Button>
-        <Button upper={false} loading={save.isPending} onClick={submit}>{sale ? "Enregistrer" : "Enregistrer la vente"}</Button>
-      </div>
-    </Block>
+      <Block className="h-fit space-y-4 xl:sticky xl:top-4">
+        <h3 className="text-[16px]">Récapitulatif</h3>
+        <dl className="space-y-2.5 text-[14px]">
+          <div className="flex justify-between"><dt className="text-ink-2">Prix unitaire</dt><dd className="font-semibold">{formatPrice(unit)}</dd></div>
+          <div className="flex justify-between"><dt className="text-ink-2">Quantité</dt><dd className="font-semibold">× {quantity}</dd></div>
+          <div className="flex justify-between border-t border-line-3 pt-3 text-[16px]"><dt className="font-bold">Total</dt><dd className="font-bold text-primary">{formatPrice(total)}</dd></div>
+          {cost != null && (
+            <div className="flex justify-between"><dt className="text-ink-2">Bénéfice estimé</dt><dd className={`font-semibold ${total - cost < 0 ? "text-danger" : "text-primary-dark"}`}>{formatPrice(total - cost)}</dd></div>
+          )}
+        </dl>
+        <div className="flex gap-2 pt-2">
+          <Button variant="chip" upper={false} href={ROUTES.admin.sales} className="flex-1">Annuler</Button>
+          <Button type="submit" loading={save.isPending} upper={false} className="flex-1">{sale ? "Enregistrer" : "Valider la vente"}</Button>
+        </div>
+      </Block>
+    </form>
   );
 }

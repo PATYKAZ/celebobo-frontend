@@ -13,17 +13,17 @@ export const cartService = {
     const res = await api.get<{ items: CartItem[] }>(ENDPOINTS.cart.get);
     return res.items;
   },
-  async add(productId: number, quantity = 1): Promise<void> {
+  async add(productId: number, quantity = 1, variantId: number | null = null): Promise<void> {
     if (env.USE_MOCKS) return;
-    await api.post(ENDPOINTS.cart.addItem, { productId, quantity });
+    await api.post(ENDPOINTS.cart.addItem, { productId, quantity, variantId });
   },
-  async update(productId: number, quantity: number): Promise<void> {
+  async update(productId: number, quantity: number, variantId: number | null = null): Promise<void> {
     if (env.USE_MOCKS) return;
-    await api.patch(ENDPOINTS.cart.updateItem(productId), { quantity });
+    await api.patch(ENDPOINTS.cart.updateItem(productId), { quantity, variantId });
   },
-  async remove(productId: number): Promise<void> {
+  async remove(productId: number, variantId: number | null = null): Promise<void> {
     if (env.USE_MOCKS) return;
-    await api.delete(ENDPOINTS.cart.removeItem(productId));
+    await api.delete(ENDPOINTS.cart.removeItem(productId), { params: { variantId } });
   },
   async clear(): Promise<void> {
     if (env.USE_MOCKS) return;

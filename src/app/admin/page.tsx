@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { DashboardView } from "@/modules/admin/dashboard";
+import { AdminHome } from "@/modules/admin/home/AdminHome";
 
 export const metadata: Metadata = { title: "Tableau de bord" };
 
 export default function Page() {
-  return <DashboardView />;
+  return <AdminHome />;
 }

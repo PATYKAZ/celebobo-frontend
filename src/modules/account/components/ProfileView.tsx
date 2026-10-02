@@ -1,7 +1,9 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import { Key, Lock } from "iconsax-reactjs";
+import Link from "next/link";
+import { ArrowRight2, Key, Location, Lock, Notification, Receipt2 } from "iconsax-reactjs";
+import { ROUTES } from "@/config/routes";
 import { useEffect, useState } from "react";
 import { Breadcrumb } from "@/shared/layout/Breadcrumb";
 import { Reveal } from "@/shared/animations/Reveal";
@@ -35,7 +37,22 @@ function Content() {
   return (
     <div className="grid gap-4 lg:grid-cols-[360px_1fr]">
       <Reveal direction="right">
-        <ProfileSummaryCard user={user} profile={profile} previewAvatar={preview} onPickAvatar={setFile} />
+        <div className="space-y-4">
+          <ProfileSummaryCard user={user} profile={profile} previewAvatar={preview} onPickAvatar={setFile} />
+          <Block pad="sm" className="!p-2">
+            {[
+              { href: ROUTES.orders, label: "Mes commandes", icon: Receipt2 },
+              { href: ROUTES.addresses, label: "Mon carnet d'adresses", icon: Location },
+              { href: ROUTES.settings, label: "Notifications & préférences", icon: Notification },
+            ].map(({ href, label, icon: Icon }) => (
+              <Link key={href} href={href} className="group flex items-center gap-3 rounded-box px-3 py-3 text-[14px] font-semibold transition-colors hover:bg-chip">
+                <span className="grid size-9 place-items-center rounded-full bg-chip transition-colors group-hover:bg-primary group-hover:text-white"><Icon size={17} /></span>
+                <span className="flex-1">{label}</span>
+                <ArrowRight2 size={14} className="text-ink-3 transition-transform group-hover:translate-x-1" />
+              </Link>
+            ))}
+          </Block>
+        </div>
       </Reveal>
       <Reveal delay={0.1}>
         <Block>
@@ -62,7 +79,14 @@ function Content() {
               <AnimatePresence mode="wait">
                 <motion.div key={tab} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.25 }}>
                   {tab === "info" && <PersonalInfoForm profile={profile} avatarFile={file} onSaved={() => setFile(null)} />}
-                  {tab === "addresses" && <AddressesForm profile={profile} />}
+                  {tab === "addresses" && (
+                    <div className="space-y-6">
+                      <Link href={ROUTES.addresses} className="flex items-center gap-3 rounded-box bg-primary-50 p-4 text-[14px] font-semibold text-primary-dark transition-colors hover:bg-primary-100">
+                        <Location size={20} variant="Bold" /> Gérer mon carnet d&apos;adresses (plusieurs adresses, adresse par défaut) <ArrowRight2 size={14} className="ml-auto" />
+                      </Link>
+                      <AddressesForm profile={profile} />
+                    </div>
+                  )}
                   {tab === "security" && (
                     <div className="flex items-start gap-4 rounded-box bg-page/60 p-5">
                       <span className="grid size-11 shrink-0 place-items-center rounded-full bg-primary-100 text-primary"><Lock size={22} variant="Bold" /></span>

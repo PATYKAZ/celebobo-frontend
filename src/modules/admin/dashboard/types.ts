@@ -1,6 +1,7 @@
 import type { PaymentMethod } from "@/modules/orders/types";
+import type { PeriodKey } from "./lib/stats";
 
-export type DashboardPeriod = "7d" | "30d" | "12m";
+export type DashboardPeriod = PeriodKey;
 
 export const PERIODS: { value: DashboardPeriod; label: string }[] = [
   { value: "7d", label: "7 j" },
@@ -23,19 +24,24 @@ export const PAYMENT_LABELS: Record<PaymentMethod, string> = {
   Cash: "Cash",
 };
 
+/** Variation en % vs période précédente (null = pas de référence). */
+export type Delta = number | null;
+
 export interface DashboardKpis {
-  monthRevenue: number;
-  monthRevenueDelta: number;
+  revenue: number;
+  revenueDelta: Delta;
   profit: number;
-  profitDelta: number;
+  profitDelta: Delta;
+  /** 24 dernières heures */
   dayRevenue: number;
-  dayRevenueDelta: number;
-  monthSales: number;
-  monthSalesDelta: number;
-  /** Part des smartphones dans le revenu du mois (%) */
+  dayRevenueDelta: Delta;
+  sales: number;
+  salesDelta: Delta;
+  /** Part des smartphones dans le revenu de la période (%) */
   smartphonesShare: number;
-  smartphonesDelta: number;
+  smartphonesDelta: Delta;
   pendingOrders: number;
+  unassignedOrders: number;
 }
 
 export interface DashboardSale {
@@ -43,6 +49,7 @@ export interface DashboardSale {
   productName: string;
   productImage: string | null;
   buyer: string;
+  seller: string;
   method: PaymentMethod;
   priceFinal: number;
   date: string;
@@ -63,13 +70,20 @@ export interface DashboardPendingOrder {
   createdAt: string;
   conversationId: number | null;
   itemsCount: number;
+  assignedTo: string | null;
 }
 
 export interface DashboardData {
+  periodKey: DashboardPeriod;
+  /** « 30 derniers jours (02 sept. 2026 → 02 oct. 2026) » */
+  periodLabel: string;
+  previousPeriodLabel: string;
   kpis: DashboardKpis;
   series: { labels: string[]; revenue: number[]; profit: number[] };
   methods: { method: PaymentMethod; total: number }[];
   topProducts: DashboardTopProduct[];
   recentSales: DashboardSale[];
   pendingOrders: DashboardPendingOrder[];
+  /** Meilleur revendeur sur la période = 1re ligne du tableau Revendeurs (même période). */
+  topReseller: { id: number; name: string; revenue: number } | null;
 }

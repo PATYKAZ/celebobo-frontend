@@ -2,6 +2,7 @@ import { ENDPOINTS } from "@/config/endpoints";
 import { env } from "@/config/env";
 import { api, ApiError, mockResponse } from "@/shared/lib/api";
 import { resolveDemoUser } from "../mocks/users";
+import { DB, nextMockUserId } from "@/shared/mock-db";
 import type { LoginInput, RegisterInput, User } from "../types";
 
 export const authService = {
@@ -31,17 +32,16 @@ export const authService = {
       if (input.password !== input.passwordConfirm) {
         throw new ApiError(400, "Les mots de passe ne correspondent pas", { passwordConfirm: ["Les mots de passe ne correspondent pas."] });
       }
+      // Crée le compte dans la base de démo (id unique) et rattache le parrain via son code revendeur.
+      const sponsor = input.codeRevendeur ? DB.users.find((u) => u.role === "revendeur" && u.codeRevendeur === input.codeRevendeur) : undefined;
+      if (input.codeRevendeur && !sponsor) throw new ApiError(400, "Code revendeur inconnu", { codeRevendeur: ["Aucun revendeur trouvé avec ce code."] });
+      const id = nextMockUserId();
+      DB.users.push({
+        id, username: input.email.split("@")[0], email: input.email, firstName: input.firstName, lastName: input.lastName,
+        role: "client", avatar: null, phoneNumber: input.phoneNumber ?? null, joinedAt: new Date().toISOString(), active: true, invitedBy: sponsor?.id ?? null,
+      });
       return mockResponse<User>(
-        {
-          id: 100,
-          username: input.email.split("@")[0],
-          email: input.email,
-          firstName: input.firstName,
-          lastName: input.lastName,
-          role: "client",
-          avatar: null,
-          phoneNumber: input.phoneNumber ?? null,
-        },
+        { id, username: input.email.split("@")[0], email: input.email, firstName: input.firstName, lastName: input.lastName, role: "client", avatar: null, phoneNumber: input.phoneNumber ?? null },
         700,
       );
     }

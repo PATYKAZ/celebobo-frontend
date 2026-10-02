@@ -1,6 +1,11 @@
 export * from "./types";
 export { ordersService } from "./services/orders.service";
+export { orderWorkflow, canTransition, availableTransitions } from "./services/workflow.service";
 export { useOrders, useOrder, useCreateOrder, orderKeys } from "./hooks/useOrders";
+export { useSetOrderStatus, useAssignOrder } from "./hooks/useOrderWorkflow";
+export { useResellerAvailability } from "./hooks/useResellerAvailability";
 export { OrderCard } from "./components/OrderCard";
+export { OrderDetailView } from "./components/OrderDetailView";
 export { OrderStatusBadge } from "./components/OrderStatusBadge";
-export { OrderTimeline } from "./components/OrderTimeline";
+export { OrderTimeline, OrderProgress } from "./components/OrderTimeline";
+export { AvailabilityDot } from "./components/AvailabilityDot";

@@ -16,14 +16,25 @@ import { OrderCard } from "@/modules/orders/components/OrderCard";
 import { useOrders } from "@/modules/orders/hooks/useOrders";
 import type { OrderStatus } from "@/modules/orders/types";
 
-type Filter = OrderStatus | "all";
+type Filter = "all" | "attente" | "cours" | "livree" | "fermee";
 const PAGE_SIZE = 5;
+
+/** Regroupement des 8 statuts en 4 onglets (le filtrage fin se fait dans le détail / côté API). */
+const GROUPS: Record<Exclude<Filter, "all">, OrderStatus[]> = {
+  attente: ["attente"],
+  cours: ["assignee", "confirmee", "payee", "en_livraison"],
+  livree: ["livree"],
+  fermee: ["annulee", "retournee"],
+};
 
 function Content() {
   const [status, setStatus] = useState<Filter>("all");
   const [page, setPage] = useState(1);
-  const { data, isLoading, isError, refetch } = useOrders({ status, page, pageSize: PAGE_SIZE });
-  const pageCount = data ? Math.ceil(data.count / PAGE_SIZE) : 0;
+  const { data, isLoading, isError, refetch } = useOrders({ status: "all", page: 1, pageSize: 200 });
+  const filtered = (data?.results ?? []).filter((o) => status === "all" || GROUPS[status].includes(o.status));
+  const pageCount = Math.ceil(filtered.length / PAGE_SIZE);
+  const rows = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const countOf = (f: Filter) => (data?.results ?? []).filter((o) => f === "all" || GROUPS[f].includes(o.status)).length;
 
   return (
     <Block>
@@ -40,10 +51,11 @@ function Content() {
             setPage(1);
           }}
           tabs={[
-            { value: "all", label: "Toutes" },
-            { value: "attente", label: "En attente" },
-            { value: "traitement", label: "En traitement" },
-            { value: "terminé", label: "Terminées" },
+            { value: "all", label: "Toutes", count: countOf("all") },
+            { value: "attente", label: "En attente", count: countOf("attente") },
+            { value: "cours", label: "En cours", count: countOf("cours") },
+            { value: "livree", label: "Livrées", count: countOf("livree") },
+            { value: "fermee", label: "Annulées / retours", count: countOf("fermee") },
           ]}
         />
       </div>
@@ -53,9 +65,9 @@ function Content() {
           Array.from({ length: 3 }, (_, i) => <Skeleton key={i} className="h-[92px] w-full !rounded-box" />)
         ) : isError ? (
           <EmptyState icon={<Bag2 size={44} />} title="Chargement impossible" description="Une erreur est survenue lors de la récupération de vos commandes." action={<Button onClick={() => refetch()}>Réessayer</Button>} />
-        ) : data && data.results.length > 0 ? (
+        ) : rows.length > 0 ? (
           <RevealGroup key={`${status}-${page}`} stagger={0.07} className="space-y-4">
-            {data.results.map((o, i) => (
+            {rows.map((o, i) => (
               <RevealItem key={o.id}>
                 <OrderCard order={o} defaultOpen={i === 0 && page === 1 && status === "all"} />
               </RevealItem>

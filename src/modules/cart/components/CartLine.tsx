@@ -38,6 +38,7 @@ export function CartLine({ item, onQuantity, onRemove }: Props) {
       <div className="min-w-0">
         {item.product.category && <p className="text-[12px] uppercase text-ink-3">{item.product.category}</p>}
         <Link href={href} className="line-clamp-2 text-[15px] font-bold leading-[20px] transition-colors hover:text-primary">{item.product.name}</Link>
+        {item.variantLabel && <span className="mt-1 inline-block rounded bg-chip px-2 py-0.5 text-[12px] font-semibold">{item.variantLabel}</span>}
         <div className="mt-2 flex flex-wrap items-center gap-2">
           <Price current={unit} original={original} size="sm" />
           {item.product.freeShipping && <Pill tone="green">Livraison offerte</Pill>}
@@ -52,7 +53,7 @@ export function CartLine({ item, onQuantity, onRemove }: Props) {
             {formatPrice(unit * item.quantity)}
           </motion.p>
         </div>
-        <button onClick={onRemove} aria-label={`Retirer ${item.product.name}`} className="grid size-10 place-items-center rounded-full bg-chip text-ink-2 transition-colors hover:bg-danger hover:text-white">
+        <button onClick={onRemove} aria-label={`Retirer ${item.product.name}${item.variantLabel ? ` (${item.variantLabel})` : ""}`} className="grid size-10 place-items-center rounded-full bg-chip text-ink-2 transition-colors hover:bg-danger hover:text-white">
           <Trash size={17} />
         </button>
       </div>

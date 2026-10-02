@@ -1,11 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { Call, Lock, Profile, Sms, UserTick } from "iconsax-reactjs";
 import { useState, type FormEvent } from "react";
 import { ROUTES } from "@/config/routes";
 import { Breadcrumb } from "@/shared/layout/Breadcrumb";
 import { Button } from "@/shared/ui/Button";
+import { GoogleButton } from "./GoogleButton";
 import { Checkbox, Input } from "@/shared/ui/Form";
 import { toast } from "@/shared/ui/Toast";
 import { useRegister } from "../hooks/useAuth";
@@ -19,7 +21,9 @@ type Form = typeof INITIAL;
 export function RegisterView() {
   const register = useRegister();
   const { redirect, searchSuffix } = useAuthRedirect();
-  const [form, setForm] = useState<Form>(INITIAL);
+  // Lien d'invitation d'un revendeur : /inscription?ref=4821 pré-remplit le code
+  const ref = useSearchParams().get("ref");
+  const [form, setForm] = useState<Form>({ ...INITIAL, codeRevendeur: ref && /^d{4}$/.test(ref) ? ref : "" });
   const [terms, setTerms] = useState(false);
   const [errors, setErrors] = useState<Partial<Record<keyof Form | "terms", string>>>({});
 
@@ -84,6 +88,7 @@ export function RegisterView() {
           {general && <p role="alert" className="rounded-md bg-danger-50 px-3 py-2 text-[13px] text-danger">{general}</p>}
           <Button type="submit" size="lg" fullWidth loading={register.isPending}>Créer mon compte</Button>
         </form>
+        <GoogleButton label="S'inscrire avec Google" />
       </AuthLayoutCard>
     </>
   );

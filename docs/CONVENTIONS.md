@@ -72,3 +72,18 @@ Modules : `products`, `categories`, `auth`, `cart`, `favorites`, `orders`, `mess
   `prefers-reduced-motion` est respecté (MotionConfig + CSS).
 - Icônes : `import { Heart } from "iconsax-reactjs"` — props `size`, `variant` (`Linear` | `Bold` | `Bulk` | `TwoTone` | `Outline` | `Broken`), `color`.
   ⚠️ Vérifier qu'un nom existe avant usage (ex: `HamburgerMenu`, pas `HambergerMenu` ; pas de `Tablet` → `Devices`).
+
+## v2 — Rôles, base de démo unique, temps réel
+
+- **Permissions** : `modules/auth/permissions.ts` (matrice revendeur / responsable (mukubwa) / admin). Utiliser `useCan("…")`, `<Can>`, `<PermissionGuard>`.
+  Règle : *même page, données filtrées par rôle* (ex. `/admin/commandes` = toutes pour un responsable, seulement les siennes pour un revendeur).
+- **Base de démo unique** : `shared/mock-db` (`DB.users`, `DB.orders`, `DB.sales`, `DB.commissionPayments`, `DB.stockMovements`, `DB.auditLog`, `DB.addresses`)
+  + `shared/mock-db/selectors.ts` (`getActor`, `visibleSales`, `totals`, `resellerStats`, `commissionFor`, `topReseller`, `logAudit`…).
+  Tous les services mock lisent/mutent ces tableaux → les chiffres concordent entre écrans. Jamais de données aléatoires dans un module.
+  Sémantique v1 conservée : `Vente.seller` = vendeur (revendeur/responsable), `soldTo` = acheteur (texte libre).
+- **Workflow commande** : `modules/orders/services/workflow.service.ts` (`orderWorkflow.setStatus/assign`, `canTransition`, `availableTransitions`) + hooks `useSetOrderStatus`, `useAssignOrder`.
+  Statuts : attente → assignee → confirmee → payee → en_livraison → livree (+ annulee, retournee). Mapping API v1 : `fromLegacyStatus`.
+- **Temps réel** : `shared/lib/realtime.ts` (`realtime.subscribe/emit`, canaux `conversation:{id}`, `user:{id}`, `presence`) + hook `useRealtime`.
+  Mock = bus mémoire ; API = WebSocket (`NEXT_PUBLIC_WS_URL`). Les services mock émettent des événements lorsqu'ils mutent un état.
+- **Panier par utilisateur** : `cart.store` (`owner`, `carts`, fusion invité → compte dans `CartOwnerSync`).
+- **Pré-rendu** : les pages `[id]` exportent `generateStaticParams` (mode mock) pour éviter les démarrages à froid.

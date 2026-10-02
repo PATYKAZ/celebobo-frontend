@@ -1,8 +1,13 @@
 import type { Metadata } from "next";
-import { MessagesView } from "@/modules/messaging";
+import { ROUTES } from "@/config/routes";
+import { MessagesView, StaffRedirect } from "@/modules/messaging";
 
 export const metadata: Metadata = { title: "Messages" };
 
 export default function Page() {
-  return <MessagesView />;
+  return (
+    <StaffRedirect to={ROUTES.admin.inbox}>
+      <MessagesView />
+    </StaffRedirect>
+  );
 }

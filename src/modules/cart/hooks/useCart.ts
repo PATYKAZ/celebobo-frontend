@@ -23,26 +23,33 @@ export function useCart() {
   const store = useCartStore;
 
   const add = useCallback(
-    (product: Product | CartProduct, quantity = 1, opts?: { silent?: boolean }) => {
-      store.getState().add(toCartProduct(product), quantity);
-      cartService.add(product.id, quantity).catch(() => {});
-      if (!opts?.silent) toast.success("Ajouté au panier", product.name);
+    (
+      product: Product | CartProduct,
+      quantity = 1,
+      opts?: { silent?: boolean; variantId?: number | null; variantLabel?: string | null; /** écart de prix de la variante vs produit (appliqué au prix normal et soldé) */ priceDelta?: number },
+    ) => {
+      const base = toCartProduct(product);
+      const d = opts?.priceDelta ?? 0;
+      const priced = d ? { ...base, price: base.price + d, priceSolde: base.priceSolde != null ? base.priceSolde + d : null } : base;
+      store.getState().add(priced, quantity, opts?.variantId ?? null, opts?.variantLabel ?? null);
+      cartService.add(product.id, quantity, opts?.variantId ?? null).catch(() => {});
+      if (!opts?.silent) toast.success("Ajouté au panier", opts?.variantLabel ? `${product.name} — ${opts.variantLabel}` : product.name);
     },
     [store],
   );
 
   const setQuantity = useCallback(
-    (productId: number, quantity: number) => {
-      store.getState().setQuantity(productId, quantity);
-      (quantity <= 0 ? cartService.remove(productId) : cartService.update(productId, quantity)).catch(() => {});
+    (productId: number, quantity: number, variantId: number | null = null) => {
+      store.getState().setQuantity(productId, quantity, variantId);
+      (quantity <= 0 ? cartService.remove(productId, variantId) : cartService.update(productId, quantity, variantId)).catch(() => {});
     },
     [store],
   );
 
   const remove = useCallback(
-    (productId: number) => {
-      store.getState().remove(productId);
-      cartService.remove(productId).catch(() => {});
+    (productId: number, variantId: number | null = null) => {
+      store.getState().remove(productId, variantId);
+      cartService.remove(productId, variantId).catch(() => {});
     },
     [store],
   );

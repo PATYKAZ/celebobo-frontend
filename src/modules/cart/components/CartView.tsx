@@ -45,7 +45,7 @@ export function CartView() {
               <ul className="mt-4">
                 <AnimatePresence initial={false}>
                   {items.map((it) => (
-                    <CartLine key={it.productId} item={it} onQuantity={(q) => setQuantity(it.productId, q)} onRemove={() => remove(it.productId)} />
+                    <CartLine key={`${it.productId}-${it.variantId ?? 0}`} item={it} onQuantity={(q) => setQuantity(it.productId, q, it.variantId ?? null)} onRemove={() => remove(it.productId, it.variantId ?? null)} />
                   ))}
                 </AnimatePresence>
               </ul>

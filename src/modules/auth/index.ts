@@ -6,3 +6,5 @@ export { authService } from "./services/auth.service";
 export { DEMO_ACCOUNTS } from "./mocks/users";
 export { LoginView } from "./components/LoginView";
 export { RegisterView } from "./components/RegisterView";
+export * from "./permissions";
+export { useCan, Can, PermissionGuard } from "./hooks/useCan";

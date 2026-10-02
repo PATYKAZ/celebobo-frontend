@@ -7,7 +7,7 @@ export const metadata: Metadata = { title: { default: "Back-office", template: "
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   return (
-    <AuthGuard roles={["admin", "mukubwa"]}>
+    <AuthGuard roles={["admin", "mukubwa", "revendeur"]}>
       <AdminShell>{children}</AdminShell>
     </AuthGuard>
   );

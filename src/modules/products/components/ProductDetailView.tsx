@@ -13,6 +13,8 @@ import { EmptyState } from "@/shared/ui/EmptyState";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { useCart } from "@/modules/cart/hooks/useCart";
 import { useProduct } from "../hooks/useProducts";
+import { useVariantSelection } from "../hooks/useVariantSelection";
+import type { Product } from "../types";
 import { useRecentlyViewedStore } from "../store/recently-viewed.store";
 import { getPricing } from "../utils";
 import { ProductGallery } from "./ProductGallery";
@@ -20,13 +22,62 @@ import { ProductInfo } from "./ProductInfo";
 import { ProductTabs } from "./ProductTabs";
 import { RelatedProducts } from "./RelatedProducts";
 
-export function ProductDetailView({ id }: { id: number }) {
-  const { data: product, isLoading, isError } = useProduct(Number.isFinite(id) ? id : undefined);
+/** Contenu de la fiche (monté une fois le produit chargé : la sélection de variante dépend du produit). */
+function ProductContent({ product }: { product: Product }) {
   const { add } = useCart();
+  const selection = useVariantSelection(product);
 
   useEffect(() => {
-    if (product) useRecentlyViewedStore.getState().track(product);
+    useRecentlyViewedStore.getState().track(product);
   }, [product]);
+
+  const pricing = getPricing(product);
+  const current = pricing.current + selection.priceDelta;
+
+  return (
+    <>
+      <Breadcrumb
+        items={[
+          { label: "Produits", href: ROUTES.products },
+          ...(product.categoryId ? [{ label: product.category, href: ROUTES.category(product.categoryId) }] : []),
+          { label: product.name },
+        ]}
+      />
+      <Reveal>
+        <Block className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-12">
+          <ProductGallery product={product} activeImage={selection.image} />
+          <ProductInfo product={product} selection={selection} />
+        </Block>
+      </Reveal>
+      <Reveal>
+        <Block>
+          <ProductTabs product={product} />
+        </Block>
+      </Reveal>
+      <RelatedProducts productId={product.id} />
+
+      {/* Barre d'achat collante (mobile) */}
+      <div className="h-16 lg:hidden" />
+      <div className="fixed inset-x-0 bottom-0 z-40 flex items-center gap-3 border-t border-line-3 bg-white p-3 lg:hidden">
+        {product.image && (
+          <span className="relative size-11 shrink-0 overflow-hidden rounded-md bg-page">
+            <Image src={product.image} alt="" fill sizes="44px" className="object-cover" />
+          </span>
+        )}
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-[12px] text-ink-2">{product.name}</p>
+          <p className={`text-[16px] font-bold ${pricing.onSale ? "text-danger" : ""}`}>{formatPrice(current)}</p>
+        </div>
+        <Button size="md" disabled={!selection.inStock} onClick={() => add(product, 1, { variantId: selection.variant?.id ?? null, variantLabel: selection.variant?.label ?? null, priceDelta: selection.priceDelta })} leftIcon={<Bag2 size={17} variant="Bold" />}>
+          Ajouter
+        </Button>
+      </div>
+    </>
+  );
+}
+
+export function ProductDetailView({ id }: { id: number }) {
+  const { data: product, isLoading, isError } = useProduct(Number.isFinite(id) ? id : undefined);
 
   if (isLoading) {
     return (
@@ -62,46 +113,5 @@ export function ProductDetailView({ id }: { id: number }) {
     );
   }
 
-  const pricing = getPricing(product);
-
-  return (
-    <>
-      <Breadcrumb
-        items={[
-          { label: "Produits", href: ROUTES.products },
-          ...(product.categoryId ? [{ label: product.category, href: ROUTES.category(product.categoryId) }] : []),
-          { label: product.name },
-        ]}
-      />
-      <Reveal>
-        <Block className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-12">
-          <ProductGallery product={product} />
-          <ProductInfo product={product} />
-        </Block>
-      </Reveal>
-      <Reveal>
-        <Block>
-          <ProductTabs product={product} />
-        </Block>
-      </Reveal>
-      <RelatedProducts productId={product.id} />
-
-      {/* Barre d'achat collante (mobile) */}
-      <div className="h-16 lg:hidden" />
-      <div className="fixed inset-x-0 bottom-0 z-40 flex items-center gap-3 border-t border-line-3 bg-white p-3 lg:hidden">
-        {product.image && (
-          <span className="relative size-11 shrink-0 overflow-hidden rounded-md bg-page">
-            <Image src={product.image} alt="" fill sizes="44px" className="object-cover" />
-          </span>
-        )}
-        <div className="min-w-0 flex-1">
-          <p className="truncate text-[12px] text-ink-2">{product.name}</p>
-          <p className={`text-[16px] font-bold ${pricing.onSale ? "text-danger" : ""}`}>{formatPrice(pricing.current)}</p>
-        </div>
-        <Button size="md" disabled={!product.inStock} onClick={() => add(product)} leftIcon={<Bag2 size={17} variant="Bold" />}>
-          Ajouter
-        </Button>
-      </div>
-    </>
-  );
+  return <ProductContent key={product.id} product={product} />;
 }

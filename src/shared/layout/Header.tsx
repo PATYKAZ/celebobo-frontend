@@ -165,8 +165,8 @@ function AccountMenu() {
               <Link href={ROUTES.profile} className={item}><Profile size={17} /> Mon profil</Link>
               <Link href={ROUTES.orders} className={item}><Receipt2 size={17} /> Mes commandes</Link>
               <Link href={ROUTES.favorites} className={item}><Heart size={17} /> Mes favoris</Link>
-              {isStaff && <Link href={ROUTES.notifications} className={item}><Notification size={17} /> Notifications</Link>}
-              {isAdmin && <Link href={ROUTES.admin.root} className={cn(item, "text-primary")}><Setting2 size={17} /> Back-office</Link>}
+              {isStaff && <Link href={ROUTES.admin.notifications} className={item}><Notification size={17} /> Notifications</Link>}
+              {isStaff && <Link href={ROUTES.admin.root} className={cn(item, "text-primary")}><Setting2 size={17} /> {user.role === "revendeur" ? "Mon espace revendeur" : "Back-office"}</Link>}
               <button onClick={() => logout.mutate()} className={cn(item, "w-full text-danger hover:text-danger")}><Logout size={17} /> Déconnexion</button>
             </div>
           ) : (
@@ -208,8 +208,8 @@ export function Header() {
           <a href={SITE.hotlineHref} className="text-[12px] font-bold leading-[18px] hover:text-primary">{SITE.hotline}</a>
         </div>
         <div className="flex items-center text-[14px] leading-[21px]">
-          <Link href={ROUTES.register} className="px-5 transition-colors hover:text-primary">Devenir revendeur</Link>
-          <Link href={ROUTES.orders} className="px-5 transition-colors hover:text-primary">Suivre ma commande</Link>
+          <Link href={ROUTES.becomeReseller} className="px-5 transition-colors hover:text-primary">Devenir revendeur</Link>
+          <Link href={ROUTES.track} className="px-5 transition-colors hover:text-primary">Suivre ma commande</Link>
           <span className="flex items-center gap-1 border-r border-line-2/60 px-5">$ USD <ArrowDown2 size={11} className="opacity-80" /></span>
           <span className="flex items-center gap-2 pl-5">
             <span className="grid size-[15px] place-items-center overflow-hidden rounded-full bg-[linear-gradient(135deg,#007FFF_33%,#F7D618_33%,#F7D618_66%,#CE1021_66%)]" aria-hidden />
@@ -238,7 +238,7 @@ export function Header() {
               <CircleButton href={ROUTES.favorites} label="Favoris"><Heart size={19} variant="Bold" /></CircleButton>
               {favCount > 0 && <span className="pointer-events-none absolute -right-1 -top-1 grid min-w-[18px] place-items-center rounded-full bg-danger px-1 text-[10px] leading-[18px] text-white ring-2 ring-white">{favCount}</span>}
             </span>
-            {isStaff && <CircleButton href={ROUTES.notifications} label="Notifications" className="hidden md:grid"><Notification size={19} variant="Bold" /></CircleButton>}
+            {isStaff && <CircleButton href={ROUTES.admin.notifications} label="Notifications" className="hidden md:grid"><Notification size={19} variant="Bold" /></CircleButton>}
           </span>
           <AccountMenu />
           <CartButton />

@@ -5,12 +5,14 @@ import { MOCK_PRODUCTS } from "../mocks/products";
 import { mockReviewsFor } from "../mocks/reviews";
 import type { NewReviewInput, Product, ProductListParams, Review } from "../types";
 import { getPricing } from "../utils";
+import { isVisibleProduct } from "@/modules/admin/categories/services/recount";
 
 /** En mémoire (mock) — avis ajoutés pendant la session. */
 const sessionReviews: Review[] = [];
 
 function filterMocks(p: ProductListParams): Product[] {
-  let list = [...MOCK_PRODUCTS];
+  // Boutique : ni corbeille ni produits désactivés (admin)
+  let list = MOCK_PRODUCTS.filter(isVisibleProduct);
   if (p.ids?.length) list = list.filter((x) => p.ids!.includes(x.id));
   if (p.category) list = list.filter((x) => x.categoryId === p.category);
   if (p.search) {
@@ -59,7 +61,7 @@ export const productsService = {
 
   async detail(id: number): Promise<Product> {
     if (env.USE_MOCKS) {
-      const found = MOCK_PRODUCTS.find((p) => p.id === id);
+      const found = MOCK_PRODUCTS.find((p) => p.id === id && isVisibleProduct(p));
       if (!found) throw new ApiError(404, "Produit introuvable");
       return mockResponse(found);
     }
@@ -70,8 +72,8 @@ export const productsService = {
     if (env.USE_MOCKS) {
       const base = MOCK_PRODUCTS.find((p) => p.id === id);
       return mockResponse(() =>
-        MOCK_PRODUCTS.filter((p) => p.id !== id && p.categoryId === base?.categoryId)
-          .concat(MOCK_PRODUCTS.filter((p) => p.id !== id && p.categoryId !== base?.categoryId))
+        MOCK_PRODUCTS.filter((p) => isVisibleProduct(p) && p.id !== id && p.categoryId === base?.categoryId)
+          .concat(MOCK_PRODUCTS.filter((p) => isVisibleProduct(p) && p.id !== id && p.categoryId !== base?.categoryId))
           .slice(0, 8),
       );
     }

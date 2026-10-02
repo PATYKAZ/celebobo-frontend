@@ -35,12 +35,45 @@ export interface Product {
   deliveryPolicyPhase1: string | null;
   deliveryPolicyPhase2: string | null;
   /** Champs d'affichage du design (stock, livraison) — à exposer côté API. */
+  /** true si stock > 0 (dérivé côté API) */
   inStock: boolean;
+  /** Quantité en stock (v2). */
+  stock: number;
+  /** Seuil d'alerte : stock <= seuil => « stock bas » */
+  stockThreshold: number;
+  /** « Devrait être vendu avant le » (Product.date_wish en v1), ISO date ou null */
+  dateWish: string | null;
+  /** Options de variantes (ex: Couleur: [Noir, Argent]). Vide = produit simple. */
+  variantOptions: VariantOption[];
+  variants: ProductVariant[];
+  /** Suppression douce : ISO si dans la corbeille (admin) */
+  deletedAt?: string | null;
+  /** Visible en boutique */
+  isActive?: boolean;
   freeShipping: boolean;
   shippingFee: number | null;
   /** Nombre de ventes (tri « meilleures ventes »). */
   salesCount?: number;
   isFavorite?: boolean;
+}
+
+export interface VariantOption {
+  name: string;
+  values: string[];
+}
+
+/** Variante vendable : combinaison d'options avec prix et stock propres. */
+export interface ProductVariant {
+  id: number;
+  /** { Couleur: "Noir", Stockage: "256 Go" } */
+  attributes: Record<string, string>;
+  /** Libellé affichable "Noir / 256 Go" */
+  label: string;
+  /** Prix de cette variante (sinon prix du produit) */
+  price: number | null;
+  stock: number;
+  sku?: string | null;
+  image?: string | null;
 }
 
 export type ProductOrdering = "-date_added" | "date_added" | "price" | "-price" | "-sales" | "-rating" | "name";
@@ -59,6 +92,12 @@ export interface ProductListParams {
   /** "new" => nouveautés uniquement */
   badge?: string;
   ids?: number[];
+  /** admin : inclure la corbeille */
+  trashed?: boolean;
+  /** admin : stock bas uniquement */
+  lowStock?: boolean;
+  /** admin : % de remise minimum */
+  minDiscount?: number;
 }
 
 export interface Review {

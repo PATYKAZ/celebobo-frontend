@@ -8,12 +8,13 @@ import { ROUTES } from "@/config/routes";
 import { cn } from "@/shared/lib/cn";
 import { formatRelative } from "@/shared/lib/format";
 import { Button } from "@/shared/ui/Button";
-import { Select } from "@/shared/ui/Form";
 import { toast } from "@/shared/ui/Toast";
+import { getErrorMessage } from "@/shared/lib/api";
 import type { UserRole } from "@/modules/auth/types";
 import { useAssignReseller, useMarkNotificationRead, useRevendeurReply } from "../hooks/useNotifications";
 import type { ResellerOption } from "../services/notifications.service";
 import type { Notification } from "../types";
+import { ResellerCombobox } from "./ResellerCombobox";
 
 interface Props {
   notification: Notification;
@@ -41,7 +42,7 @@ export function NotificationItem({ notification: n, role, resellers }: Props) {
           setDone(true);
           toast.success("Commande assignée", "Le revendeur a été notifié.");
         },
-        onError: () => toast.error("Assignation impossible"),
+        onError: (e) => toast.error("Assignation impossible", getErrorMessage(e)),
       },
     );
   };
@@ -61,7 +62,7 @@ export function NotificationItem({ notification: n, role, resellers }: Props) {
           <p className="mt-1 text-[14px] leading-[21px] text-ink-2">{n.body}</p>
 
           <div className="mt-3 flex flex-wrap items-center gap-2">
-            <Link href={ROUTES.conversation(n.conversationId)} onClick={() => !n.isRead && markRead.mutate(n.id)} className="group inline-flex items-center gap-1 text-[13px] font-bold text-primary">
+            <Link href={ROUTES.admin.conversation(n.conversationId)} onClick={() => !n.isRead && markRead.mutate(n.id)} className="group inline-flex items-center gap-1 text-[13px] font-bold text-primary">
               Ouvrir la discussion <ArrowRight2 size={14} className="transition-transform group-hover:translate-x-1" />
             </Link>
             {!n.isRead && !canAssign && !canReply && (
@@ -74,15 +75,9 @@ export function NotificationItem({ notification: n, role, resellers }: Props) {
 
           <AnimatePresence mode="wait">
             {canAssign && !done && (
-              <motion.div key="assign" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden">
+              <motion.div key="assign" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto", transitionEnd: { overflow: "visible" } }} exit={{ opacity: 0, height: 0, overflow: "hidden" }} className="overflow-hidden">
                 <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-end">
-                  <Select
-                    label="Assigner à un revendeur"
-                    value={revendeurId}
-                    onChange={(e) => setRevendeurId(e.target.value)}
-                    wrapperClassName="sm:w-[280px]"
-                    options={[{ value: "", label: "Sélectionner…" }, ...resellers.map((r) => ({ value: r.id, label: r.name }))]}
-                  />
+                  <ResellerCombobox options={resellers} value={revendeurId} onChange={setRevendeurId} className="sm:w-[340px]" />
                   <Button size="md" onClick={confirmAssign} loading={assign.isPending} upper={false}>Confirmer</Button>
                 </div>
               </motion.div>

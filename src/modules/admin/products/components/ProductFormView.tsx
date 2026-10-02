@@ -1,6 +1,7 @@
 "use client";
 
 import { ROUTES } from "@/config/routes";
+import { PermissionGuard } from "@/modules/auth/hooks/useCan";
 import { Block } from "@/shared/ui/Block";
 import { Button } from "@/shared/ui/Button";
 import { Skeleton } from "@/shared/ui/Skeleton";
@@ -10,14 +11,22 @@ import { ProductForm } from "./ProductForm";
 
 export function ProductCreateView() {
   return (
-    <>
-      <PageHeader title="Nouveau produit" description="Renseignez les informations, les prix et les visuels du produit." />
+    <PermissionGuard permission="products.manage">
+      <PageHeader title="Nouveau produit" description="Renseignez les informations, les prix, le stock et les visuels du produit." />
       <ProductForm />
-    </>
+    </PermissionGuard>
   );
 }
 
 export function ProductEditView({ id }: { id: number }) {
+  return (
+    <PermissionGuard permission="products.manage">
+      <EditContent id={id} />
+    </PermissionGuard>
+  );
+}
+
+function EditContent({ id }: { id: number }) {
   const { data, isLoading, isError } = useAdminProduct(id);
 
   if (isLoading) {

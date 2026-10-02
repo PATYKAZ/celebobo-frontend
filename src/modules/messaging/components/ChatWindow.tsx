@@ -1,19 +1,25 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowLeft2, CloseCircle, Gallery, Receipt2, Send2 } from "iconsax-reactjs";
+import { ArrowLeft2, CloseCircle, Gallery, Money3, Receipt2, Send2 } from "iconsax-reactjs";
 import { Fragment, useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
+import { ROUTES } from "@/config/routes";
 import { cn } from "@/shared/lib/cn";
 import { formatDate } from "@/shared/lib/format";
 import { Avatar } from "@/shared/ui/Avatar";
+import { StatusDot } from "@/shared/ui/Badges";
 import { Modal } from "@/shared/ui/Overlay";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { toast } from "@/shared/ui/Toast";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
-import { useConversation, useMessages, useSendMessage } from "../hooks/useConversations";
-import type { Message } from "../types";
+import { can } from "@/modules/auth/permissions";
+import { ORDER_STATUS_LABEL, ORDER_STATUS_TONE } from "@/modules/orders/types";
+import { useConversation, useMarkSeen, useMessages, useSendMessage, useTypingSignal, useTypingUsers } from "../hooks/useConversations";
+import type { Availability, Message } from "../types";
 import { MessageBubble, TypingIndicator } from "./MessageBubble";
+import { PriceProposalModal } from "./PriceProposalModal";
 
 const dayLabel = (iso: string) => {
   const d = new Date(iso);
@@ -24,29 +30,40 @@ const dayLabel = (iso: string) => {
   return formatDate(iso);
 };
 
+export const PRESENCE_LABEL: Record<Availability, string> = { online: "En ligne", away: "Absent", offline: "Hors ligne" };
+export const PRESENCE_DOT: Record<Availability, string> = { online: "bg-primary", away: "bg-star", offline: "bg-ink-3" };
+
 interface Props {
   conversationId: number;
   onBack?: () => void;
   className?: string;
+  /** Intégré au back-office (pas de fil d'Ariane, liens vers l'admin) */
+  embedded?: boolean;
 }
 
 export function ChatWindow({ conversationId, onBack, className }: Props) {
-  const { user } = useAuth();
-  const { data: conv } = useConversation(conversationId);
+  const { user, isStaff } = useAuth();
+  const { data: conv, error: convError } = useConversation(conversationId);
   const { data: messages, isLoading } = useMessages(conversationId);
   const send = useSendMessage(conversationId);
+  const typingNames = useTypingUsers(conversationId);
+  const typing = useTypingSignal(conversationId);
 
   const [text, setText] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [lightbox, setLightbox] = useState<string | null>(null);
-  const [awaiting, setAwaiting] = useState(false);
+  const [proposal, setProposal] = useState(false);
   const scroller = useRef<HTMLDivElement>(null);
   const fileInput = useRef<HTMLInputElement>(null);
   const lastCount = useRef(0);
 
   const myId = user?.id ?? 0;
   const concluded = !!conv?.concluded;
+  const isBuyer = conv?.client?.id === myId;
+  const canPropose = !!conv?.relatedOrderId && !concluded && !isBuyer && can(user, "price.adjust");
+
+  useMarkSeen(conversationId, messages, myId);
 
   // Aperçu de l'image à envoyer
   useEffect(() => {
@@ -56,43 +73,35 @@ export function ChatWindow({ conversationId, onBack, className }: Props) {
     return () => URL.revokeObjectURL(url);
   }, [file]);
 
-  // Auto-scroll + fin de l'indicateur « écrit… » à l'arrivée d'un message reçu
+  // Auto-scroll à l'arrivée d'un message / de l'indicateur « écrit… »
   useEffect(() => {
     const el = scroller.current;
     if (!el || !messages) return;
     const grew = messages.length > lastCount.current;
     lastCount.current = messages.length;
-    if (grew) {
-      el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
-      const last = messages[messages.length - 1];
-      if (last && last.sender.id !== myId) setAwaiting(false);
-    }
-  }, [messages, myId]);
-
-  useEffect(() => {
-    if (!awaiting) return;
-    const t = setTimeout(() => setAwaiting(false), 9000);
-    return () => clearTimeout(t);
-  }, [awaiting]);
+    if (grew || typingNames.length) el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
+  }, [messages, typingNames.length]);
 
   // Reset au changement de conversation
   useEffect(() => {
     lastCount.current = 0;
-    setAwaiting(false);
     setText("");
     setFile(null);
   }, [conversationId]);
 
-  const others = useMemo(() => conv?.participants.filter((p) => p.id !== myId) ?? [], [conv, myId]);
+  const others = useMemo(() => conv?.participants.filter((p) => p.id !== myId && p.role !== "system") ?? [], [conv, myId]);
+  // interlocuteur principal : côté staff = le client ; côté client = le revendeur assigné (sinon l'équipe)
+  const lead = isStaff && !isBuyer ? others.find((p) => p.role === "client") ?? others[0] : others.find((p) => p.role === "revendeur") ?? others[0];
+  const leadPresence: Availability | undefined = lead?.role === "client" ? undefined : lead?.availability ?? "online";
   const canSend = (text.trim().length > 0 || !!file) && !concluded && !send.isPending;
 
   const submit = () => {
     if (!canSend) return;
+    typing.stop();
     send.mutate({ content: text, image: file }, { onError: () => toast.error("Message non envoyé", "Vérifiez votre connexion.") });
     setText("");
     setFile(null);
     if (fileInput.current) fileInput.current.value = "";
-    if (user?.role === "client") setAwaiting(true);
   };
 
   const onKey = (e: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -101,6 +110,18 @@ export function ChatWindow({ conversationId, onBack, className }: Props) {
       submit();
     }
   };
+
+  if (convError) {
+    return (
+      <section className={cn("grid min-h-0 place-items-center p-8 text-center", className)}>
+        <div>
+          <h2 className="text-[18px]">Discussion inaccessible</h2>
+          <p className="mt-1 max-w-[320px] text-[14px] text-ink-2">Cette discussion n'existe pas ou ne fait pas partie de vos conversations.</p>
+          {onBack && <button onClick={onBack} className="mt-4 rounded-box bg-chip px-4 py-2 text-[13px] font-bold hover:bg-primary hover:text-white">Retour</button>}
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className={cn("flex min-h-0 flex-col", className)} aria-label="Conversation">
@@ -113,23 +134,33 @@ export function ChatWindow({ conversationId, onBack, className }: Props) {
         )}
         {conv ? (
           <>
-            <div className="flex -space-x-2">
-              {others.slice(0, 3).map((p) => (
-                <Avatar key={p.id} src={p.avatar} name={p.name} size={40} className="ring-2 ring-white" />
-              ))}
+            <div className="relative">
+              <Avatar src={lead?.avatar} name={lead?.name ?? "Celebobo"} size={42} />
+              {leadPresence && !concluded && <span className={cn("absolute -bottom-0.5 -right-0.5 size-3 rounded-full ring-2 ring-white", PRESENCE_DOT[leadPresence])} aria-label={PRESENCE_LABEL[leadPresence]} />}
             </div>
             <div className="min-w-0 flex-1">
-              <h2 className="truncate text-[15px] font-bold leading-[20px]">{others.map((p) => p.name).join(", ") || "Équipe Celebobo"}</h2>
+              <h2 className="truncate text-[15px] font-bold leading-[20px]">{lead?.name ?? "Équipe Celebobo"}</h2>
               <p className="flex items-center gap-1.5 truncate text-[12px] text-ink-3">
-                <span className={cn("size-1.5 rounded-full", concluded ? "bg-ink-3" : "bg-primary")} />
-                {concluded ? "Discussion clôturée" : "En ligne"} · {conv.displayName}
+                {concluded ? "Discussion clôturée" : typingNames.length ? <span className="font-semibold text-primary">écrit…</span> : leadPresence ? PRESENCE_LABEL[leadPresence] : conv.displayName}
+                {!concluded && leadPresence && <span className="hidden sm:inline">· {conv.displayName}</span>}
               </p>
             </div>
-            {conv.relatedOrderId && (
-              <span className="hidden items-center gap-1.5 rounded-full bg-primary-50 px-3 py-1.5 text-[12px] font-bold text-primary sm:inline-flex">
-                <Receipt2 size={14} variant="Bold" /> Commande #{conv.relatedOrderId}
-              </span>
-            )}
+            <div className="hidden items-center gap-2 sm:flex">
+              {conv.orderStatus && <StatusDot tone={ORDER_STATUS_TONE[conv.orderStatus]}>{ORDER_STATUS_LABEL[conv.orderStatus]}</StatusDot>}
+              {isStaff && conv.assignedRevendeur && (
+                <span className="rounded-full bg-chip px-2.5 py-1 text-[12px] font-semibold">{conv.assignedRevendeur.name}</span>
+              )}
+              {conv.relatedOrderId &&
+                (isStaff ? (
+                  <Link href={ROUTES.admin.order(conv.relatedOrderId)} className="inline-flex items-center gap-1.5 rounded-full bg-primary-50 px-3 py-1.5 text-[12px] font-bold text-primary transition-colors hover:bg-primary hover:text-white">
+                    <Receipt2 size={14} variant="Bold" /> Commande #{conv.relatedOrderId}
+                  </Link>
+                ) : (
+                  <Link href={ROUTES.orderDetail(conv.relatedOrderId)} className="inline-flex items-center gap-1.5 rounded-full bg-primary-50 px-3 py-1.5 text-[12px] font-bold text-primary transition-colors hover:bg-primary hover:text-white">
+                    <Receipt2 size={14} variant="Bold" /> Commande #{conv.relatedOrderId}
+                  </Link>
+                ))}
+            </div>
           </>
         ) : (
           <div className="flex flex-1 items-center gap-3">
@@ -159,11 +190,11 @@ export function ChatWindow({ conversationId, onBack, className }: Props) {
                   <span className="rounded-full bg-white px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-ink-3 ring-1 ring-line-3">{dayLabel(m.timestamp)}</span>
                 </div>
               )}
-              <MessageBubble message={m} mine={m.sender.id === myId} showSender={showSender} onOpenImage={setLightbox} />
+              <MessageBubble message={m} mine={m.sender.id === myId} showSender={showSender} onOpenImage={setLightbox} conversationId={conversationId} isBuyer={isBuyer} />
             </Fragment>
           );
         })}
-        <AnimatePresence>{awaiting && <TypingIndicator />}</AnimatePresence>
+        <AnimatePresence>{typingNames.length > 0 && <TypingIndicator key="typing" names={typingNames} />}</AnimatePresence>
       </div>
 
       {/* Composer */}
@@ -181,7 +212,7 @@ export function ChatWindow({ conversationId, onBack, className }: Props) {
           )}
         </AnimatePresence>
         {concluded ? (
-          <p className="rounded-box bg-chip px-4 py-3 text-center text-[13px] text-ink-2">Cette discussion est clôturée. Ouvrez une nouvelle discussion pour toute autre demande.</p>
+          <p className="rounded-box bg-chip px-4 py-3 text-center text-[13px] text-ink-2">Cette discussion est clôturée. {isStaff ? "" : "Ouvrez une nouvelle discussion pour toute autre demande."}</p>
         ) : (
           <div className="flex items-end gap-2">
             <input
@@ -198,9 +229,19 @@ export function ChatWindow({ conversationId, onBack, className }: Props) {
             <button type="button" onClick={() => fileInput.current?.click()} aria-label="Joindre une image" className="grid size-[45px] shrink-0 place-items-center rounded-box bg-chip transition-colors hover:bg-primary hover:text-white">
               <Gallery size={20} />
             </button>
+            {canPropose && (
+              <button type="button" onClick={() => setProposal(true)} aria-label="Proposer un prix final" title="Proposer un prix final" className="hidden h-[45px] shrink-0 items-center gap-1.5 rounded-box bg-primary-50 px-3 text-[12px] font-bold uppercase text-primary transition-colors hover:bg-primary hover:text-white sm:inline-flex">
+                <Money3 size={18} variant="Bold" /> Proposer un prix
+              </button>
+            )}
             <textarea
               value={text}
-              onChange={(e) => setText(e.target.value)}
+              onChange={(e) => {
+                setText(e.target.value);
+                if (e.target.value) typing.ping();
+                else typing.stop();
+              }}
+              onBlur={typing.stop}
               onKeyDown={onKey}
               rows={1}
               placeholder="Écrivez votre message…"
@@ -212,7 +253,14 @@ export function ChatWindow({ conversationId, onBack, className }: Props) {
             </motion.button>
           </div>
         )}
+        {canPropose && !concluded && (
+          <button type="button" onClick={() => setProposal(true)} className="mt-2 inline-flex items-center gap-1.5 text-[12px] font-bold text-primary sm:hidden">
+            <Money3 size={15} variant="Bold" /> Proposer un prix final
+          </button>
+        )}
       </footer>
+
+      {conv?.relatedOrderId && <PriceProposalModal open={proposal} onClose={() => setProposal(false)} conversationId={conversationId} orderId={conv.relatedOrderId} />}
 
       <Modal open={!!lightbox} onClose={() => setLightbox(null)} title="Image" className="max-w-[760px]">
         {lightbox && (

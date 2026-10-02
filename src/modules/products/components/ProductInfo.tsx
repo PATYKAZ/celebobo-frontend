@@ -1,8 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Bag2, Copy, Heart, Refresh2, ShieldTick, TickCircle, CloseCircle, Truck } from "iconsax-reactjs";
-import { useState } from "react";
+import { Bag2, CloseCircle, Heart, Refresh2, ShieldTick, TickCircle, Truck } from "iconsax-reactjs";
+import { useEffect, useState } from "react";
 import { ROUTES } from "@/config/routes";
 import { cn } from "@/shared/lib/cn";
 import { formatPrice } from "@/shared/lib/format";
@@ -11,11 +11,12 @@ import { Button } from "@/shared/ui/Button";
 import { Price } from "@/shared/ui/Price";
 import { QuantityStepper } from "@/shared/ui/QuantityStepper";
 import { Stars } from "@/shared/ui/Stars";
-import { toast } from "@/shared/ui/Toast";
 import { useCart } from "@/modules/cart/hooks/useCart";
 import { useFavoriteToggle } from "@/modules/favorites/hooks/useFavorites";
+import type { VariantSelection } from "../hooks/useVariantSelection";
 import type { Product } from "../types";
 import { getPricing } from "../utils";
+import { ProductShareMenu } from "./ProductShareMenu";
 
 const TRUST = [
   { icon: Truck, title: "Livraison rapide", text: "24–48 h à Kinshasa" },
@@ -23,22 +24,34 @@ const TRUST = [
   { icon: ShieldTick, title: "Paiement mobile", text: "Orange, Airtel, M-Pesa" },
 ];
 
-export function ProductInfo({ product }: { product: Product }) {
+const SWATCH: Record<string, string> = { Noir: "#111827", Blanc: "#FFFFFF", Argent: "#C7CCD4", Gris: "#6B7280", Bleu: "#3B82F6", Jaune: "#FFD400", Rouge: "#F1352B", Vert: "#1ABA1A", Or: "#D4AF37" };
+
+/** Libellé de stock : « Plus que 3 en stock » sous le seuil d'alerte. */
+function stockLabel(stock: number, threshold: number) {
+  if (stock <= 0) return "Rupture de stock";
+  return stock <= threshold ? `Plus que ${stock} en stock` : "En stock";
+}
+
+export function ProductInfo({ product, selection }: { product: Product; selection: VariantSelection }) {
   const router = useRouter();
   const { add } = useCart();
   const { isFavorite, toggle } = useFavoriteToggle();
   const [qty, setQty] = useState(1);
-  const pricing = getPricing(product);
+  const base = getPricing(product);
   const fav = isFavorite(product.id);
+  const { hasVariants, options, selected, variant, select, isAvailable, stock, inStock, priceDelta } = selection;
 
-  const share = async () => {
-    try {
-      await navigator.clipboard.writeText(window.location.href);
-      toast.success("Lien copié");
-    } catch {
-      toast.error("Impossible de copier le lien");
-    }
-  };
+  // prix de la variante appliqué au prix normal ET soldé
+  const current = base.current + priceDelta;
+  const original = base.original != null ? base.original + priceDelta : null;
+
+  // la quantité ne dépasse jamais le stock de la variante choisie
+  useEffect(() => {
+    if (stock > 0 && qty > stock) setQty(stock);
+  }, [stock, qty]);
+
+  const addToCart = (silent?: boolean) =>
+    add(product, qty, { silent, variantId: variant?.id ?? null, variantLabel: variant?.label ?? null, priceDelta });
 
   return (
     <div className="flex min-w-0 flex-col">
@@ -51,9 +64,9 @@ export function ProductInfo({ product }: { product: Product }) {
       </div>
 
       <div className="mt-5 flex flex-wrap items-center gap-3 border-y border-line-3 py-5">
-        <Price current={pricing.current} original={pricing.original} size="xl" />
-        {pricing.onSale && <Pill tone="red" className="h-[26px] text-[12px]">-{pricing.percent}%</Pill>}
-        {pricing.onSale && <span className="text-[13px] font-semibold text-primary">Vous économisez {formatPrice(pricing.saving)}</span>}
+        <Price current={current} original={original} size="xl" />
+        {base.onSale && <Pill tone="red" className="h-[26px] text-[12px]">-{base.percent}%</Pill>}
+        {base.onSale && <span className="text-[13px] font-semibold text-primary">Vous économisez {formatPrice(base.saving)}</span>}
       </div>
 
       <p className="mt-5 text-[14px] leading-[24px] text-ink-2">{product.description}</p>
@@ -68,24 +81,62 @@ export function ProductInfo({ product }: { product: Product }) {
         </ul>
       )}
 
+      {/* Variantes */}
+      {hasVariants && (
+        <div className="mt-6 space-y-4">
+          {options.map((o) => (
+            <fieldset key={o.name}>
+              <legend className="mb-2 text-[13px] font-bold">
+                {o.name} : <span className="font-normal text-ink-2">{selected[o.name]}</span>
+              </legend>
+              <div className="flex flex-wrap gap-2" role="radiogroup" aria-label={o.name}>
+                {o.values.map((val) => {
+                  const active = selected[o.name] === val;
+                  const available = isAvailable(o.name, val);
+                  const swatch = o.name === "Couleur" ? SWATCH[val] : undefined;
+                  return (
+                    <button
+                      key={val}
+                      type="button"
+                      role="radio"
+                      aria-checked={active}
+                      disabled={!available && !active}
+                      onClick={() => select(o.name, val)}
+                      className={cn(
+                        "relative flex h-10 items-center gap-2 rounded-md border-2 px-3.5 text-[13px] font-semibold transition-all",
+                        active ? "border-primary bg-primary-50 text-primary-dark" : "border-line-3 hover:border-primary/50",
+                        !available && "cursor-not-allowed opacity-45 line-through",
+                      )}
+                    >
+                      {swatch && <span className="size-4 rounded-full border border-black/15" style={{ background: swatch }} />}
+                      {val}
+                    </button>
+                  );
+                })}
+              </div>
+            </fieldset>
+          ))}
+        </div>
+      )}
+
       <div className="mt-5 flex flex-wrap items-center gap-2">
-        <span className={cn("flex items-center gap-1.5 text-[13px] font-semibold", product.inStock ? "text-primary" : "text-danger")}>
-          {product.inStock ? <TickCircle size={16} variant="Bold" /> : <CloseCircle size={16} variant="Bold" />}
-          {product.inStock ? "En stock" : "Rupture de stock"}
+        <span className={cn("flex items-center gap-1.5 text-[13px] font-semibold", inStock ? (stock <= product.stockThreshold ? "text-[#b87400]" : "text-primary") : "text-danger")}>
+          {inStock ? <TickCircle size={16} variant="Bold" /> : <CloseCircle size={16} variant="Bold" />}
+          {stockLabel(stock, product.stockThreshold)}
         </span>
         {product.freeShipping ? <Pill tone="green">Livraison offerte</Pill> : product.shippingFee ? <Pill tone="dark">{formatPrice(product.shippingFee)} livraison</Pill> : null}
       </div>
 
       <div className="mt-6 flex flex-wrap items-center gap-3">
-        <QuantityStepper value={qty} onChange={setQty} />
-        <Button size="md" disabled={!product.inStock} onClick={() => add(product, qty)} leftIcon={<Bag2 size={18} variant="Bold" />} className="flex-1 sm:flex-none">
+        <QuantityStepper value={qty} onChange={setQty} max={Math.max(1, stock)} />
+        <Button size="md" disabled={!inStock} onClick={() => addToCart()} leftIcon={<Bag2 size={18} variant="Bold" />} className="flex-1 sm:flex-none">
           Ajouter au panier
         </Button>
         <Button
           variant="dark"
-          disabled={!product.inStock}
+          disabled={!inStock}
           onClick={() => {
-            add(product, qty, { silent: true });
+            addToCart(true);
             router.push(ROUTES.cart);
           }}
           className="flex-1 sm:flex-none"
@@ -100,9 +151,7 @@ export function ProductInfo({ product }: { product: Product }) {
         >
           <Heart size={20} variant={fav ? "Bold" : "Linear"} color={fav ? "#F1352B" : "currentColor"} />
         </button>
-        <button aria-label="Copier le lien" onClick={share} className="grid size-[45px] place-items-center rounded-box bg-chip transition-colors hover:bg-primary hover:text-white">
-          <Copy size={19} />
-        </button>
+        <ProductShareMenu name={product.name} />
       </div>
 
       <div className="mt-6 grid gap-3 sm:grid-cols-3">

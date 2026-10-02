@@ -1,5 +1,5 @@
 import { MOCK_CATEGORIES } from "@/modules/categories/mocks/categories";
-import type { Product } from "../types";
+import type { Product, ProductVariant, VariantOption } from "../types";
 
 const img = (n: string) => `/images/products/${n}.jpg`;
 const daysAgo = (d: number) => new Date(Date.now() - d * 86400000).toISOString();
@@ -70,7 +70,43 @@ const VARIANTS: Seed[] = [
 
 const cat = (id: number) => MOCK_CATEGORIES.find((c) => c.id === id)!.name;
 
+const daysAhead = (d: number) => new Date(Date.now() + d * 86400000).toISOString().slice(0, 10);
+
+/** Variantes de démonstration : smartphones (couleur × stockage), laptops (RAM/SSD), montres & casques (couleur). */
+function buildVariants(s: Seed, id: number): { options: VariantOption[]; variants: ProductVariant[] } {
+  let options: VariantOption[] = [];
+  let deltas: Record<string, Record<string, number>> = {};
+  if (s.category === 1) {
+    options = [{ name: "Couleur", values: ["Noir", "Argent", "Bleu"] }, { name: "Stockage", values: ["128 Go", "256 Go"] }];
+    deltas = { Stockage: { "128 Go": 0, "256 Go": 60 } };
+  } else if (s.category === 2 && s.price < 1800) {
+    options = [{ name: "Couleur", values: ["Gris", "Argent"] }, { name: "SSD", values: ["256 Go", "512 Go"] }];
+    deltas = { SSD: { "256 Go": 0, "512 Go": 120 } };
+  } else if (s.category === 4 || s.category === 5) {
+    options = [{ name: "Couleur", values: ["Noir", "Blanc", "Jaune"] }];
+  } else return { options: [], variants: [] };
+
+  const combos: Record<string, string>[] = options.reduce<Record<string, string>[]>(
+    (acc, o) => acc.flatMap((a) => o.values.map((v) => ({ ...a, [o.name]: v }))),
+    [{}],
+  );
+  const variants = combos.map((attributes, i) => {
+    const delta = Object.entries(attributes).reduce((sum, [k, v]) => sum + (deltas[k]?.[v] ?? 0), 0);
+    return {
+      id: id * 100 + i + 1,
+      attributes,
+      label: Object.values(attributes).join(" / "),
+      price: delta ? s.price + delta : null,
+      stock: s.inStock === false ? 0 : (id * 3 + i * 5) % 14,
+      sku: `CB-${id}-${i + 1}`,
+    };
+  });
+  return { options, variants };
+}
+
 function toProduct(s: Seed, id: number): Product {
+  const v = buildVariants(s, id);
+  const stock = s.inStock === false ? 0 : v.variants.length ? v.variants.reduce((n, x) => n + x.stock, 0) : 6 + ((id * 7) % 40);
   const imgs = s.images.map((n) => (n.startsWith("hero") ? `/images/hero/${n}.jpg` : img(n)));
   const onSale = s.solde != null && s.solde < s.price;
   return {
@@ -95,7 +131,14 @@ function toProduct(s: Seed, id: number): Product {
     charaEntretienList: CARE,
     deliveryPolicyPhase1: "Livraison sous 24 à 48 h à Kinshasa après confirmation de la commande avec un revendeur.",
     deliveryPolicyPhase2: "Expédition en province sous 3 à 7 jours ouvrés. Paiement à la livraison ou par Mobile Money.",
-    inStock: s.inStock ?? true,
+    inStock: stock > 0,
+    stock,
+    stockThreshold: 5,
+    dateWish: s.age > 30 ? daysAhead(20 + ((id * 11) % 90)) : null,
+    variantOptions: v.options,
+    variants: v.variants,
+    deletedAt: null,
+    isActive: true,
     freeShipping: s.freeShipping ?? false,
     shippingFee: s.shippingFee ?? null,
     salesCount: s.sales,

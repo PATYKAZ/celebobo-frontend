@@ -20,6 +20,7 @@ import {
   type FormErrors, type ImageSlotValue, type ProductFormValues,
 } from "../types";
 import { ImageSlot } from "./ImageSlot";
+import { VariantsEditor } from "./VariantsEditor";
 
 function Section({ title, hint, children, delay = 0 }: { title: string; hint?: string; children: ReactNode; delay?: number }) {
   return (
@@ -81,7 +82,7 @@ export function ProductForm({ product }: Props) {
   };
 
   const submit = () => {
-    const errs = validateProductForm(v, !!images[0].url);
+    const errs = validateProductForm(v, !!images[0].url, !product);
     setErrors(errs);
     if (Object.keys(errs).length) {
       toast.error("Formulaire incomplet", "Corrigez les champs signalés.");
@@ -97,7 +98,7 @@ export function ProductForm({ product }: Props) {
         },
         onError: (e) => {
           if (e instanceof ApiError && e.status === 400) {
-            const map: Record<string, keyof ProductFormValues | "image"> = { categoryFk: "categoryId", longDescription: "longDescription", pricePrimary: "pricePrimary", priceSolde: "priceSolde" };
+            const map: Record<string, keyof ProductFormValues | "image"> = { categoryFk: "categoryId", longDescription: "longDescription", pricePrimary: "pricePrimary", priceSolde: "priceSolde", dateWish: "dateWish", stockThreshold: "stockThreshold" };
             const next: FormErrors = {};
             for (const [k, msg] of Object.entries(e.fieldErrors)) {
               const key = (map[k] ?? k) as keyof FormErrors;
@@ -111,6 +112,9 @@ export function ProductForm({ product }: Props) {
     );
   };
 
+  const today = new Date().toISOString().slice(0, 10);
+  const hasVariants = v.variants.length > 0;
+  const variantStock = v.variants.reduce((n, r) => n + (Number(r.stock) || 0), 0);
   const descLen = v.description.trim().length;
   const sentences = countSentences(v.longDescription);
   const care = parseCare(v.charaEntretien);
@@ -191,14 +195,48 @@ export function ProductForm({ product }: Props) {
         )}
       </Section>
 
-      <Section title="Livraison & stock" delay={0.03}>
+      <Section title="Livraison" delay={0.03}>
         <Textarea label="Politique de livraison — phase 1" value={v.deliveryPolicyPhase1} onChange={(e) => set("deliveryPolicyPhase1", e.target.value)} className="min-h-[80px]" />
         <Textarea label="Politique de livraison — phase 2" value={v.deliveryPolicyPhase2} onChange={(e) => set("deliveryPolicyPhase2", e.target.value)} className="min-h-[80px]" />
-        <div className="grid gap-5 sm:grid-cols-3">
+        <div className="grid gap-5 sm:grid-cols-2">
           <Input label="Frais de livraison ($)" type="number" min="0" step="0.01" value={v.shippingFee} onChange={(e) => set("shippingFee", e.target.value)} disabled={v.freeShipping} />
           <div className="flex items-center justify-between gap-3 rounded-box border border-line px-4"><span className="text-[14px] font-semibold">Livraison offerte</span><Switch label="Livraison offerte" checked={v.freeShipping} onChange={(x) => set("freeShipping", x)} /></div>
-          <div className="flex items-center justify-between gap-3 rounded-box border border-line px-4"><span className="text-[14px] font-semibold">En stock</span><Switch label="En stock" checked={v.inStock} onChange={(x) => set("inStock", x)} /></div>
         </div>
+      </Section>
+
+      <Section title="Stock & disponibilité" hint="Le stock en quantité remplace l'ancien interrupteur « en stock » : le produit est en rupture à 0." delay={0.03}>
+        <div className="grid gap-5 sm:grid-cols-3">
+          <Input
+            label="Quantité en stock"
+            type="number"
+            min="0"
+            step="1"
+            value={hasVariants ? String(variantStock) : v.stock}
+            onChange={(e) => set("stock", e.target.value)}
+            disabled={hasVariants}
+            error={errors.stock}
+            hint={hasVariants ? "Somme des stocks de vos variantes." : product ? "Pour tracer l'historique, préférez « Ajuster le stock » dans la liste." : undefined}
+          />
+          <Input label="Seuil d'alerte (stock bas)" type="number" min="0" step="1" value={v.stockThreshold} onChange={(e) => set("stockThreshold", e.target.value)} error={errors.stockThreshold} hint="Alerte « stock bas » quand le stock ≤ seuil." />
+          <Input label="Devrait être vendu avant le" type="date" value={v.dateWish} min={product ? undefined : today} onChange={(e) => set("dateWish", e.target.value)} error={errors.dateWish} hint="Date objectif de vente (suivi des produits à rotation lente)." />
+        </div>
+        <div className="flex items-center justify-between gap-3 rounded-box border border-line px-4 py-3">
+          <div><p className="text-[14px] font-semibold">Visible en boutique</p><p className="text-[12px] text-ink-3">Désactivez pour masquer le produit sans le supprimer.</p></div>
+          <Switch label="Visible en boutique" checked={v.isActive} onChange={(x) => set("isActive", x)} />
+        </div>
+      </Section>
+
+      <Section title="Variantes" hint="Couleur, stockage, taille… Chaque combinaison a son prix, son stock et son SKU. Laissez vide pour un produit simple." delay={0.03}>
+        <VariantsEditor
+          options={v.variantOptions}
+          rows={v.variants}
+          basePrice={Number(v.price) || 0}
+          error={errors.variants}
+          onChange={({ options, rows }) => {
+            setV((s) => ({ ...s, variantOptions: options, variants: rows }));
+            setErrors((e) => ({ ...e, variants: undefined, stock: undefined }));
+          }}
+        />
       </Section>
 
       <div className="sticky bottom-3 z-30 flex items-center justify-between gap-3 rounded-box bg-white p-3 shadow-[0_8px_30px_rgba(0,0,0,.12)] sm:px-5">

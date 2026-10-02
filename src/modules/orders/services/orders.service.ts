@@ -1,15 +1,22 @@
 import { ENDPOINTS } from "@/config/endpoints";
 import { env } from "@/config/env";
 import { api, ApiError, mockResponse, paginate, type Paginated } from "@/shared/lib/api";
+import { channels, realtime, type UserEvent } from "@/shared/lib/realtime";
+import { DB } from "@/shared/mock-db";
 import { useAuthStore } from "@/modules/auth/store/auth.store";
 import { displayName } from "@/modules/auth/types";
-import { MOCK_PRODUCTS } from "@/modules/products/mocks/products";
 import { MOCK_ORDERS } from "../mocks/orders";
-import type { CreateOrderInput, CreateOrderResult, Order, OrderItem, OrderListParams } from "../types";
+import { fromLegacyStatus, type CreateOrderInput, type CreateOrderResult, type Order, type OrderItem, type OrderListParams } from "../types";
+
+/** Compat API v1 : normalise les anciens statuts (traitement / terminé) vers le cycle v2. */
+const normalize = (o: Order): Order => ({ ...o, status: fromLegacyStatus(o.status), statusHistory: o.statusHistory ?? [], convertedToSales: o.convertedToSales ?? false });
+
+/** Identifiant du responsable notifié des nouvelles commandes (mock). */
+const MANAGER_ID = 3;
 
 export const ordersService = {
   /** Commandes de l'utilisateur connecté (filtre par statut). */
-  list(params: OrderListParams = {}): Promise<Paginated<Order>> {
+  async list(params: OrderListParams = {}): Promise<Paginated<Order>> {
     if (env.USE_MOCKS) {
       return mockResponse(() => {
         const uid = useAuthStore.getState().user?.id;
@@ -19,18 +26,21 @@ export const ordersService = {
         return paginate(list, params.page ?? 1, params.pageSize ?? 6);
       });
     }
-    return api.get<Paginated<Order>>(ENDPOINTS.orders.list, {
+    const res = await api.get<Paginated<Order>>(ENDPOINTS.orders.list, {
       params: { status: params.status === "all" ? undefined : params.status, page: params.page, pageSize: params.pageSize },
     });
+    return { ...res, results: res.results.map(normalize) };
   },
 
+  /** Détail d'une commande — réservé à son propriétaire. */
   async detail(id: number): Promise<Order> {
     if (env.USE_MOCKS) {
       const found = MOCK_ORDERS.find((o) => o.id === id);
-      if (!found) throw new ApiError(404, "Commande introuvable");
+      const uid = useAuthStore.getState().user?.id;
+      if (!found || found.user.id !== uid) throw new ApiError(404, "Commande introuvable");
       return mockResponse(found);
     }
-    return api.get<Order>(ENDPOINTS.orders.detail(id));
+    return normalize(await api.get<Order>(ENDPOINTS.orders.detail(id)));
   },
 
   /** Crée la commande depuis le panier (+ discussion côté backend). */
@@ -38,31 +48,47 @@ export const ordersService = {
     if (env.USE_MOCKS) {
       const user = useAuthStore.getState().user;
       const items: OrderItem[] = input.items.map((it, i) => {
-        const p = MOCK_PRODUCTS.find((x) => x.id === it.productId);
+        const p = DB.products.find((x) => x.id === it.productId);
         if (!p) throw new ApiError(400, "Produit introuvable");
+        const variant = it.variantId ? p.variants.find((v) => v.id === it.variantId) : undefined;
         return {
           id: Date.now() + i,
           productId: p.id,
           productName: p.name,
-          productImage: p.image,
+          productImage: variant?.image ?? p.image,
           quantity: it.quantity,
-          unitPrice: p.priceSolde ?? p.price,
+          unitPrice: variant?.price ?? p.priceSolde ?? p.price,
+          variantLabel: variant?.label ?? null,
         };
       });
-      const id = Math.max(0, ...MOCK_ORDERS.map((o) => o.id)) + 1;
+      const saved = input.addressId ? DB.addresses.find((a) => a.id === input.addressId) : undefined;
+      const deliveryAddress = saved
+        ? `${saved.line1}, ${saved.quarter}, ${saved.city}`
+        : [input.deliveryAddress, input.deliveryQuarter, input.deliveryCountry].filter(Boolean).join(", ") || null;
+      const id = DB.seq.order++;
+      const now = new Date().toISOString();
+      const who = { id: user?.id ?? 0, name: user ? displayName(user) : "Client", role: "client" as const };
       const order: Order = {
         id,
-        createdAt: new Date().toISOString(),
+        createdAt: now,
         status: "attente",
         totalPrice: items.reduce((s, i) => s + i.unitPrice * i.quantity, 0),
         items,
-        user: { id: user?.id ?? 0, name: user ? displayName(user) : "Client", email: user?.email },
+        user: { id: who.id, name: who.name, email: user?.email, phone: user?.phoneNumber ?? null },
         assignedRevendeur: null,
         conversationId: id,
+        statusHistory: [{ status: "attente", at: now, by: who, note: "Commande passée" }],
+        deliveryAddress,
+        paymentMethod: input.paymentMethod ?? null,
+        note: input.note ?? null,
+        convertedToSales: false,
       };
       MOCK_ORDERS.unshift(order);
+      // Le responsable est notifié en temps réel
+      realtime.emit<UserEvent>(channels.user(MANAGER_ID), { type: "notification", notificationId: Date.now() });
       return mockResponse({ order, conversationId: id }, 900);
     }
-    return api.post<CreateOrderResult>(ENDPOINTS.orders.create, input);
+    const res = await api.post<CreateOrderResult>(ENDPOINTS.orders.create, input);
+    return { ...res, order: normalize(res.order) };
   },
 };

@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { AnimatePresence, motion } from "motion/react";
 import { Maximize4 } from "iconsax-reactjs";
-import { useState, type MouseEvent } from "react";
+import { useEffect, useState, type MouseEvent } from "react";
 import { cn } from "@/shared/lib/cn";
 import { NewBadge, SaveBadge } from "@/shared/ui/Badges";
 import { Modal } from "@/shared/ui/Overlay";
@@ -11,9 +11,14 @@ import type { Product } from "../types";
 import { getPricing, isNew } from "../utils";
 
 /** Galerie : miniatures verticales, image principale avec zoom au survol, fondu entre images, lightbox. */
-export function ProductGallery({ product }: { product: Product }) {
-  const images = product.images.length ? product.images : product.image ? [product.image] : [];
+export function ProductGallery({ product, activeImage }: { product: Product; /** image propre à la variante choisie (mise en avant) */ activeImage?: string | null }) {
+  const base = product.images.length ? product.images : product.image ? [product.image] : [];
+  const images = activeImage && !base.includes(activeImage) ? [activeImage, ...base] : base;
   const [index, setIndex] = useState(0);
+  useEffect(() => {
+    if (activeImage) setIndex(Math.max(0, images.indexOf(activeImage)));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeImage]);
   const [zoom, setZoom] = useState<{ x: number; y: number } | null>(null);
   const [light, setLight] = useState(false);
   const pricing = getPricing(product);

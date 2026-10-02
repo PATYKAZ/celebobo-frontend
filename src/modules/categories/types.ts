@@ -7,4 +7,8 @@ export interface Category {
   productsCount: number;
   /** Nom d'icône Iconsax (affichage sidebar) — dérivé côté front si absent. */
   icon?: string;
+  /** Position d'affichage (admin : réordonnable) */
+  order?: number;
+  /** Visible en boutique */
+  active?: boolean;
 }

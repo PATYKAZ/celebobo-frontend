@@ -16,7 +16,7 @@ import { NotificationItem } from "./NotificationItem";
 
 const PAGE_SIZE = 6;
 
-function Inner() {
+function Inner({ embedded }: { embedded?: boolean }) {
   const { user } = useAuth();
   const { data, isLoading } = useNotifications();
   const canAssign = user?.role === "mukubwa" || user?.role === "admin";
@@ -31,7 +31,7 @@ function Inner() {
 
   return (
     <>
-      <Breadcrumb items={[{ label: "Notifications" }]} />
+      {!embedded && <Breadcrumb items={[{ label: "Notifications" }]} />}
       <Block>
         <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
           <div>
@@ -66,10 +66,11 @@ function Inner() {
   );
 }
 
-export function NotificationsView() {
+/** `embedded` : rendu dans le back-office (sans fil d'Ariane). Les revendeurs ne voient que leurs notifications. */
+export function NotificationsView({ embedded }: { embedded?: boolean }) {
   return (
     <AuthGuard roles={["revendeur", "mukubwa", "admin"]}>
-      <Inner />
+      <Inner embedded={embedded} />
     </AuthGuard>
   );
 }

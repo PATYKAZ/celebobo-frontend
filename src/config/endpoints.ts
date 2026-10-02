@@ -76,6 +76,34 @@ export const ENDPOINTS = {
   contact: {
     send: "/contact/",
   },
+  newsletter: {
+    subscribe: "/newsletter/subscribe/",
+  },
+  resellerApplication: {
+    submit: "/reseller-applications/", // « Devenir revendeur »
+  },
+  tracking: {
+    lookup: "/orders/track/", // ?number=&contact=  (suivi public sans compte)
+  },
+  /** Temps réel : WebSocket (NEXT_PUBLIC_WS_URL) ou SSE. Canaux : conversation:{id}, user:{id}, presence */
+  realtime: {
+    ws: "/ws/",
+    sse: "/events/",
+  },
+  addressBook: {
+    list: "/profile/addresses-book/",
+    detail: (id: number | string) => `/profile/addresses-book/${id}/`,
+  },
+  notificationPreferences: {
+    get: "/profile/notification-preferences/",
+    pushSubscribe: "/profile/push-subscriptions/",
+  },
+  socialAuth: {
+    google: "/accounts/google/login/", // allauth
+  },
+  orderActions: {
+    cancel: (id: number | string) => `/orders/${id}/cancel/`,
+  },
 
   // ---- Administration (cele-admin/) ------------------------------------
   admin: {
@@ -110,6 +138,56 @@ export const ENDPOINTS = {
     },
     conversations: {
       conclude: (id: number | string) => `/admin/conversations/${id}/conclude/`, // conclure_discussion
+      list: "/admin/conversations/", // boîte de réception (?assigned=false&awaitingReply=true)
+    },
+    categories: {
+      list: "/admin/categories/",
+      detail: (id: number | string) => `/admin/categories/${id}/`,
+      reorder: "/admin/categories/reorder/",
+    },
+    stock: {
+      movements: (productId: number | string) => `/admin/products/${productId}/stock-movements/`,
+      adjust: (productId: number | string) => `/admin/products/${productId}/stock/`,
+    },
+    productsBulk: {
+      action: "/admin/products/bulk/",
+      importCsv: "/admin/products/import/",
+      exportCsv: "/admin/products/export/",
+      restore: (id: number | string) => `/admin/products/${id}/restore/`,
+    },
+    salesActions: {
+      convertOrder: (orderId: number | string) => `/admin/orders/${orderId}/convert-to-sales/`,
+      refund: (saleId: number | string) => `/admin/sales/${saleId}/refund/`,
+    },
+    orderWorkflow: {
+      status: (id: number | string) => `/admin/orders/${id}/status/`,
+      history: (id: number | string) => `/admin/orders/${id}/history/`,
+      reassign: (id: number | string) => `/admin/orders/${id}/reassign/`,
+    },
+    resellersAdmin: {
+      create: "/admin/resellers/",
+      detail: (id: number | string) => `/admin/resellers/${id}/`,
+      setActive: (id: number | string) => `/admin/resellers/${id}/active/`,
+      availability: "/me/availability/",
+    },
+    commissions: {
+      list: "/admin/commissions/",
+      payments: "/admin/commissions/payments/",
+      mine: "/me/commissions/",
+    },
+    users: {
+      list: "/admin/users/",
+      detail: (id: number | string) => `/admin/users/${id}/`,
+      setRole: (id: number | string) => `/admin/users/${id}/role/`,
+    },
+    audit: {
+      list: "/admin/audit-log/",
+    },
+    me: {
+      dashboard: "/me/dashboard/", // tableau de bord revendeur
+      orders: "/me/orders/",
+      sales: "/me/sales/",
+      invites: "/me/invites/",
     },
   },
 } as const;

@@ -15,3 +15,9 @@ export const CONTACT_SUBJECTS = [
   { value: "retour", label: "Retour / garantie" },
   { value: "autre", label: "Autre demande" },
 ];
+
+/** Accusé de réception d'un message (numéro de référence à citer au support). */
+export interface ContactReceipt {
+  reference: string;
+  sentAt: string;
+}
