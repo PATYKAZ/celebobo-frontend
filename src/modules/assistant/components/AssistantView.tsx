@@ -18,7 +18,7 @@ import { useAssistant } from "../hooks/useAssistant";
 import { SUGGESTIONS } from "../types";
 import { StreamedText } from "./StreamedText";
 
-function BotAvatar() {
+export function BotAvatar() {
   return (
     <span className="relative grid size-9 shrink-0 place-items-center rounded-full bg-primary text-white">
       <Cpu size={18} variant="Bold" />
@@ -27,7 +27,7 @@ function BotAvatar() {
   );
 }
 
-function ProductSuggestion({ product, index }: { product: Product; index: number }) {
+export function ProductSuggestion({ product, index }: { product: Product; index: number }) {
   const pr = getPricing(product);
   return (
     <motion.div initial={{ opacity: 0, y: 14, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ delay: 0.15 * index + 0.2 }}>

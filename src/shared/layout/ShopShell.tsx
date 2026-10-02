@@ -4,6 +4,7 @@ import { GreenBar } from "./GreenBar";
 import { Header } from "./Header";
 import { ScrollTop } from "./ScrollTop";
 import { ShopTabBar } from "./ShopTabBar";
+import { AssistantLauncher } from "@/modules/assistant/components/AssistantLauncher";
 
 /**
  * Coquille des pages boutique : container 1330 (zone utile 1300) avec blocs blancs sur fond #E2E4EB.
@@ -23,6 +24,7 @@ export function ShopShell({ children }: { children: ReactNode }) {
       <Footer />
       <ScrollTop />
       <ShopTabBar />
+      <AssistantLauncher />
     </div>
   );
 }
