@@ -19,6 +19,8 @@ export interface Product {
   soldePercent: number | null;
   /** Prix d'achat — jamais exposé aux clients, uniquement aux endpoints /admin/. */
   pricePrimary?: number | null;
+  /** Code du badge côté API (admin) */
+  badgeCode?: "new" | "best_seller" | null;
   category: string;
   categoryId: number | null;
   categorySlug: string;

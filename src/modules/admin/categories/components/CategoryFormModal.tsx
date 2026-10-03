@@ -28,7 +28,7 @@ export function CategoryFormModal({ open, category, existingNames, onClose }: Pr
 
   useEffect(() => {
     if (!open) return;
-    setV(category ? { name: category.name, description: category.description ?? "", icon: category.icon ?? "Mobile", active: category.active } : EMPTY_CATEGORY_FORM);
+    setV(category ? { name: category.name, description: category.description ?? "", icon: category.icon?.toLowerCase() ?? "mobile", active: category.active } : EMPTY_CATEGORY_FORM);
     setImage({ url: category?.image ?? null });
     setErrors({});
   }, [open, category]);

@@ -9,12 +9,13 @@ import type { Product } from "@/modules/products/types";
 import { useStockMovements } from "../hooks/useAdminProducts";
 
 const REASON: Record<string, string> = {
-  inventaire: "Inventaire",
-  "réapprovisionnement": "Réapprovisionnement",
-  vente: "Vente",
-  retour: "Retour",
+  inventory: "Inventaire",
+  restock: "Réapprovisionnement",
+  sale: "Vente",
+  order: "Commande",
+  return: "Retour",
   correction: "Correction",
-  perte: "Perte / casse",
+  loss: "Perte / casse",
 };
 
 /** Historique des mouvements de stock d'un produit (le plus récent en premier). */

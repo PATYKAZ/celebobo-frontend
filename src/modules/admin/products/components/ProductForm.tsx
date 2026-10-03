@@ -16,8 +16,8 @@ import { useCategories } from "@/modules/categories/hooks/useCategories";
 import type { Product } from "@/modules/products/types";
 import { useSaveProduct } from "../hooks/useAdminProducts";
 import {
-  countSentences, EMPTY_FORM, parseCare, productToForm, validateProductForm,
-  type FormErrors, type ImageSlotValue, type ProductFormValues,
+  BADGE_OPTIONS, countSentences, DESCRIPTION_MAX, DESCRIPTION_MIN, EMPTY_FORM, parseCare, productToForm, validateProductForm,
+  type FormErrors, type ImageSlotValue, type ProductBadgeCode, type ProductFormValues,
 } from "../types";
 import { ImageSlot } from "./ImageSlot";
 import { VariantsEditor } from "./VariantsEditor";
@@ -131,9 +131,9 @@ export function ProductForm({ product }: Props) {
             value={v.description}
             onChange={(e) => set("description", e.target.value)}
             error={errors.description}
-            hint="Entre 20 et 100 caractères, sous forme de phrase (contient un verbe : est, avec, permet, offre, dispose, intègre, embarque, équipé)."
+            hint={`Entre ${DESCRIPTION_MIN} et ${DESCRIPTION_MAX} caractères, sous forme de phrase.`}
           />
-          <div className="mt-1 text-right"><Counter n={descLen} min={20} max={100} /></div>
+          <div className="mt-1 text-right"><Counter n={descLen} min={DESCRIPTION_MIN} max={DESCRIPTION_MAX} /></div>
         </div>
         <div>
           <Textarea label="Description longue" className="min-h-[130px]" value={v.longDescription} onChange={(e) => set("longDescription", e.target.value)} error={errors.longDescription} hint="5 phrases maximum." />
@@ -157,7 +157,7 @@ export function ProductForm({ product }: Props) {
       <Section title="Catégorie & badge" delay={0.03}>
         <div className="grid gap-5 sm:grid-cols-2">
           <Select label="Catégorie" required value={v.categoryId} onChange={(e) => set("categoryId", e.target.value)} error={errors.categoryId} options={[{ value: "", label: "Choisir…" }, ...(categories ?? []).map((c) => ({ value: c.id, label: c.name }))]} />
-          <Input label="Badge" value={v.badge} onChange={(e) => set("badge", e.target.value)} hint="Ex : Best-seller. « Nouveauté » est ajouté automatiquement pendant 20 jours." />
+          <Select label="Badge" value={v.badge} onChange={(e) => set("badge", e.target.value as ProductBadgeCode | "")} options={BADGE_OPTIONS} />
         </div>
       </Section>
 

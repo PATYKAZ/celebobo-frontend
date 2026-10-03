@@ -1,20 +1,34 @@
 import { ENDPOINTS } from "@/config/endpoints";
-import { env } from "@/config/env";
-import { api, mockResponse } from "@/shared/lib/api";
-import { buildAnalytics, buildResellerPerformance } from "../mocks/analytics";
+import { api } from "@/shared/lib/api";
+import { PAYMENT_TO_API } from "@/modules/orders/services/orders.mapper";
+import type { ProductPerformanceDto, SellerRankingDto, SeriesDto, SummaryDto } from "../../dashboard/services/dashboard.mapper";
 import type { AnalyticsData, AnalyticsFilters, AnalyticsRange, ResellerPerformance } from "../types";
+import { toAnalytics, toResellerPerformance, type CategoryPerformanceDto, type HeatCellDto, type SlowMoverDto } from "./analytics.mapper";
+
+const { dashboard, analytics } = ENDPOINTS.admin;
+
+const toParams = (f: AnalyticsFilters) => ({
+  period: f.range,
+  categoryId: f.category === "all" ? undefined : f.category,
+  paymentMethod: f.method === "all" ? undefined : PAYMENT_TO_API[f.method],
+});
 
 export const analyticsService = {
-  get(filters: AnalyticsFilters): Promise<AnalyticsData> {
-    if (env.USE_MOCKS) return mockResponse(() => buildAnalytics(filters), 450);
-    return api.get<AnalyticsData>(ENDPOINTS.admin.analytics, {
-      params: { range: filters.range, category: filters.category === "all" ? undefined : filters.category, method: filters.method === "all" ? undefined : filters.method },
-    });
+  async get(filters: AnalyticsFilters): Promise<AnalyticsData> {
+    const params = toParams(filters);
+    const [summary, series, categories, top, peaks, slow] = await Promise.all([
+      api.get<SummaryDto>(dashboard.summary, { params }),
+      api.get<SeriesDto>(dashboard.revenueSeries, { params }),
+      api.get<CategoryPerformanceDto[]>(analytics.categories, { params }),
+      api.get<ProductPerformanceDto[]>(dashboard.topProducts, { params: { ...params, limit: 6 } }),
+      api.get<HeatCellDto[]>(analytics.peakHours, { params }),
+      api.get<SlowMoverDto[]>(analytics.slowMovers, { params }),
+    ]);
+    return toAnalytics(filters.range, { summary, series, categories, top, peaks, slow });
   },
 
-  /** Performance par revendeur (permission `analytics.resellers`). */
-  resellerPerformance(range: AnalyticsRange): Promise<ResellerPerformance> {
-    if (env.USE_MOCKS) return mockResponse(() => buildResellerPerformance(range), 400);
-    return api.get<ResellerPerformance>(`${ENDPOINTS.admin.analytics}resellers/`, { params: { range } });
+  /** Classement des vendeurs (permission `analytics.resellers`). */
+  async resellerPerformance(range: AnalyticsRange): Promise<ResellerPerformance> {
+    return toResellerPerformance(range, await api.get<SellerRankingDto[]>(analytics.sellers, { params: { period: range } }));
   },
 };

@@ -132,17 +132,43 @@ export const ENDPOINTS = {
 
   // ---- Administration (cele-admin/) ------------------------------------
   admin: {
-    dashboard: "/admin/dashboard/",
-    analytics: "/admin/analytics/", // graphs/
+    dashboard: {
+      summary: "/bo/dashboard/summary/",
+      revenueSeries: "/bo/dashboard/revenue-series/",
+      paymentSplit: "/bo/dashboard/payment-split/",
+      topProducts: "/bo/dashboard/top-products/",
+      recentSales: "/bo/dashboard/recent-sales/",
+      openOrders: "/bo/dashboard/open-orders/",
+    },
+    analytics: {
+      categories: "/bo/analytics/categories/",
+      peakHours: "/bo/analytics/peak-hours/",
+      sellers: "/bo/analytics/sellers/",
+      slowMovers: "/bo/analytics/slow-movers/",
+      export: "/bo/analytics/export/",
+    },
     products: {
-      list: "/admin/products/",
-      create: "/admin/products/",
-      detail: (id: number | string) => `/admin/products/${id}/`,
-      update: (id: number | string) => `/admin/products/${id}/`,
-      remove: (id: number | string) => `/admin/products/${id}/`,
+      list: "/bo/products/",
+      detail: (id: number) => `/bo/products/${id}/`,
+      duplicate: (id: number) => `/bo/products/${id}/duplicate/`,
+      restore: (id: number) => `/bo/products/${id}/restore/`,
+      variants: (id: number) => `/bo/products/${id}/variants/`,
+      stockAdjustments: (id: number) => `/bo/products/${id}/stock-adjustments/`,
+      stockMovements: (id: number) => `/bo/products/${id}/stock-movements/`,
+      bulk: "/bo/products/bulk/",
+      import: "/bo/products/import/",
+      export: "/bo/products/export/",
+      stockAlerts: "/bo/stock/alerts/",
+    },
+    variants: {
+      detail: (id: number) => `/bo/variants/${id}/`,
+    },
+    reviews: {
+      list: "/bo/reviews/",
+      detail: (id: number) => `/bo/reviews/${id}/`,
     },
     sales: {
-      list: "/admin/sales/", // ventes/, ventes_rev/
+      list: "/bo/sales/",
       create: "/admin/sales/",
       bulk: "/admin/sales/bulk/", // bulk-vente/
       detail: (id: number | string) => `/admin/sales/${id}/`,
@@ -166,19 +192,9 @@ export const ENDPOINTS = {
       list: "/admin/conversations/", // boîte de réception (?assigned=false&awaitingReply=true)
     },
     categories: {
-      list: "/admin/categories/",
-      detail: (id: number | string) => `/admin/categories/${id}/`,
-      reorder: "/admin/categories/reorder/",
-    },
-    stock: {
-      movements: (productId: number | string) => `/admin/products/${productId}/stock-movements/`,
-      adjust: (productId: number | string) => `/admin/products/${productId}/stock/`,
-    },
-    productsBulk: {
-      action: "/admin/products/bulk/",
-      importCsv: "/admin/products/import/",
-      exportCsv: "/admin/products/export/",
-      restore: (id: number | string) => `/admin/products/${id}/restore/`,
+      list: "/bo/categories/",
+      detail: (id: number) => `/bo/categories/${id}/`,
+      reorder: "/bo/categories/reorder/",
     },
     salesActions: {
       convertOrder: (orderId: number | string) => `/admin/orders/${orderId}/convert-to-sales/`,
@@ -214,5 +230,13 @@ export const ENDPOINTS = {
       sales: "/me/sales/",
       invites: "/me/invites/",
     },
+  },
+
+  // ---- Transverse -------------------------------------------------------
+  /** Tâches asynchrones (exports, imports, rapports) — cf. shared/lib/api/jobs.ts. */
+  jobs: {
+    list: "/jobs/",
+    detail: (id: string) => `/jobs/${id}/`,
+    download: (id: string) => `/jobs/${id}/download/`,
   },
 } as const;

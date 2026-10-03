@@ -5,7 +5,7 @@ export type AdminCategory = Category & { order: number; active: boolean };
 export interface CategoryFormValues {
   name: string;
   description: string;
-  /** Nom d'icône Iconsax (CategoryIcon) */
+  /** Nom d'icône de l'API (cf. CategoryIcon) */
   icon: string;
   active: boolean;
 }
@@ -17,6 +17,6 @@ export interface CategoryImageValue {
 }
 
 /** Icônes sélectionnables (clés de CategoryIcon). */
-export const CATEGORY_ICONS = ["Mobile", "Monitor", "Tablet", "Headphone", "Watch", "Game", "Flash", "Camera", "Printer", "Keyboard"] as const;
+export const CATEGORY_ICONS = ["mobile", "monitor", "tablet", "headphone", "watch", "game", "flash", "camera", "printer", "keyboard"] as const;
 
-export const EMPTY_CATEGORY_FORM: CategoryFormValues = { name: "", description: "", icon: "Mobile", active: true };
+export const EMPTY_CATEGORY_FORM: CategoryFormValues = { name: "", description: "", icon: "mobile", active: true };

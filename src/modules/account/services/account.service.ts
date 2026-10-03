@@ -1,9 +1,8 @@
 import { ENDPOINTS } from "@/config/endpoints";
-import { api } from "@/shared/lib/api";
+import { api, uploadMedia } from "@/shared/lib/api";
 import type { ProfileDto } from "@/modules/auth/services/auth.mapper";
 import type { ChangePasswordInput, Profile, UpdatePersonalInput } from "../types";
 import { toProfile } from "./account.mapper";
-import { uploadImage } from "./uploads.service";
 
 export const accountService = {
   async get(): Promise<Profile> {
@@ -12,7 +11,7 @@ export const accountService = {
 
   /** `PATCH /me/` ; l'avatar est d'abord envoyé à Cloudinary puis référencé par `avatar_upload_id`. */
   async updatePersonal(input: UpdatePersonalInput): Promise<Profile> {
-    const avatarUploadId = input.avatar ? (await uploadImage("avatar", input.avatar)).id : undefined;
+    const avatarUploadId = input.avatar ? (await uploadMedia(input.avatar, "avatar")).id : undefined;
     const dto = await api.patch<ProfileDto>(ENDPOINTS.profile.me, {
       firstName: input.firstName.trim(),
       lastName: input.lastName.trim(),

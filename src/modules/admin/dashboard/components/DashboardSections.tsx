@@ -103,27 +103,27 @@ export function RecentSalesTable({ data }: { data?: DashboardData }) {
 export function PendingOrdersCard({ data }: { data?: DashboardData }) {
   return (
     <ChartCard
-      title="Commandes en attente"
-      subtitle={data ? `${data.kpis.pendingOrders} en attente · ${data.kpis.unassignedOrders} non assignée${data.kpis.unassignedOrders > 1 ? "s" : ""}` : "Discussions à traiter"}
+      title="Commandes en cours"
+      subtitle={data ? `${data.kpis.openOrders} en cours · ${data.kpis.unassignedOrders} non assignée${data.kpis.unassignedOrders > 1 ? "s" : ""}` : "Commandes à traiter"}
       delay={0.1}
       legend={<Link href={ROUTES.admin.notifications} aria-label="Notifications" className="grid size-9 place-items-center rounded-full bg-chip transition-colors hover:bg-primary hover:text-white"><Notification size={17} variant="Bold" /></Link>}
     >
       {!data ? (
         <div className="space-y-3">{Array.from({ length: 3 }, (_, i) => <Skeleton key={i} className="h-16 w-full" />)}</div>
       ) : data.pendingOrders.length === 0 ? (
-        <p className="py-10 text-center text-[14px] text-ink-3">Aucune commande en attente 🎉</p>
+        <p className="py-10 text-center text-[14px] text-ink-3">Aucune commande en cours 🎉</p>
       ) : (
         <>
           <RevealGroup stagger={0.07} className="flex flex-col gap-2.5">
             {data.pendingOrders.map((o) => (
               <RevealItem key={o.id}>
-                <Link href={o.conversationId ? ROUTES.admin.conversation(o.conversationId) : ROUTES.admin.orders} className="group flex items-center gap-3 rounded-box border border-line-3 p-3 transition-colors hover:border-primary hover:bg-primary-50">
+                <Link href={ROUTES.admin.order(o.id)} className="group flex items-center gap-3 rounded-box border border-line-3 p-3 transition-colors hover:border-primary hover:bg-primary-50">
                   <span className="grid size-10 shrink-0 place-items-center rounded-full bg-star/15 text-[#b87400]"><Messages2 size={18} variant="Bold" /></span>
                   <span className="min-w-0 flex-1">
-                    <span className="block truncate text-[13px] font-bold leading-[18px]">Commande #{o.id} · {o.buyer}</span>
+                    <span className="block truncate text-[13px] font-bold leading-[18px]">Commande {o.number} · {o.buyer}</span>
                     <span className="text-[12px] text-ink-3">{o.itemsCount} article{o.itemsCount > 1 ? "s" : ""} · {formatRelative(o.createdAt)} · {o.assignedTo ?? "non assignée"}</span>
                   </span>
-                  <span className="text-right"><strong className="block text-[14px]">{formatPrice(o.total)}</strong><StatusDot tone="orange">En attente</StatusDot></span>
+                  <span className="text-right"><strong className="block text-[14px]">{formatPrice(o.total)}</strong><StatusDot tone="orange">En cours</StatusDot></span>
                 </Link>
               </RevealItem>
             ))}

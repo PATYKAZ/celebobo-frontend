@@ -14,18 +14,12 @@ import {
 } from "@/shared/mock-db/selectors";
 import { formatDate } from "@/shared/lib/format";
 import type { PaymentMethod } from "@/modules/orders/types";
+import { PERIOD_TITLE, dayLabel, monthLabel, type PeriodKey } from "./period";
 
-/** Périodes proposées partout (tableau de bord, revendeurs, performance). */
-export type PeriodKey = "7d" | "30d" | "12m";
+export { PERIOD_OPTIONS, PERIOD_TITLE, dayLabel, monthLabel, type PeriodKey } from "./period";
 
-export const PERIOD_OPTIONS: { value: PeriodKey; label: string }[] = [
-  { value: "7d", label: "7 j" },
-  { value: "30d", label: "30 j" },
-  { value: "12m", label: "12 mois" },
-];
 
 const DAYS: Record<PeriodKey, number> = { "7d": 7, "30d": 30, "12m": 365 };
-export const PERIOD_TITLE: Record<PeriodKey, string> = { "7d": "7 derniers jours", "30d": "30 derniers jours", "12m": "12 derniers mois" };
 
 export const periodOf = (key: PeriodKey): Period => {
   const p = periodDays(DAYS[key]);
@@ -61,9 +55,6 @@ export function compare(list: DbSale[], p: Period): WithDelta {
   };
 }
 
-const MONTHS = ["janv.", "févr.", "mars", "avr.", "mai", "juin", "juil.", "août", "sept.", "oct.", "nov.", "déc."];
-export const dayLabel = (d: Date) => `${d.getDate()} ${MONTHS[d.getMonth()]}`;
-export const monthLabel = (d: Date) => MONTHS[d.getMonth()];
 
 export interface Bucket {
   label: string;

@@ -15,7 +15,6 @@ import { displayName } from "@/modules/auth/types";
 import { useUnreadMessagesCount } from "@/modules/messaging/hooks/useConversations";
 import { useUnreadNotificationsCount } from "@/modules/messaging/hooks/useNotifications";
 import { AdminTabBar } from "./AdminTabBar";
-import { DemoRoleSwitcher } from "./DemoRoleSwitcher";
 import { ADMIN_NAV, type AdminNavItem } from "./nav";
 
 const isActive = (item: AdminNavItem, pathname: string) => (item.exact ? pathname === item.href : pathname.startsWith(item.href));
@@ -153,7 +152,6 @@ export function AdminShell({ children }: { children: ReactNode }) {
             <p className="truncate text-[15px] font-bold leading-[20px] sm:text-[16px] sm:leading-[22px]">{current?.label ?? "Administration"}</p>
           </div>
           <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-            <DemoRoleSwitcher />
             {/* la messagerie a son onglet dans la barre mobile */}
             <Link href={ROUTES.admin.inbox} aria-label="Messages" className={cn(circle, "max-lg:hidden")}>
               <Messages2 size={19} variant="Bold" />

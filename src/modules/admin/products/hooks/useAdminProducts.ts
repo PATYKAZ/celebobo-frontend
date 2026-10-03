@@ -3,7 +3,6 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { adminProductsService } from "../services/admin-products.service";
 import type { AdminProductListParams, BulkAction, ImageSlotValue, ProductFormValues, StockAdjustInput } from "../types";
-import type { ImportData } from "../utils/csv";
 
 export const adminProductKeys = {
   all: ["admin", "products"] as const,
@@ -11,6 +10,7 @@ export const adminProductKeys = {
   detail: (id: number) => ["admin", "products", "detail", id] as const,
   movements: (id: number) => ["admin", "products", "movements", id] as const,
   stats: (id: number) => ["admin", "products", "stats", id] as const,
+  reviews: (id: number) => ["admin", "products", "reviews", id] as const,
 };
 
 /** Après une mutation catalogue : rafraîchit l'admin ET la boutique (listes, catégories). */
@@ -34,6 +34,10 @@ export function useAdminProduct(id: number | undefined) {
 
 export function useProductSalesStats(id: number | undefined) {
   return useQuery({ queryKey: adminProductKeys.stats(id ?? 0), queryFn: () => adminProductsService.salesStats(id as number), enabled: !!id });
+}
+
+export function useAdminProductReviews(id: number | undefined) {
+  return useQuery({ queryKey: adminProductKeys.reviews(id ?? 0), queryFn: () => adminProductsService.reviews(id as number), enabled: !!id });
 }
 
 export function useStockMovements(id: number | undefined, enabled = true) {
@@ -65,11 +69,6 @@ export function useRestoreProducts() {
   return useMutation({ mutationFn: (ids: number[]) => adminProductsService.restore(ids), onSuccess: invalidate });
 }
 
-export function usePurgeProduct() {
-  const invalidate = useInvalidateCatalog();
-  return useMutation({ mutationFn: (id: number) => adminProductsService.purge(id), onSuccess: invalidate });
-}
-
 export function useBulkProducts() {
   const invalidate = useInvalidateCatalog();
   return useMutation({ mutationFn: ({ ids, action }: { ids: number[]; action: BulkAction }) => adminProductsService.bulk(ids, action), onSuccess: invalidate });
@@ -80,7 +79,18 @@ export function useAdjustStock(productId: number) {
   return useMutation({ mutationFn: (input: StockAdjustInput) => adminProductsService.adjustStock(productId, input), onSuccess: invalidate });
 }
 
+/** Import CSV : simulation (`dryRun`) puis import réel ; seul l'import réel rafraîchit le catalogue. */
 export function useImportProducts() {
   const invalidate = useInvalidateCatalog();
-  return useMutation({ mutationFn: (rows: { id: number | null; data: ImportData }[]) => adminProductsService.importRows(rows), onSuccess: invalidate });
+  return useMutation({
+    mutationFn: ({ file, dryRun }: { file: File; dryRun: boolean }) => adminProductsService.importCsv(file, dryRun),
+    onSuccess: (summary) => {
+      if (!summary.dryRun) invalidate();
+    },
+  });
+}
+
+export function useDuplicateProduct() {
+  const invalidate = useInvalidateCatalog();
+  return useMutation({ mutationFn: (id: number) => adminProductsService.duplicate(id), onSuccess: invalidate });
 }

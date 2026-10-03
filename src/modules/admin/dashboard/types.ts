@@ -1,5 +1,5 @@
 import type { PaymentMethod } from "@/modules/orders/types";
-import type { PeriodKey } from "./lib/stats";
+import type { PeriodKey } from "./lib/period";
 
 export type DashboardPeriod = PeriodKey;
 
@@ -32,15 +32,14 @@ export interface DashboardKpis {
   revenueDelta: Delta;
   profit: number;
   profitDelta: Delta;
-  /** 24 dernières heures */
+  /** Depuis minuit */
   dayRevenue: number;
-  dayRevenueDelta: Delta;
   sales: number;
   salesDelta: Delta;
-  /** Part des smartphones dans le revenu de la période (%) */
-  smartphonesShare: number;
-  smartphonesDelta: Delta;
-  pendingOrders: number;
+  avgBasket: number;
+  avgBasketDelta: Delta;
+  /** Commandes non terminées (en attente → en livraison) */
+  openOrders: number;
   unassignedOrders: number;
 }
 
@@ -65,10 +64,10 @@ export interface DashboardTopProduct {
 
 export interface DashboardPendingOrder {
   id: number;
+  number: string;
   buyer: string;
   total: number;
   createdAt: string;
-  conversationId: number | null;
   itemsCount: number;
   assignedTo: string | null;
 }

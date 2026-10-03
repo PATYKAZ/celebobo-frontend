@@ -15,10 +15,10 @@ import { Button } from "@/shared/ui/Button";
 import { Pill } from "@/shared/ui/Badges";
 import { EmptyState } from "@/shared/ui/EmptyState";
 import { Input, Select } from "@/shared/ui/Form";
-import { Modal } from "@/shared/ui/Overlay";
 import { Tabs } from "@/shared/ui/Tabs";
 import { toast } from "@/shared/ui/Toast";
 import { PermissionGuard, useCan } from "@/modules/auth/hooks/useCan";
+import { useCategories } from "@/modules/categories/hooks/useCategories";
 import { useAdminCategories } from "../../categories/hooks/useAdminCategories";
 import type { Product } from "@/modules/products/types";
 import { getPricing } from "@/modules/products/utils";
@@ -27,18 +27,15 @@ import { DataTable, type Column } from "../../ui/DataTable";
 import { PageHeader } from "../../ui/PageHeader";
 import { StatCard } from "../../ui/StatCard";
 import { useAdminProductFilters } from "../hooks/useAdminProductFilters";
-import { useAdminProducts, useBulkProducts, usePurgeProduct, useRestoreProducts, useTrashProducts } from "../hooks/useAdminProducts";
+import { useAdminProducts, useBulkProducts, useRestoreProducts, useTrashProducts } from "../hooks/useAdminProducts";
 import { adminProductsService } from "../services/admin-products.service";
-import type { BulkAction, ProductStatusFilter } from "../types";
-import { downloadText, productsToCsv } from "../utils/csv";
+import { BADGE_OPTIONS, type BulkAction, type ProductStatusFilter } from "../types";
 import { BulkBar } from "./BulkBar";
 import { ActiveChips, FilterSheet, FilterTrigger, MobileSearchRow, type FilterChip } from "./FilterSheet";
 import { CsvImportModal } from "./CsvImportModal";
 import { DeadlineBadge, StockPill } from "./StockBadges";
 import { StockAdjustModal } from "./StockAdjustModal";
 import { StockHistoryDrawer } from "./StockHistoryDrawer";
-
-const BADGES = ["Nouveauté", "Best-seller"];
 
 function Toggle({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
   return (
@@ -59,9 +56,12 @@ function Content() {
   const { params, set, reset, activeCount } = useAdminProductFilters();
   const canManage = useCan("products.manage");
   const canStock = useCan("stock.adjust");
-  const canPurge = useCan("products.delete");
   const canImport = useCan("products.import");
-  const { data: categories } = useAdminCategories();
+  const canCategories = useCan("categories.manage");
+  // les catégories masquées ne sont visibles que de ceux qui gèrent le catalogue
+  const { data: adminCategories } = useAdminCategories(canCategories);
+  const { data: shopCategories } = useCategories();
+  const categories = canCategories ? adminCategories : shopCategories;
 
   const [search, setSearch] = useState(params.search ?? "");
   const debounced = useDebounce(search, 300);
@@ -75,14 +75,11 @@ function Content() {
   const { data, isLoading } = useAdminProducts(params);
   const trash = useTrashProducts();
   const restore = useRestoreProducts();
-  const purge = usePurgeProduct();
   const bulk = useBulkProducts();
   const stats = data?.stats;
 
   const [selected, setSelected] = useState<Set<number>>(new Set());
   const [toTrash, setToTrash] = useState<Product | null>(null);
-  const [toPurge, setToPurge] = useState<Product | null>(null);
-  const [purgeText, setPurgeText] = useState("");
   const [adjust, setAdjust] = useState<Product | null>(null);
   const [history, setHistory] = useState<Product | null>(null);
   const [importOpen, setImportOpen] = useState(false);
@@ -98,10 +95,9 @@ function Content() {
     ...(params.onSale ? [{ key: "sale", label: "En promo", onRemove: () => set({ sale: false }) }] : []),
     ...(params.lowStock ? [{ key: "low", label: "Stock bas", onRemove: () => set({ low: false }) }] : []),
     ...(params.outOfStock ? [{ key: "out", label: "Rupture", onRemove: () => set({ out: false }) }] : []),
-    ...(params.badge ? [{ key: "badge", label: params.badge, onRemove: () => set({ badge: "" }) }] : []),
+    ...(params.badge ? [{ key: "badge", label: BADGE_OPTIONS.find((b) => b.value === params.badge)?.label ?? params.badge, onRemove: () => set({ badge: "" }) }] : []),
     ...(params.minPrice != null ? [{ key: "min", label: `≥ ${formatPrice(params.minPrice)}`, onRemove: () => set({ min: "" }) }] : []),
     ...(params.maxPrice != null ? [{ key: "max", label: `≤ ${formatPrice(params.maxPrice)}`, onRemove: () => set({ max: "" }) }] : []),
-    ...(params.minDiscount != null ? [{ key: "disc", label: `Remise ≥ ${params.minDiscount}%`, onRemove: () => set({ disc: "" }) }] : []),
   ];
 
   const rows = data?.results ?? [];
@@ -115,9 +111,8 @@ function Content() {
   const exportCsv = async () => {
     setExporting(true);
     try {
-      const res = await adminProductsService.list({ ...params, all: true });
-      downloadText(`produits-${new Date().toISOString().slice(0, 10)}.csv`, productsToCsv(res.results));
-      toast.success("Export prêt", `${res.results.length} produit(s)`);
+      await adminProductsService.exportCatalog("csv");
+      toast.success("Export prêt", "Le fichier du catalogue a été téléchargé.");
     } catch (e) {
       toast.error("Export impossible", getErrorMessage(e));
     } finally {
@@ -211,7 +206,6 @@ function Content() {
           {params.status === "trash" ? (
             <>
               {canManage && <button onClick={() => restore.mutate([p.id], { onSuccess: () => toast.success("Produit restauré", p.name), onError: (e) => toast.error("Restauration impossible", getErrorMessage(e)) })} aria-label="Restaurer" title="Restaurer" className={cn(iconBtn, "hover:bg-primary hover:text-white")}><Refresh2 size={17} /></button>}
-              {canPurge && <button onClick={() => { setToPurge(p); setPurgeText(""); }} aria-label="Supprimer définitivement" title="Supprimer définitivement" className={cn(iconBtn, "hover:bg-danger hover:text-white")}><Trash size={17} /></button>}
             </>
           ) : (
             <>
@@ -276,12 +270,11 @@ function Content() {
               <Toggle active={!!params.outOfStock} onClick={() => set({ out: !params.outOfStock, low: undefined })}>Rupture</Toggle>
             </div>
           </div>
-          <Select label="Badge" value={params.badge ?? ""} onChange={(e) => set({ badge: e.target.value })} options={[{ value: "", label: "Tous" }, ...BADGES.map((b) => ({ value: b, label: b }))]} />
+          <Select label="Badge" value={params.badge ?? ""} onChange={(e) => set({ badge: e.target.value })} options={[{ value: "", label: "Tous" }, ...BADGE_OPTIONS.filter((b) => b.value)]} />
           <div className="grid grid-cols-2 gap-3">
             <Input label="Prix min ($)" type="number" inputMode="decimal" min="0" value={params.minPrice ?? ""} onChange={(e) => set({ min: e.target.value })} />
             <Input label="Prix max ($)" type="number" inputMode="decimal" min="0" value={params.maxPrice ?? ""} onChange={(e) => set({ max: e.target.value })} />
           </div>
-          <Input label="Remise minimum (%)" type="number" inputMode="numeric" min="0" max="90" value={params.minDiscount ?? ""} onChange={(e) => set({ disc: e.target.value })} />
         </FilterSheet>
         <div className="hidden flex-wrap items-center gap-3 border-b border-line-3 p-5 sm:flex">
           <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Rechercher un produit…" aria-label="Rechercher" className="field w-full sm:w-[260px]" />
@@ -304,10 +297,9 @@ function Content() {
           {advanced && (
             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="hidden overflow-hidden border-b border-line-3 sm:block">
               <div className="grid gap-4 p-4 sm:grid-cols-2 sm:p-5 lg:grid-cols-4">
-                <Select label="Badge" value={params.badge ?? ""} onChange={(e) => set({ badge: e.target.value })} options={[{ value: "", label: "Tous" }, ...BADGES.map((b) => ({ value: b, label: b }))]} />
+                <Select label="Badge" value={params.badge ?? ""} onChange={(e) => set({ badge: e.target.value })} options={[{ value: "", label: "Tous" }, ...BADGE_OPTIONS.filter((b) => b.value)]} />
                 <Input label="Prix min ($)" type="number" min="0" value={params.minPrice ?? ""} onChange={(e) => set({ min: e.target.value })} />
                 <Input label="Prix max ($)" type="number" min="0" value={params.maxPrice ?? ""} onChange={(e) => set({ max: e.target.value })} />
-                <Input label="Remise minimum (%)" type="number" min="0" max="90" value={params.minDiscount ?? ""} onChange={(e) => set({ disc: e.target.value })} />
               </div>
             </motion.div>
           )}
@@ -342,16 +334,6 @@ function Content() {
         message={`« ${toTrash?.name ?? ""} » ne sera plus visible en boutique. Vous pourrez le restaurer depuis l'onglet Corbeille.`}
         confirmLabel="Mettre à la corbeille"
       />
-
-      {/* Suppression définitive : confirmation renforcée (saisie du mot SUPPRIMER) */}
-      <Modal open={!!toPurge} onClose={() => setToPurge(null)} title="Suppression définitive" className="max-w-[460px]">
-        <p className="text-[14px] leading-[22px] text-ink-2">« <strong>{toPurge?.name}</strong> » sera supprimé <strong className="text-danger">définitivement</strong>, avec son historique de stock. Cette action est irréversible.</p>
-        <div className="mt-4"><Input label="Tapez SUPPRIMER pour confirmer" value={purgeText} onChange={(e) => setPurgeText(e.target.value)} autoComplete="off" /></div>
-        <div className="mt-5 grid grid-cols-2 gap-3">
-          <Button variant="chip" upper={false} onClick={() => setToPurge(null)}>Annuler</Button>
-          <Button variant="danger" upper={false} disabled={purgeText !== "SUPPRIMER"} loading={purge.isPending} onClick={() => toPurge && purge.mutate(toPurge.id, { onSuccess: () => { toast.success("Produit supprimé définitivement"); setToPurge(null); }, onError: (e) => toast.error("Suppression impossible", getErrorMessage(e)) })}>Supprimer</Button>
-        </div>
-      </Modal>
 
       <StockAdjustModal product={adjust} onClose={() => setAdjust(null)} />
       <StockHistoryDrawer product={history} onClose={() => setHistory(null)} />

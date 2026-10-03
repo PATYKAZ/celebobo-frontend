@@ -3,7 +3,6 @@ export { ProfileView } from "./components/ProfileView";
 export { OrderHistoryView } from "./components/OrderHistoryView";
 export { useProfile, useUpdateProfile, useChangePassword, useDeleteAccount } from "./hooks/useAccount";
 export { accountService } from "./services/account.service";
-export { uploadImage, type UploadPurpose, type UploadedMedia } from "./services/uploads.service";
 export { AddressBookView, addressIcon } from "./components/AddressBookView";
 export { AddressFormModal } from "./components/AddressFormModal";
 export { useAddresses, useSaveAddress, useDeleteAddress, useSetDefaultAddress } from "./hooks/useAddressBook";

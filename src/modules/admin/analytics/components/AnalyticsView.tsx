@@ -16,7 +16,7 @@ import { StatCard } from "../../ui/StatCard";
 import { useAnalytics, useResellerPerformance } from "../hooks/useAnalytics";
 import { DEFAULT_FILTERS, RANGES, type AnalyticsFilters } from "../types";
 import { Heatmap } from "./Heatmap";
-import { ResellerPerformanceCard, SlowMoversCard, StockValueCard } from "./InsightsSections";
+import { ResellerPerformanceCard, SlowMoversCard } from "./InsightsSections";
 
 const PALETTE = ["#1ABA1A", "#222222", "#FFA500", "#0D6EFD", "#F1352B", "#7E57C2", "#00A8A8", "#999999", "#E91E8C", "#8BC34A"];
 const money = (n: number) => (n >= 1000 ? `$${formatCompact(n)}` : formatPrice(n).replace(".00", ""));
@@ -124,13 +124,6 @@ function AnalyticsContent() {
       </div>
 
       <div className="grid min-w-0 gap-3 sm:gap-4 xl:grid-cols-3">
-        <StockValueCard data={data} />
-        <div className="rounded-box bg-white p-6 sm:p-[26px]">
-          <h2 className="text-[18px] font-bold leading-[21.6px]">Stock actuel</h2>
-          <p className="mt-1 text-[13px] text-ink-3">Valeur au prix d&apos;achat</p>
-          <p className="mt-4 text-[30px] font-bold leading-[36px] text-primary">{data ? formatPrice(data.stockValue.current) : "—"}</p>
-          <p className="mt-3 text-[13px] leading-[20px] text-ink-2">Reconstruite à partir des mouvements de stock (inventaires, ventes, retours, corrections).</p>
-        </div>
         <SlowMoversCard data={data} />
         {canPerf && <ResellerPerformanceCard perf={perf} />}
       </div>
