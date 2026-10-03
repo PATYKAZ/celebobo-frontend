@@ -15,8 +15,7 @@ import { api, camelizeKeys } from "@/shared/lib/api";
  *   event:{type}       → données brutes (camelCase) de chaque événement serveur (ex. `event:sale.created`)
  *   `{ type: "resync" }` est diffusé sur tous les canaux écoutés après une reconnexion (événements manqués).
  *
- * - MODE MOCK : bus en mémoire. Les services mock appellent `realtime.emit(...)` quand ils mutent un état.
- * - MODE API : WebSocket `env.WS_URL` (passerelle Django Channels `/ws/`), ouvert uniquement pour un utilisateur
+ * WebSocket `env.WS_URL` (passerelle Django Channels `/ws/`), ouvert uniquement pour un utilisateur
  *   connecté (`realtime.setSession`). Chaque connexion consomme un ticket à usage unique (`POST /auth/ws-ticket/`)
  *   passé en `?ticket=`. Protocole : `{ type, data, ref? }` dans les deux sens ; le serveur abonne d'office aux
  *   groupes `user.{id}` (+ `staff`), le client s'abonne aux discussions (`conversation.subscribe`).
@@ -125,7 +124,7 @@ function scheduleReconnect() {
 }
 
 async function connect() {
-  if (env.USE_MOCKS || !env.WS_URL || typeof WebSocket === "undefined" || session == null || socket || connecting) return;
+  if (!env.WS_URL || typeof WebSocket === "undefined" || session == null || socket || connecting) return;
   connecting = true;
   const owner = session;
   let ticket: string;
@@ -223,11 +222,11 @@ export const realtime = {
     };
   },
 
-  /** Émet localement (mock) ; en API, l'indicateur « écrit… » part au serveur, le reste reste local. */
+  /** L'indicateur « écrit… » part au serveur ; les autres événements sont diffusés localement. */
   emit<T = unknown>(channel: string, payload: T) {
     const id = conversationOf(channel);
     const event = payload as { type?: string; typing?: boolean };
-    if (!env.USE_MOCKS && id && event.type === "typing") {
+    if (id && event.type === "typing") {
       send(event.typing ? "typing.start" : "typing.stop", { conversation_id: id });
       return;
     }

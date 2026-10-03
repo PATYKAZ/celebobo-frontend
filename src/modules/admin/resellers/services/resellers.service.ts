@@ -1,168 +1,91 @@
 import { ENDPOINTS } from "@/config/endpoints";
-import { env } from "@/config/env";
-import { api, ApiError, mockResponse, paginate } from "@/shared/lib/api";
-import { DB, fullName, resellers, userById, type DbUser } from "@/shared/mock-db";
-import { logAudit, nextId, resellerStats, topReseller } from "@/shared/mock-db/selectors";
-import { MOCK_RESELLERS_LITE } from "@/modules/orders/mocks/orders";
-import { periodOf } from "../../dashboard/lib/stats";
-import type { CreateResellerInput, InvitedClient, Reseller, ResellerListParams, ResellersResponse } from "../types";
+import { api, type PageEnvelope } from "@/shared/lib/api";
+import { money } from "@/modules/products/services/products.mapper";
+import { STATUS_TO_API } from "@/modules/orders/services/orders.mapper";
+import { ORDER_FINAL } from "@/modules/orders/types";
+import { PERIOD_TITLE, type PeriodKey } from "../../dashboard/lib/period";
+import type { CreateResellerInput, Reseller, ResellerListParams, ResellersResponse } from "../types";
+import { toInvitedClient, toReseller, type InviteeDto, type ResellerDto, type SellerSalesDto } from "./resellers.mapper";
 
-type PeriodKey = NonNullable<ResellerListParams["period"]>;
+const { resellers, users, analytics, orders } = ENDPOINTS.admin;
 
-/** Maintient la liste « assignables » (modules orders / messagerie) alignée sur les revendeurs actifs. */
-function syncAssignable() {
-  MOCK_RESELLERS_LITE.splice(0, MOCK_RESELLERS_LITE.length, ...resellers().filter((u) => u.active).map((u) => ({ id: u.id, name: fullName(u) })));
+interface ResellerStatsDto {
+  total: number;
+  active: number;
+  invitedClients: number;
+  pendingApplications: number;
+  topReseller: { id: number; name: string; revenue: string } | null;
 }
 
-function toReseller(u: DbUser, periodKey: PeriodKey = "30d"): Reseller {
-  const st = resellerStats(u.id, periodOf(periodKey));
-  const invited: InvitedClient[] = st.invited.map((c) => ({
-    id: c.id,
-    name: fullName(c),
-    email: c.email,
-    joinedAt: c.joinedAt,
-    ordersCount: DB.orders.filter((o) => o.user.id === c.id).length,
-  }));
-  return {
-    id: u.id,
-    name: fullName(u),
-    email: u.email,
-    phone: u.phoneNumber,
-    avatar: u.avatar,
-    codeRevendeur: u.codeRevendeur ?? "—",
-    invitedCount: st.invitedCount,
-    salesTotal: Math.round(st.salesRevenue),
-    salesCount: st.salesCount,
-    ordersAssigned: st.ordersAssigned,
-    ordersOpen: st.ordersOpen,
-    conversionRate: st.conversionRate,
-    joinedAt: u.joinedAt,
-    status: u.active ? "actif" : "inactif",
-    availability: u.availability ?? "offline",
-    commissionRate: u.commissionRate ?? 0.07,
-    invited,
-  };
-}
+const salesBySeller = async (period: PeriodKey) =>
+  new Map((await api.get<SellerSalesDto[]>(analytics.sellers, { params: { period } })).map((s) => [s.sellerId, s]));
 
-const uniqueCode = () => {
-  const used = new Set(DB.users.map((u) => u.codeRevendeur).filter(Boolean));
-  for (let i = 0; i < 1000; i++) {
-    const c = String(1000 + Math.floor(Math.random() * 9000));
-    if (!used.has(c)) return c;
-  }
-  return String(Date.now()).slice(-4);
-};
+/** Commandes assignées (tous statuts), en cours et livrées d'un revendeur. */
+async function orderLoad(resellerId: number) {
+  const page = await api.get<PageEnvelope<unknown>>(orders.list, { params: { resellerId, pageSize: 1 } });
+  const counts = (page.meta.counts ?? {}) as Record<string, number>;
+  const statuses = Object.entries(STATUS_TO_API);
+  const assigned = statuses.reduce((n, [, api]) => n + (counts[api] ?? 0), 0);
+  const open = statuses.filter(([front]) => !ORDER_FINAL.includes(front as never)).reduce((n, [, api]) => n + (counts[api] ?? 0), 0);
+  const delivered = counts.delivered ?? 0;
+  return { ordersAssigned: assigned, ordersOpen: open, conversionRate: assigned ? (delivered / assigned) * 100 : 0 };
+}
 
 export const resellersService = {
-  list(params: ResellerListParams = {}): Promise<ResellersResponse> {
-    if (env.USE_MOCKS) {
-      return mockResponse(() => {
-        const key = params.period ?? "30d";
-        const all = resellers().map((u) => toReseller(u, key));
-        let list = all;
-        if (params.status && params.status !== "all") list = list.filter((r) => r.status === params.status);
-        if (params.search) {
-          const q = params.search.toLowerCase();
-          list = list.filter((r) => `${r.name} ${r.email} ${r.codeRevendeur}`.toLowerCase().includes(q));
-        }
-        switch (params.ordering ?? "-sales") {
-          case "-invited": list = [...list].sort((a, b) => b.invitedCount - a.invitedCount); break;
-          case "-sales": list = [...list].sort((a, b) => b.salesTotal - a.salesTotal || a.id - b.id); break;
-          case "name": list = [...list].sort((a, b) => a.name.localeCompare(b.name)); break;
-          case "joined": list = [...list].sort((a, b) => +new Date(a.joinedAt) - +new Date(b.joinedAt)); break;
-          default: list = [...list].sort((a, b) => +new Date(b.joinedAt) - +new Date(a.joinedAt));
-        }
-        const top = topReseller(periodOf(key));
-        return {
-          ...paginate(list, params.page ?? 1, params.pageSize ?? 8),
-          periodLabel: periodOf(key).label,
-          stats: {
-            total: all.length,
-            active: all.filter((r) => r.status === "actif").length,
-            invited: all.reduce((s, r) => s + r.invitedCount, 0),
-            topId: top?.id ?? null,
-            topName: top?.name ?? null,
-            topSales: Math.round(top?.revenue ?? 0),
-          },
-        };
-      }, 350);
-    }
-    return api.get<ResellersResponse>(ENDPOINTS.admin.resellers.list, { params: params as never });
+  async list(params: ResellerListParams = {}): Promise<ResellersResponse> {
+    const period = params.period ?? "30d";
+    const ordering = params.ordering === "-sales" ? undefined : params.ordering;
+    const [page, sales, stats] = await Promise.all([
+      api.get<PageEnvelope<ResellerDto>>(resellers.list, {
+        params: { search: params.search || undefined, active: params.status && params.status !== "all" ? params.status === "actif" : undefined, ordering, page: params.page, pageSize: params.pageSize },
+      }),
+      salesBySeller(period),
+      api.get<ResellerStatsDto>(resellers.stats),
+    ]);
+    const results = page.results.map((dto) => toReseller(dto, sales.get(dto.id)));
+    if (params.ordering === "-sales") results.sort((a, b) => b.salesTotal - a.salesTotal);
+    return {
+      count: page.meta.count,
+      next: page.next,
+      previous: page.previous,
+      results,
+      page: page.meta.page,
+      pageSize: page.meta.pageSize,
+      totalPages: page.meta.totalPages,
+      periodLabel: PERIOD_TITLE[period],
+      stats: {
+        total: stats.total,
+        active: stats.active,
+        invited: stats.invitedClients,
+        topId: stats.topReseller?.id ?? null,
+        topName: stats.topReseller?.name ?? null,
+        topSales: stats.topReseller ? money(stats.topReseller.revenue) : 0,
+      },
+    };
   },
 
-  detail(id: number, period: PeriodKey = "30d"): Promise<Reseller> {
-    if (env.USE_MOCKS) {
-      const u = userById(id);
-      if (!u || u.role !== "revendeur") return Promise.reject(new ApiError(404, "Revendeur introuvable"));
-      return mockResponse(() => toReseller(u, period), 150);
-    }
-    return api.get<Reseller>(ENDPOINTS.admin.resellersAdmin.detail(id));
+  async detail(id: number, period: PeriodKey = "30d"): Promise<Reseller> {
+    const [dto, sales, invitees, load] = await Promise.all([
+      api.get<ResellerDto>(resellers.detail(id)),
+      salesBySeller(period),
+      api.get<PageEnvelope<InviteeDto>>(resellers.invitees(id), { params: { pageSize: 100 } }),
+      orderLoad(id),
+    ]);
+    return toReseller(dto, sales.get(id), { ...load, invited: invitees.results.map(toInvitedClient) });
   },
 
+  /** Crée le compte (rôle revendeur, e-mail d'invitation envoyé par l'API) puis fixe son taux. */
   async create(input: CreateResellerInput): Promise<Reseller> {
-    if (env.USE_MOCKS) {
-      if (DB.users.some((u) => u.email.toLowerCase() === input.email.toLowerCase())) {
-        throw new ApiError(400, "E-mail déjà utilisé", { email: ["Cette adresse e-mail existe déjà."] });
-      }
-      const id = nextId("user");
-      const u: DbUser = {
-        id,
-        username: input.email.split("@")[0],
-        email: input.email,
-        firstName: input.firstName,
-        lastName: input.lastName,
-        role: "revendeur",
-        avatar: null,
-        phoneNumber: input.phone ?? null,
-        joinedAt: new Date().toISOString(),
-        active: true,
-        invitedBy: null,
-        codeRevendeur: uniqueCode(),
-        availability: "offline",
-        commissionRate: input.commissionRate ?? 0.07,
-      };
-      DB.users.push(u);
-      syncAssignable();
-      logAudit({ action: "Revendeur créé", entity: "revendeur", entityId: id, summary: `Nouveau revendeur : ${fullName(u)} (code ${u.codeRevendeur})` });
-      return mockResponse(toReseller(u), 500);
-    }
-    return api.post<Reseller>(ENDPOINTS.admin.resellersAdmin.create, input);
+    const user = await api.post<{ id: number }>(users.list, { firstName: input.firstName, lastName: input.lastName, email: input.email, phoneNumber: input.phone || null, role: "reseller" });
+    if (input.commissionRate != null) await api.patch(resellers.detail(user.id), { commissionRate: input.commissionRate.toFixed(3) });
+    return toReseller(await api.get<ResellerDto>(resellers.detail(user.id)));
   },
 
   async setActive(id: number, active: boolean): Promise<Reseller> {
-    if (env.USE_MOCKS) {
-      const u = userById(id);
-      if (!u) throw new ApiError(404, "Revendeur introuvable");
-      u.active = active;
-      if (!active) u.availability = "offline";
-      syncAssignable();
-      logAudit({
-        action: active ? "Revendeur activé" : "Revendeur désactivé",
-        entity: "revendeur",
-        entityId: id,
-        summary: `Compte revendeur #${id} (${fullName(u)}) ${active ? "activé" : "désactivé"}`,
-      });
-      return mockResponse(toReseller(u), 350);
-    }
-    return api.post<Reseller>(ENDPOINTS.admin.resellersAdmin.setActive(id), { active });
+    return toReseller(await api.post<ResellerDto>(active ? resellers.activate(id) : resellers.deactivate(id)));
   },
 
   async updateRate(id: number, rate: number): Promise<Reseller> {
-    if (env.USE_MOCKS) {
-      const u = userById(id);
-      if (!u) throw new ApiError(404, "Revendeur introuvable");
-      if (rate < 0 || rate > 0.5) throw new ApiError(400, "Taux invalide", { commissionRate: ["Entre 0 et 50 %."] });
-      const from = u.commissionRate ?? 0.07;
-      u.commissionRate = rate;
-      logAudit({
-        action: "Taux de commission modifié",
-        entity: "revendeur",
-        entityId: id,
-        summary: `${fullName(u)} : taux de commission`,
-        diff: [{ field: "commissionRate", from: `${(from * 100).toFixed(1)} %`, to: `${(rate * 100).toFixed(1)} %` }],
-      });
-      return mockResponse(toReseller(u), 300);
-    }
-    return api.patch<Reseller>(ENDPOINTS.admin.resellersAdmin.detail(id), { commissionRate: rate });
+    return toReseller(await api.patch<ResellerDto>(resellers.detail(id), { commissionRate: rate.toFixed(3) }));
   },
 };

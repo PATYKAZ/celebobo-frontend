@@ -1,29 +1,30 @@
 # Celebobo — Frontend (Next.js + Tailwind)
 
 Refonte front de Celebobo, basée sur le design « Swoo » (thème vert) — police **Hanken Grotesk**, icônes **Iconsax**.
-Le backend Django (voir ancien dépôt `shopproject-cele`) sera branché via une API REST : **le front est prêt**, chaque module possède sa couche `services/` avec une branche **mock** et une branche **API réelle**.
+Les données viennent de l'API REST Django (Celebobo v2) : chaque module possède sa couche `services/` (mapper + appels API).
 
 ## Démarrer
 
 ```bash
-cd frontend
 npm install
-cp .env.example .env.local     # NEXT_PUBLIC_USE_MOCKS=true par défaut
+cp .env.example .env.local     # API_PROXY_TARGET = URL du backend Django
 npm run dev                    # http://localhost:3000
 ```
 
-Comptes démo (mode mock, mot de passe : ≥ 4 caractères) : `client@celebobo.com`, `revendeur@celebobo.com`,
-`mukubwa@celebobo.com`, `admin@celebobo.com` (accès `/admin`). La page de connexion propose des boutons « démo ».
+Le front parle à l'API Django (`/api/v1`, cf. dépôt backend). Pour un jeu de données de démonstration,
+lancer `python manage.py seed_demo --admin-email <email>` côté backend (comptes listés en fin de commande).
 
-## Brancher l'API Django
+## API Django
 
-1. `.env.local` : `NEXT_PUBLIC_API_URL=http://localhost:8000/api` et `NEXT_PUBLIC_USE_MOCKS=false`
-   (ou `NEXT_PUBLIC_API_URL=/api` + `API_PROXY_TARGET=http://localhost:8000` pour éviter CORS).
-2. Le contrat d'endpoints est dans `src/config/endpoints.ts` (avec la correspondance vers les anciennes URLs Django).
-3. Le client `src/shared/lib/api/client.ts` gère : cookies de session + **CSRF Django**, conversion **snake_case ⇄ camelCase**
-   automatique, erreurs typées (`ApiError`), 401 → déconnexion, pagination DRF `{count,next,previous,results}`.
-4. Les types de réponse attendus sont dans `modules/*/types.ts` (camelCase côté front = snake_case côté Django).
-5. Dans chaque `services/*.service.ts`, supprimer la branche `if (env.USE_MOCKS) {...}` quand l'endpoint existe.
+1. `.env.local` : `NEXT_PUBLIC_API_URL=/api/v1` + `API_PROXY_TARGET=<url du backend>` : `next.config.ts` relaie `/api/*`
+   (barre oblique finale conservée) → cookies JWT/CSRF first-party, pas de CORS. Le WebSocket (`NEXT_PUBLIC_WS_URL`) se connecte directement au backend.
+2. Le contrat d'endpoints est dans `src/config/endpoints.ts` (source : `/api/v1/schema/`).
+3. Le client `src/shared/lib/api/client.ts` gère : cookies JWT + **CSRF Django** (`GET /auth/csrf/` à la demande), rafraîchissement du jeton sur 401,
+   conversion **snake_case ⇄ camelCase**, erreurs `problem+json` (`ApiError.code`, `fieldErrors`), pagination `{ results, meta }` via `api.page()`.
+   Tâches asynchrones (exports, imports, rapports) : `runJob` / `downloadJob` ; envoi d'images : `uploadMedia` (signature → Cloudinary → enregistrement).
+4. Chaque module a un `services/<module>.mapper.ts` : interfaces `XxxDto` (réponse API en camelCase) + fonctions `toXxx()` vers les types du front (`types.ts`).
+   Les montants arrivent en chaînes décimales → `money()` (`modules/products/services/products.mapper.ts`).
+5. Produits et catégories sont adressés par **slug** (`/produits/{slug}`, `/categorie/{slug}`), les commandes client par **numéro** (`/compte/commandes/{number}`).
 
 ## Architecture
 
@@ -38,13 +39,12 @@ src/
     layout/               Header, GreenBar, SearchBar, Footer, Breadcrumb, ShopShell
     animations/           Reveal, CountUp, MotionImage (KenBurns/Parallax/Tilt/Float/Marquee), PageTransition
     hooks/                useCountdown, useDebounce, useMediaQuery
-    lib/                  api/ (client, mock helpers), format, cn
+    lib/                  api/ (client, erreurs, tâches, envois), realtime, format, slug, cn
   modules/<module>/       UN DOSSIER PAR MODULE
     components/           Composants UI du module
     hooks/                Hooks React Query / logique
-    services/             Appels API (branche mock + branche réelle)
+    services/             Appels API + mapper (DTO de l'API → types du front)
     store/                (si besoin) stores Zustand
-    mocks/                Données de démonstration
     types.ts              Types du domaine
     index.ts              API publique du module
 ```
@@ -73,20 +73,17 @@ Modules : `products`, `categories`, `auth`, `cart`, `favorites`, `orders`, `mess
 - Icônes : `import { Heart } from "iconsax-reactjs"` — props `size`, `variant` (`Linear` | `Bold` | `Bulk` | `TwoTone` | `Outline` | `Broken`), `color`.
   ⚠️ Vérifier qu'un nom existe avant usage (ex: `HamburgerMenu`, pas `HambergerMenu` ; pas de `Tablet` → `Devices`).
 
-## v2 — Rôles, base de démo unique, temps réel
+## v2 — Rôles, temps réel
 
 - **Permissions** : `modules/auth/permissions.ts` (matrice revendeur / responsable (mukubwa) / admin). Utiliser `useCan("…")`, `<Can>`, `<PermissionGuard>`.
   Règle : *même page, données filtrées par rôle* (ex. `/admin/commandes` = toutes pour un responsable, seulement les siennes pour un revendeur).
-- **Base de démo unique** : `shared/mock-db` (`DB.users`, `DB.orders`, `DB.sales`, `DB.commissionPayments`, `DB.stockMovements`, `DB.auditLog`, `DB.addresses`)
-  + `shared/mock-db/selectors.ts` (`getActor`, `visibleSales`, `totals`, `resellerStats`, `commissionFor`, `topReseller`, `logAudit`…).
-  Tous les services mock lisent/mutent ces tableaux → les chiffres concordent entre écrans. Jamais de données aléatoires dans un module.
-  Sémantique v1 conservée : `Vente.seller` = vendeur (revendeur/responsable), `soldTo` = acheteur (texte libre).
 - **Workflow commande** : `modules/orders/services/workflow.service.ts` (`orderWorkflow.setStatus/assign`, `canTransition`, `availableTransitions`) + hooks `useSetOrderStatus`, `useAssignOrder`.
-  Statuts : attente → assignee → confirmee → payee → en_livraison → livree (+ annulee, retournee). Mapping API v1 : `fromLegacyStatus`.
+  Statuts : attente → assignee → confirmee → payee → en_livraison → livree (+ annulee, retournee). Correspondance API : `STATUS_FROM_API` / `STATUS_TO_API` (`orders.mapper.ts`) ;
+  la fiche commande fournit `allowedTransitions` (source de vérité des boutons).
 - **Temps réel** : `shared/lib/realtime.ts` (`realtime.subscribe/emit`, canaux `conversation:{id}`, `user:{id}`, `presence`) + hook `useRealtime`.
-  Mock = bus mémoire ; API = WebSocket (`NEXT_PUBLIC_WS_URL`). Les services mock émettent des événements lorsqu'ils mutent un état.
-- **Panier par utilisateur** : `cart.store` (`owner`, `carts`, fusion invité → compte dans `CartOwnerSync`).
-- **Pré-rendu** : les pages `[id]` exportent `generateStaticParams` (mode mock) pour éviter les démarrages à froid.
+  WebSocket `NEXT_PUBLIC_WS_URL` (passerelle Django Channels), ticket à usage unique `POST /auth/ws-ticket/`, reconnexion avec backoff.
+- **Panier serveur** : invité identifié par `X-Cart-Token` (`cart.store`), fusionné dans le panier du compte à la connexion (`CartOwnerSync`).
+- **Hydratation** : un état propre au navigateur (stores persistés, cache partagé avec l'en-tête) ne s'affiche qu'après `useHydrated()`.
 
 ## Mobile (mobile-first, breakpoints Tailwind : sm 640 · md 768 · lg 1024)
 

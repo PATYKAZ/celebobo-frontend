@@ -1,8 +1,8 @@
 import type { Order, PaymentMethod } from "@/modules/orders/types";
 import type { Paginated } from "@/shared/lib/api";
-import type { SaleStatus } from "@/shared/mock-db/types";
+export type { PaymentMethod };
 
-export type { PaymentMethod, SaleStatus };
+export type SaleStatus = "valide" | "remboursée" | "retournée";
 
 /**
  * Vente (shop.models.Vente v2).
@@ -38,6 +38,7 @@ export interface Sale {
 
 export interface SaleInput {
   productId: number;
+  variantId?: number | null;
   quantity: number;
   /** price_final unitaire */
   unitPrice: number;
@@ -58,10 +59,6 @@ export interface SaleListParams {
   /** date_achat (yyyy-mm-dd) */
   dateFrom?: string;
   dateTo?: string;
-  /** date_enregistrement exacte (yyyy-mm-dd) */
-  recordedOn?: string;
-  /** "revendeur" = ventes_rev (ventes réalisées par les revendeurs) — responsable/admin */
-  view?: "all" | "revendeur";
   sellerId?: number | null;
   productId?: number;
 }

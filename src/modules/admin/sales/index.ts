@@ -5,4 +5,4 @@ export { SaleCreateView, SaleEditView } from "./components/SaleFormViews";
 export { ConvertOrderView } from "./components/ConvertOrderView";
 export { ConvertOrderButton } from "./components/ConvertOrderButton";
 export { useSales, useSale, useSellers, useSaveSale, useCreateSales, useDeleteSale, useRefundSale, useOrderSearch, useConvertibleOrder, useConvertOrder, saleKeys } from "./hooks/useSales";
-export { salesService, salesCsv } from "./services/sales.service";
+export { salesService } from "./services/sales.service";

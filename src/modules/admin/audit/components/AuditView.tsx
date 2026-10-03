@@ -15,20 +15,19 @@ import { Skeleton } from "@/shared/ui/Skeleton";
 import { PermissionGuard } from "@/modules/auth/hooks/useCan";
 import { ROLE_LABEL } from "@/modules/auth/permissions";
 import { PageHeader } from "../../ui/PageHeader";
-import { useAuditLog } from "../hooks/useAudit";
-import { AUDIT_ENTITIES, type AuditEntity, type AuditEntry } from "../types";
+import { useAuditLog, useAuditObjectTypes } from "../hooks/useAudit";
+import type { AuditEntity, AuditEntry } from "../types";
 
 const PAGE_SIZE = 12;
-const ENTITY_STYLE: Record<AuditEntity, string> = {
-  produit: "bg-info/10 text-info",
-  vente: "bg-primary-100 text-primary-dark",
-  commande: "bg-star/15 text-[#b87400]",
-  catégorie: "bg-chip text-ink-2",
-  utilisateur: "bg-danger-100 text-danger",
-  revendeur: "bg-primary-100 text-primary-dark",
-  commission: "bg-sun/30 text-ink",
-  stock: "bg-ink-dark/10 text-ink-dark",
+/** Couleur par application (préfixe du type : `catalog.product` → catalog). */
+const APP_STYLE: Record<string, string> = {
+  catalog: "bg-info/10 text-info",
+  sales: "bg-primary-100 text-primary-dark",
+  orders: "bg-star/15 text-[#b87400]",
+  accounts: "bg-danger-100 text-danger",
+  resellers: "bg-sun/30 text-ink",
 };
+const entityStyle = (entity: AuditEntity) => APP_STYLE[entity.split(".")[0]] ?? "bg-chip text-ink-2";
 
 export function AuditView() {
   return (
@@ -44,12 +43,12 @@ function Row({ e, open, onToggle }: { e: AuditEntry; open: boolean; onToggle: ()
     <Fragment>
       <tr onClick={hasDiff ? onToggle : undefined} className={cn("border-b border-line-3/70 transition-colors", hasDiff ? "cursor-pointer hover:bg-primary-50" : "hover:bg-page/40")}>
         <td className="whitespace-nowrap px-4 py-3.5 align-top text-[13px]"><span className="block font-semibold">{formatDateTime(e.at)}</span><span className="text-[12px] text-ink-3">{formatRelative(e.at)}</span></td>
-        <td className="px-4 py-3.5 align-top text-[13px]"><span className="block font-semibold">{e.actor.name}</span><span className="text-[12px] text-ink-3">{ROLE_LABEL[e.actor.role]}</span></td>
+        <td className="px-4 py-3.5 align-top text-[13px]"><span className="block font-semibold">{e.actor.name}</span>{e.actor.role && <span className="text-[12px] text-ink-3">{ROLE_LABEL[e.actor.role]}</span>}</td>
         <td className="px-4 py-3.5 align-top">
           <span className="block text-[14px] font-semibold">{e.action}</span>
           <span className="block text-[13px] leading-[19px] text-ink-2">{e.summary}</span>
         </td>
-        <td className="hidden px-4 py-3.5 align-top md:table-cell"><span className={cn("rounded-full px-2.5 py-1 text-[12px] font-semibold capitalize", ENTITY_STYLE[e.entity])}>{e.entity}{e.entityId != null ? ` #${e.entityId}` : ""}</span></td>
+        <td className="hidden px-4 py-3.5 align-top md:table-cell"><span className={cn("rounded-full px-2.5 py-1 text-[12px] font-semibold capitalize", entityStyle(e.entity))}>{e.entityLabel}{e.entityId != null ? ` #${e.entityId}` : ""}</span></td>
         <td className="w-10 px-3 py-3.5 align-top text-ink-3">{hasDiff && <ArrowDown2 size={16} className={cn("transition-transform", open && "rotate-180")} />}</td>
       </tr>
       <AnimatePresence initial={false}>
@@ -105,8 +104,8 @@ function AuditCard({ e, open, onToggle }: { e: AuditEntry; open: boolean; onTogg
           {hasDiff && <ArrowDown2 size={18} className={cn("mt-0.5 shrink-0 text-ink-3 transition-transform", open && "rotate-180")} />}
         </div>
         <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[12px] text-ink-3">
-          <span className={cn("rounded-full px-2.5 py-1 font-semibold capitalize", ENTITY_STYLE[e.entity])}>{e.entity}{e.entityId != null ? ` #${e.entityId}` : ""}</span>
-          <span><strong className="text-ink">{e.actor.name}</strong> · {ROLE_LABEL[e.actor.role]}</span>
+          <span className={cn("rounded-full px-2.5 py-1 font-semibold capitalize", entityStyle(e.entity))}>{e.entityLabel}{e.entityId != null ? ` #${e.entityId}` : ""}</span>
+          <span><strong className="text-ink">{e.actor.name}</strong>{e.actor.role ? ` · ${ROLE_LABEL[e.actor.role]}` : ""}</span>
           <span>{formatDateTime(e.at)} · {formatRelative(e.at)}</span>
         </div>
       </button>
@@ -131,6 +130,7 @@ function AuditContent() {
   const [openId, setOpenId] = useState<number | null>(null);
   const [sheet, setSheet] = useState(false);
   const debounced = useDebounce(search, 300);
+  const { data: objectTypes } = useAuditObjectTypes();
   const { data, isLoading } = useAuditLog({ search: debounced, entity, actorId, from: from || undefined, to: to || undefined, page, pageSize: PAGE_SIZE });
   const reset = () => { setSearch(""); setEntity("all"); setActorId("all"); setFrom(""); setTo(""); setPage(1); };
   const reg = <T,>(set: (v: T) => void) => (v: T) => { set(v); setPage(1); };
@@ -138,7 +138,7 @@ function AuditContent() {
   /** Champs de filtre partagés par la grille desktop et la feuille mobile */
   const filterFields = (labels: boolean) => (
     <>
-      <Select aria-label="Type d'élément" value={entity} onChange={(e) => reg(setEntity)(e.target.value as AuditEntity | "all")} options={[{ value: "all", label: "Tous les éléments" }, ...AUDIT_ENTITIES]} />
+      <Select aria-label="Type d'élément" value={entity} onChange={(e) => reg(setEntity)(e.target.value as AuditEntity | "all")} options={[{ value: "all", label: "Tous les éléments" }, ...(objectTypes ?? []).map((t) => ({ value: t.key, label: t.label }))]} />
       <Select aria-label="Auteur" value={String(actorId)} onChange={(e) => reg(setActorId)(e.target.value === "all" ? "all" : Number(e.target.value))} options={[{ value: "all", label: "Tous les auteurs" }, ...(data?.actors ?? []).map((a) => ({ value: a.id, label: a.name }))]} />
       <Input type="date" label={labels ? "Du" : undefined} aria-label="Du" value={from} onChange={(e) => reg(setFrom)(e.target.value)} />
       <Input type="date" label={labels ? "Au" : undefined} aria-label="Au" value={to} onChange={(e) => reg(setTo)(e.target.value)} />

@@ -1,20 +1,22 @@
 import type { UserRole } from "@/modules/auth/types";
 import type { Paginated } from "@/shared/lib/api";
-import type { DbAuditEntry } from "@/shared/mock-db/types";
 
-export type AuditEntity = DbAuditEntry["entity"];
-export type AuditEntry = DbAuditEntry;
+/** Type d'élément suivi (`catalog.product`, `orders.order`…), libellés fournis par l'API. */
+export type AuditEntity = string;
 
-export const AUDIT_ENTITIES: { value: AuditEntity; label: string }[] = [
-  { value: "produit", label: "Produits" },
-  { value: "vente", label: "Ventes" },
-  { value: "commande", label: "Commandes" },
-  { value: "catégorie", label: "Catégories" },
-  { value: "utilisateur", label: "Utilisateurs" },
-  { value: "revendeur", label: "Revendeurs" },
-  { value: "commission", label: "Commissions" },
-  { value: "stock", label: "Stock" },
-];
+export interface AuditEntry {
+  id: number;
+  at: string;
+  actor: { id: number; name: string; role?: UserRole };
+  /** Libellé de l'action (Création, Modification…) */
+  action: string;
+  entity: AuditEntity;
+  entityLabel: string;
+  entityId: number | string | null;
+  summary: string;
+  /** Avant / après (ex: modification de prix) */
+  diff?: { field: string; from: string | number | null; to: string | number | null }[];
+}
 
 export interface AuditListParams {
   search?: string;
@@ -29,6 +31,6 @@ export interface AuditListParams {
 }
 
 export interface AuditResponse extends Paginated<AuditEntry> {
-  /** auteurs ayant des entrées (pour le filtre) */
-  actors: { id: number; name: string; role: UserRole }[];
+  /** auteurs présents sur la page (pour le filtre) */
+  actors: { id: number; name: string; role?: UserRole }[];
 }

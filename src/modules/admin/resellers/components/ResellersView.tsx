@@ -18,7 +18,7 @@ import { Can, PermissionGuard } from "@/modules/auth/hooks/useCan";
 import { DataTable, type Column } from "../../ui/DataTable";
 import { PageHeader } from "../../ui/PageHeader";
 import { StatCard } from "../../ui/StatCard";
-import { PERIOD_OPTIONS, type PeriodKey } from "../../dashboard/lib/stats";
+import { PERIOD_OPTIONS, type PeriodKey } from "../../dashboard/lib/period";
 import { useResellers } from "../hooks/useResellers";
 import { AVAILABILITY_DOT, AVAILABILITY_LABEL, type Reseller, type ResellerOrdering } from "../types";
 import { CreateResellerModal } from "./CreateResellerModal";
@@ -98,7 +98,6 @@ function ResellersContent() {
     { key: "invited", header: "Invités", align: "center", cell: (r) => <strong>{r.invitedCount}</strong> },
     { key: "rate", header: "Commission", hideBelow: "lg", align: "center", cell: (r) => <span className="text-ink-2">{(r.commissionRate * 100).toFixed(1)}%</span> },
     { key: "sales", header: "Ventes générées", hideBelow: "md", align: "right", cell: (r) => <strong>{formatPrice(r.salesTotal)}</strong> },
-    { key: "conv", header: "Conversion", hideBelow: "xl", mobile: "hide", align: "center", cell: (r) => <span className="text-ink-2">{r.conversionRate.toFixed(0)}%</span> },
     { key: "joined", header: "Inscrit le", hideBelow: "xl", mobile: "hide", cell: (r) => <span className="text-ink-2">{formatDate(r.joinedAt)}</span> },
     { key: "status", header: "Statut", hideBelow: "md", cell: (r) => <StatusDot tone={r.status === "actif" ? "green" : "gray"}>{r.status === "actif" ? "Actif" : "Désactivé"}</StatusDot> },
   ];

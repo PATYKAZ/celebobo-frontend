@@ -24,7 +24,7 @@ import { DataTable, type Column } from "../../ui/DataTable";
 import { PageHeader } from "../../ui/PageHeader";
 import { StatCard } from "../../ui/StatCard";
 import { useDeleteSale, useSales, useSellers } from "../hooks/useSales";
-import { salesCsv, salesService } from "../services/sales.service";
+import { salesService } from "../services/sales.service";
 import { METHOD_STYLE, PRESET_LABEL, SALE_STATUS_LABEL, type PaymentMethod, type Sale, type SaleListParams, type SaleStatus } from "../types";
 import { ActiveChips, FilterSheet, FilterTrigger, MobileSearchRow, type FilterChip } from "../../products/components/FilterSheet";
 import { MethodBadge } from "./MethodBadge";
@@ -58,14 +58,12 @@ function SalesListContent() {
   const [custom, setCustom] = useState(false);
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
-  const [recordedOn, setRecordedOn] = useState("");
   const [sellerId, setSellerId] = useState<number | null>(null);
-  const [view, setView] = useState<"all" | "revendeur">("all");
   const [page, setPage] = useState(1);
   const [sheet, setSheet] = useState(false);
   const q = useDebounce(search, 300);
 
-  const params: SaleListParams = { search: q, method, status, preset: custom ? "" : preset, dateFrom: custom ? dateFrom : "", dateTo: custom ? dateTo : "", recordedOn: custom ? recordedOn : "", sellerId, view, page, pageSize: PAGE_SIZE };
+  const params: SaleListParams = { search: q, method, status, preset: custom ? "" : preset, dateFrom: custom ? dateFrom : "", dateTo: custom ? dateTo : "", sellerId, page, pageSize: PAGE_SIZE };
   const { data, isLoading } = useSales(params);
   const { data: sellers } = useSellers(canAll);
   const remove = useDeleteSale();
@@ -78,7 +76,7 @@ function SalesListContent() {
   const sellerName = (sellers ?? []).find((x) => x.id === sellerId)?.name;
   const chips: FilterChip[] = [
     ...(custom
-      ? [{ key: "custom", label: "Période perso.", onRemove: () => { setCustom(false); setDateFrom(""); setDateTo(""); setRecordedOn(""); setPage(1); } }]
+      ? [{ key: "custom", label: "Période perso.", onRemove: () => { setCustom(false); setDateFrom(""); setDateTo(""); setPage(1); } }]
       : preset
         ? [{ key: "preset", label: `${preset} j`, onRemove: () => { setPreset(""); setPage(1); } }]
         : []),
@@ -87,7 +85,7 @@ function SalesListContent() {
     ...(sellerId != null ? [{ key: "seller", label: sellerName ?? "Vendeur", onRemove: () => { setSellerId(null); setPage(1); } }] : []),
   ];
   const resetAll = () => {
-    setMethod(""); setStatus(""); setPreset(""); setCustom(false); setDateFrom(""); setDateTo(""); setRecordedOn(""); setSellerId(null); setSearch(""); setPage(1);
+    setMethod(""); setStatus(""); setPreset(""); setCustom(false); setDateFrom(""); setDateTo(""); setSellerId(null); setSearch(""); setPage(1);
   };
 
   const reset = <T,>(set: (v: T) => void) => (v: T) => {
@@ -96,23 +94,13 @@ function SalesListContent() {
   };
   const editable = (s: Sale) => s.status === "valide" && (canEditAll || (canEditOwn && s.seller?.id === user?.id));
 
-  const exportCsv = async () => {
-    try {
-      const rows = await salesService.listAll({ ...params, page: 1 });
-      const url = URL.createObjectURL(new Blob([salesCsv(rows)], { type: "text/csv;charset=utf-8" }));
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `ventes-${new Date().toISOString().slice(0, 10)}.csv`;
-      a.click();
-      URL.revokeObjectURL(url);
-      toast.success("Export CSV prêt", `${rows.length} ligne${rows.length > 1 ? "s" : ""}`);
-    } catch (e) {
-      toast.error("Export impossible", getErrorMessage(e));
-    }
-  };
-  const exportFile = (kind: "excel" | "pdf") => {
-    if (env.USE_MOCKS) return toast.info("Export disponible une fois l'API connectée", "Utilisez l'export CSV en attendant.");
-    window.open(salesService.exportUrl(kind, params), "_blank");
+  const [exporting, setExporting] = useState<"csv" | "xlsx" | "pdf" | null>(null);
+  const exportFile = (format: "csv" | "xlsx" | "pdf") => {
+    setExporting(format);
+    salesService
+      .export(format, params)
+      .catch((e) => toast.error("Export impossible", getErrorMessage(e)))
+      .finally(() => setExporting(null));
   };
 
   const dim = (s: Sale) => s.status !== "valide" && "line-through opacity-50";
@@ -187,11 +175,11 @@ function SalesListContent() {
         description={isReseller ? "Les ventes que vous avez enregistrées, avec leur marge et leur moyen de paiement." : "Suivez toutes les ventes, leur marge et leur moyen de paiement."}
         actions={
           <>
-            <Button variant="chip" upper={false} leftIcon={<DocumentDownload size={17} />} onClick={exportCsv} className="max-sm:order-3">CSV</Button>
+            <Button variant="chip" upper={false} leftIcon={<DocumentDownload size={17} />} loading={exporting === "csv"} onClick={() => exportFile("csv")} className="max-sm:order-3">CSV</Button>
             {canExport && (
               <>
-                <Button variant="chip" upper={false} leftIcon={<DocumentDownload size={17} />} onClick={() => exportFile("excel")} className="max-sm:order-3">Excel</Button>
-                <Button variant="chip" upper={false} leftIcon={<DocumentDownload size={17} />} onClick={() => exportFile("pdf")} className="max-sm:order-3">PDF</Button>
+                <Button variant="chip" upper={false} leftIcon={<DocumentDownload size={17} />} loading={exporting === "xlsx"} onClick={() => exportFile("xlsx")} className="max-sm:order-3">Excel</Button>
+                <Button variant="chip" upper={false} leftIcon={<DocumentDownload size={17} />} loading={exporting === "pdf"} onClick={() => exportFile("pdf")} className="max-sm:order-3">PDF</Button>
               </>
             )}
             {canConvert && <Button href={ROUTES.admin.saleConvert} variant="dark" upper={false} leftIcon={<ReceiptItem size={18} />} className="max-sm:order-2 max-sm:!col-span-2">Convertir une commande</Button>}
@@ -199,7 +187,6 @@ function SalesListContent() {
           </>
         }
       >
-        {canAll && <Tabs variant="pill" value={view} onChange={reset(setView)} tabs={[{ value: "all", label: "Toutes les ventes" }, { value: "revendeur", label: "Ventes revendeurs" }]} />}
       </PageHeader>
 
       <div>
@@ -237,7 +224,6 @@ function SalesListContent() {
               <div className="mt-3 grid gap-3">
                 <label className="grid gap-1 text-[12px] font-semibold text-ink-2">Vente du<input type="date" value={dateFrom} onChange={(e) => reset(setDateFrom)(e.target.value)} className="field" /></label>
                 <label className="grid gap-1 text-[12px] font-semibold text-ink-2">au<input type="date" value={dateTo} onChange={(e) => reset(setDateTo)(e.target.value)} className="field" /></label>
-                <label className="grid gap-1 text-[12px] font-semibold text-ink-2">Enregistrée le<input type="date" value={recordedOn} onChange={(e) => reset(setRecordedOn)(e.target.value)} className="field" /></label>
               </div>
             )}
           </div>
@@ -273,7 +259,6 @@ function SalesListContent() {
             <div className="flex flex-wrap items-center gap-3 text-[13px] text-ink-2">
               <label className="flex items-center gap-2">Vente du <input type="date" value={dateFrom} onChange={(e) => reset(setDateFrom)(e.target.value)} className="field h-10 w-[150px]" /></label>
               <label className="flex items-center gap-2">au <input type="date" value={dateTo} onChange={(e) => reset(setDateTo)(e.target.value)} className="field h-10 w-[150px]" /></label>
-              <label className="flex items-center gap-2">Enregistrée le <input type="date" value={recordedOn} onChange={(e) => reset(setRecordedOn)(e.target.value)} className="field h-10 w-[150px]" /></label>
             </div>
           )}
           <div className="flex flex-wrap gap-2" role="group" aria-label="Moyen de paiement">

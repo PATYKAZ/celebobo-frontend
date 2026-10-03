@@ -24,8 +24,9 @@ export function RegisterView() {
   const register = useRegister();
   const resend = useResendVerification();
   const { next, redirect, searchSuffix } = useAuthRedirect();
-  // Lien d'invitation d'un revendeur : /inscription?ref=4821 pré-remplit le code
-  const ref = useSearchParams().get("ref");
+  // Lien d'invitation d'un revendeur : /inscription?code=4821 (ou ?ref=) pré-remplit le code
+  const params = useSearchParams();
+  const ref = params.get("ref") ?? params.get("code");
   const [form, setForm] = useState<Form>({ ...INITIAL, codeRevendeur: ref && /^\d{4}$/.test(ref) ? ref : "" });
   const [terms, setTerms] = useState(false);
   const [errors, setErrors] = useState<Partial<Record<keyof Form | "terms", string>>>({});

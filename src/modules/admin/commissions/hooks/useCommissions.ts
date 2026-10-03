@@ -1,6 +1,7 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { can } from "@/modules/auth/permissions";
 import { useAuthStore } from "@/modules/auth/store/auth.store";
 import { commissionsService } from "../services/commissions.service";
 import type { PayCommissionInput } from "../types";
@@ -12,8 +13,9 @@ export const commissionKeys = {
 
 /** Vue d'ensemble : tous les revendeurs (responsable/admin) ou uniquement soi-même (revendeur). */
 export function useCommissions() {
-  const role = useAuthStore((s) => s.user?.role);
-  return useQuery({ queryKey: commissionKeys.overview(role), queryFn: commissionsService.overview, enabled: !!role });
+  const user = useAuthStore((s) => s.user);
+  const scope = can(user, "commissions.view.all") ? "all" : "own";
+  return useQuery({ queryKey: commissionKeys.overview(user ? `${user.id}:${scope}` : undefined), queryFn: () => commissionsService.overview(scope), enabled: !!user });
 }
 
 export function useCommissionPayments(resellerId: number | null) {

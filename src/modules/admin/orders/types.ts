@@ -1,4 +1,4 @@
-import type { Availability } from "@/shared/mock-db/types";
+import type { ResellerAvailability } from "@/modules/auth/types";
 import type { Order, OrderStatus } from "@/modules/orders/types";
 import type { Paginated } from "@/shared/lib/api";
 
@@ -43,7 +43,7 @@ export interface ResellerOption {
   code: string;
   avatar: string | null;
   active: boolean;
-  availability: Availability;
+  availability: ResellerAvailability;
   /** commandes ouvertes (non clôturées) déjà assignées */
   openOrders: number;
 }

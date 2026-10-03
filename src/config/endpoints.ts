@@ -178,66 +178,65 @@ export const ENDPOINTS = {
     },
     sales: {
       list: "/bo/sales/",
-      create: "/admin/sales/",
-      bulk: "/admin/sales/bulk/", // bulk-vente/
-      detail: (id: number | string) => `/admin/sales/${id}/`,
-      update: (id: number | string) => `/admin/sales/${id}/`,
-      remove: (id: number | string) => `/admin/sales/${id}/`,
-      exportExcel: "/admin/sales/export/excel/",
-      exportPdf: "/admin/sales/export/pdf/",
-      searchOrders: "/admin/orders/search/", // api/orders/search/
-    },
-    resellers: {
-      list: "/admin/resellers/", // revendeurs/invites
+      bulk: "/bo/sales/bulk/",
+      detail: (id: number) => `/bo/sales/${id}/`,
+      refund: (id: number) => `/bo/sales/${id}/refund/`,
+      export: "/bo/sales/export/",
     },
     orders: {
-      list: "/admin/orders/",
-      detail: (id: number | string) => `/admin/orders/${id}/`,
-      assign: (id: number | string) => `/admin/orders/${id}/assign/`,
-      updateStatus: (id: number | string) => `/admin/orders/${id}/status/`,
-    },
-    conversations: {
-      conclude: (id: number | string) => `/admin/conversations/${id}/conclude/`, // conclure_discussion
-      list: "/admin/conversations/", // boîte de réception (?assigned=false&awaitingReply=true)
+      list: "/bo/orders/",
+      detail: (id: number) => `/bo/orders/${id}/`,
+      assign: (id: number) => `/bo/orders/${id}/assign/`,
+      transition: (id: number) => `/bo/orders/${id}/transition/`,
+      decline: (id: number) => `/bo/orders/${id}/decline/`,
+      invoice: (id: number) => `/bo/orders/${id}/invoice/`,
+      convertible: "/bo/orders/convertible/",
+      convertToSales: (id: number) => `/bo/orders/${id}/convert-to-sales/`,
     },
     categories: {
       list: "/bo/categories/",
       detail: (id: number) => `/bo/categories/${id}/`,
       reorder: "/bo/categories/reorder/",
     },
-    salesActions: {
-      convertOrder: (orderId: number | string) => `/admin/orders/${orderId}/convert-to-sales/`,
-      refund: (saleId: number | string) => `/admin/sales/${saleId}/refund/`,
+    resellers: {
+      list: "/bo/resellers/",
+      detail: (id: number) => `/bo/resellers/${id}/`,
+      activate: (id: number) => `/bo/resellers/${id}/activate/`,
+      deactivate: (id: number) => `/bo/resellers/${id}/deactivate/`,
+      invitees: (id: number) => `/bo/resellers/${id}/invitees/`,
+      assignable: "/bo/resellers/assignable/",
+      stats: "/bo/resellers/stats/",
     },
-    orderWorkflow: {
-      status: (id: number | string) => `/admin/orders/${id}/status/`,
-      history: (id: number | string) => `/admin/orders/${id}/history/`,
-      reassign: (id: number | string) => `/admin/orders/${id}/reassign/`,
-    },
-    resellersAdmin: {
-      create: "/admin/resellers/",
-      detail: (id: number | string) => `/admin/resellers/${id}/`,
-      setActive: (id: number | string) => `/admin/resellers/${id}/active/`,
-      availability: "/me/availability/",
+    applications: {
+      list: "/bo/reseller-applications/",
+      approve: (id: number) => `/bo/reseller-applications/${id}/approve/`,
+      reject: (id: number) => `/bo/reseller-applications/${id}/reject/`,
     },
     commissions: {
-      list: "/admin/commissions/",
-      payments: "/admin/commissions/payments/",
-      mine: "/me/commissions/",
+      list: "/bo/commissions/",
+      overview: "/bo/commissions/overview/",
+      summary: "/bo/commissions/summary/",
+      series: "/bo/commissions/series/",
     },
+    payouts: "/bo/payouts/",
     users: {
-      list: "/admin/users/",
-      detail: (id: number | string) => `/admin/users/${id}/`,
-      setRole: (id: number | string) => `/admin/users/${id}/role/`,
+      list: "/bo/users/",
+      detail: (id: number) => `/bo/users/${id}/`,
+      activate: (id: number) => `/bo/users/${id}/activate/`,
+      deactivate: (id: number) => `/bo/users/${id}/deactivate/`,
+      role: (id: number) => `/bo/users/${id}/role/`,
+      sendPasswordReset: (id: number) => `/bo/users/${id}/send-password-reset/`,
     },
     audit: {
-      list: "/admin/audit-log/",
+      list: "/bo/audit-logs/",
+      events: "/bo/audit-logs/events/",
+      objectTypes: "/bo/audit-logs/object-types/",
     },
+    presence: "/bo/presence/",
     me: {
-      dashboard: "/me/dashboard/", // tableau de bord revendeur
-      orders: "/me/orders/",
-      sales: "/me/sales/",
-      invites: "/me/invites/",
+      availability: "/bo/me/availability/",
+      referral: "/bo/me/referral/",
+      invitees: "/bo/me/invitees/",
     },
   },
 
