@@ -85,7 +85,7 @@ export function CsvImportModal({ open, onClose }: { open: boolean; onClose: () =
             <div className="rounded-box bg-page/60 p-4 text-[13px] text-ink-2">
               <p className="font-semibold text-ink">Colonnes attendues</p>
               <p className="mt-1 break-words font-mono text-[12px]">{CSV_HEADERS.join(" ; ")}</p>
-              <p className="mt-2">Obligatoires : <strong>{CSV_REQUIRED.join(", ")}</strong> (catégorie : nom ou slug). Avec un <strong>slug</strong> existant, la ligne met à jour le produit ; sans slug, elle le crée.</p>
+              <p className="mt-2">Obligatoires : <strong>{CSV_REQUIRED.join(", ")}</strong> (catégorie : son slug, ex. smartphones). Avec un <strong>slug</strong> existant, la ligne met à jour le produit ; sans slug, elle le crée.</p>
               <Button variant="chip" size="sm" upper={false} className="mt-3" leftIcon={<DocumentDownload size={16} />} onClick={() => downloadText("modele-produits.csv", CSV_TEMPLATE)}>Télécharger le modèle</Button>
             </div>
           </>
