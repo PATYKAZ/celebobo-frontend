@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ROUTES } from "@/config/routes";
-import { setUnauthorizedHandler } from "@/shared/lib/api";
+import { setSessionProbe, setUnauthorizedHandler } from "@/shared/lib/api";
 import { authService } from "../services/auth.service";
 import { useAuthStore } from "../store/auth.store";
 import type { LoginInput, RegisterInput, ResetPasswordInput, UserRole } from "../types";
@@ -25,12 +25,18 @@ export function useAuth() {
   };
 }
 
-/** À monter une seule fois (providers) : synchronise la session (cookies JWT) et gère les 401. */
+/**
+ * À monter une seule fois (providers) : synchronise la session (cookies JWT) et gère les 401.
+ * Un visiteur sans session connue (rien de mémorisé) n'interroge pas `/me/` : pas de 401 ni de rafraîchissement inutiles.
+ */
 export function useSessionSync() {
   const setUser = useAuthStore((s) => s.setUser);
+  const ready = useAuthStore((s) => s.ready);
+  const known = useAuthStore((s) => !!s.user);
 
   useEffect(() => {
     setUnauthorizedHandler(() => useAuthStore.getState().setUser(null));
+    setSessionProbe(() => !!useAuthStore.getState().user);
     return () => setUnauthorizedHandler(null);
   }, []);
 
@@ -41,6 +47,7 @@ export function useSessionSync() {
       setUser(me);
       return me;
     },
+    enabled: ready && known,
     staleTime: 5 * 60_000,
     retry: false,
   });

@@ -1,3 +1,5 @@
+import type { Product } from "@/modules/products/types";
+
 export interface HeroSlide {
   id: number;
   image: string;
@@ -88,7 +90,18 @@ export interface CategoryColumn {
   items: { name: string; count: number; image: string; href: string }[];
 }
 
+/** Produits de l'accueil, servis en un seul appel par l'API (`GET /home/`). */
+export interface HomeCatalog {
+  deals: Product[];
+  newArrivals: Product[];
+  bestSellers: Product[];
+  /** slug de catégorie → produits */
+  byCategory: Record<string, Product[]>;
+}
+
 export interface HomeContent {
+  /** null tant que l'API n'a pas répondu (le contenu éditorial s'affiche déjà) */
+  catalog: HomeCatalog | null;
   slides: HeroSlide[];
   miniBanners: MiniBanner[];
   promoCards: PromoCard[];

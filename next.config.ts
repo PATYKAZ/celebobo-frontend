@@ -13,6 +13,8 @@ const nextConfig: NextConfig = {
   /** Django attend la barre oblique finale : Next ne doit pas la retirer avant le proxy /api. */
   skipTrailingSlashRedirect: true,
   images: {
+    loader: "custom",
+    loaderFile: "./src/shared/lib/image-loader.ts",
     formats: ["image/avif", "image/webp"],
     remotePatterns: [
       { protocol: "https", hostname: "res.cloudinary.com" },

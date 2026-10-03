@@ -23,14 +23,14 @@ export function HomeView() {
       <BrandsAndCategories brands={content?.brands} />
       <DealsOfTheDay content={content} />
       <MemberBanner />
-      <ProductTabs />
+      <ProductTabs catalog={content?.catalog ?? null} />
       <BrandNew cards={content?.editorial} />
       {content?.showcases.map((s) => (
-        <CategoryShowcase key={s.title} config={s} />
+        <CategoryShowcase key={s.title} config={s} catalog={content.catalog} />
       ))}
       {content && <CategoryColumns columns={content.columns} />}
       <BannersRow />
-      <RecentlyViewed />
+      <RecentlyViewed fallback={content?.catalog?.bestSellers} />
       {content && <SeoText title={content.seo.title} paragraphs={content.seo.paragraphs} />}
     </>
   );

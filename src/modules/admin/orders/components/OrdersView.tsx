@@ -93,7 +93,7 @@ function OrdersContent() {
   };
 
   const columns: Column<Order>[] = [
-    { key: "id", header: "N°", mobile: "hide", cell: (o) => <Link href={ROUTES.admin.order(o.id)} className="font-bold text-primary hover:underline">#{o.id}</Link> },
+    { key: "id", header: "N°", mobile: "hide", cell: (o) => <Link prefetch={false} href={ROUTES.admin.order(o.id)} className="font-bold text-primary hover:underline">#{o.id}</Link> },
     {
       key: "client",
       header: "Client",
@@ -127,14 +127,14 @@ function OrdersContent() {
       align: "right",
       cell: (o) => (
         <div className="flex items-center justify-end gap-1.5" onClick={(e) => e.stopPropagation()}>
-          <Link href={ROUTES.admin.order(o.id)} aria-label={`Voir la commande #${o.id}`} title="Voir" className="grid size-11 place-items-center rounded-full bg-chip transition-colors hover:bg-primary hover:text-white active:scale-90 sm:size-8"><Eye size={16} /></Link>
+          <Link prefetch={false} href={ROUTES.admin.order(o.id)} aria-label={`Voir la commande #${o.id}`} title="Voir" className="grid size-11 place-items-center rounded-full bg-chip transition-colors hover:bg-primary hover:text-white active:scale-90 sm:size-8"><Eye size={16} /></Link>
           {canAssign && !["livree", "annulee", "retournee"].includes(o.status) && (
             <button onClick={() => setAssigning(o)} aria-label={o.assignedRevendeur ? "Réassigner" : "Assigner"} title={o.assignedRevendeur ? "Réassigner" : "Assigner"} className="grid size-11 place-items-center rounded-full bg-chip transition-colors hover:bg-primary hover:text-white active:scale-90 sm:size-8">
               {o.assignedRevendeur ? <UserTick size={16} /> : <UserAdd size={16} />}
             </button>
           )}
           {o.conversationId != null && (
-            <Link href={ROUTES.admin.conversation(o.conversationId)} aria-label="Ouvrir la discussion" title="Discussion" className="grid size-11 place-items-center rounded-full bg-chip transition-colors hover:bg-primary hover:text-white active:scale-90 sm:size-8"><Messages2 size={16} /></Link>
+            <Link prefetch={false} href={ROUTES.admin.conversation(o.conversationId)} aria-label="Ouvrir la discussion" title="Discussion" className="grid size-11 place-items-center rounded-full bg-chip transition-colors hover:bg-primary hover:text-white active:scale-90 sm:size-8"><Messages2 size={16} /></Link>
           )}
         </div>
       ),

@@ -2,7 +2,7 @@
 
 import { ENDPOINTS } from "@/config/endpoints";
 import { env } from "@/config/env";
-import { api, camelizeKeys } from "@/shared/lib/api";
+import { api, ApiError, camelizeKeys } from "@/shared/lib/api";
 
 /**
  * Couche temps réel unique.
@@ -125,14 +125,18 @@ function scheduleReconnect() {
 
 async function connect() {
   if (!env.WS_URL || typeof WebSocket === "undefined" || session == null || socket || connecting) return;
+  // onglet en arrière-plan : on se connectera quand il redeviendra visible (cf. `wake`)
+  if (document.visibilityState === "hidden") return;
   connecting = true;
   const owner = session;
   let ticket: string;
   try {
     ({ ticket } = await api.post<{ ticket: string }>(ENDPOINTS.auth.wsTicket));
-  } catch {
+  } catch (error) {
     connecting = false;
-    if (session === owner) scheduleReconnect();
+    // ticket refusé (hors session expirée, gérée par le client API) : inutile d'insister
+    const refused = error instanceof ApiError && error.status >= 400 && error.status < 500;
+    if (session === owner && !refused) scheduleReconnect();
     return;
   }
   connecting = false;

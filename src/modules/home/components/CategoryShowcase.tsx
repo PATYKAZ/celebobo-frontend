@@ -7,13 +7,17 @@ import { cn } from "@/shared/lib/cn";
 import { Block } from "@/shared/ui/Block";
 import { SectionHeader } from "@/shared/ui/SectionHeader";
 import { useProducts } from "@/modules/products/hooks/useProducts";
-import type { ShowcaseConfig } from "../types";
+import type { HomeCatalog, ShowcaseConfig } from "../types";
 import { PhotoBanner } from "./PhotoBanner";
 import { ProductCarousel } from "./ProductCarousel";
 
 /** Bloc catégorie : bannière + grille 3×2 de sous-catégories + carrousel de produits. Réutilisé 2× sur l'accueil. */
-export function CategoryShowcase({ config }: { config: ShowcaseConfig }) {
-  const { data, isLoading } = useProducts({ category: config.categorySlug, ordering: "-sales", pageSize: 10 });
+export function CategoryShowcase({ config, catalog }: { config: ShowcaseConfig; catalog: HomeCatalog | null }) {
+  // produits fournis par l'accueil ; appel dédié seulement si la catégorie n'y figure pas
+  const provided = catalog?.byCategory[config.categorySlug];
+  const fallback = useProducts({ category: config.categorySlug, ordering: "-sales", pageSize: 10 }, !!catalog && !provided);
+  const products = provided ?? fallback.data?.results;
+  const isLoading = !catalog || (!provided && fallback.isLoading);
   const { banner } = config;
   const dark = banner.tone === "dark";
 
@@ -51,7 +55,7 @@ export function CategoryShowcase({ config }: { config: ShowcaseConfig }) {
         </div>
 
         <div className="mt-4 sm:mt-6">
-          <ProductCarousel products={data?.results} loading={isLoading} />
+          <ProductCarousel products={products} loading={isLoading} />
         </div>
       </Block>
     </Reveal>

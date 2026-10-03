@@ -16,7 +16,7 @@ import { SectionHeader } from "@/shared/ui/SectionHeader";
 import { SliderArrows } from "@/shared/ui/SliderArrows";
 import { Stars } from "@/shared/ui/Stars";
 import { useFavoriteToggle } from "@/modules/favorites/hooks/useFavorites";
-import { useProducts } from "@/modules/products/hooks/useProducts";
+import type { Product } from "@/modules/products/types";
 import { useRecentlyViewedStore, type ViewedProduct } from "@/modules/products/store/recently-viewed.store";
 
 function MiniCard({ p }: { p: ViewedProduct }) {
@@ -55,11 +55,10 @@ function MiniCard({ p }: { p: ViewedProduct }) {
   );
 }
 
-/** Récemment consultés (store persistant) — repli : produits populaires. */
-export function RecentlyViewed() {
+/** Récemment consultés (store persistant) — repli : meilleures ventes de l'accueil. */
+export function RecentlyViewed({ fallback }: { fallback?: Product[] }) {
   const viewed = useRecentlyViewedStore((s) => s.items);
-  const { data } = useProducts({ ordering: "-sales", pageSize: 8 }, viewed.length === 0);
-  const items: ViewedProduct[] = viewed.length ? viewed : (data?.results ?? []);
+  const items: ViewedProduct[] = viewed.length ? viewed : (fallback ?? []);
   const [swiper, setSwiper] = useState<SwiperType | null>(null);
   const [edge, setEdge] = useState({ begin: true, end: false });
   const sync = (s: SwiperType) => setEdge({ begin: s.isBeginning, end: s.isEnd });

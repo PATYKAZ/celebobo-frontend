@@ -1,4 +1,5 @@
-import type { HeroSlide } from "../types";
+import { toProduct, type ProductCardDto } from "@/modules/products/services/products.mapper";
+import type { HeroSlide, HomeCatalog } from "../types";
 
 /** Bannière gérée dans le back-office (après camelCase). */
 export interface BannerDto {
@@ -23,3 +24,19 @@ export function toSlide(dto: BannerDto): HeroSlide {
     overlay: "from-black/75 via-black/35 to-transparent",
   };
 }
+
+/** `GET /home/` (après camelCase). */
+export interface HomeDto {
+  banners: BannerDto[];
+  deals: ProductCardDto[];
+  newArrivals: ProductCardDto[];
+  bestSellers: ProductCardDto[];
+  categories: { category: { slug: string }; products: ProductCardDto[] }[];
+}
+
+export const toCatalog = (dto: HomeDto): HomeCatalog => ({
+  deals: dto.deals.map(toProduct),
+  newArrivals: dto.newArrivals.map(toProduct),
+  bestSellers: dto.bestSellers.map(toProduct),
+  byCategory: Object.fromEntries(dto.categories.map((block) => [block.category.slug, block.products.map(toProduct)])),
+});

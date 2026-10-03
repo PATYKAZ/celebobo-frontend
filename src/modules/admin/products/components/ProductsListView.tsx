@@ -140,7 +140,7 @@ function Content() {
         <div className="flex min-w-0 items-center gap-3 sm:min-w-[220px]">
           <span className={cn("relative size-14 shrink-0 sm:size-12 overflow-hidden rounded-md bg-page", p.isActive === false && "opacity-50 grayscale")}>{p.image && <Image src={p.image} alt="" fill sizes="48px" className="object-cover" />}</span>
           <div className="min-w-0">
-            <Link href={ROUTES.admin.product(p.id)} className="-my-1.5 line-clamp-2 py-1.5 font-bold leading-[19px] hover:text-primary sm:line-clamp-1">{p.name}</Link>
+            <Link prefetch={false} href={ROUTES.admin.product(p.id)} className="-my-1.5 line-clamp-2 py-1.5 font-bold leading-[19px] hover:text-primary sm:line-clamp-1">{p.name}</Link>
             <p className="flex items-center gap-1.5 text-[12px] text-ink-3">
               {p.category}
               {p.isActive === false && <span className="inline-flex items-center gap-0.5 font-semibold text-ink-2"><EyeSlash size={12} /> masqué</span>}
@@ -209,7 +209,7 @@ function Content() {
             </>
           ) : (
             <>
-              <Link href={ROUTES.admin.product(p.id)} aria-label="Voir" title="Voir" className={cn(iconBtn, "hover:bg-primary hover:text-white")}><Eye size={17} /></Link>
+              <Link prefetch={false} href={ROUTES.admin.product(p.id)} aria-label="Voir" title="Voir" className={cn(iconBtn, "hover:bg-primary hover:text-white")}><Eye size={17} /></Link>
               <button onClick={() => setHistory(p)} aria-label="Historique du stock" title="Historique du stock" className={cn(iconBtn, "hover:bg-primary hover:text-white")}><Clock size={17} /></button>
               {canStock && <button onClick={() => setAdjust(p)} aria-label="Ajuster le stock" title="Ajuster le stock" className={cn(iconBtn, "hover:bg-primary hover:text-white")}><ArrowSwapVertical size={17} /></button>}
               {canManage && <Link href={ROUTES.admin.productEdit(p.id)} aria-label="Modifier" title="Modifier" className={cn(iconBtn, "hover:bg-primary hover:text-white")}><Edit2 size={17} /></Link>}

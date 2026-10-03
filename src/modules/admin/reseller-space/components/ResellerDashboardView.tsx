@@ -39,7 +39,7 @@ function OrderRow({ o }: { o: ResellerOpenOrder }) {
       <div className="min-w-0 flex-1">
         <div className="flex items-start justify-between gap-3 sm:block">
           <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
-            <Link href={ROUTES.admin.order(o.id)} className="inline-flex min-h-9 items-center text-[16px] font-bold hover:text-primary sm:min-h-0 sm:text-[15px]">Commande #{o.id}</Link>
+            <Link prefetch={false} href={ROUTES.admin.order(o.id)} className="inline-flex min-h-9 items-center text-[16px] font-bold hover:text-primary sm:min-h-0 sm:text-[15px]">Commande #{o.id}</Link>
             <StatusDot tone={ORDER_STATUS_TONE[o.status]}>{ORDER_STATUS_LABEL[o.status]}</StatusDot>
             <span className="text-[12px] text-ink-3">{formatRelative(o.createdAt)}</span>
           </div>
@@ -50,7 +50,7 @@ function OrderRow({ o }: { o: ResellerOpenOrder }) {
       <div className="mt-3.5 flex items-center gap-2 sm:mt-0 sm:shrink-0 sm:justify-end">
         <span className="mr-1 hidden text-[16px] font-bold sm:inline">{formatPrice(o.total)}</span>
         {o.conversationId != null && (
-          <Link href={ROUTES.admin.conversation(o.conversationId)} className="relative inline-flex h-12 flex-1 items-center justify-center gap-1.5 rounded-box bg-chip px-3 text-[13px] font-bold transition-all hover:bg-primary hover:text-white active:scale-95 sm:h-9 sm:flex-none sm:rounded-md sm:text-[12px]">
+          <Link prefetch={false} href={ROUTES.admin.conversation(o.conversationId)} className="relative inline-flex h-12 flex-1 items-center justify-center gap-1.5 rounded-box bg-chip px-3 text-[13px] font-bold transition-all hover:bg-primary hover:text-white active:scale-95 sm:h-9 sm:flex-none sm:rounded-md sm:text-[12px]">
             <Messages2 size={16} variant="Bold" /> Discussion
             {o.unread > 0 && <span className="absolute -right-1.5 -top-1.5 grid min-w-[20px] place-items-center rounded-full bg-danger px-1 text-[11px] leading-[20px] text-white ring-2 ring-white">{o.unread}</span>}
           </Link>
