@@ -16,12 +16,18 @@ export interface User {
   role: UserRole;
   avatar: string | null;
   phoneNumber: string | null;
-  /** Code d'invitation du revendeur (Profile.codeRevendeur). */
+  /** Code d'invitation du revendeur (4 chiffres). */
   codeRevendeur?: string | null;
+  emailVerified?: boolean;
+  /** Permissions accordées par l'API (informatives : l'UI s'appuie sur `permissions.ts`). */
+  permissions?: string[];
+  availability?: ResellerAvailability;
 }
 
+export type ResellerAvailability = "online" | "away" | "offline";
+
 export interface LoginInput {
-  /** email ou nom d'utilisateur */
+  /** adresse e-mail */
   login: string;
   password: string;
   remember?: boolean;
@@ -36,6 +42,19 @@ export interface RegisterInput {
   passwordConfirm: string;
   /** Code du revendeur invitant (optionnel) */
   codeRevendeur?: string;
+}
+
+/** Résultat d'inscription : l'API exige la vérification de l'e-mail avant la première connexion. */
+export interface RegisterResult {
+  email: string;
+  verificationRequired: boolean;
+}
+
+export interface ResetPasswordInput {
+  uid: string;
+  token: string;
+  password: string;
+  passwordConfirm: string;
 }
 
 export const displayName = (u: Pick<User, "firstName" | "lastName" | "username">) =>

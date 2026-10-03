@@ -10,7 +10,6 @@ import { Checkbox, Input } from "@/shared/ui/Form";
 import { toast } from "@/shared/ui/Toast";
 import { useLogin } from "../hooks/useAuth";
 import { AuthLayoutCard } from "./AuthLayoutCard";
-import { DemoAccounts } from "./DemoAccounts";
 import { GoogleButton } from "./GoogleButton";
 import { fieldError, generalError } from "./fieldErrors";
 import { ForgotPasswordModal } from "./ForgotPasswordModal";
@@ -18,7 +17,7 @@ import { useAuthRedirect } from "./useAuthRedirect";
 
 export function LoginView() {
   const login = useLogin();
-  const { redirect, searchSuffix } = useAuthRedirect();
+  const { next, redirect, searchSuffix } = useAuthRedirect();
   const [form, setForm] = useState({ login: "", password: "", remember: true });
   const [errors, setErrors] = useState<{ login?: string; password?: string }>({});
   const [forgot, setForgot] = useState(false);
@@ -34,7 +33,7 @@ export function LoginView() {
   const submit = (e: FormEvent) => {
     e.preventDefault();
     const err: typeof errors = {};
-    if (!form.login.trim()) err.login = "Entrez votre e-mail ou nom d'utilisateur.";
+    if (!/^\S+@\S+\.\S+$/.test(form.login.trim())) err.login = "Entrez votre adresse e-mail.";
     if (!form.password) err.password = "Entrez votre mot de passe.";
     setErrors(err);
     if (!Object.keys(err).length) run(form);
@@ -53,7 +52,7 @@ export function LoginView() {
         footer={<>Pas encore de compte ? <Link href={`${ROUTES.register}${searchSuffix}`} className="font-bold text-primary hover:underline">Créer un compte</Link></>}
       >
         <form onSubmit={submit} noValidate className="space-y-4 sm:space-y-5">
-          <Input label="E-mail ou nom d'utilisateur" required value={form.login} onChange={(e) => setForm({ ...form, login: e.target.value })} error={errors.login ?? fieldError(login.error, "login", "email", "username")} leftIcon={<Profile size={17} />} autoComplete="username" autoCapitalize="none" autoCorrect="off" spellCheck={false} enterKeyHint="next" />
+          <Input label="E-mail" required type="email" inputMode="email" value={form.login} onChange={(e) => setForm({ ...form, login: e.target.value })} error={errors.login ?? fieldError(login.error, "login", "email", "username")} leftIcon={<Profile size={17} />} autoComplete="email" autoCapitalize="none" autoCorrect="off" spellCheck={false} enterKeyHint="next" />
           <Input label="Mot de passe" required type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} error={errors.password ?? fieldError(login.error, "password")} leftIcon={<Lock size={17} />} autoComplete="current-password" enterKeyHint="go" />
           <div className="flex items-center justify-between gap-3">
             <Checkbox checked={form.remember} onChange={(e) => setForm({ ...form, remember: e.target.checked })} label="Se souvenir de moi" />
@@ -62,8 +61,7 @@ export function LoginView() {
           {general && <p role="alert" className="rounded-md bg-danger-50 px-3 py-2 text-[13px] text-danger">{general}</p>}
           <Button type="submit" size="lg" fullWidth loading={login.isPending}>Se connecter</Button>
         </form>
-        <GoogleButton />
-        <DemoAccounts disabled={login.isPending} onPick={(l) => run({ login: l, password: "demo1234", remember: true })} />
+        <GoogleButton next={next} />
       </AuthLayoutCard>
       <ForgotPasswordModal open={forgot} onClose={() => setForgot(false)} initialEmail={form.login.includes("@") ? form.login : ""} />
     </>

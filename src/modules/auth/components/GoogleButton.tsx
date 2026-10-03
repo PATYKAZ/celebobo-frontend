@@ -1,8 +1,8 @@
 "use client";
 
-import { env } from "@/config/env";
-import { ENDPOINTS } from "@/config/endpoints";
+import { ROUTES } from "@/config/routes";
 import { toast } from "@/shared/ui/Toast";
+import { googleEnabled, startGoogleLogin } from "../lib/google";
 
 const GoogleLogo = () => (
   <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden>
@@ -15,17 +15,15 @@ const GoogleLogo = () => (
 
 /**
  * « Continuer avec Google » + séparateur « ou ».
- * API : redirection vers l'URL allauth (`/accounts/google/login/`) du backend, avec `?next=` pour revenir sur la page voulue.
- * Mock : simple message d'information.
+ * Flux « code » : Google renvoie sur ROUTES.googleCallback, qui transmet le code à l'API.
  */
-export function GoogleButton({ next, label = "Continuer avec Google" }: { next?: string; label?: string }) {
+export function GoogleButton({ next = ROUTES.home, label = "Continuer avec Google" }: { next?: string; label?: string }) {
   const onClick = () => {
-    if (env.USE_MOCKS || !env.API_URL) {
-      toast.info("Connexion Google", "Disponible une fois l'API connectée.");
+    if (!googleEnabled()) {
+      toast.info("Connexion Google", "Indisponible pour le moment.");
       return;
     }
-    const base = env.API_URL.replace(/\/api\/?$/, "");
-    window.location.href = `${base}${ENDPOINTS.socialAuth.google}${next ? `?next=${encodeURIComponent(next)}` : ""}`;
+    startGoogleLogin(next);
   };
 
   return (

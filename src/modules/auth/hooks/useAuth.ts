@@ -3,12 +3,11 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { env } from "@/config/env";
 import { ROUTES } from "@/config/routes";
 import { setUnauthorizedHandler } from "@/shared/lib/api";
 import { authService } from "../services/auth.service";
 import { useAuthStore } from "../store/auth.store";
-import type { LoginInput, RegisterInput, UserRole } from "../types";
+import type { LoginInput, RegisterInput, ResetPasswordInput, UserRole } from "../types";
 
 /** État d'authentification + helpers de rôle. */
 export function useAuth() {
@@ -26,10 +25,9 @@ export function useAuth() {
   };
 }
 
-/** À monter une seule fois (providers) : synchronise la session Django et gère les 401. */
+/** À monter une seule fois (providers) : synchronise la session (cookies JWT) et gère les 401. */
 export function useSessionSync() {
   const setUser = useAuthStore((s) => s.setUser);
-  const setReady = useAuthStore((s) => s.setReady);
 
   useEffect(() => {
     setUnauthorizedHandler(() => useAuthStore.getState().setUser(null));
@@ -40,17 +38,12 @@ export function useSessionSync() {
     queryKey: ["auth", "me"],
     queryFn: async () => {
       const me = await authService.me();
-      if (!env.USE_MOCKS) setUser(me);
+      setUser(me);
       return me;
     },
-    enabled: !env.USE_MOCKS,
     staleTime: 5 * 60_000,
     retry: false,
   });
-
-  useEffect(() => {
-    if (env.USE_MOCKS) setReady(true);
-  }, [setReady]);
 }
 
 export function useLogin() {
@@ -65,12 +58,32 @@ export function useLogin() {
   });
 }
 
-export function useRegister() {
+export function useGoogleLogin() {
   const setUser = useAuthStore((s) => s.setUser);
+  const qc = useQueryClient();
   return useMutation({
-    mutationFn: (input: RegisterInput) => authService.register(input),
-    onSuccess: (user) => setUser(user),
+    mutationFn: (code: string) => authService.loginWithGoogle(code),
+    onSuccess: (user) => {
+      setUser(user);
+      qc.invalidateQueries();
+    },
   });
+}
+
+export function useRegister() {
+  return useMutation({ mutationFn: (input: RegisterInput) => authService.register(input) });
+}
+
+export function useResendVerification() {
+  return useMutation({ mutationFn: (email: string) => authService.resendVerification(email) });
+}
+
+export function useVerifyEmail() {
+  return useMutation({ mutationFn: (key: string) => authService.verifyEmail(key) });
+}
+
+export function useResetPassword() {
+  return useMutation({ mutationFn: (input: ResetPasswordInput) => authService.resetPassword(input) });
 }
 
 export function useLogout() {

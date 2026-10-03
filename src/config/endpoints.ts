@@ -1,21 +1,26 @@
 /**
- * Contrat d'API attendu (REST / Django REST Framework).
+ * Contrat de l'API Celebobo v1 (Django REST Framework) — source : `/api/v1/schema/`.
  *
- * - Base : env.API_URL  (ex: http://localhost:8000/api)
+ * - Base : env.API_URL (`/api/v1`, relayé vers Django par next.config.ts)
  * - Les clés JSON sont en snake_case côté Django ; le client convertit automatiquement
  *   en camelCase à la réception et en snake_case à l'envoi (cf. shared/lib/api/case.ts).
- * - Listes paginées : { count, next, previous, results }  (cf. shared/lib/api/types.ts)
- * - Auth : session Django (cookies + CSRF) — voir shared/lib/api/client.ts.
- *
- * Correspondance avec l'ancien backend Django (templates) indiquée en commentaire.
+ * - Listes paginées : { results, next, previous, meta: { count, page, pageSize, totalPages } } → `api.page`.
+ * - Auth : JWT en cookies httpOnly (cb_access / cb_refresh) + CSRF — voir shared/lib/api/client.ts.
  */
 export const ENDPOINTS = {
   auth: {
-    login: "/auth/login/", // allauth /accounts/login/
-    register: "/auth/register/", // allauth /accounts/signup/
+    login: "/auth/login/",
+    register: "/auth/register/",
     logout: "/auth/logout/",
-    me: "/auth/me/",
-    forgotPassword: "/auth/password/forgot/",
+    me: "/me/",
+    forgotPassword: "/auth/password/reset/",
+    resetPassword: "/auth/password/reset/confirm/",
+    changePassword: "/auth/password/change/",
+    verifyEmail: "/auth/email/verify/",
+    resendVerification: "/auth/email/resend/",
+    google: "/auth/social/google/",
+    referralCode: (code: string) => `/auth/referral-codes/${encodeURIComponent(code)}/validate/`,
+    wsTicket: "/auth/ws-ticket/",
   },
 
   // ---- Boutique ---------------------------------------------------------
@@ -97,9 +102,6 @@ export const ENDPOINTS = {
   notificationPreferences: {
     get: "/profile/notification-preferences/",
     pushSubscribe: "/profile/push-subscriptions/",
-  },
-  socialAuth: {
-    google: "/accounts/google/login/", // allauth
   },
   orderActions: {
     cancel: (id: number | string) => `/orders/${id}/cancel/`,
