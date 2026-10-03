@@ -1,27 +1,25 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { formatPrice } from "@/shared/lib/format";
 import { getErrorMessage } from "@/shared/lib/api";
 import { Button } from "@/shared/ui/Button";
 import { Input, Select, Textarea } from "@/shared/ui/Form";
 import { BottomSheet } from "@/shared/ui/BottomSheet";
 import { toast } from "@/shared/ui/Toast";
-import { conversationsService } from "../services/conversations.service";
-import { usePriceProposal } from "../hooks/useConversations";
+import { useConversationOrder, usePriceProposal } from "../hooks/useConversations";
+import type { Conversation } from "../types";
 
 interface Props {
   open: boolean;
   onClose: () => void;
-  conversationId: number;
-  orderId: number;
+  conversation: Conversation;
 }
 
 /** Revendeur+ : choisir une ligne de la commande, saisir le nouveau prix unitaire et le motif. */
-export function PriceProposalModal({ open, onClose, conversationId, orderId }: Props) {
-  const { data: order } = useQuery({ queryKey: ["conversations", conversationId, "order", orderId], queryFn: () => conversationsService.order(conversationId), enabled: open });
-  const propose = usePriceProposal(conversationId);
+export function PriceProposalModal({ open, onClose, conversation }: Props) {
+  const { data: order } = useConversationOrder(conversation);
+  const propose = usePriceProposal(conversation.id);
   const [itemId, setItemId] = useState("");
   const [price, setPrice] = useState("");
   const [reason, setReason] = useState("");
@@ -63,7 +61,7 @@ export function PriceProposalModal({ open, onClose, conversationId, orderId }: P
           label="Article de la commande"
           value={itemId}
           onChange={(e) => setItemId(e.target.value)}
-          options={(order?.items ?? []).map((i) => ({ value: i.id, label: `${i.productName} — ${formatPrice(i.unitPrice)} × ${i.quantity}` }))}
+          options={(order?.items ?? []).map((i) => ({ value: i.id, label: `${i.productName}${i.variantLabel ? ` (${i.variantLabel})` : ""} — ${formatPrice(i.unitPrice)} × ${i.quantity}` }))}
         />
         <Input label="Nouveau prix unitaire ($)" type="number" inputMode="decimal" min="1" step="0.01" value={price} onChange={(e) => setPrice(e.target.value)} hint={item ? `Prix actuel : ${formatPrice(item.unitPrice)}` : undefined} error={error} />
         <Textarea label="Motif (optionnel)" value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Ex. : remise fidélité, produit reconditionné…" className="min-h-[80px]" />

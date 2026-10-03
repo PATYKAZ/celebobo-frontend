@@ -77,22 +77,35 @@ export const ENDPOINTS = {
 
   // ---- Échanges ---------------------------------------------------------
   conversations: {
-    list: "/conversations/", // conversations/, messages/, discussions/
-    create: "/conversations/", // conversations/new/
+    list: "/conversations/", // ?kind=order|support&status=open|closed&unread=&search=
+    create: "/conversations/", // discussion de support : { subject, message }
     detail: (id: number | string) => `/conversations/${id}/`,
-    messages: (id: number | string) => `/conversations/${id}/messages/`, // GET (?after=<id>) + POST multipart
+    messages: (id: number | string) => `/conversations/${id}/messages/`, // GET (?before=<id>&limit=) + POST { body, attachment, clientMsgId }
+    read: (id: number | string) => `/conversations/${id}/read/`,
+    close: (id: number | string) => `/conversations/${id}/close/`,
+    reopen: (id: number | string) => `/conversations/${id}/reopen/`,
+    assign: (id: number | string) => `/conversations/${id}/assign/`, // { resellerId } (support uniquement)
+    proposePrice: (id: number | string) => `/conversations/${id}/price-proposals/`,
+    respondProposal: (proposalId: number | string) => `/price-proposals/${proposalId}/respond/`,
+    clientOrder: (number: string) => `/me/orders/${encodeURIComponent(number)}/`,
+    staffOrder: (orderId: number | string) => `/bo/orders/${orderId}/`,
+    /** Pièce jointe : signature Cloudinary (purpose message_attachment) puis enregistrement */
+    uploadSign: "/uploads/sign/",
+    uploadComplete: "/uploads/complete/",
   },
   notifications: {
     list: "/notifications/",
     markRead: (id: number | string) => `/notifications/${id}/read/`,
-    assign: (id: number | string) => `/notifications/${id}/assign/`, // body: { revendeurId }
-    assignDiscussion: (id: number | string) => `/notifications/${id}/assign-discussion/`,
-    mukubwaReply: (id: number | string) => `/notifications/${id}/mukubwa-reply/`,
-    revendeurReply: (id: number | string) => `/notifications/${id}/revendeur-reply/`,
+    readAll: "/notifications/read-all/",
+    unreadCounts: "/notifications/unread-counts/",
+    assignableResellers: "/bo/resellers/assignable/",
+    assignOrder: (orderId: number | string) => `/bo/orders/${orderId}/assign/`, // { resellerId, note }
+    declineOrder: (orderId: number | string) => `/bo/orders/${orderId}/decline/`, // { reason }
   },
   assistant: {
-    message: "/assistant/message/", // assistant/message/
-    history: "/assistant/history/",
+    sessions: "/assistant/sessions/",
+    session: (id: string) => `/assistant/sessions/${id}/`,
+    messages: (id: string) => `/assistant/sessions/${id}/messages/`, // ?stream=false → { content, products, error }
   },
   contact: {
     send: "/contact/",
@@ -113,11 +126,7 @@ export const ENDPOINTS = {
   tracking: {
     lookup: "/orders/track/", // POST { number, contact } (suivi public sans compte)
   },
-  /** Temps réel : WebSocket (NEXT_PUBLIC_WS_URL) ou SSE. Canaux : conversation:{id}, user:{id}, presence */
-  realtime: {
-    ws: "/ws/",
-    sse: "/events/",
-  },
+  /** Temps réel : WebSocket direct vers le backend (env.WS_URL, ticket `auth.wsTicket`) — voir shared/lib/realtime.ts */
   addressBook: {
     list: "/me/addresses/",
     detail: (id: number | string) => `/me/addresses/${id}/`,

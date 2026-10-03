@@ -1,82 +1,116 @@
 import { ENDPOINTS } from "@/config/endpoints";
-import { env } from "@/config/env";
-import { api, mockResponse, type Paginated } from "@/shared/lib/api";
+import { api, ApiError } from "@/shared/lib/api";
 import { channels, realtime, type ConversationEvent } from "@/shared/lib/realtime";
-import type { OrderItem } from "@/modules/orders/types";
-import { appendMessage, concludeConversation, createSupportConversation, ensureConversation, getMessages, listConversations, markSeen, orderOfConversation, proposePrice, respondProposal, setTyping } from "../mocks/store";
-import type { Conversation, Message, PriceProposalInput, SendMessageInput } from "../types";
+import type { Conversation, ConversationOrder, Message, NewSupportInput, PriceProposalInput, SendMessageInput } from "../types";
+import { toConversation, toConversationOrder, toMessage, type ConversationDto, type MessageDto, type MessagePageDto, type OrderDto } from "./messaging.mapper";
 
-const unwrap = <T,>(r: Paginated<T> | T[]): T[] => (Array.isArray(r) ? r : r.results);
+/** Messages chargés à l'ouverture d'une discussion (les plus récents). */
+const HISTORY_LIMIT = 100;
+
+interface UploadSignature {
+  uploadUrl: string;
+  apiKey: string;
+  timestamp: number;
+  signature: string;
+  folder: string;
+  allowedFormats: string;
+  transformation: string;
+  maxBytes: number;
+}
+
+/** Envoi direct vers Cloudinary (signature serveur) puis enregistrement côté API → URL publique de l'image. */
+async function uploadAttachment(file: File): Promise<string> {
+  const sig = await api.post<UploadSignature>(ENDPOINTS.conversations.uploadSign, { purpose: "message_attachment" });
+  if (file.size > sig.maxBytes) throw new ApiError(400, "Image trop lourde (5 Mo maximum).");
+  const form = new FormData();
+  form.append("file", file);
+  form.append("api_key", sig.apiKey);
+  form.append("timestamp", String(sig.timestamp));
+  form.append("signature", sig.signature);
+  form.append("folder", sig.folder);
+  form.append("allowed_formats", sig.allowedFormats);
+  form.append("transformation", sig.transformation);
+  const res = await fetch(sig.uploadUrl, { method: "POST", body: form }).catch(() => null);
+  if (!res?.ok) throw new ApiError(res?.status ?? 0, "Envoi de l'image impossible.");
+  const up = (await res.json()) as { public_id: string; version: number; signature: string; format: string; bytes: number; width?: number; height?: number };
+  const media = await api.post<{ url: string }>(ENDPOINTS.conversations.uploadComplete, {
+    purpose: "message_attachment",
+    publicId: up.public_id,
+    version: up.version,
+    signature: up.signature,
+    format: up.format,
+    bytes: up.bytes,
+    width: up.width ?? null,
+    height: up.height ?? null,
+  });
+  return media.url;
+}
 
 export const conversationsService = {
-  /** Conversations visibles par l'utilisateur courant (client : les siennes ; revendeur : les siennes ; responsable/admin : toutes). */
+  /** Discussions visibles (client : les siennes ; revendeur : assignées ; responsable/admin : toutes), les plus récentes d'abord. */
   async list(): Promise<Conversation[]> {
-    if (env.USE_MOCKS) return mockResponse(() => listConversations(), 200);
-    return unwrap(await api.get<Paginated<Conversation> | Conversation[]>(ENDPOINTS.conversations.list));
+    const page = await api.page<ConversationDto, Conversation>(ENDPOINTS.conversations.list, { params: { pageSize: 50 } }, toConversation);
+    return page.results;
   },
 
-  detail(id: number): Promise<Conversation> {
-    if (env.USE_MOCKS) return mockResponse(() => ensureConversation(id), 150);
-    return api.get<Conversation>(ENDPOINTS.conversations.detail(id));
+  async detail(id: number): Promise<Conversation> {
+    return toConversation(await api.get<ConversationDto>(ENDPOINTS.conversations.detail(id)));
   },
 
-  /** Nouvelle discussion de support (conversations/new/). */
-  create(): Promise<Conversation> {
-    if (env.USE_MOCKS) return mockResponse(() => createSupportConversation(), 300);
-    return api.post<Conversation>(ENDPOINTS.conversations.create);
+  /** Nouvelle discussion de support (le premier message est obligatoire). */
+  async create(input: NewSupportInput): Promise<Conversation> {
+    return toConversation(await api.post<ConversationDto>(ENDPOINTS.conversations.create, input));
   },
 
-  /** `after` = id du dernier message déjà reçu (récupération incrémentale). */
-  async messages(id: number, opts: { after?: number } = {}): Promise<Message[]> {
-    if (env.USE_MOCKS) return mockResponse(() => getMessages(id, opts.after), 60);
-    return unwrap(await api.get<Paginated<Message> | Message[]>(ENDPOINTS.conversations.messages(id), { params: { after: opts.after } }));
+  /** Derniers messages, dans l'ordre chronologique (l'API renvoie du plus récent au plus ancien). */
+  async messages(id: number): Promise<Message[]> {
+    const page = await api.get<MessagePageDto>(ENDPOINTS.conversations.messages(id), { params: { limit: HISTORY_LIMIT } });
+    return page.results.map(toMessage).reverse();
   },
 
-  async send(id: number, input: SendMessageInput): Promise<Message> {
-    if (env.USE_MOCKS) {
-      const image = input.image ? URL.createObjectURL(input.image) : null;
-      return mockResponse(() => appendMessage(id, input.content?.trim() || null, image), 120);
-    }
-    const form = new FormData();
-    if (input.content) form.append("content", input.content);
-    if (input.image) form.append("image", input.image);
-    return api.post<Message>(ENDPOINTS.conversations.messages(id), form);
+  async send(id: number, input: SendMessageInput & { clientMsgId?: string }): Promise<Message> {
+    const attachment = input.image ? await uploadAttachment(input.image) : "";
+    const dto = await api.post<MessageDto>(ENDPOINTS.conversations.messages(id), { body: input.content?.trim() ?? "", attachment, clientMsgId: input.clientMsgId ?? "" });
+    return toMessage(dto);
   },
 
-  /** Marque la conversation comme lue par l'utilisateur courant (coches « lu » côté interlocuteur). */
-  async markSeen(id: number): Promise<void> {
-    if (env.USE_MOCKS) return mockResponse(() => markSeen(id), 40);
-    await api.post(`${ENDPOINTS.conversations.detail(id)}seen/`);
+  /** Marque la conversation comme lue jusqu'au message donné (ou jusqu'au dernier). */
+  async markSeen(id: number, lastMessageId?: number): Promise<void> {
+    await api.post(ENDPOINTS.conversations.read(id), { lastMessageId: lastMessageId ?? null });
   },
 
   /** Indicateur « écrit… » — temps réel uniquement (aucun appel REST). */
   typing(id: number, typing: boolean, user: { id: number; name: string }): void {
-    if (env.USE_MOCKS) return setTyping(id, typing);
     realtime.emit<ConversationEvent>(channels.conversation(id), { type: "typing", userId: user.id, name: user.name, typing });
   },
 
-  /** Lignes de la commande liée à la discussion (lisible par les participants, pas seulement le client). */
-  async order(id: number): Promise<{ id: number; items: OrderItem[]; totalPrice: number }> {
-    if (env.USE_MOCKS) return mockResponse(() => orderOfConversation(id), 100);
-    return api.get(`${ENDPOINTS.conversations.detail(id)}order/`);
+  /** Commande liée : lignes ajustables + statut (`/bo/orders/{id}/` pour l'équipe, `/me/orders/{number}/` pour le client). */
+  async order(conversation: Pick<Conversation, "relatedOrderId" | "orderNumber">, staff: boolean): Promise<ConversationOrder> {
+    const path = staff ? ENDPOINTS.conversations.staffOrder(conversation.relatedOrderId as number) : ENDPOINTS.conversations.clientOrder(conversation.orderNumber as string);
+    return toConversationOrder(await api.get<OrderDto>(path));
   },
 
   /** Revendeur+ : proposer un prix final pour une ligne de la commande liée. */
   async proposePrice(id: number, input: PriceProposalInput): Promise<Message> {
-    if (env.USE_MOCKS) return mockResponse(() => proposePrice(id, input), 250);
-    // Contrat API à créer côté Django : POST /conversations/{id}/price-proposals/  { item_id, new_price, reason }
-    return api.post<Message>(`${ENDPOINTS.conversations.detail(id)}price-proposals/`, input);
+    return toMessage(await api.post<MessageDto>(ENDPOINTS.conversations.proposePrice(id), { itemId: input.itemId, newPrice: input.newPrice.toFixed(2), reason: input.reason ?? "" }));
   },
 
   /** Client : accepter / refuser une proposition (met à jour la ligne de commande côté serveur). */
-  async respondProposal(conversationId: number, messageId: number, accept: boolean): Promise<void> {
-    if (env.USE_MOCKS) return mockResponse(() => respondProposal(messageId, accept), 250);
-    await api.post(`${ENDPOINTS.conversations.detail(conversationId)}price-proposals/${messageId}/respond/`, { accept });
+  async respondProposal(proposalId: number, accept: boolean): Promise<void> {
+    await api.post(ENDPOINTS.conversations.respondProposal(proposalId), { accept });
   },
 
-  /** Utilisé par l'admin (modules/admin/orders) — clôture la discussion liée à une commande. */
-  async conclude(id: number): Promise<void> {
-    if (env.USE_MOCKS) return mockResponse(() => concludeConversation(id), 200);
-    await api.post(ENDPOINTS.admin.conversations.conclude(id));
+  /** Revendeur+ : clôturer / rouvrir une discussion. */
+  async close(id: number): Promise<Conversation> {
+    return toConversation(await api.post<ConversationDto>(ENDPOINTS.conversations.close(id)));
+  },
+
+  async reopen(id: number): Promise<Conversation> {
+    return toConversation(await api.post<ConversationDto>(ENDPOINTS.conversations.reopen(id)));
+  },
+
+  /** Responsable : confier une discussion de support à un revendeur. */
+  async assign(id: number, resellerId: number): Promise<Conversation> {
+    return toConversation(await api.post<ConversationDto>(ENDPOINTS.conversations.assign(id), { resellerId }));
   },
 };

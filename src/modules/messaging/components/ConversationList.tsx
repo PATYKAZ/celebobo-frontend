@@ -9,9 +9,10 @@ import { EmptyState } from "@/shared/ui/EmptyState";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
 import { can } from "@/modules/auth/permissions";
-import { useConversations, useCreateConversation } from "../hooks/useConversations";
+import { useConversations } from "../hooks/useConversations";
 import type { InboxFilter } from "../types";
 import { ConversationItem } from "./ConversationItem";
+import { NewConversationSheet } from "./NewConversationSheet";
 
 interface Props {
   activeId: number | null;
@@ -29,7 +30,7 @@ const FILTERS: { value: InboxFilter; label: string }[] = [
 export function ConversationList({ activeId, onSelect, inbox }: Props) {
   const { user } = useAuth();
   const { data, isLoading } = useConversations();
-  const create = useCreateConversation();
+  const [creating, setCreating] = useState(false);
   const [q, setQ] = useState("");
   const [filter, setFilter] = useState<InboxFilter>("all");
   const [reseller, setReseller] = useState("");
@@ -60,7 +61,7 @@ export function ConversationList({ activeId, onSelect, inbox }: Props) {
         if (reseller && String(c.assignedRevendeur?.id ?? "") !== reseller) return false;
       }
       if (!s) return true;
-      return `${c.displayName} #${c.relatedOrderId ?? ""} ${c.client?.name ?? ""} ${c.assignedRevendeur?.name ?? ""} ${c.participants.map((p) => p.name).join(" ")} ${c.lastMessage?.content ?? ""}`.toLowerCase().includes(s);
+      return `${c.displayName} ${c.orderNumber ?? ""} ${c.client?.name ?? ""} ${c.assignedRevendeur?.name ?? ""} ${c.participants.map((p) => p.name).join(" ")} ${c.lastMessage?.content ?? ""}`.toLowerCase().includes(s);
     });
   }, [data, q, filter, reseller, inbox]);
 
@@ -73,8 +74,7 @@ export function ConversationList({ activeId, onSelect, inbox }: Props) {
         <h1 className="text-[22px] leading-[28px] lg:text-[20px]">{inbox ? (seeAll ? "Boîte de réception" : "Mes discussions") : "Messages"}</h1>
         {!inbox && (
           <button
-            onClick={() => create.mutate(undefined, { onSuccess: (c) => onSelect(c.id) })}
-            disabled={create.isPending}
+            onClick={() => setCreating(true)}
             className="inline-flex h-11 items-center gap-1.5 rounded-full bg-primary px-4 text-[12px] font-bold uppercase text-white transition-all hover:bg-primary-dark active:scale-95 disabled:opacity-60 lg:h-9 lg:px-3.5"
           >
             <Add size={15} /> Nouvelle
@@ -135,6 +135,8 @@ export function ConversationList({ activeId, onSelect, inbox }: Props) {
           </>
         )}
       </div>
+
+      {!inbox && <NewConversationSheet open={creating} onClose={() => setCreating(false)} onCreated={onSelect} />}
 
       {/* mobile : feuille de filtre revendeur */}
       <BottomSheet open={filterSheet} onClose={() => setFilterSheet(false)} title="Filtrer par revendeur">

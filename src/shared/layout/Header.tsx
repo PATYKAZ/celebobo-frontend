@@ -20,6 +20,7 @@ import { useCartStore } from "@/modules/cart/store/cart.store";
 import { CategoryIcon } from "@/modules/categories/components/CategoryIcon";
 import { useCategories } from "@/modules/categories/hooks/useCategories";
 import { useFavoritesStore } from "@/modules/favorites/store/favorites.store";
+import { useUnreadNotificationsCount } from "@/modules/messaging/hooks/useNotifications";
 import { useSiteSettings } from "@/modules/site";
 import { Logo } from "./Logo";
 import { SearchBar } from "./SearchBar";
@@ -164,7 +165,7 @@ function AccountMenu() {
               <Link href={ROUTES.profile} className={item}><Profile size={17} /> Mon profil</Link>
               <Link href={ROUTES.orders} className={item}><Receipt2 size={17} /> Mes commandes</Link>
               <Link href={ROUTES.favorites} className={item}><Heart size={17} /> Mes favoris</Link>
-              {isStaff && <Link href={ROUTES.admin.notifications} className={item}><Notification size={17} /> Notifications</Link>}
+              <Link href={isStaff ? ROUTES.admin.notifications : ROUTES.notifications} className={item}><Notification size={17} /> Notifications</Link>
               {isStaff && <Link href={ROUTES.admin.root} className={cn(item, "text-primary")}><Setting2 size={17} /> {user.role === "revendeur" ? "Mon espace revendeur" : "Back-office"}</Link>}
               <button onClick={() => logout.mutate()} className={cn(item, "w-full text-danger hover:text-danger")}><Logout size={17} /> Déconnexion</button>
             </div>
@@ -193,8 +194,9 @@ function AccountMenu() {
 /** En-tête principal : ligne info + navigation (bloc blanc rad 10, hauteur 144 desktop). */
 export function Header() {
   const favCount = useFavoritesStore((s) => s.ids.length);
-  const { isStaff } = useAuth();
+  const { isStaff, isAuthenticated } = useAuth();
   const site = useSiteSettings();
+  const notifCount = useUnreadNotificationsCount();
 
   return (
     <header className="rounded-box bg-white max-lg:sticky max-lg:top-0 max-lg:z-40 max-lg:-mx-[15px] max-lg:rounded-none max-lg:border-b max-lg:border-line-3/70 max-lg:pt-[env(safe-area-inset-top)] max-lg:bg-white/95 max-lg:backdrop-blur-md">
@@ -234,7 +236,12 @@ export function Header() {
               <CircleButton href={ROUTES.favorites} label="Favoris" className="max-lg:!size-11"><Heart size={19} variant="Bold" /></CircleButton>
               {favCount > 0 && <span className="pointer-events-none absolute -right-1 -top-1 grid min-w-[18px] place-items-center rounded-full bg-danger px-1 text-[10px] leading-[18px] text-white ring-2 ring-white">{favCount}</span>}
             </span>
-            {isStaff && <CircleButton href={ROUTES.admin.notifications} label="Notifications" className="max-lg:!size-11"><Notification size={19} variant="Bold" /></CircleButton>}
+            {isAuthenticated && (
+              <span className="relative">
+                <CircleButton href={isStaff ? ROUTES.admin.notifications : ROUTES.notifications} label="Notifications" className="max-lg:!size-11"><Notification size={19} variant="Bold" /></CircleButton>
+                {notifCount > 0 && <span className="pointer-events-none absolute -right-1 -top-1 grid min-w-[18px] place-items-center rounded-full bg-danger px-1 text-[10px] leading-[18px] text-white ring-2 ring-white">{notifCount > 99 ? "99+" : notifCount}</span>}
+              </span>
+            )}
           </span>
           <span className="hidden lg:contents"><AccountMenu /><CartButton /></span>
         </div>

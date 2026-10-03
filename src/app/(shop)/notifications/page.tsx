@@ -4,7 +4,7 @@ import { NotificationsView, StaffRedirect } from "@/modules/messaging";
 
 export const metadata: Metadata = { title: "Notifications" };
 
-/** Les notifications sont réservées à l'équipe : elles vivent dans le back-office. */
+/** Notifications du client ; l'équipe est renvoyée vers celles du back-office. */
 export default function Page() {
   return (
     <StaffRedirect to={ROUTES.admin.notifications}>

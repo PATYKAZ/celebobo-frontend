@@ -27,9 +27,9 @@ export function ShopTabBar() {
   const site = useSiteSettings();
   // les compteurs n'ont de sens que pour un utilisateur connecté (les mocks retombent sur un acteur par défaut)
   const rawMsgs = useUnreadMessagesCount();
-  const rawNotifs = useUnreadNotificationsCount(isStaff);
+  const rawNotifs = useUnreadNotificationsCount();
   const msgs = isAuthenticated ? rawMsgs : 0;
-  const notifs = isStaff ? rawNotifs : 0;
+  const notifs = isAuthenticated ? rawNotifs : 0;
   const { data: categories } = useCategories();
   const logout = useLogout();
   const [more, setMore] = useState(false);
@@ -55,6 +55,7 @@ export function ShopTabBar() {
           { label: "Commandes", href: ROUTES.orders, icon: Receipt2 },
           { label: "Favoris", href: ROUTES.favorites, icon: Heart },
           { label: "Messages", href: isStaff ? ROUTES.admin.inbox : ROUTES.messages, icon: Messages2, badge: msgs || undefined },
+          ...(isAuthenticated && !isStaff ? [{ label: "Notifications", href: ROUTES.notifications, icon: Notification, badge: notifs || undefined }] : []),
           { label: "Adresses", href: ROUTES.addresses, icon: Location },
           { label: "Paramètres", href: ROUTES.settings, icon: Setting2 },
           { label: "Suivi", href: ROUTES.track, icon: TruckFast },

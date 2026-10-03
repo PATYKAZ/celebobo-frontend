@@ -10,7 +10,6 @@ import {
   type Conversation,
   type Message,
   type MessagingEvent,
-  type Notification,
   type Participant,
   type PriceProposalInput,
   type PriceProposalMeta,
@@ -23,6 +22,19 @@ import {
  *  - « Lu » est suivi PAR UTILISATEUR (seenBy) → les compteurs de non-lus sont corrects pour chaque rôle.
  *  - Toute mutation émet un événement temps réel (canal `conversation:{id}`, `user:{id}`, `messaging`).
  */
+
+/** Notification du mode mock (ancienne forme : boîte commune des responsables = userId 0). */
+interface Notification {
+  id: number;
+  userId: number;
+  conversationId: number;
+  title: string;
+  body: string;
+  type: "order" | "chat" | null;
+  isRead: boolean;
+  createdAt: string;
+  isOrderAssigned: boolean;
+}
 
 const MIN = 60000;
 const iso = (ms: number) => new Date(Math.min(ms, Date.now() - MIN)).toISOString();
@@ -225,8 +237,11 @@ function decorate(c: ConvRec, actor = getActor()): Conversation {
   return {
     id: c.id,
     createdAt: c.createdAt,
+    kind: o ? "order" : "support",
     isFromCart: !!o,
     relatedOrderId: o?.id ?? null,
+    orderNumber: o ? String(o.id) : null,
+    subject: "",
     displayName: o ? `Discussion exclusivement sur la commande #${o.id}` : `Discussion #${c.id} avec agent`,
     participants: participantsOf(c),
     lastMessage: last ? { content: last.content, timestamp: last.timestamp, sender: last.sender, image: last.image } : null,

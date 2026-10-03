@@ -15,12 +15,11 @@ interface Props {
   /** Affiche l'avatar + nom (premier message d'une série). */
   showSender: boolean;
   onOpenImage: (src: string) => void;
-  conversationId: number;
   /** Le lecteur est le client de la commande (peut accepter / refuser une proposition de prix) */
   isBuyer: boolean;
 }
 
-export function MessageBubble({ message, mine, showSender, onOpenImage, conversationId, isBuyer }: Props) {
+export function MessageBubble({ message, mine, showSender, onOpenImage, isBuyer }: Props) {
   const fromCart = !!(message.metadata && (message.metadata as Record<string, unknown>).generatedFromCart);
   const pending = message.id < 0;
 
@@ -53,7 +52,7 @@ export function MessageBubble({ message, mine, showSender, onOpenImage, conversa
           </span>
         )}
         {proposal ? (
-          <PriceProposalCard conversationId={conversationId} messageId={message.id} meta={proposal} canRespond={isBuyer && !mine} mine={mine} />
+          <PriceProposalCard meta={proposal} canRespond={isBuyer && !mine} mine={mine} />
         ) : (
           <div className={cn("max-w-full rounded-2xl px-3.5 py-2 text-[15px] leading-[22px] sm:px-4 sm:py-2.5 sm:text-[14px] sm:leading-[21px]", mine ? "rounded-br-md bg-primary text-white" : "rounded-bl-md bg-chip text-ink", pending && "opacity-70")}>
             {message.image && (
