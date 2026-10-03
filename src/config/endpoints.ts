@@ -42,17 +42,25 @@ export const ENDPOINTS = {
     list: "/me/favorites/",
     remove: (productId: number) => `/me/favorites/${productId}/`,
   },
+  /** Panier serveur ; invité identifié par l'en-tête `X-Cart-Token` (jeton renvoyé dans `token`). */
   cart: {
-    get: "/cart/",
-    addItem: "/cart/items/", // add-to-cart/
-    updateItem: (productId: number | string) => `/cart/items/${productId}/`, // update-cart/
-    removeItem: (productId: number | string) => `/cart/items/${productId}/`, // remove-from-cart/
-    clear: "/cart/",
+    get: "/cart/", // GET (?city=) / DELETE (vider)
+    items: "/cart/items/",
+    item: (itemId: number) => `/cart/items/${itemId}/`, // PATCH { quantity } / DELETE
+    coupon: "/cart/coupon/", // POST { code } / DELETE
+    merge: "/cart/merge/", // POST { token } (connecté) : fusionne le panier invité
+  },
+  checkout: {
+    quote: "/checkout/quote/",
+    shippingZones: "/shipping/zones/",
+    settings: "/settings/public/", // payment_methods, shipping
   },
   orders: {
-    create: "/orders/", // start-conversation/ : crée Order + Conversation depuis le panier
-    list: "/orders/", // my_orders/ (?status=attente|traitement|terminé)
-    detail: (id: number | string) => `/orders/${id}/`,
+    create: "/orders/", // en-tête Idempotency-Key requis
+    list: "/me/orders/",
+    detail: (number: string) => `/me/orders/${encodeURIComponent(number)}/`,
+    cancel: (number: string) => `/me/orders/${encodeURIComponent(number)}/cancel/`,
+    invoice: (number: string) => `/me/orders/${encodeURIComponent(number)}/invoice/`,
   },
 
   // ---- Compte -----------------------------------------------------------
@@ -103,7 +111,7 @@ export const ENDPOINTS = {
     faq: "/faq/",
   },
   tracking: {
-    lookup: "/orders/track/", // ?number=&contact=  (suivi public sans compte)
+    lookup: "/orders/track/", // POST { number, contact } (suivi public sans compte)
   },
   /** Temps réel : WebSocket (NEXT_PUBLIC_WS_URL) ou SSE. Canaux : conversation:{id}, user:{id}, presence */
   realtime: {

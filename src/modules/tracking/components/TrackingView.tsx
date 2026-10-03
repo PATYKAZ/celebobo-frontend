@@ -28,8 +28,8 @@ function MyRecentOrders() {
       <ul className="mt-3 space-y-2">
         {mine.results.map((o) => (
           <li key={o.id}>
-            <a href={ROUTES.orderDetail(o.id)} className="group flex min-h-12 items-center gap-3 rounded-md bg-page/60 px-3 py-2.5 text-[13px] transition-colors hover:bg-primary-50 active:bg-primary-50">
-              <strong>#{o.id}</strong>
+            <a href={ROUTES.orderDetail(o.number ?? o.id)} className="group flex min-h-12 items-center gap-3 rounded-md bg-page/60 px-3 py-2.5 text-[13px] transition-colors hover:bg-primary-50 active:bg-primary-50">
+              <strong>{o.number}</strong>
               <span className="flex-1 text-ink-3">{formatPrice(o.totalPrice)}</span>
               <OrderStatusBadge status={o.status} />
               <ArrowRight2 size={14} className="transition-transform group-hover:translate-x-1" />
@@ -86,7 +86,7 @@ export function TrackingView() {
             <p className="mb-5 mt-1 text-[13px] leading-[19px] text-ink-2 sm:mb-6 sm:text-[14px] sm:leading-[21px]">Pas besoin de compte : entrez votre numéro de commande et l&apos;e-mail ou le téléphone utilisé.</p>
 
             <form onSubmit={submit} noValidate className="space-y-4">
-              <Input label="Numéro de commande" required value={number} onChange={(e) => { setNumber(e.target.value); setErrors((x) => ({ ...x, number: undefined })); }} error={errors.number} leftIcon={<span className="text-[15px] font-bold">#</span>} placeholder="42" inputMode="numeric" pattern="[0-9]*" enterKeyHint="next" />
+              <Input label="Numéro de commande" required value={number} onChange={(e) => { setNumber(e.target.value); setErrors((x) => ({ ...x, number: undefined })); }} error={errors.number} leftIcon={<span className="text-[15px] font-bold">#</span>} placeholder="CB-7KQ2-M9XA" autoCapitalize="characters" autoCorrect="off" enterKeyHint="next" />
               <Input label="E-mail ou téléphone" required value={contact} onChange={(e) => { setContact(e.target.value); setErrors((x) => ({ ...x, contact: undefined })); }} error={errors.contact} leftIcon={<Call size={17} />} placeholder="vous@exemple.com ou +243…" autoCapitalize="none" autoCorrect="off" enterKeyHint="search" />
               <Button type="submit" fullWidth size="lg" loading={track.isPending} leftIcon={<SearchNormal1 size={17} variant="Bold" />}>Suivre</Button>
             </form>
@@ -99,11 +99,11 @@ export function TrackingView() {
           <Block pad="none" className="h-full min-h-[240px] p-4 sm:min-h-[340px] sm:p-[30px]">
             <AnimatePresence mode="wait">
               {result ? (
-                <motion.div key={result.id} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+                <motion.div key={result.number} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <div>
                       <p className="text-[12px] uppercase text-ink-3">Commande</p>
-                      <h2 className="text-[22px] leading-[28px] sm:text-[24px] sm:leading-[30px]">#{result.id}</h2>
+                      <h2 className="text-[22px] leading-[28px] sm:text-[24px] sm:leading-[30px]">{result.number}</h2>
                       <p className="text-[13px] text-ink-2">Passée le {formatDateTime(result.createdAt)} · {formatPrice(result.totalPrice)}</p>
                     </div>
                     <OrderStatusBadge status={result.status} />

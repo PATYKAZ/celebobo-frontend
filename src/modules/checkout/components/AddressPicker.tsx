@@ -1,13 +1,15 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import { Add, Call, Location, Map1, TickCircle, User } from "iconsax-reactjs";
+import { Add, Call, Location, Map1, TickCircle, TruckFast, User } from "iconsax-reactjs";
 import { cn } from "@/shared/lib/cn";
+import { formatPrice } from "@/shared/lib/format";
 import { Checkbox, Input, Select } from "@/shared/ui/Form";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { addressIcon } from "@/modules/account/components/AddressBookView";
 import { useAddresses } from "@/modules/account/hooks/useAddressBook";
 import { ADDRESS_LABELS } from "@/modules/account/types";
+import type { CartQuote } from "@/modules/cart/types";
 import type { CheckoutForm } from "../types";
 
 type Errors = Partial<Record<keyof CheckoutForm, string>>;
@@ -18,10 +20,14 @@ interface Props {
   set: <K extends keyof CheckoutForm>(k: K, v: CheckoutForm[K]) => void;
   /** Sélectionne une adresse enregistrée (préremplit le formulaire) ou « nouvelle » (id null) */
   onPick: (id: number | null) => void;
+  /** Villes des zones de livraison (suggestions) */
+  cities?: string[];
+  /** Devis de la ville choisie : zone, frais et délai */
+  zone?: CartQuote;
 }
 
 /** Étape livraison : cartes radio du carnet d'adresses + « Nouvelle adresse » (avec option d'enregistrement). */
-export function AddressPicker({ form, errors, set, onPick }: Props) {
+export function AddressPicker({ form, errors, set, onPick, cities = [], zone }: Props) {
   const { data: saved, isLoading } = useAddresses();
   const isNew = form.addressId === null;
 
@@ -84,7 +90,8 @@ export function AddressPicker({ form, errors, set, onPick }: Props) {
               <Input label="Adresse" required value={form.address} onChange={(e) => set("address", e.target.value)} error={errors.address} leftIcon={<Location size={17} />} placeholder="N°, avenue, rue" autoComplete="street-address" />
               <div className="grid gap-4 sm:grid-cols-3 sm:gap-5">
                 <Input label="Quartier / Commune" required value={form.quarter} onChange={(e) => set("quarter", e.target.value)} error={errors.quarter} leftIcon={<Map1 size={17} />} />
-                <Input label="Ville" value={form.city} onChange={(e) => set("city", e.target.value)} />
+                <Input label="Ville" required value={form.city} onChange={(e) => set("city", e.target.value)} error={errors.city} list="checkout-cities" autoComplete="address-level2" />
+                <datalist id="checkout-cities">{cities.map((c) => <option key={c} value={c} />)}</datalist>
                 <Input label="Pays" required value={form.country} onChange={(e) => set("country", e.target.value)} error={errors.country} />
               </div>
               <div className="flex flex-wrap items-center gap-4">
@@ -95,6 +102,16 @@ export function AddressPicker({ form, errors, set, onPick }: Props) {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {zone?.shippingZone && (
+        <p className="flex items-center gap-2 rounded-md bg-page/60 px-3 py-2.5 text-[13px] leading-[19px]">
+          <TruckFast size={18} variant="Bold" className="shrink-0 text-primary" />
+          <span>
+            Zone <strong>{zone.shippingZone}</strong>
+            {zone.deliveryEstimate && <> · {zone.deliveryEstimate}</>} · {zone.shippingFee > 0 ? formatPrice(zone.shippingFee) : "livraison offerte"}
+          </span>
+        </p>
+      )}
     </div>
   );
 }

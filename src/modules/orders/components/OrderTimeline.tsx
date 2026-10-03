@@ -57,7 +57,8 @@ export function OrderTimeline({ order, layout = "horizontal", className }: { ord
                 <p className={cn("text-[14px] font-bold leading-[18px]", !s.done && "text-ink-3")}>{ORDER_STATUS_LABEL[s.status]}</p>
                 {s.event ? (
                   <p className="mt-0.5 text-[12px] leading-[17px] text-ink-2">
-                    {formatDateTime(s.event.at)} · par {s.event.by.name}
+                    {formatDateTime(s.event.at)}
+                    {s.event.by.name ? ` · par ${s.event.by.name}` : ""}
                     {s.event.note ? <span className="block italic text-ink-3">« {s.event.note} »</span> : null}
                   </p>
                 ) : (

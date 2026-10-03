@@ -18,8 +18,9 @@ const NEXT_STEPS = [
 ];
 
 /** Confirmation de commande : aucune redirection forcée — l'utilisateur choisit où aller. */
-export function OrderSuccess({ order, conversationId }: { order: Order; conversationId: number }) {
+export function OrderSuccess({ order, conversationId }: { order: Order; conversationId: number | null }) {
   const count = order.items.reduce((n, i) => n + i.quantity, 0);
+  const number = order.number ?? String(order.id);
   return (
     <Block pad="none" className="px-4 py-8 sm:px-12 sm:py-12">
       <div className="text-center">
@@ -33,13 +34,13 @@ export function OrderSuccess({ order, conversationId }: { order: Order; conversa
             </svg>
           </motion.span>
         </div>
-        <motion.h2 initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="mt-6 text-[24px] leading-[30px] sm:mt-8 sm:text-[28px] sm:leading-[34px]">Commande #{order.id} envoyée !</motion.h2>
+        <motion.h2 initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="mt-6 text-[24px] leading-[30px] sm:mt-8 sm:text-[28px] sm:leading-[34px]">Commande {number} envoyée !</motion.h2>
         <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.65 }} className="mx-auto mt-3 max-w-[480px] text-[14px] leading-[22px] text-ink-2">
           Merci {order.user.name.split(" ")[0]} ! Votre demande a bien été transmise à l&apos;équipe Celebobo.
         </motion.p>
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }} className="mt-6 flex flex-col gap-2.5 sm:mt-8 sm:flex-row sm:flex-wrap sm:justify-center sm:gap-3">
-          <Button href={ROUTES.conversation(conversationId)} size="lg" className="max-sm:w-full" leftIcon={<Messages2 size={17} variant="Bold" />} rightIcon={<ArrowRight size={16} />}>Ouvrir la discussion</Button>
-          <Button href={ROUTES.orderDetail(order.id)} variant="dark" size="lg" className="max-sm:w-full" leftIcon={<Receipt2 size={17} variant="Bold" />}>Voir ma commande</Button>
+          {conversationId && <Button href={ROUTES.conversation(conversationId)} size="lg" className="max-sm:w-full" leftIcon={<Messages2 size={17} variant="Bold" />} rightIcon={<ArrowRight size={16} />}>Ouvrir la discussion</Button>}
+          <Button href={ROUTES.orderDetail(number)} variant="dark" size="lg" className="max-sm:w-full" leftIcon={<Receipt2 size={17} variant="Bold" />}>Voir ma commande</Button>
           <Button href={ROUTES.products} variant="chip" size="lg" className="max-sm:w-full">Continuer mes achats</Button>
         </motion.div>
       </div>
@@ -59,6 +60,18 @@ export function OrderSuccess({ order, conversationId }: { order: Order; conversa
               </li>
             ))}
           </ul>
+          {!!order.discount && (
+            <div className="mt-4 flex items-center justify-between border-t border-line pt-3 text-[13px]">
+              <span className="text-ink-2">Code promo{order.couponCode ? ` (${order.couponCode})` : ""}</span>
+              <span className="font-semibold text-danger">-{formatPrice(order.discount)}</span>
+            </div>
+          )}
+          {order.shippingFee != null && (
+            <div className="mt-2 flex items-center justify-between text-[13px]">
+              <span className="text-ink-2">Livraison{order.shippingZone ? ` · ${order.shippingZone}` : ""}</span>
+              <span className="font-semibold">{order.shippingFee > 0 ? formatPrice(order.shippingFee) : "Offerte"}</span>
+            </div>
+          )}
           <div className="mt-4 flex items-center justify-between border-t border-line pt-3">
             <span className="text-[13px] text-ink-2">Total</span>
             <span className="text-[20px] font-bold text-primary">{formatPrice(order.totalPrice)}</span>
