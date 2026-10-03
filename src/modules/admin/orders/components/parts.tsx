@@ -2,7 +2,7 @@ import Image from "next/image";
 import { cn } from "@/shared/lib/cn";
 import { StatusDot } from "@/shared/ui/Badges";
 import { ORDER_STATUS_LABEL, ORDER_STATUS_TONE, type Order, type OrderStatus } from "@/modules/orders/types";
-import type { Availability } from "@/shared/mock-db/types";
+import type { ResellerAvailability as Availability } from "@/modules/auth/types";
 
 export function OrderStatusDot({ status }: { status: OrderStatus }) {
   return <StatusDot tone={ORDER_STATUS_TONE[status]}>{ORDER_STATUS_LABEL[status]}</StatusDot>;

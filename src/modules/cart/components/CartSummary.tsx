@@ -5,43 +5,61 @@ import type { ReactNode } from "react";
 import { CountUp } from "@/shared/animations/CountUp";
 import { formatPrice } from "@/shared/lib/format";
 import { Block } from "@/shared/ui/Block";
+import type { CartQuote } from "../types";
 
 interface Props {
   subtotal: number;
   savings: number;
   count: number;
+  /** Totaux serveur (code promo, livraison de la zone) ; absent : estimation locale. */
+  quote?: CartQuote | null;
+  /** Bloc code promo */
+  coupon?: ReactNode;
   /** Boutons d'action (CTA) */
   actions?: ReactNode;
   title?: string;
 }
 
 /** Récapitulatif de commande (panier & checkout). */
-export function CartSummary({ subtotal, savings, count, actions, title = "Récapitulatif" }: Props) {
-  const freeFrom = 199;
-  const remaining = Math.max(0, freeFrom - subtotal);
-  const progress = Math.min(100, (subtotal / freeFrom) * 100);
+export function CartSummary({ subtotal, savings, count, quote, coupon, actions, title = "Récapitulatif" }: Props) {
+  const discount = quote?.discount ?? 0;
+  const shipping = quote?.shippingFee ?? 0;
+  const total = quote ? Math.max(0, subtotal - discount) + shipping : subtotal;
+  const remaining = quote?.freeShippingRemaining ?? null;
+  const progress = remaining == null ? 0 : remaining <= 0 ? 100 : Math.min(100, (subtotal / (subtotal + remaining)) * 100);
 
   return (
     <Block pad="none" className="p-4 sm:p-[30px] lg:sticky lg:top-4">
       <h2 className="text-section uppercase">{title}</h2>
 
-      <div className="mt-4 rounded-box bg-primary-50 p-3.5 sm:mt-5 sm:p-4">
-        <p className="flex items-center gap-2 text-[13px] leading-[19px]">
-          <Gift size={18} variant="Bold" className="shrink-0 text-primary" />
-          {remaining > 0 ? <span>Plus que <strong>{formatPrice(remaining)}</strong> pour la livraison offerte</span> : <strong className="text-primary">Livraison offerte débloquée !</strong>}
-        </p>
-        <div className="mt-3 h-2 overflow-hidden rounded-full bg-white">
-          <div className="h-full rounded-full bg-primary transition-[width] duration-700 ease-out" style={{ width: `${progress}%` }} />
+      {remaining != null && (
+        <div className="mt-4 rounded-box bg-primary-50 p-3.5 sm:mt-5 sm:p-4">
+          <p className="flex items-center gap-2 text-[13px] leading-[19px]">
+            <Gift size={18} variant="Bold" className="shrink-0 text-primary" />
+            {remaining > 0 ? <span>Plus que <strong>{formatPrice(remaining)}</strong> pour la livraison offerte</span> : <strong className="text-primary">Livraison offerte débloquée !</strong>}
+          </p>
+          <div className="mt-3 h-2 overflow-hidden rounded-full bg-white">
+            <div className="h-full rounded-full bg-primary transition-[width] duration-700 ease-out" style={{ width: `${progress}%` }} />
+          </div>
         </div>
-      </div>
+      )}
+
+      {coupon && <div className="mt-5">{coupon}</div>}
 
       <dl className="mt-5 space-y-3 text-[14px]">
         <div className="flex justify-between"><dt className="text-ink-2">Articles ({count})</dt><dd className="font-semibold">{formatPrice(subtotal + savings)}</dd></div>
         {savings > 0 && <div className="flex justify-between"><dt className="text-ink-2">Remises</dt><dd className="font-semibold text-danger">-{formatPrice(savings)}</dd></div>}
-        <div className="flex justify-between"><dt className="text-ink-2">Livraison</dt><dd className="font-semibold">{remaining > 0 ? "Selon zone" : "Offerte"}</dd></div>
+        {discount > 0 && <div className="flex justify-between"><dt className="text-ink-2">Code promo{quote?.couponCode ? ` (${quote.couponCode})` : ""}</dt><dd className="font-semibold text-danger">-{formatPrice(discount)}</dd></div>}
+        <div className="flex justify-between gap-3">
+          <dt className="text-ink-2">Livraison{quote?.shippingZone ? ` · ${quote.shippingZone}` : ""}</dt>
+          <dd className="text-right font-semibold">
+            {!quote ? "Selon zone" : shipping > 0 ? formatPrice(shipping) : "Offerte"}
+            {quote?.deliveryEstimate && <span className="block text-[12px] font-normal text-ink-3">{quote.deliveryEstimate}</span>}
+          </dd>
+        </div>
         <div className="flex items-end justify-between border-t border-line-3 pt-4">
           <dt className="text-[16px] font-bold uppercase">Total</dt>
-          <dd className="text-[24px] font-extrabold leading-[30px] text-primary sm:text-[28px] sm:leading-[32px]"><CountUp to={subtotal} duration={0.8} format={formatPrice} /></dd>
+          <dd className="text-[24px] font-extrabold leading-[30px] text-primary sm:text-[28px] sm:leading-[32px]"><CountUp to={total} duration={0.8} format={formatPrice} /></dd>
         </div>
       </dl>
 

@@ -10,7 +10,7 @@ import { Button } from "@/shared/ui/Button";
 import { FormField, Input, Select } from "@/shared/ui/Form";
 import { QuantityStepper } from "@/shared/ui/QuantityStepper";
 import { toast } from "@/shared/ui/Toast";
-import { useProduct } from "@/modules/products/hooks/useProducts";
+import { useAdminProduct } from "@/modules/admin/products/hooks/useAdminProducts";
 import type { Product } from "@/modules/products/types";
 import { getPricing } from "@/modules/products/utils";
 import { useSaveSale } from "../hooks/useSales";
@@ -24,7 +24,7 @@ const METHOD_OPTIONS = (Object.keys(METHOD_STYLE) as PaymentMethod[]).map((m) =>
 export function SaleForm({ sale }: { sale?: Sale }) {
   const router = useRouter();
   const save = useSaveSale(sale?.id ?? null);
-  const { data: existing } = useProduct(sale?.productId);
+  const { data: existing } = useAdminProduct(sale?.productId);
   const [product, setProduct] = useState<Product | null>(null);
   const [quantity, setQuantity] = useState(sale?.quantity ?? 1);
   const [price, setPrice] = useState(sale ? String(sale.unitPrice) : "");

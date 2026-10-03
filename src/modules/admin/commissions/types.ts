@@ -1,4 +1,4 @@
-import type { Availability } from "@/shared/mock-db/types";
+import type { ResellerAvailability as Availability } from "@/modules/auth/types";
 
 export interface CommissionRow {
   resellerId: number;

@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowDown, ArrowLeft2, ArrowRight2, CloseCircle, Gallery, Money3, More, Profile, Receipt2, Send2, User } from "iconsax-reactjs";
+import { ArrowDown, ArrowLeft2, ArrowRight2, CloseCircle, Gallery, Lock, Money3, More, Profile, Profile2User, Receipt2, Send2, Unlock, User } from "iconsax-reactjs";
 import { Fragment, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { ROUTES } from "@/config/routes";
 import { cn } from "@/shared/lib/cn";
@@ -13,13 +13,16 @@ import { StatusDot } from "@/shared/ui/Badges";
 import { BottomSheet } from "@/shared/ui/BottomSheet";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { toast } from "@/shared/ui/Toast";
+import { getErrorMessage } from "@/shared/lib/api";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
 import { can } from "@/modules/auth/permissions";
 import { ORDER_STATUS_LABEL, ORDER_STATUS_TONE } from "@/modules/orders/types";
-import { useConversation, useMarkSeen, useMessages, useSendMessage, useTypingSignal, useTypingUsers } from "../hooks/useConversations";
+import { newClientMsgId, useAssignConversation, useCloseConversation, useConversation, useConversationOrder, useMarkSeen, useMessages, useReopenConversation, useSendMessage, useTypingSignal, useTypingUsers } from "../hooks/useConversations";
+import { useResellerOptions } from "../hooks/useNotifications";
 import type { Availability, Message } from "../types";
 import { MessageBubble, TypingIndicator } from "./MessageBubble";
 import { PriceProposalModal } from "./PriceProposalModal";
+import { ResellerSheet } from "./ResellerSheet";
 
 const dayLabel = (iso: string) => {
   const d = new Date(iso);
@@ -76,7 +79,11 @@ export function ChatWindow({ conversationId, onBack, className }: Props) {
   const { user, isStaff } = useAuth();
   const { data: conv, error: convError } = useConversation(conversationId);
   const { data: messages, isLoading } = useMessages(conversationId);
+  const { data: order } = useConversationOrder(conv);
   const send = useSendMessage(conversationId);
+  const close = useCloseConversation(conversationId);
+  const reopen = useReopenConversation(conversationId);
+  const assign = useAssignConversation(conversationId);
   const typingNames = useTypingUsers(conversationId);
   const typing = useTypingSignal(conversationId);
 
@@ -88,6 +95,8 @@ export function ChatWindow({ conversationId, onBack, className }: Props) {
   const [details, setDetails] = useState(false);
   const [actions, setActions] = useState(false);
   const [jump, setJump] = useState(false);
+  const [assignOpen, setAssignOpen] = useState(false);
+  const [resellerId, setResellerId] = useState("");
   const scroller = useRef<HTMLDivElement>(null);
   const fileInput = useRef<HTMLInputElement>(null);
   const area = useRef<HTMLTextAreaElement>(null);
@@ -98,6 +107,11 @@ export function ChatWindow({ conversationId, onBack, className }: Props) {
   const concluded = !!conv?.concluded;
   const isBuyer = conv?.client?.id === myId;
   const canPropose = !!conv?.relatedOrderId && !concluded && !isBuyer && can(user, "price.adjust");
+  const canModerate = isStaff && !!conv && !isBuyer;
+  const canAssign = can(user, "inbox.view.all") && conv?.kind === "support" && !concluded;
+  const { data: resellers = [] } = useResellerOptions(canAssign && assignOpen);
+  const orderStatus = order?.status ?? conv?.orderStatus ?? null;
+  const orderLabel = conv?.orderNumber ? `Commande ${conv.orderNumber}` : `Commande #${conv?.relatedOrderId}`;
 
   useMarkSeen(conversationId, messages, myId);
 
@@ -171,15 +185,34 @@ export function ChatWindow({ conversationId, onBack, className }: Props) {
   const others = useMemo(() => conv?.participants.filter((p) => p.id !== myId && p.role !== "system") ?? [], [conv, myId]);
   // interlocuteur principal : côté staff = le client ; côté client = le revendeur assigné (sinon l'équipe)
   const lead = isStaff && !isBuyer ? others.find((p) => p.role === "client") ?? others[0] : others.find((p) => p.role === "revendeur") ?? others[0];
-  const leadPresence: Availability | undefined = lead?.role === "client" ? undefined : lead?.availability ?? "online";
+  const leadPresence: Availability | undefined = lead?.role === "client" ? undefined : lead?.availability ?? (lead?.id === conv?.assignedRevendeur?.id ? order?.resellerAvailability : undefined);
   const canSend = (text.trim().length > 0 || !!file) && !concluded && !send.isPending;
-  const orderHref = conv?.relatedOrderId ? (isStaff ? ROUTES.admin.order(conv.relatedOrderId) : ROUTES.orderDetail(conv.relatedOrderId)) : null;
+  const orderHref = conv?.relatedOrderId ? (isStaff && !isBuyer ? ROUTES.admin.order(conv.relatedOrderId) : conv.orderNumber ? ROUTES.orderDetail(conv.orderNumber) : null) : null;
+
+  const toggleClosed = () => {
+    const action = concluded ? reopen : close;
+    action.mutate(undefined, {
+      onSuccess: () => toast.success(concluded ? "Discussion rouverte" : "Discussion clôturée"),
+      onError: (e) => toast.error("Action impossible", getErrorMessage(e)),
+    });
+  };
+
+  const confirmAssign = () => {
+    if (!resellerId) return toast.error("Choisissez un revendeur");
+    assign.mutate(Number(resellerId), {
+      onSuccess: () => {
+        setAssignOpen(false);
+        toast.success("Discussion assignée", "Le revendeur a été notifié.");
+      },
+      onError: (e) => toast.error("Assignation impossible", getErrorMessage(e)),
+    });
+  };
 
   const submit = () => {
     if (!canSend) return;
     typing.stop();
     nearBottom.current = true;
-    send.mutate({ content: text, image: file }, { onError: () => toast.error("Message non envoyé", "Vérifiez votre connexion.") });
+    send.mutate({ content: text, image: file, clientMsgId: newClientMsgId() }, { onError: (e) => toast.error("Message non envoyé", getErrorMessage(e)) });
     setText("");
     setFile(null);
     if (fileInput.current) fileInput.current.value = "";
@@ -230,12 +263,22 @@ export function ChatWindow({ conversationId, onBack, className }: Props) {
             </div>
             {/* ≥ sm : puces d'état ; mobile : lien commande compact + menu « détails » */}
             <div className="hidden items-center gap-2 sm:flex">
-              {conv.orderStatus && <StatusDot tone={ORDER_STATUS_TONE[conv.orderStatus]}>{ORDER_STATUS_LABEL[conv.orderStatus]}</StatusDot>}
+              {orderStatus && <StatusDot tone={ORDER_STATUS_TONE[orderStatus]}>{ORDER_STATUS_LABEL[orderStatus]}</StatusDot>}
               {isStaff && conv.assignedRevendeur && <span className="rounded-full bg-chip px-2.5 py-1 text-[12px] font-semibold">{conv.assignedRevendeur.name}</span>}
               {conv.relatedOrderId && orderHref && (
                 <Link href={orderHref} className="inline-flex items-center gap-1.5 rounded-full bg-primary-50 px-3 py-1.5 text-[12px] font-bold text-primary transition-colors hover:bg-primary hover:text-white">
-                  <Receipt2 size={14} variant="Bold" /> Commande #{conv.relatedOrderId}
+                  <Receipt2 size={14} variant="Bold" /> {orderLabel}
                 </Link>
+              )}
+              {canAssign && (
+                <button onClick={() => setAssignOpen(true)} className="inline-flex items-center gap-1.5 rounded-full bg-chip px-3 py-1.5 text-[12px] font-bold transition-colors hover:bg-primary hover:text-white">
+                  <Profile2User size={14} variant="Bold" /> {conv.assignedRevendeur ? "Réassigner" : "Assigner"}
+                </button>
+              )}
+              {canModerate && (
+                <button onClick={toggleClosed} disabled={close.isPending || reopen.isPending} className="inline-flex items-center gap-1.5 rounded-full bg-chip px-3 py-1.5 text-[12px] font-bold transition-colors hover:bg-ink-dark hover:text-white disabled:opacity-60">
+                  {concluded ? <Unlock size={14} variant="Bold" /> : <Lock size={14} variant="Bold" />} {concluded ? "Rouvrir" : "Clôturer"}
+                </button>
               )}
             </div>
             <button onClick={() => setDetails(true)} aria-label="Détails de la discussion" className="grid size-11 shrink-0 place-items-center rounded-full transition-colors active:bg-chip sm:hidden">
@@ -275,7 +318,7 @@ export function ChatWindow({ conversationId, onBack, className }: Props) {
                     <span className="rounded-full bg-white px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-ink-3 ring-1 ring-line-3">{dayLabel(m.timestamp)}</span>
                   </div>
                 )}
-                <MessageBubble message={m} mine={m.sender.id === myId} showSender={showSender} onOpenImage={setLightbox} conversationId={conversationId} isBuyer={isBuyer} />
+                <MessageBubble message={m} mine={m.sender.id === myId} showSender={showSender} onOpenImage={setLightbox} isBuyer={isBuyer} />
               </Fragment>
             );
           })}
@@ -315,7 +358,9 @@ export function ChatWindow({ conversationId, onBack, className }: Props) {
           )}
         </AnimatePresence>
         {concluded ? (
-          <p className="rounded-box bg-chip px-4 py-3 text-center text-[13px] text-ink-2">Cette discussion est clôturée. {isStaff ? "" : "Ouvrez une nouvelle discussion pour toute autre demande."}</p>
+          <p className="rounded-box bg-chip px-4 py-3 text-center text-[13px] text-ink-2">
+            Cette discussion est clôturée. {canModerate ? <button onClick={toggleClosed} className="font-bold text-primary hover:underline">Rouvrir</button> : isStaff ? "" : "Ouvrez une nouvelle discussion pour toute autre demande."}
+          </p>
         ) : (
           <div className="flex items-end gap-2">
             <input
@@ -394,17 +439,38 @@ export function ChatWindow({ conversationId, onBack, className }: Props) {
 
       <BottomSheet open={details} onClose={() => setDetails(false)} title="Détails de la discussion">
         <div className="space-y-1 pb-2 pt-1">
-          {conv?.orderStatus && (
-            <SheetRow icon={<Receipt2 size={22} />} title={`Commande #${conv.relatedOrderId}`} hint={<StatusDot tone={ORDER_STATUS_TONE[conv.orderStatus]}>{ORDER_STATUS_LABEL[conv.orderStatus]}</StatusDot>} href={orderHref ?? undefined} />
+          {orderStatus && (
+            <SheetRow icon={<Receipt2 size={22} />} title={orderLabel} hint={<StatusDot tone={ORDER_STATUS_TONE[orderStatus]}>{ORDER_STATUS_LABEL[orderStatus]}</StatusDot>} href={orderHref ?? undefined} />
           )}
-          {!conv?.orderStatus && conv?.relatedOrderId && orderHref && <SheetRow icon={<Receipt2 size={22} />} title={`Commande #${conv.relatedOrderId}`} href={orderHref} />}
+          {!orderStatus && conv?.relatedOrderId && orderHref && <SheetRow icon={<Receipt2 size={22} />} title={orderLabel} href={orderHref} />}
           {lead && <SheetRow icon={<User size={22} />} title={lead.name} hint={leadPresence ? PRESENCE_LABEL[leadPresence] : lead.role === "client" ? "Client" : "Équipe Celebobo"} />}
           {isStaff && conv?.assignedRevendeur && <SheetRow icon={<Profile size={22} />} title={conv.assignedRevendeur.name} hint="Revendeur assigné" />}
+          {canAssign && (
+            <SheetRow
+              icon={<Profile2User size={22} />}
+              title={conv?.assignedRevendeur ? "Réassigner la discussion" : "Assigner à un revendeur"}
+              onClick={() => {
+                setDetails(false);
+                setAssignOpen(true);
+              }}
+            />
+          )}
+          {canModerate && (
+            <SheetRow
+              icon={concluded ? <Unlock size={22} /> : <Lock size={22} />}
+              title={concluded ? "Rouvrir la discussion" : "Clôturer la discussion"}
+              onClick={() => {
+                setDetails(false);
+                toggleClosed();
+              }}
+            />
+          )}
           {conv && <p className="px-1 pt-2 text-[12px] text-ink-3">{conv.displayName}</p>}
         </div>
       </BottomSheet>
 
-      {conv?.relatedOrderId && <PriceProposalModal open={proposal} onClose={() => setProposal(false)} conversationId={conversationId} orderId={conv.relatedOrderId} />}
+      {conv?.relatedOrderId && canPropose && <PriceProposalModal open={proposal} onClose={() => setProposal(false)} conversation={conv} />}
+      {canAssign && <ResellerSheet open={assignOpen} onClose={() => setAssignOpen(false)} options={resellers} value={resellerId} onChange={setResellerId} onConfirm={confirmAssign} loading={assign.isPending} />}
 
       <AnimatePresence>
         {lightbox && (

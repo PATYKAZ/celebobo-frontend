@@ -4,7 +4,6 @@ import { usePathname } from "next/navigation";
 import { Bag2, Call, DocumentText, Heart, Home2, InfoCircle, Location, Login, Logout, MagicStar, Messages2, Notification, People, Profile, Receipt2, Setting2, Shop, TruckFast, UserAdd } from "iconsax-reactjs";
 import { useMemo, useState } from "react";
 import { ROUTES } from "@/config/routes";
-import { SITE } from "@/config/site";
 import { MoreSheet, type MoreSection } from "@/shared/ui/MoreSheet";
 import { TabBar, type TabItem } from "@/shared/ui/TabBar";
 import { useAuth, useLogout } from "@/modules/auth/hooks/useAuth";
@@ -13,6 +12,7 @@ import { CategoryIcon } from "@/modules/categories/components/CategoryIcon";
 import { useCategories } from "@/modules/categories/hooks/useCategories";
 import { useUnreadMessagesCount } from "@/modules/messaging/hooks/useConversations";
 import { useUnreadNotificationsCount } from "@/modules/messaging/hooks/useNotifications";
+import { useSiteSettings } from "@/modules/site";
 
 /** Pages plein écran où la barre d'onglets est masquée (chat, assistant, paiement). */
 const HIDE = (p: string) => p.startsWith("/messages/") || p === "/assistant" || p === "/commande";
@@ -24,11 +24,12 @@ export function ShopTabBar() {
   const pathname = usePathname();
   const { user, isAuthenticated, isStaff } = useAuth();
   const { count } = useCart();
+  const site = useSiteSettings();
   // les compteurs n'ont de sens que pour un utilisateur connecté (les mocks retombent sur un acteur par défaut)
   const rawMsgs = useUnreadMessagesCount();
-  const rawNotifs = useUnreadNotificationsCount(isStaff);
+  const rawNotifs = useUnreadNotificationsCount();
   const msgs = isAuthenticated ? rawMsgs : 0;
-  const notifs = isStaff ? rawNotifs : 0;
+  const notifs = isAuthenticated ? rawNotifs : 0;
   const { data: categories } = useCategories();
   const logout = useLogout();
   const [more, setMore] = useState(false);
@@ -46,7 +47,7 @@ export function ShopTabBar() {
     () => [
       {
         title: "Catégories",
-        items: (categories ?? []).map((c) => ({ label: c.name, href: ROUTES.category(c.id), iconNode: <CategoryIcon name={c.icon} size={22} /> })),
+        items: (categories ?? []).map((c) => ({ label: c.name, href: ROUTES.category(c.slug), iconNode: <CategoryIcon name={c.icon} size={22} /> })),
       },
       {
         title: "Mon compte",
@@ -54,6 +55,7 @@ export function ShopTabBar() {
           { label: "Commandes", href: ROUTES.orders, icon: Receipt2 },
           { label: "Favoris", href: ROUTES.favorites, icon: Heart },
           { label: "Messages", href: isStaff ? ROUTES.admin.inbox : ROUTES.messages, icon: Messages2, badge: msgs || undefined },
+          ...(isAuthenticated && !isStaff ? [{ label: "Notifications", href: ROUTES.notifications, icon: Notification, badge: notifs || undefined }] : []),
           { label: "Adresses", href: ROUTES.addresses, icon: Location },
           { label: "Paramètres", href: ROUTES.settings, icon: Setting2 },
           { label: "Suivi", href: ROUTES.track, icon: TruckFast },
@@ -94,10 +96,10 @@ export function ShopTabBar() {
         sections={sections}
         footer={
           <div className="space-y-2.5">
-            <a href={SITE.hotlineHref} className="flex items-center justify-between rounded-box bg-primary-50 p-4">
+            <a href={site.hotlineHref} className="flex items-center justify-between rounded-box bg-primary-50 p-4">
               <span>
                 <span className="block text-[11px] font-bold uppercase tracking-wider text-ink-2">Hotline 24/7</span>
-                <span className="text-[20px] font-bold text-primary">{SITE.hotline}</span>
+                <span className="text-[20px] font-bold text-primary">{site.hotline}</span>
               </span>
               <span className="grid size-11 place-items-center rounded-full bg-primary text-white"><Call size={20} variant="Bold" /></span>
             </a>

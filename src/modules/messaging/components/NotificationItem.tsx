@@ -33,19 +33,20 @@ export function NotificationItem({ notification: n, role, resellers }: Props) {
   const markRead = useMarkNotificationRead();
   const touch = useMediaQuery("(max-width: 1023px)");
 
-  const canAssign = (role === "mukubwa" || role === "admin") && !n.isOrderAssigned && (n.type === "order" || n.type === "chat");
-  const canReply = role === "revendeur" && n.type === "order" && !n.isRead && n.title.toLowerCase().includes("assignation");
+  const canAssign = (role === "mukubwa" || role === "admin") && !n.isRead && ((n.kind === "order_placed" && !!n.orderId) || (n.kind === "support_request" && !!n.conversationId));
+  const canReply = role === "revendeur" && n.kind === "order_assigned" && !n.isRead && !!n.orderId;
   const Icon = n.type === "order" ? Box : MessageText1;
+  const discussion = n.kind === "support_request";
 
   const confirmAssign = () => {
     if (!revendeurId) return toast.error("Choisissez un revendeur");
     assign.mutate(
-      { notificationId: n.id, revendeurId: Number(revendeurId), discussion: n.type === "chat" },
+      { notification: n, revendeurId: Number(revendeurId) },
       {
         onSuccess: () => {
           setDone(true);
           setSheet(false);
-          toast.success("Commande assignée", "Le revendeur a été notifié.");
+          toast.success(discussion ? "Discussion assignée" : "Commande assignée", "Le revendeur a été notifié.");
         },
         onError: (e) => toast.error("Assignation impossible", getErrorMessage(e)),
       },
@@ -67,9 +68,6 @@ export function NotificationItem({ notification: n, role, resellers }: Props) {
           </div>
           <p className="mt-1.5 text-[14px] leading-[21px] text-ink-2 sm:mt-1">{n.body}</p>
 
-          {n.isOrderAssigned && (
-            <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-primary-100 px-2.5 py-1 text-[11px] font-bold text-primary-dark"><TickCircle size={13} variant="Bold" /> Assignée</span>
-          )}
         </div>
       </div>
 
@@ -77,11 +75,11 @@ export function NotificationItem({ notification: n, role, resellers }: Props) {
       <div className="mt-3.5 flex flex-col gap-2 sm:mt-3 sm:pl-[60px]">
         <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
           <Link
-            href={ROUTES.admin.conversation(n.conversationId)}
+            href={n.link || ROUTES.notifications}
             onClick={() => !n.isRead && markRead.mutate(n.id)}
             className="group inline-flex min-h-12 w-full items-center justify-center gap-1.5 rounded-box bg-white text-[14px] font-bold text-primary ring-1 ring-primary/30 transition-all active:scale-[0.98] sm:min-h-0 sm:w-auto sm:bg-transparent sm:text-[13px] sm:ring-0"
           >
-            Ouvrir la discussion <ArrowRight2 size={15} className="transition-transform group-hover:translate-x-1" />
+            {n.conversationId ? "Ouvrir la discussion" : "Voir la commande"} <ArrowRight2 size={15} className="transition-transform group-hover:translate-x-1" />
           </Link>
           {!n.isRead && !canAssign && !canReply && (
             <button onClick={() => markRead.mutate(n.id)} className="min-h-11 w-full rounded-box text-[13px] font-semibold text-ink-3 active:bg-chip sm:ml-3 sm:min-h-0 sm:w-auto sm:rounded-none sm:text-[12px] sm:hover:text-ink">
@@ -111,13 +109,13 @@ export function NotificationItem({ notification: n, role, resellers }: Props) {
           {done && (
             <motion.div key="done" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-4 py-3 text-[13px] font-bold text-white sm:w-auto sm:justify-start sm:py-2">
               <motion.span initial={{ rotate: -90, scale: 0 }} animate={{ rotate: 0, scale: 1 }} transition={{ type: "spring", stiffness: 400, damping: 12 }}><TickCircle size={18} variant="Bold" /></motion.span>
-              Commande assignée avec succès
+              {discussion ? "Discussion assignée avec succès" : "Commande assignée avec succès"}
             </motion.div>
           )}
           {canReply && (
             <motion.div key="reply" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
-              <Button size="sm" leftIcon={<TickCircle size={16} variant="Bold" />} loading={reply.isPending} upper={false} onClick={() => reply.mutate({ id: n.id, accept: true }, { onSuccess: () => toast.success("Commande acceptée") })}>Accepter</Button>
-              <Button size="sm" variant="chip" leftIcon={<CloseCircle size={16} variant="Bold" />} upper={false} onClick={() => reply.mutate({ id: n.id, accept: false }, { onSuccess: () => toast.info("Commande déclinée") })}>Décliner</Button>
+              <Button size="sm" leftIcon={<TickCircle size={16} variant="Bold" />} loading={reply.isPending} upper={false} onClick={() => reply.mutate({ notification: n, accept: true }, { onSuccess: () => toast.success("Commande acceptée"), onError: (e) => toast.error("Action impossible", getErrorMessage(e)) })}>Accepter</Button>
+              <Button size="sm" variant="chip" leftIcon={<CloseCircle size={16} variant="Bold" />} upper={false} onClick={() => reply.mutate({ notification: n, accept: false }, { onSuccess: () => toast.info("Commande déclinée"), onError: (e) => toast.error("Action impossible", getErrorMessage(e)) })}>Décliner</Button>
             </motion.div>
           )}
         </AnimatePresence>

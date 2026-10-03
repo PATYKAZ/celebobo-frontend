@@ -49,7 +49,7 @@ function ProductContent({ product }: { product: Product }) {
       <Breadcrumb
         items={[
           { label: "Produits", href: ROUTES.products },
-          ...(product.categoryId ? [{ label: product.category, href: ROUTES.category(product.categoryId) }] : []),
+          ...(product.categoryId ? [{ label: product.category, href: ROUTES.category(product.categorySlug) }] : []),
           { label: product.name },
         ]}
       />
@@ -64,7 +64,7 @@ function ProductContent({ product }: { product: Product }) {
           <ProductTabs product={product} />
         </Block>
       </Reveal>
-      <RelatedProducts productId={product.id} />
+      <RelatedProducts slug={product.slug} />
 
       {/* Barre d'achat collante (mobile) : au-dessus de la barre d'onglets */}
       <div className="h-[72px] max-[359px]:h-[120px] lg:hidden" />
@@ -88,8 +88,8 @@ function ProductContent({ product }: { product: Product }) {
   );
 }
 
-export function ProductDetailView({ id }: { id: number }) {
-  const { data: product, isLoading, isError } = useProduct(Number.isFinite(id) ? id : undefined);
+export function ProductDetailView({ slug }: { slug: string }) {
+  const { data: product, isLoading, isError } = useProduct(slug);
 
   if (isLoading) {
     return (

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft2, CloseCircle, Location, Messages2, Note1, Profile, Wallet3 } from "iconsax-reactjs";
+import { ArrowLeft2, CloseCircle, DocumentDownload, Location, Messages2, Note1, Profile, Wallet3 } from "iconsax-reactjs";
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { ROUTES } from "@/config/routes";
@@ -20,16 +20,13 @@ import { Modal } from "@/shared/ui/Overlay";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { toast } from "@/shared/ui/Toast";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
-import { useOrder, orderKeys } from "../hooks/useOrders";
+import { orderInvoiceUrl, useCancelOrder, useOrder, orderKeys } from "../hooks/useOrders";
 import { useResellerAvailability } from "../hooks/useResellerAvailability";
-import { useSetOrderStatus } from "../hooks/useOrderWorkflow";
-import { canTransition } from "../services/workflow.service";
-import { ORDER_STATUS_LABEL, PAYMENT_METHODS } from "../types";
+import { toStatus } from "../services/orders.mapper";
+import { CANCEL_REASONS, ORDER_STATUS_LABEL, PAYMENT_METHODS, type CancelReason } from "../types";
 import { AvailabilityDot } from "./AvailabilityDot";
 import { OrderStatusBadge } from "./OrderStatusBadge";
 import { OrderProgress, OrderTimeline } from "./OrderTimeline";
-
-const CANCEL_REASONS = ["Changement d'avis", "Prix trouvé moins cher ailleurs", "Délai trop long", "Commande passée par erreur", "Autre"];
 
 function InfoRow({ icon, label, children }: { icon: React.ReactNode; label: string; children: React.ReactNode }) {
   return (
@@ -43,26 +40,27 @@ function InfoRow({ icon, label, children }: { icon: React.ReactNode; label: stri
   );
 }
 
-/** Page détail d'une commande (espace client) : suivi en temps réel, annulation tant qu'elle est en attente. */
-export function OrderDetailView({ id }: { id: number }) {
+/** Page détail d'une commande (espace client, par numéro) : suivi en temps réel, annulation tant qu'elle est en attente. */
+export function OrderDetailView({ number }: { number: string }) {
   const { user } = useAuth();
   const qc = useQueryClient();
-  const { data: order, isLoading, error } = useOrder(id);
-  const setStatus = useSetOrderStatus();
-  const availability = useResellerAvailability(order?.assignedRevendeur?.id);
+  const { data: order, isLoading, error } = useOrder(number);
+  const cancelOrder = useCancelOrder(number);
+  const liveAvailability = useResellerAvailability(order?.assignedRevendeur?.id);
+  const availability = liveAvailability ?? order?.assignedRevendeur?.availability ?? undefined;
   const [cancelOpen, setCancelOpen] = useState(false);
-  const [reason, setReason] = useState(CANCEL_REASONS[0]);
+  const [reason, setReason] = useState<CancelReason>(CANCEL_REASONS[0].value);
   const [details, setDetails] = useState("");
 
   // Temps réel : tout changement de statut de MA commande rafraîchit la page.
   useRealtime<UserEvent>(user ? channels.user(user.id) : null, (e) => {
-    if (e.type === "order.status" && e.orderId === id) {
+    if (e.type === "order.status" && order && e.orderId === order.id) {
       qc.invalidateQueries({ queryKey: orderKeys.all });
-      toast.info("Votre commande a évolué", `Nouveau statut : ${ORDER_STATUS_LABEL[e.status as keyof typeof ORDER_STATUS_LABEL] ?? e.status}`);
+      toast.info("Votre commande a évolué", `Nouveau statut : ${ORDER_STATUS_LABEL[toStatus(e.status)]}`);
     }
   });
 
-  const crumbs = [{ label: "Mes commandes", href: ROUTES.orders }, { label: `Commande #${id}` }];
+  const crumbs = [{ label: "Mes commandes", href: ROUTES.orders }, { label: `Commande ${number}` }];
 
   if (isLoading) {
     return (
@@ -84,16 +82,17 @@ export function OrderDetailView({ id }: { id: number }) {
   }
 
   const count = order.items.reduce((n, i) => n + i.quantity, 0);
-  const cancel = canTransition(user, order, "annulee");
+  const canCancel = order.allowedTransitions?.includes("annulee") ?? false;
   const payment = PAYMENT_METHODS.find((p) => p.value === order.paymentMethod)?.label;
+  const address = order.address;
 
   const confirmCancel = () =>
-    setStatus.mutate(
-      { orderId: order.id, to: "annulee", note: details.trim() ? `${reason} — ${details.trim()}` : reason },
+    cancelOrder.mutate(
+      { reason, details: details.trim() },
       {
         onSuccess: () => {
           setCancelOpen(false);
-          toast.success("Commande annulée", `La commande #${order.id} a bien été annulée.`);
+          toast.success("Commande annulée", `La commande ${number} a bien été annulée.`);
         },
         onError: (e) => toast.error("Annulation impossible", getErrorMessage(e)),
       },
@@ -108,12 +107,13 @@ export function OrderDetailView({ id }: { id: number }) {
           <div className="flex flex-wrap items-center justify-between gap-3 sm:gap-4">
             <div className="min-w-0">
               <Link href={ROUTES.orders} className="mb-1 inline-flex min-h-9 items-center gap-1 text-[13px] text-ink-3 hover:text-primary sm:mb-2"><ArrowLeft2 size={14} /> Toutes mes commandes</Link>
-              <h1 className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[22px] leading-[28px] sm:text-h-page">Commande #{order.id} <OrderStatusBadge status={order.status} /></h1>
+              <h1 className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[22px] leading-[28px] sm:text-h-page">Commande {order.number} <OrderStatusBadge status={order.status} /></h1>
               <p className="mt-1 text-[13px] leading-[19px] text-ink-2 sm:text-[14px]">Passée le {formatDateTime(order.createdAt)} · {pluralize(count, "article")} · <strong className="text-ink">{formatPrice(order.totalPrice)}</strong></p>
             </div>
             <div className="flex w-full flex-wrap gap-2 sm:w-auto">
               {order.conversationId && <Button href={ROUTES.conversation(order.conversationId)} leftIcon={<Messages2 size={16} variant="Bold" />} className="max-sm:hidden">Ouvrir la discussion</Button>}
-              {cancel.ok && <Button variant="danger" upper={false} onClick={() => setCancelOpen(true)} className="max-sm:w-full">Annuler la commande</Button>}
+              <Button href={orderInvoiceUrl(number)} target="_blank" variant="chip" upper={false} leftIcon={<DocumentDownload size={16} />} className="max-sm:flex-1">Facture</Button>
+              {canCancel && <Button variant="danger" upper={false} onClick={() => setCancelOpen(true)} className="max-sm:flex-1">Annuler la commande</Button>}
             </div>
           </div>
 
@@ -138,7 +138,7 @@ export function OrderDetailView({ id }: { id: number }) {
                     {it.productImage && <Image src={it.productImage} alt="" fill sizes="72px" className="object-cover" />}
                   </span>
                   <div className="min-w-0 flex-1">
-                    {it.productId ? <Link href={ROUTES.product(it.productId)} className="line-clamp-2 text-[14px] font-bold leading-[19px] hover:text-primary sm:text-[15px] sm:leading-[20px]">{it.productName}</Link> : <p className="text-[14px] font-bold sm:text-[15px]">{it.productName}</p>}
+                    {it.productSlug ? <Link href={ROUTES.product(it.productSlug)} className="line-clamp-2 text-[14px] font-bold leading-[19px] hover:text-primary sm:text-[15px] sm:leading-[20px]">{it.productName}</Link> : <p className="text-[14px] font-bold sm:text-[15px]">{it.productName}</p>}
                     {it.variantLabel && <p className="mt-0.5 inline-block rounded bg-chip px-2 py-0.5 text-[12px] font-semibold">{it.variantLabel}</p>}
                     <p className="mt-1 text-[13px] text-ink-3">{formatPrice(it.unitPrice)} × {it.quantity}</p>
                   </div>
@@ -146,10 +146,15 @@ export function OrderDetailView({ id }: { id: number }) {
                 </li>
               ))}
             </ul>
-            <div className="mt-2 flex items-center justify-between border-t border-line-3 pt-4">
-              <span className="text-[14px] font-semibold text-ink-2">Total</span>
-              <span className="text-[22px] font-bold text-primary sm:text-[24px]">{formatPrice(order.totalPrice)}</span>
-            </div>
+            <dl className="mt-2 space-y-2 border-t border-line-3 pt-4 text-[14px]">
+              {order.subtotal != null && <div className="flex justify-between"><dt className="text-ink-2">Sous-total</dt><dd className="font-semibold">{formatPrice(order.subtotal)}</dd></div>}
+              {!!order.discount && <div className="flex justify-between"><dt className="text-ink-2">Code promo{order.couponCode ? ` (${order.couponCode})` : ""}</dt><dd className="font-semibold text-danger">-{formatPrice(order.discount)}</dd></div>}
+              {order.shippingFee != null && <div className="flex justify-between"><dt className="text-ink-2">Livraison{order.shippingZone ? ` · ${order.shippingZone}` : ""}</dt><dd className="font-semibold">{order.shippingFee > 0 ? formatPrice(order.shippingFee) : "Offerte"}</dd></div>}
+              <div className="flex items-center justify-between pt-1">
+                <dt className="text-[14px] font-semibold text-ink-2">Total</dt>
+                <dd className="text-[22px] font-bold text-primary sm:text-[24px]">{formatPrice(order.totalPrice)}</dd>
+              </div>
+            </dl>
           </Block>
         </Reveal>
 
@@ -160,9 +165,19 @@ export function OrderDetailView({ id }: { id: number }) {
               <InfoRow icon={<Profile size={18} />} label="Revendeur">
                 {order.assignedRevendeur ? <span className="flex items-center gap-2">{order.assignedRevendeur.name} <AvailabilityDot value={availability} withLabel /></span> : <span className="font-normal text-ink-2">Pas encore assigné</span>}
               </InfoRow>
-              <InfoRow icon={<Location size={18} />} label="Livraison">{order.deliveryAddress ?? <span className="font-normal text-ink-2">À préciser dans la discussion</span>}</InfoRow>
+              <InfoRow icon={<Location size={18} />} label="Livraison">
+                {address ? (
+                  <>
+                    {address.recipient} · {address.phone}
+                    <span className="block font-normal text-ink-2">{order.deliveryAddress}</span>
+                  </>
+                ) : (
+                  <span className="font-normal text-ink-2">À préciser dans la discussion</span>
+                )}
+              </InfoRow>
               <InfoRow icon={<Wallet3 size={18} />} label="Paiement">{payment ?? <span className="font-normal text-ink-2">À convenir avec le revendeur</span>}</InfoRow>
               {order.note && <InfoRow icon={<Note1 size={18} />} label="Votre note"><span className="font-normal italic">« {order.note} »</span></InfoRow>}
+              {order.status === "annulee" && order.cancelReason && <InfoRow icon={<CloseCircle size={18} />} label="Motif d'annulation">{order.cancelReason}</InfoRow>}
             </Block>
           </Reveal>
           <Reveal delay={0.1}>
@@ -187,11 +202,11 @@ export function OrderDetailView({ id }: { id: number }) {
       <Modal open={cancelOpen} onClose={() => setCancelOpen(false)} title="Annuler la commande" className="max-w-[460px]">
         <p className="mb-4 text-[14px] leading-[21px] text-ink-2">Dites-nous pourquoi : cela nous aide à nous améliorer. Cette action est définitive.</p>
         <div className="space-y-4">
-          <Select label="Motif" value={reason} onChange={(e) => setReason(e.target.value)} options={CANCEL_REASONS.map((r) => ({ value: r, label: r }))} />
+          <Select label="Motif" value={reason} onChange={(e) => setReason(e.target.value as CancelReason)} options={CANCEL_REASONS} />
           <Textarea label="Précisions (facultatif)" value={details} onChange={(e) => setDetails(e.target.value)} placeholder="Ajoutez un commentaire…" className="min-h-[90px]" />
           <div className="flex flex-col-reverse gap-2.5 sm:grid sm:grid-cols-2 sm:gap-3">
             <Button variant="chip" upper={false} onClick={() => setCancelOpen(false)}>Garder la commande</Button>
-            <Button variant="danger" upper={false} loading={setStatus.isPending} onClick={confirmCancel}>Confirmer</Button>
+            <Button variant="danger" upper={false} loading={cancelOrder.isPending} onClick={confirmCancel}>Confirmer</Button>
           </div>
         </div>
       </Modal>

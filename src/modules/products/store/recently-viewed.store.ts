@@ -5,7 +5,7 @@ import { persist } from "zustand/middleware";
 import type { Product } from "../types";
 
 /** Mini-instantané suffisant pour afficher la carte « récemment consultés ». */
-export type ViewedProduct = Pick<Product, "id" | "name" | "image" | "price" | "priceSolde" | "rating" | "reviewsCount" | "currentBadge" | "category">;
+export type ViewedProduct = Pick<Product, "id" | "slug" | "name" | "image" | "price" | "priceSolde" | "rating" | "reviewsCount" | "currentBadge" | "category">;
 
 interface State {
   items: ViewedProduct[];
@@ -24,6 +24,7 @@ export const useRecentlyViewedStore = create<State>()(
         set((s) => {
           const snap: ViewedProduct = {
             id: p.id,
+            slug: p.slug,
             name: p.name,
             image: p.image,
             price: p.price,
@@ -37,6 +38,11 @@ export const useRecentlyViewedStore = create<State>()(
         }),
       clear: () => set({ items: [] }),
     }),
-    { name: "celebobo-recently-viewed" },
+    {
+      name: "celebobo-recently-viewed",
+      version: 2,
+      // v1 (ids de démo, sans slug) : on repart d'une liste vide
+      migrate: () => ({ items: [] }),
+    },
   ),
 );

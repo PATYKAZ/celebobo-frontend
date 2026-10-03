@@ -6,7 +6,6 @@ import { formatRelative } from "@/shared/lib/format";
 import { Avatar } from "@/shared/ui/Avatar";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { Stars } from "@/shared/ui/Stars";
-import { isVerifiedReview } from "../hooks/useCanReview";
 import type { Review } from "../types";
 
 export function ReviewList({ reviews, loading }: { reviews?: Review[]; loading?: boolean }) {
@@ -27,7 +26,7 @@ export function ReviewList({ reviews, loading }: { reviews?: Review[]; loading?:
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
                 <p className="text-[14px] font-bold">{r.user.name}</p>
-                {isVerifiedReview(r) && (
+                {r.verified && (
                   <span className="inline-flex items-center gap-1 rounded-full bg-primary-100 px-2 py-0.5 text-[11px] font-bold text-primary-dark"><TickCircle size={12} variant="Bold" /> Achat vérifié</span>
                 )}
                 <Stars rating={r.rating} hideCount />

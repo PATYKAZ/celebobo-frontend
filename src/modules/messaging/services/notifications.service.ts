@@ -1,9 +1,7 @@
 import { ENDPOINTS } from "@/config/endpoints";
-import { env } from "@/config/env";
-import { orderWorkflow } from "@/modules/orders/services/workflow.service";
-import { api, ApiError, mockResponse, type Paginated } from "@/shared/lib/api";
-import { addParticipant, assignDiscussionTo, declineAssignment, listNotifications, notificationById, patchNotification, resellerOptions } from "../mocks/store";
-import type { Availability, Notification } from "../types";
+import { api, type Paginated } from "@/shared/lib/api";
+import type { Availability, Notification, UnreadCounts } from "../types";
+import { toNotification, type NotificationDto } from "./messaging.mapper";
 
 export interface ResellerOption {
   id: number;
@@ -16,59 +14,35 @@ export interface ResellerOption {
 }
 
 export const notificationsService = {
-  /** Notifications de l'utilisateur courant (revendeur : les siennes ; responsable/admin : boîte commune). */
-  async list(): Promise<Notification[]> {
-    if (env.USE_MOCKS) return mockResponse(() => listNotifications(), 150);
-    const r = await api.get<Paginated<Notification> | Notification[]>(ENDPOINTS.notifications.list);
-    return Array.isArray(r) ? r : r.results;
+  /** Notifications de l'utilisateur courant (les plus récentes d'abord) ; `meta.unread` = total non lues. */
+  list(params: { page?: number; pageSize?: number; unread?: boolean } = {}): Promise<Paginated<Notification>> {
+    return api.page<NotificationDto, Notification>(ENDPOINTS.notifications.list, { params }, toNotification);
+  },
+
+  counts(): Promise<UnreadCounts> {
+    return api.get<UnreadCounts>(ENDPOINTS.notifications.unreadCounts);
   },
 
   async markRead(id: number): Promise<void> {
-    if (env.USE_MOCKS) return mockResponse(() => void patchNotification(id, { isRead: true }), 80);
     await api.post(ENDPOINTS.notifications.markRead(id));
   },
 
-  /** Revendeurs actifs assignables (tous, avec présence et charge). */
-  async resellers(): Promise<ResellerOption[]> {
-    if (env.USE_MOCKS) return mockResponse(() => resellerOptions(), 120);
-    const r = await api.get<Paginated<ResellerOption> | ResellerOption[]>(ENDPOINTS.admin.resellers.list, { params: { active: true, pageSize: 100 } });
-    return Array.isArray(r) ? r : r.results;
+  async markAllRead(): Promise<number> {
+    return (await api.post<{ updated: number }>(ENDPOINTS.notifications.readAll)).updated;
   },
 
-  /** Assigne la commande liée à la notification (workflow commun : droits, historique, audit, temps réel). */
-  async assign(id: number, input: { revendeurId: number }): Promise<void> {
-    if (env.USE_MOCKS) {
-      const n = notificationById(id);
-      if (!n) throw new ApiError(404, "Notification introuvable");
-      await orderWorkflow.assign(n.conversationId, input.revendeurId);
-      return;
-    }
-    await api.post(ENDPOINTS.notifications.assign(id), input);
+  /** Revendeurs assignables (présence + charge). */
+  resellers(): Promise<ResellerOption[]> {
+    return api.get<ResellerOption[]>(ENDPOINTS.notifications.assignableResellers);
   },
 
-  /** Assigne une discussion (hors commande). */
-  async assignDiscussion(id: number, input: { revendeurId: number }): Promise<void> {
-    if (env.USE_MOCKS) {
-      const n = notificationById(id);
-      if (!n) throw new ApiError(404, "Notification introuvable");
-      return mockResponse(() => assignDiscussionTo(n.conversationId, input.revendeurId), 350);
-    }
-    await api.post(ENDPOINTS.notifications.assignDiscussion(id), input);
+  /** Responsable : assigner la commande d'une notification « Nouvelle commande ». */
+  async assignOrder(orderId: number, resellerId: number): Promise<void> {
+    await api.post(ENDPOINTS.notifications.assignOrder(orderId), { resellerId });
   },
 
-  async mukubwaReply(id: number, input: { message: string }): Promise<void> {
-    if (env.USE_MOCKS) {
-      return mockResponse(() => {
-        const n = patchNotification(id, { isRead: true });
-        if (n) addParticipant(n.conversationId, 3);
-      }, 200);
-    }
-    await api.post(ENDPOINTS.notifications.mukubwaReply(id), input);
-  },
-
-  /** Le revendeur accepte ou décline la commande assignée. */
-  async revendeurReply(id: number, input: { accept: boolean; message?: string }): Promise<void> {
-    if (env.USE_MOCKS) return mockResponse(() => (input.accept ? void patchNotification(id, { isRead: true }) : declineAssignment(id, input.message)), 250);
-    await api.post(ENDPOINTS.notifications.revendeurReply(id), input);
+  /** Revendeur : décliner une commande assignée (retour au responsable). */
+  async declineOrder(orderId: number, reason?: string): Promise<void> {
+    await api.post(ENDPOINTS.notifications.declineOrder(orderId), { reason: reason ?? "" });
   },
 };

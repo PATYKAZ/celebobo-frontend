@@ -1,66 +1,119 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { env } from "@/config/env";
+import { useMutation, useQuery, useQueryClient, type QueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
-import { useRealtime } from "@/shared/hooks/useRealtime";
-import { channels, type ConversationEvent, type PresenceEvent, type UserEvent } from "@/shared/lib/realtime";
+import { useRealtime, useRealtimeConnected } from "@/shared/hooks/useRealtime";
+import { channels, type ConversationEvent, type UserEvent } from "@/shared/lib/realtime";
 import { conversationsService } from "../services/conversations.service";
-import { MESSAGING_CHANNEL, type Message, type MessagingEvent, type PriceProposalInput, type SendMessageInput } from "../types";
+import { toMessage, type MessageDto } from "../services/messaging.mapper";
+import { MESSAGING_CHANNEL, type Conversation, type Message, type MessagingEvent, type NewSupportInput, type PriceProposalInput, type SendMessageInput } from "../types";
+import { useUnreadCounts } from "./useNotifications";
 
 export const messagingKeys = {
-  conversations: ["conversations"] as const,
+  all: ["conversations"] as const,
+  conversations: (userId?: number) => ["conversations", "list", userId] as const,
   conversation: (id: number) => ["conversations", id] as const,
   messages: (id: number) => ["conversations", id, "messages"] as const,
+  order: (id: number) => ["conversations", id, "order"] as const,
 };
 
-/** Repli polling : uniquement en mode API (en mock tout passe par le temps réel). */
-const POLL = (ms: number) => (env.USE_MOCKS ? false : ms);
+/** Repli polling : lent quand le WebSocket est connecté, plus serré sinon. */
+const poll = (live: boolean, ms: number) => (live ? false : ms);
 
-/** Conversations visibles + mise à jour instantanée (nouveau message, lu, présence, assignation). */
+/** Dernier message lu par l'interlocuteur, par discussion (reçu en direct ; l'API REST ne l'expose pas). */
+const peerRead = new Map<number, number>();
+
+/** Ordre chronologique : messages confirmés par id, puis messages optimistes (id < 0). */
+const ordered = (list: Message[]) => [...list.filter((m) => m.id > 0).sort((a, b) => a.id - b.id), ...list.filter((m) => m.id < 0)];
+
+function upsert(list: Message[], m: Message): Message[] {
+  return ordered([...list.filter((x) => x.id !== m.id && !(m.clientMsgId && x.id < 0 && x.clientMsgId === m.clientMsgId)), m]);
+}
+
+function withSeen(list: Message[], conversationId: number, myId: number | undefined): Message[] {
+  const upTo = peerRead.get(conversationId) ?? 0;
+  return list.map((m) => (m.id > 0 && m.id <= upTo && m.sender.id === myId && !m.seen ? { ...m, seen: true } : m));
+}
+
+const refreshMessaging = (qc: QueryClient) => qc.invalidateQueries({ queryKey: ["conversations", "list"] });
+
+/** Conversations visibles + mise à jour instantanée (nouveau message, lu, assignation, clôture). */
 export function useConversations() {
   const qc = useQueryClient();
   const { user } = useAuth();
-  const query = useQuery({ queryKey: messagingKeys.conversations, queryFn: conversationsService.list, refetchInterval: POLL(15000) });
-  const refresh = useCallback(() => qc.invalidateQueries({ queryKey: messagingKeys.conversations, exact: true }), [qc]);
-  useRealtime<MessagingEvent>(MESSAGING_CHANNEL, refresh);
-  useRealtime<UserEvent>(user ? channels.user(user.id) : null, refresh);
-  useRealtime<PresenceEvent>(channels.presence, refresh);
+  const live = useRealtimeConnected();
+  const query = useQuery({ queryKey: messagingKeys.conversations(user?.id), queryFn: conversationsService.list, enabled: !!user, refetchInterval: poll(live, 20000) });
+  const refresh = useCallback(() => qc.invalidateQueries({ queryKey: messagingKeys.conversations(user?.id), exact: true }), [qc, user?.id]);
+  useRealtime<MessagingEvent>(user ? MESSAGING_CHANNEL : null, refresh);
+  useRealtime<UserEvent>(user ? channels.user(user.id) : null, (e) => e.type === "resync" && refresh());
   return query;
 }
 
 export function useConversation(id: number | null | undefined) {
   const qc = useQueryClient();
-  const query = useQuery({ queryKey: messagingKeys.conversation(id ?? 0), queryFn: () => conversationsService.detail(id as number), enabled: !!id, retry: false });
+  const { user } = useAuth();
+  const query = useQuery({ queryKey: messagingKeys.conversation(id ?? 0), queryFn: () => conversationsService.detail(id as number), enabled: !!id && !!user, retry: false });
   const refresh = useCallback(() => qc.invalidateQueries({ queryKey: messagingKeys.conversation(id ?? 0), exact: true }), [qc, id]);
-  useRealtime<MessagingEvent>(id ? MESSAGING_CHANNEL : null, (e) => {
-    if (e.conversationId === id) refresh();
+  useRealtime<MessagingEvent>(id && user ? MESSAGING_CHANNEL : null, (e) => {
+    if (e.type === "conversation" && e.conversationId === id) refresh();
   });
-  useRealtime<PresenceEvent>(id ? channels.presence : null, refresh);
   return query;
 }
 
-/** Messages d'une conversation : rafraîchis à chaque événement temps réel (message, lu), polling seulement en API. */
+/** Commande liée à la discussion (statut, lignes pour la proposition de prix, présence du revendeur). */
+export function useConversationOrder(conv: Conversation | undefined) {
+  const qc = useQueryClient();
+  const { user, isStaff } = useAuth();
+  const staff = isStaff && conv?.client?.id !== user?.id;
+  const ready = !!conv?.relatedOrderId && (staff || !!conv.orderNumber);
+  const query = useQuery({
+    queryKey: messagingKeys.order(conv?.id ?? 0),
+    queryFn: () => conversationsService.order(conv as Conversation, staff),
+    enabled: !!user && ready,
+    staleTime: 30_000,
+    retry: false,
+  });
+  useRealtime<UserEvent>(user && ready ? channels.user(user.id) : null, (e) => {
+    if ((e.type === "order.status" || e.type === "assignment") && e.orderId === conv?.relatedOrderId) qc.invalidateQueries({ queryKey: messagingKeys.order(conv.id) });
+  });
+  return query;
+}
+
+/** Messages d'une conversation : insérés en direct depuis le WebSocket, polling de secours si la connexion tombe. */
 export function useMessages(id: number | null | undefined) {
   const qc = useQueryClient();
+  const { user } = useAuth();
+  const live = useRealtimeConnected();
   const key = messagingKeys.messages(id ?? 0);
+  const myId = user?.id;
   const query = useQuery({
     queryKey: key,
-    enabled: !!id,
-    refetchInterval: POLL(6000),
+    enabled: !!id && !!user,
+    refetchInterval: poll(live, 6000),
     queryFn: async () => {
       const fresh = await conversationsService.messages(id as number);
-      const prev = qc.getQueryData<Message[]>(key) ?? [];
-      // les messages optimistes déjà confirmés par le serveur sont retirés
-      const pending = prev.filter(
-        (m) => m.id < 0 && !fresh.some((f) => f.sender.id === m.sender.id && f.content === m.content && Math.abs(+new Date(f.timestamp) - +new Date(m.timestamp)) < 5 * 60000),
-      );
-      return [...fresh, ...pending];
+      const pending = (qc.getQueryData<Message[]>(key) ?? []).filter((m) => m.id < 0 && !fresh.some((f) => f.clientMsgId && f.clientMsgId === m.clientMsgId));
+      return withSeen([...fresh, ...pending], id as number, myId);
     },
   });
-  useRealtime<ConversationEvent>(id ? channels.conversation(id) : null, (e) => {
-    if (e.type === "message" || e.type === "seen") qc.invalidateQueries({ queryKey: key, exact: true });
+  useRealtime<ConversationEvent>(id && user ? channels.conversation(id) : null, (e) => {
+    if (!id) return;
+    if (e.type === "message" && e.message) {
+      const m = toMessage(e.message as MessageDto);
+      qc.setQueryData<Message[]>(key, (cur) => (cur ? withSeen(upsert(cur, m), id, myId) : cur));
+      // une réponse à une proposition change l'état de la carte + la commande
+      if ((m.metadata as { event?: string } | null)?.event === "proposal_answered") {
+        qc.invalidateQueries({ queryKey: key, exact: true });
+        qc.invalidateQueries({ queryKey: messagingKeys.order(id) });
+      }
+    } else if (e.type === "seen" && e.userId !== myId) {
+      peerRead.set(id, Math.max(peerRead.get(id) ?? 0, e.upTo));
+      qc.setQueryData<Message[]>(key, (cur) => cur && withSeen(cur, id, myId));
+    } else if (e.type === "conversation" || e.type === "resync") {
+      qc.invalidateQueries({ queryKey: key, exact: true });
+      qc.invalidateQueries({ queryKey: messagingKeys.conversation(id), exact: true });
+    }
   });
   return query;
 }
@@ -79,7 +132,7 @@ export function useTypingUsers(id: number | null | undefined) {
 
   const drop = (userId: number) => setTyping((s) => Object.fromEntries(Object.entries(s).filter(([k]) => Number(k) !== userId)));
 
-  useRealtime<ConversationEvent>(id ? channels.conversation(id) : null, (e) => {
+  useRealtime<ConversationEvent>(id && user ? channels.conversation(id) : null, (e) => {
     if (e.type === "message") {
       // un message reçu éteint les indicateurs
       setTyping({});
@@ -138,8 +191,11 @@ export function useMarkSeen(id: number | null | undefined, messages: Message[] |
       if (document.visibilityState !== "visible") return;
       lastMarked.current = lastIncoming.id;
       conversationsService
-        .markSeen(id)
-        .then(() => qc.invalidateQueries({ queryKey: messagingKeys.conversations, exact: true }))
+        .markSeen(id, lastIncoming.id)
+        .then(() => {
+          refreshMessaging(qc);
+          qc.invalidateQueries({ queryKey: ["notifications"] });
+        })
         .catch(() => {});
     };
     run();
@@ -148,14 +204,14 @@ export function useMarkSeen(id: number | null | undefined, messages: Message[] |
   }, [id, messages, myId, qc]);
 }
 
-/** Envoi avec mise à jour optimiste. */
+/** Envoi avec mise à jour optimiste (le message serveur, reçu par l'API ou le WebSocket, remplace le brouillon). */
 export function useSendMessage(id: number) {
   const qc = useQueryClient();
   const { user } = useAuth();
   const key = messagingKeys.messages(id);
 
   return useMutation({
-    mutationFn: (input: SendMessageInput) => conversationsService.send(id, input),
+    mutationFn: ({ clientMsgId, ...input }: SendMessageInput & { clientMsgId: string }) => conversationsService.send(id, { ...input, clientMsgId }),
     onMutate: async (input) => {
       await qc.cancelQueries({ queryKey: key });
       const prev = qc.getQueryData<Message[]>(key) ?? [];
@@ -167,25 +223,29 @@ export function useSendMessage(id: number) {
         image: input.image ? URL.createObjectURL(input.image) : null,
         timestamp: new Date().toISOString(),
         seen: false,
+        clientMsgId: input.clientMsgId,
       };
       qc.setQueryData<Message[]>(key, [...prev, temp]);
-      return { prev, tempId: temp.id };
+      return { tempId: temp.id };
     },
     onError: (_e, _v, ctx) => {
-      if (ctx) qc.setQueryData(key, ctx.prev);
+      qc.setQueryData<Message[]>(key, (cur = []) => cur.filter((m) => m.id !== ctx?.tempId));
     },
     onSuccess: (msg, _v, ctx) => {
-      qc.setQueryData<Message[]>(key, (cur = []) => cur.map((m) => (m.id === ctx?.tempId ? msg : m)));
-      qc.invalidateQueries({ queryKey: messagingKeys.conversations, exact: true });
+      qc.setQueryData<Message[]>(key, (cur = []) => withSeen(upsert(cur.filter((m) => m.id !== ctx?.tempId), msg), id, user?.id));
+      refreshMessaging(qc);
     },
   });
 }
 
+/** Identifiant d'envoi unique (idempotence côté API). */
+export const newClientMsgId = () => (typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}`);
+
 export function useCreateConversation() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: conversationsService.create,
-    onSuccess: () => qc.invalidateQueries({ queryKey: messagingKeys.conversations, exact: true }),
+    mutationFn: (input: NewSupportInput) => conversationsService.create(input),
+    onSuccess: () => refreshMessaging(qc),
   });
 }
 
@@ -194,21 +254,38 @@ export function usePriceProposal(id: number) {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (input: PriceProposalInput) => conversationsService.proposePrice(id, input),
-    onSuccess: () => qc.invalidateQueries({ queryKey: messagingKeys.messages(id), exact: true }),
+    onSuccess: (msg) => qc.setQueryData<Message[]>(messagingKeys.messages(id), (cur) => (cur ? upsert(cur, msg) : cur)),
   });
 }
 
 /** Client : accepter / refuser une proposition — met à jour la commande partout (liste, détail, totaux). */
-export function useRespondProposal(id: number) {
+export function useRespondProposal() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ messageId, accept }: { messageId: number; accept: boolean }) => conversationsService.respondProposal(id, messageId, accept),
-    onSuccess: () => qc.invalidateQueries(),
+    mutationFn: ({ proposalId, accept }: { proposalId: number; accept: boolean }) => conversationsService.respondProposal(proposalId, accept),
+    onSettled: () => qc.invalidateQueries(),
   });
 }
 
-/** Total des messages non lus (badges header / sidebar). */
+function useConversationMutation<V>(id: number, fn: (v: V) => Promise<Conversation>) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: fn,
+    onSuccess: (conv) => {
+      qc.setQueryData(messagingKeys.conversation(id), conv);
+      qc.invalidateQueries({ queryKey: messagingKeys.messages(id), exact: true });
+      refreshMessaging(qc);
+    },
+  });
+}
+
+/** Revendeur+ : clôturer / rouvrir la discussion. */
+export const useCloseConversation = (id: number) => useConversationMutation(id, () => conversationsService.close(id));
+export const useReopenConversation = (id: number) => useConversationMutation(id, () => conversationsService.reopen(id));
+/** Responsable : confier une discussion de support à un revendeur. */
+export const useAssignConversation = (id: number) => useConversationMutation(id, (resellerId: number) => conversationsService.assign(id, resellerId));
+
+/** Discussions comportant des messages non lus (badges header / sidebar). */
 export function useUnreadMessagesCount() {
-  const { data } = useConversations();
-  return data?.reduce((n, c) => n + c.unreadCount, 0) ?? 0;
+  return useUnreadCounts().data?.conversations ?? 0;
 }

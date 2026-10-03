@@ -1,6 +1,7 @@
 import { env } from "@/config/env";
 import { camelizeKeys, snakeizeKeys } from "./case";
 import { ApiError } from "./errors";
+import type { PageEnvelope, Paginated, Problem } from "./types";
 
 type Query = Record<string, string | number | boolean | null | undefined | (string | number)[]>;
 
@@ -10,16 +11,16 @@ export interface RequestOptions extends Omit<RequestInit, "body" | "method"> {
   raw?: boolean;
 }
 
+const CSRF_PATH = "/auth/csrf/";
+const REFRESH_PATH = "/auth/token/refresh/";
+/** Requêtes pour lesquelles un 401 ne déclenche pas de rafraîchissement du jeton. */
+const NO_REFRESH = ["/auth/login/", "/auth/register/", REFRESH_PATH, "/auth/social/google/"];
+const SAFE_METHODS = new Set(["GET", "HEAD", "OPTIONS"]);
+
 /** Hook global (ex: déconnexion automatique sur 401). Défini par le module `auth`. */
 let onUnauthorized: (() => void) | null = null;
 export const setUnauthorizedHandler = (fn: (() => void) | null) => {
   onUnauthorized = fn;
-};
-
-/** Jeton optionnel (si le backend passe en JWT). Sinon : session Django par cookie. */
-let authToken: string | null = null;
-export const setAuthToken = (token: string | null) => {
-  authToken = token;
 };
 
 function buildQuery(params?: Query): string {
@@ -40,23 +41,50 @@ function getCookie(name: string): string | null {
   return match ? decodeURIComponent(match[1]) : null;
 }
 
-async function request<T>(method: string, path: string, body?: unknown, opts: RequestOptions = {}): Promise<T> {
-  const { params, raw, headers, ...init } = opts;
-  const url = `${env.API_URL}${path}${buildQuery(params)}`;
+/** Le cookie CSRF est posé par `GET /auth/csrf/` : on l'obtient une fois avant la première écriture. */
+let csrfReady: Promise<void> | null = null;
+function ensureCsrf(): Promise<void> {
+  if (getCookie(env.CSRF_COOKIE)) return Promise.resolve();
+  csrfReady ??= fetch(`${env.API_URL}${CSRF_PATH}`, { credentials: "include" })
+    .then(() => undefined)
+    .finally(() => {
+      csrfReady = null;
+    });
+  return csrfReady;
+}
 
+/** Un seul rafraîchissement à la fois : les requêtes en 401 simultanées attendent le même. */
+let refreshing: Promise<boolean> | null = null;
+function refreshSession(): Promise<boolean> {
+  refreshing ??= ensureCsrf()
+    .then(() =>
+      fetch(`${env.API_URL}${REFRESH_PATH}`, {
+        method: "POST",
+        credentials: "include",
+        headers: { Accept: "application/json", "X-CSRFToken": getCookie(env.CSRF_COOKIE) ?? "" },
+      }),
+    )
+    .then((res) => res.ok)
+    .catch(() => false)
+    .finally(() => {
+      refreshing = null;
+    });
+  return refreshing;
+}
+
+async function send(method: string, path: string, body: unknown, opts: RequestOptions): Promise<Response> {
+  const { params, raw, headers, ...init } = opts;
   const isForm = typeof FormData !== "undefined" && body instanceof FormData;
   const finalHeaders = new Headers(headers);
   finalHeaders.set("Accept", "application/json");
   if (body !== undefined && !isForm) finalHeaders.set("Content-Type", "application/json");
-  if (authToken) finalHeaders.set("Authorization", `Bearer ${authToken}`);
-  if (method !== "GET") {
+  if (!SAFE_METHODS.has(method)) {
+    await ensureCsrf();
     const csrf = getCookie(env.CSRF_COOKIE);
     if (csrf) finalHeaders.set("X-CSRFToken", csrf);
   }
-
-  let res: Response;
   try {
-    res = await fetch(url, {
+    return await fetch(`${env.API_URL}${path}${buildQuery(params)}`, {
       method,
       credentials: "include",
       headers: finalHeaders,
@@ -65,6 +93,13 @@ async function request<T>(method: string, path: string, body?: unknown, opts: Re
     });
   } catch {
     throw new ApiError(0, "Impossible de joindre le serveur.");
+  }
+}
+
+async function request<T>(method: string, path: string, body?: unknown, opts: RequestOptions = {}): Promise<T> {
+  let res = await send(method, path, body, opts);
+  if (res.status === 401 && !NO_REFRESH.includes(path) && (await refreshSession())) {
+    res = await send(method, path, body, opts);
   }
 
   const text = await res.text();
@@ -76,14 +111,32 @@ async function request<T>(method: string, path: string, body?: unknown, opts: Re
       data = text;
     }
   }
-  const parsed = raw ? data : camelizeKeys(data);
+  const parsed = opts.raw ? data : camelizeKeys(data);
 
   if (!res.ok) {
-    if (res.status === 401) onUnauthorized?.();
-    const detail = (parsed as { detail?: string } | undefined)?.detail;
+    if (res.status === 401 && !NO_REFRESH.includes(path)) onUnauthorized?.();
+    const detail = (parsed as Problem | undefined)?.detail;
     throw new ApiError(res.status, detail ?? res.statusText ?? "Erreur API", parsed);
   }
   return parsed as T;
+}
+
+/** En-tête exigé par les écritures idempotentes de l'API (commande, ventes, paiements) : une clé par action. */
+export const idempotent = (key: string = crypto.randomUUID()): RequestOptions => ({ headers: { "Idempotency-Key": key } });
+
+/** Convertit l'enveloppe `{ results, next, previous, meta }` de l'API en `Paginated`. */
+export function toPaginated<T, R = T>(envelope: PageEnvelope<T>, map?: (item: T) => R): Paginated<R> {
+  const { count, page, pageSize, totalPages, ...meta } = envelope.meta;
+  return {
+    count,
+    next: envelope.next,
+    previous: envelope.previous,
+    results: map ? envelope.results.map(map) : (envelope.results as unknown as R[]),
+    page,
+    pageSize,
+    totalPages,
+    meta,
+  };
 }
 
 export const api = {
@@ -92,6 +145,9 @@ export const api = {
   put: <T>(path: string, body?: unknown, opts?: RequestOptions) => request<T>("PUT", path, body, opts),
   patch: <T>(path: string, body?: unknown, opts?: RequestOptions) => request<T>("PATCH", path, body, opts),
   delete: <T = void>(path: string, opts?: RequestOptions) => request<T>("DELETE", path, undefined, opts),
-  /** URL absolue (téléchargements : export Excel / PDF). */
+  /** Liste paginée : GET + conversion de l'enveloppe (et de chaque élément si `map`). */
+  page: async <T, R = T>(path: string, opts?: RequestOptions, map?: (item: T) => R) =>
+    toPaginated(await request<PageEnvelope<T>>("GET", path, undefined, opts), map),
+  /** URL absolue (téléchargements : factures, exports). */
   url: (path: string, params?: Query) => `${env.API_URL}${path}${buildQuery(params)}`,
 };

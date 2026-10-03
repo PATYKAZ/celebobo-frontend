@@ -53,6 +53,8 @@ export const toLegacyStatus = (s: OrderStatus): "attente" | "traitement" | "term
 export interface OrderItem {
   id: number;
   productId: number | null;
+  /** Lien vers la fiche produit (absent si le produit a été retiré du catalogue). */
+  productSlug?: string | null;
   productName: string;
   productImage: string | null;
   quantity: number;
@@ -69,14 +71,28 @@ export interface OrderStatusEvent {
   note?: string | null;
 }
 
+/** Adresse de livraison figée sur la commande. */
+export interface OrderAddress {
+  recipient: string;
+  phone: string;
+  line1: string;
+  quarter: string;
+  city: string;
+  country: string;
+}
+
+export type ResellerAvailability = "online" | "away" | "offline";
+
 export interface Order {
   id: number;
+  /** Numéro public (ex: CB-7KQ2-M9XA) : identifiant des URLs client, du suivi et des notifications. */
+  number?: string;
   createdAt: string;
   status: OrderStatus;
   totalPrice: number;
   items: OrderItem[];
   user: { id: number; name: string; email?: string; phone?: string | null };
-  assignedRevendeur: { id: number; name: string } | null;
+  assignedRevendeur: { id: number; name: string; availability?: ResellerAvailability | null } | null;
   /** Discussion liée (conversation créée à la commande). */
   conversationId: number | null;
   statusHistory: OrderStatusEvent[];
@@ -87,6 +103,35 @@ export interface Order {
   /** true dès que la commande a été convertie en ventes (bloque une 2ᵉ conversion) */
   convertedToSales: boolean;
   cancelReason?: string | null;
+  /** Nombre d'articles (listes : les lignes ne sont détaillées que sur la fiche). */
+  itemsCount?: number;
+  previewName?: string | null;
+  previewImage?: string | null;
+  subtotal?: number;
+  /** Remise du code promo */
+  discount?: number;
+  couponCode?: string | null;
+  shippingFee?: number;
+  shippingZone?: string | null;
+  address?: OrderAddress | null;
+  /** Transitions permises à l'utilisateur courant (ex: `annulee` pour le client tant qu'elle est en attente). */
+  allowedTransitions?: OrderStatus[];
+}
+
+/** Motifs d'annulation (client). */
+export type CancelReason = "changed_mind" | "cheaper_elsewhere" | "too_slow" | "ordered_by_mistake" | "other";
+
+export const CANCEL_REASONS: { value: CancelReason; label: string }[] = [
+  { value: "changed_mind", label: "Changement d'avis" },
+  { value: "cheaper_elsewhere", label: "Prix trouvé moins cher ailleurs" },
+  { value: "too_slow", label: "Délai trop long" },
+  { value: "ordered_by_mistake", label: "Commande passée par erreur" },
+  { value: "other", label: "Autre" },
+];
+
+export interface CancelOrderInput {
+  reason: CancelReason;
+  details?: string;
 }
 
 export interface OrderListParams {
@@ -96,18 +141,18 @@ export interface OrderListParams {
 }
 
 /**
- * Création d'une commande depuis le panier (start_conversation_from_cart).
- * Le backend crée Order + OrderItems + Conversation + message automatique + notifications.
+ * Création d'une commande depuis le panier : le backend crée Order + lignes + discussion + notifications
+ * et vide le panier serveur.
  */
 export interface CreateOrderInput {
   items: (Pick<CartItem, "productId" | "quantity"> & { variantId?: number | null })[];
-  deliveryAddress?: string;
-  deliveryQuarter?: string;
-  deliveryCountry?: string;
-  paymentMethod?: PaymentMethod;
-  note?: string;
+  paymentMethod: PaymentMethod;
+  couponCode?: string | null;
   /** Adresse du carnet d'adresses choisie */
   addressId?: number | null;
+  /** Nouvelle adresse saisie (si pas d'adresse du carnet) */
+  address?: OrderAddress | null;
+  note?: string;
 }
 
 export type PaymentMethod = "OrangeMoney" | "AirtelMoney" | "M-Pesa" | "Cash";
@@ -121,5 +166,5 @@ export const PAYMENT_METHODS: { value: PaymentMethod; label: string }[] = [
 
 export interface CreateOrderResult {
   order: Order;
-  conversationId: number;
+  conversationId: number | null;
 }

@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
-import { ArrowRight2, Key, Location, Lock, Notification, Receipt2 } from "iconsax-reactjs";
+import { ArrowRight2, Call, Location, Notification, Receipt2, User } from "iconsax-reactjs";
 import { ROUTES } from "@/config/routes";
 import { useEffect, useState } from "react";
 import { Breadcrumb } from "@/shared/layout/Breadcrumb";
@@ -13,11 +13,36 @@ import { Skeleton } from "@/shared/ui/Skeleton";
 import { AuthGuard } from "@/modules/auth/components/AuthGuard";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
 import { useProfile } from "../hooks/useAccount";
-import { AddressesForm } from "./AddressesForm";
+import { useAddresses } from "../hooks/useAddressBook";
+import { addressIcon } from "./AddressBookView";
 import { PersonalInfoForm } from "./PersonalInfoForm";
 import { ProfileSummaryCard } from "./ProfileSummaryCard";
+import { SecuritySettings } from "./SecuritySettings";
 
 type Tab = "info" | "addresses" | "security";
+
+/** Adresse par défaut du carnet (l'API n'a pas d'adresse sur le profil). */
+function DefaultAddress() {
+  const { data, isLoading } = useAddresses();
+  const a = data?.find((x) => x.isDefault) ?? data?.[0];
+  if (isLoading) return <Skeleton className="h-[120px] !rounded-box" />;
+  if (!a) return <p className="rounded-box bg-page/60 p-4 text-[14px] text-ink-2">Aucune adresse enregistrée pour le moment.</p>;
+  const Icon = addressIcon(a.label);
+  return (
+    <div className="flex items-start gap-3 rounded-box border-2 border-primary bg-primary-50 p-4 sm:p-5">
+      <span className="grid size-11 shrink-0 place-items-center rounded-full bg-primary text-white"><Icon size={20} variant="Bold" /></span>
+      <div className="min-w-0 flex-1">
+        <p className="flex flex-wrap items-center gap-2 text-[16px] font-bold">
+          {a.label}
+          {a.isDefault && <span className="rounded-full bg-primary px-2 py-0.5 text-[10px] font-bold uppercase text-white">Par défaut</span>}
+        </p>
+        <p className="mt-2 flex items-center gap-2 text-[13px] text-ink-2"><User size={14} /> {a.recipient}</p>
+        <p className="mt-1 flex items-center gap-2 text-[13px] text-ink-2"><Call size={14} /> {a.phone}</p>
+        <p className="mt-1 flex items-start gap-2 text-[13px] leading-[19px] text-ink-2"><Location size={14} className="mt-0.5 shrink-0" /> {a.line1}, {a.quarter}, {a.city}, {a.country}</p>
+      </div>
+    </div>
+  );
+}
 
 function Content() {
   const { user } = useAuth();
@@ -27,7 +52,7 @@ function Content() {
   const [preview, setPreview] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!file) return;
+    if (!file) return setPreview(null);
     const url = URL.createObjectURL(file);
     setPreview(url);
     return () => URL.revokeObjectURL(url);
@@ -84,20 +109,10 @@ function Content() {
                       <Link href={ROUTES.addresses} className="flex min-h-14 items-center gap-3 rounded-box bg-primary-50 p-3.5 text-[14px] font-semibold text-primary-dark transition-colors hover:bg-primary-100 active:scale-[0.99] sm:p-4">
                         <Location size={20} variant="Bold" className="shrink-0" /> <span className="min-w-0 flex-1">Gérer mon carnet d&apos;adresses <span className="hidden sm:inline">(plusieurs adresses, adresse par défaut)</span></span> <ArrowRight2 size={14} className="shrink-0" />
                       </Link>
-                      <AddressesForm profile={profile} />
+                      <DefaultAddress />
                     </div>
                   )}
-                  {tab === "security" && (
-                    <div className="flex items-start gap-3 rounded-box bg-page/60 p-4 sm:gap-4 sm:p-5">
-                      <span className="grid size-11 shrink-0 place-items-center rounded-full bg-primary-100 text-primary"><Lock size={22} variant="Bold" /></span>
-                      <div>
-                        <h3 className="flex items-center gap-2 text-[16px]"><Key size={16} /> Mot de passe</h3>
-                        <p className="mt-1 text-[14px] leading-[22px] text-ink-2">
-                          Pour changer votre mot de passe, utilisez le lien « Mot de passe oublié » sur la page de connexion : un e-mail de réinitialisation vous sera envoyé.
-                        </p>
-                      </div>
-                    </div>
-                  )}
+                  {tab === "security" && <SecuritySettings />}
                 </motion.div>
               </AnimatePresence>
             )}

@@ -17,7 +17,7 @@ import { Skeleton } from "@/shared/ui/Skeleton";
 import { toast } from "@/shared/ui/Toast";
 import { useCan } from "@/modules/auth/hooks/useCan";
 import { ConfirmDialog } from "../../ui/ConfirmDialog";
-import type { PeriodKey } from "../../dashboard/lib/stats";
+import type { PeriodKey } from "../../dashboard/lib/period";
 import { useReseller, useSetResellerActive, useUpdateResellerRate } from "../hooks/useResellers";
 import { AVAILABILITY_DOT, AVAILABILITY_LABEL } from "../types";
 

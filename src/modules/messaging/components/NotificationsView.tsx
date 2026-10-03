@@ -18,17 +18,17 @@ const PAGE_SIZE = 6;
 
 function Inner({ embedded }: { embedded?: boolean }) {
   const { user } = useAuth();
-  const { data, isLoading } = useNotifications();
+  const [page, setPage] = useState(1);
+  const { data, isLoading } = useNotifications(page, PAGE_SIZE);
   const canAssign = user?.role === "mukubwa" || user?.role === "admin";
   const { data: resellers = [] } = useResellerOptions(canAssign);
   const markAll = useMarkAllRead();
-  const [page, setPage] = useState(1);
 
-  const all = data ?? [];
-  const unread = all.filter((n) => !n.isRead);
-  const pageCount = Math.max(1, Math.ceil(all.length / PAGE_SIZE));
-  const items = all.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
-  const readAll = () => markAll.mutate(unread.map((n) => n.id));
+  const items = data?.results ?? [];
+  const total = data?.count ?? 0;
+  const unread = Number(data?.meta?.unread ?? 0);
+  const pageCount = Math.max(1, data?.totalPages ?? 1);
+  const readAll = () => markAll.mutate(undefined);
 
   return (
     <>
@@ -41,9 +41,9 @@ function Inner({ embedded }: { embedded?: boolean }) {
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3 sm:mb-6">
           <div className="min-w-0">
             <h1 className="text-[22px] leading-[28px] sm:text-h-page">Notifications</h1>
-            <p className="mt-1 text-[13px] text-ink-2 sm:text-[14px]">{unread.length > 0 ? `${unread.length} non lue${unread.length > 1 ? "s" : ""}` : "Vous êtes à jour"} · {all.length} au total</p>
+            <p className="mt-1 text-[13px] text-ink-2 sm:text-[14px]">{unread > 0 ? `${unread} non lue${unread > 1 ? "s" : ""}` : "Vous êtes à jour"} · {total} au total</p>
           </div>
-          {unread.length > 0 && (
+          {unread > 0 && (
             <Button className="hidden lg:inline-flex" variant="chip" size="sm" upper={false} leftIcon={<TickSquare size={16} />} loading={markAll.isPending} onClick={readAll}>
               Tout marquer comme lu
             </Button>
@@ -52,8 +52,8 @@ function Inner({ embedded }: { embedded?: boolean }) {
 
         {isLoading ? (
           <div className="space-y-3">{Array.from({ length: 4 }, (_, i) => <Skeleton key={i} className="h-28 w-full rounded-box" />)}</div>
-        ) : all.length === 0 ? (
-          <EmptyState icon={<BellIcon size={40} variant="Bulk" />} title="Aucune notification" description="Les nouvelles commandes et messages apparaîtront ici." />
+        ) : total === 0 ? (
+          <EmptyState icon={<BellIcon size={40} variant="Bulk" />} title="Aucune notification" description={user?.role === "client" ? "Le suivi de vos commandes et les réponses de nos revendeurs apparaîtront ici." : "Les nouvelles commandes et messages apparaîtront ici."} />
         ) : (
           <>
             <ul className="space-y-3">
@@ -70,7 +70,7 @@ function Inner({ embedded }: { embedded?: boolean }) {
 
       {/* Mobile : action collante au-dessus de la barre d'onglets */}
       <AnimatePresence>
-        {unread.length > 0 && (
+        {unread > 0 && (
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
@@ -78,7 +78,7 @@ function Inner({ embedded }: { embedded?: boolean }) {
             className="fixed inset-x-4 bottom-[calc(var(--tabbar-h)+12px)] z-40 lg:hidden"
           >
             <Button fullWidth upper={false} size="md" leftIcon={<TickSquare size={18} variant="Bold" />} loading={markAll.isPending} onClick={readAll} className="shadow-[0_10px_28px_rgba(26,186,26,.4)]">
-              Tout marquer comme lu ({unread.length})
+              Tout marquer comme lu ({unread})
             </Button>
           </motion.div>
         )}
@@ -87,10 +87,10 @@ function Inner({ embedded }: { embedded?: boolean }) {
   );
 }
 
-/** `embedded` : rendu dans le back-office (sans fil d'Ariane). Les revendeurs ne voient que leurs notifications. */
+/** `embedded` : rendu dans le back-office (sans fil d'Ariane). Chacun ne voit que ses propres notifications. */
 export function NotificationsView({ embedded }: { embedded?: boolean }) {
   return (
-    <AuthGuard roles={["revendeur", "mukubwa", "admin"]}>
+    <AuthGuard>
       <Inner embedded={embedded} />
     </AuthGuard>
   );

@@ -22,7 +22,7 @@ export function ConversationItem({ conversation: c, active, myId, onSelect, staf
   const client = others.find((p) => p.role === "client");
   const reseller = others.find((p) => p.role === "revendeur");
   const lead = staff ? client ?? others[0] : reseller ?? others[0];
-  const presence = lead?.role === "client" ? undefined : lead?.availability ?? (lead ? "online" : undefined);
+  const presence = lead?.role === "client" ? undefined : lead?.availability;
   const last = c.lastMessage;
   const unread = c.unreadCount > 0;
   const unassigned = !c.assignedRevendeur && !c.concluded;
@@ -48,7 +48,7 @@ export function ConversationItem({ conversation: c, active, myId, onSelect, staf
         </p>
         <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
           {c.relatedOrderId ? (
-            <span className="inline-flex items-center gap-1 rounded bg-chip px-1.5 py-0.5 text-[10px] font-bold uppercase text-ink-2"><Receipt2 size={11} variant="Bold" /> Commande #{c.relatedOrderId}</span>
+            <span className="inline-flex items-center gap-1 rounded bg-chip px-1.5 py-0.5 text-[10px] font-bold uppercase text-ink-2"><Receipt2 size={11} variant="Bold" /> {c.orderNumber ?? `Commande #${c.relatedOrderId}`}</span>
           ) : (
             <span className="rounded bg-chip px-1.5 py-0.5 text-[10px] font-bold uppercase text-ink-2">Support</span>
           )}

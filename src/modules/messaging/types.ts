@@ -1,6 +1,6 @@
 import type { OrderStatus } from "@/modules/orders/types";
 
-/** shop.models.Conversation / Message / Notification (+ v2 : présence, propositions de prix, notifications par utilisateur) */
+/** Discussions (commande / support), messages, propositions de prix et notifications — API `/conversations/`, `/notifications/`. */
 export type Availability = "online" | "away" | "offline";
 
 export interface Participant {
@@ -24,7 +24,8 @@ export interface PriceProposalMeta {
   oldPrice: number;
   newPrice: number;
   reason: string | null;
-  status: "pending" | "accepted" | "refused";
+  /** superseded : remplacée par une proposition plus récente sur le même article */
+  status: "pending" | "accepted" | "refused" | "superseded";
 }
 
 export interface SystemMeta {
@@ -42,17 +43,25 @@ export interface Message {
   timestamp: string;
   /** vu par au moins un autre participant (coches « lu ») */
   seen: boolean;
+  /** Identifiant d'envoi côté client (idempotence + remplacement du message optimiste) */
+  clientMsgId?: string;
 }
 
 export const isPriceProposal = (m: Pick<Message, "metadata">): boolean => (m.metadata as { type?: string } | null | undefined)?.type === "price_proposal";
 export const isSystemMessage = (m: Pick<Message, "metadata">) => (m.metadata as { type?: string } | null | undefined)?.type === "system";
 
+export type ConversationKind = "order" | "support";
+
 export interface Conversation {
   id: number;
   createdAt: string;
+  kind: ConversationKind;
   isFromCart: boolean;
   relatedOrderId: number | null;
-  /** "Discussion exclusivement sur la commande #12" / "Discussion #5 avec agent" */
+  /** Numéro public de la commande liée (CB-XXXX-XXXX) */
+  orderNumber: string | null;
+  subject: string;
+  /** "Commande CB-…" / sujet de la discussion de support */
   displayName: string;
   participants: Participant[];
   lastMessage: Pick<Message, "content" | "timestamp" | "sender" | "image"> | null;
@@ -68,6 +77,16 @@ export interface Conversation {
   client?: { id: number; name: string } | null;
 }
 
+/** Commande liée à une discussion (statut, lignes ajustables, présence du revendeur). */
+export interface ConversationOrder {
+  id: number;
+  number: string;
+  status: OrderStatus;
+  totalPrice: number;
+  items: { id: number; productName: string; variantLabel: string; quantity: number; unitPrice: number }[];
+  resellerAvailability?: Availability;
+}
+
 export interface SendMessageInput {
   content?: string;
   image?: File | null;
@@ -79,25 +98,47 @@ export interface PriceProposalInput {
   reason?: string;
 }
 
+export interface NewSupportInput {
+  subject?: string;
+  message: string;
+}
+
 export type NotificationType = "order" | "chat";
+
+export type NotificationKind =
+  | "order_placed"
+  | "order_assigned"
+  | "assignment_declined"
+  | "order_status"
+  | "new_message"
+  | "support_request"
+  | "conversation_assigned"
+  | "price_proposed"
+  | "price_answered";
 
 export interface Notification {
   id: number;
-  /** Destinataire : id utilisateur ; 0 = boîte commune des responsables */
-  userId: number;
-  conversationId: number;
+  kind: NotificationKind;
+  /** Lien front (ex. /messages/12, /admin/commandes/4, /compte/commandes/CB-…) */
+  link: string;
+  conversationId: number | null;
+  orderId: number | null;
   title: string;
   body: string;
   type: NotificationType | null;
   isRead: boolean;
   createdAt: string;
-  /** Commande déjà assignée à un revendeur */
-  isOrderAssigned: boolean;
+}
+
+export interface UnreadCounts {
+  notifications: number;
+  /** Discussions comportant des messages non lus */
+  conversations: number;
 }
 
 /** Filtres de la boîte de réception (côté UI). */
 export type InboxFilter = "all" | "unassigned" | "awaiting";
 
-/** Canal temps réel global de la messagerie (mock) ; en API : `user:{id}` / `conversation:{id}`. */
+/** Canal temps réel global de la messagerie : toute discussion visible (nouveau message, lu, mise à jour). */
 export const MESSAGING_CHANNEL = "messaging";
 export type MessagingEvent = { type: "message" | "seen" | "conversation"; conversationId: number };

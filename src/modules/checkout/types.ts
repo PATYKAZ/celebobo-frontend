@@ -17,3 +17,14 @@ export interface CheckoutForm {
 }
 
 export const CHECKOUT_STEPS = ["Livraison", "Paiement", "Confirmation"] as const;
+
+/** Zone de livraison (frais et délai selon la ville). */
+export interface ShippingZone {
+  id: number;
+  name: string;
+  cities: string[];
+  fee: number;
+  freeThreshold: number | null;
+  deliveryEstimate: string;
+  isDefault: boolean;
+}

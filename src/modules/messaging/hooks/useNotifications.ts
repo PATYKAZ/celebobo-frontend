@@ -1,53 +1,77 @@
 "use client";
 
 import { useCallback } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { env } from "@/config/env";
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
-import { useRealtime } from "@/shared/hooks/useRealtime";
+import { useRealtime, useRealtimeConnected } from "@/shared/hooks/useRealtime";
 import { channels, type PresenceEvent, type UserEvent } from "@/shared/lib/realtime";
 import { toast } from "@/shared/ui/Toast";
+import { conversationsService } from "../services/conversations.service";
+import { toNotification, type NotificationDto } from "../services/messaging.mapper";
 import { notificationsService } from "../services/notifications.service";
+import { MESSAGING_CHANNEL, type Notification, type UnreadCounts } from "../types";
 
 export const notificationKeys = {
   all: ["notifications"] as const,
+  list: (userId: number | undefined, page: number, pageSize: number) => ["notifications", "list", userId, page, pageSize] as const,
+  counts: (userId: number | undefined) => ["notifications", "counts", userId] as const,
   resellers: ["notifications", "resellers"] as const,
 };
 
-/** ids déjà annoncés par un toast (plusieurs composants utilisent ce hook en même temps). */
+/** ids déjà annoncés par un toast (plusieurs composants écoutent le même canal). */
 const toasted = new Set<number>();
 
-/** Notifications de l'utilisateur courant, mises à jour en direct (+ toast à l'arrivée d'une nouvelle). */
-export function useNotifications(enabled = true) {
+/** Notifications paginées de l'utilisateur courant, rafraîchies à l'arrivée d'une nouvelle. */
+export function useNotifications(page = 1, pageSize = 6) {
+  const { user } = useAuth();
+  const live = useRealtimeConnected();
+  return useQuery({
+    queryKey: notificationKeys.list(user?.id, page, pageSize),
+    queryFn: () => notificationsService.list({ page, pageSize }),
+    enabled: !!user,
+    placeholderData: keepPreviousData,
+    refetchInterval: live ? false : 30000,
+  });
+}
+
+/**
+ * Compteurs non lus (notifications + discussions) : `unread.counts` du WebSocket, toast à chaque nouvelle notification,
+ * polling de secours si la connexion tombe. Monté par les badges (header, barre d'onglets, back-office).
+ */
+export function useUnreadCounts() {
   const qc = useQueryClient();
   const { user } = useAuth();
-  const query = useQuery({ queryKey: notificationKeys.all, queryFn: notificationsService.list, refetchInterval: env.USE_MOCKS ? false : 20000, enabled });
+  const live = useRealtimeConnected();
+  const key = notificationKeys.counts(user?.id);
+  const query = useQuery({ queryKey: key, queryFn: notificationsService.counts, enabled: !!user, refetchInterval: live ? false : 30000 });
 
   const onEvent = useCallback(
-    async (e: UserEvent) => {
+    (e: UserEvent) => {
+      if (e.type === "unread") return qc.setQueryData<UnreadCounts>(key, { notifications: e.notifications, conversations: e.conversations });
+      if (e.type === "resync") return qc.invalidateQueries({ queryKey: notificationKeys.all });
       if (e.type !== "notification") return;
-      const id = e.notificationId;
-      if (!id || toasted.has(id)) {
-        qc.invalidateQueries({ queryKey: notificationKeys.all, exact: true });
-        return;
-      }
-      toasted.add(id);
-      const list = await qc.fetchQuery({ queryKey: notificationKeys.all, queryFn: notificationsService.list, staleTime: 0 });
-      const n = list.find((x) => x.id === id);
-      if (n && !n.isRead) toast.info(n.title, n.body);
+      qc.invalidateQueries({ queryKey: ["notifications", "list"] });
+      if (toasted.has(e.notificationId) || !e.notification) return;
+      toasted.add(e.notificationId);
+      const n: Notification = toNotification(e.notification as NotificationDto);
+      // pas de toast pour un message de la discussion déjà ouverte
+      if (n.kind === "new_message" && n.conversationId && window.location.pathname.endsWith(`/messages/${n.conversationId}`)) return;
+      toast.info(n.title, n.body);
     },
-    [qc],
+    [qc, key],
   );
-  useRealtime<UserEvent>(enabled && user && user.role !== "client" ? channels.user(user.id) : null, onEvent);
+  useRealtime<UserEvent>(user ? channels.user(user.id) : null, onEvent);
+  // un nouveau message ne crée pas toujours de notification : on relit le compteur de discussions
+  useRealtime(user ? MESSAGING_CHANNEL : null, () => qc.invalidateQueries({ queryKey: key, exact: true }));
   return query;
 }
 
 export function useUnreadNotificationsCount(enabled = true) {
-  const { data } = useNotifications(enabled);
-  return data?.filter((n) => !n.isRead).length ?? 0;
+  const { data } = useUnreadCounts();
+  return enabled ? data?.notifications ?? 0 : 0;
 }
 
-/** Revendeurs actifs assignables (avec présence + charge), rafraîchis quand la disponibilité change. */
+/** Revendeurs assignables (avec présence + charge), rafraîchis quand la disponibilité change. */
 export function useResellerOptions(enabled = true) {
   const qc = useQueryClient();
   const query = useQuery({ queryKey: notificationKeys.resellers, queryFn: notificationsService.resellers, enabled, staleTime: 60_000 });
@@ -55,7 +79,7 @@ export function useResellerOptions(enabled = true) {
   return query;
 }
 
-function useNotifMutation<V>(fn: (v: V) => Promise<void>) {
+function useNotifMutation<V>(fn: (v: V) => Promise<unknown>) {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: fn,
@@ -69,23 +93,19 @@ function useNotifMutation<V>(fn: (v: V) => Promise<void>) {
 
 export const useMarkNotificationRead = () => useNotifMutation((id: number) => notificationsService.markRead(id));
 
-/** Assigne la commande d'une notification à un revendeur (responsable). */
+export const useMarkAllRead = () => useNotifMutation(() => notificationsService.markAllRead());
+
+/** Responsable : assigner la commande (« Nouvelle commande ») ou la discussion de support (« Nouvelle discussion ») d'une notification. */
 export const useAssignReseller = () =>
-  useNotifMutation(({ notificationId, revendeurId, discussion }: { notificationId: number; revendeurId: number; discussion?: boolean }) =>
-    discussion ? notificationsService.assignDiscussion(notificationId, { revendeurId }) : notificationsService.assign(notificationId, { revendeurId }),
-  );
-
-export const useMukubwaReply = () => useNotifMutation(({ id, message }: { id: number; message: string }) => notificationsService.mukubwaReply(id, { message }));
-
-export const useRevendeurReply = () =>
-  useNotifMutation(({ id, accept, message }: { id: number; accept: boolean; message?: string }) => notificationsService.revendeurReply(id, { accept, message }));
-
-export function useMarkAllRead() {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: async (ids: number[]) => {
-      await Promise.all(ids.map((id) => notificationsService.markRead(id)));
-    },
-    onSuccess: () => qc.invalidateQueries({ queryKey: notificationKeys.all }),
+  useNotifMutation(async ({ notification: n, revendeurId }: { notification: Notification; revendeurId: number }) => {
+    if (n.kind === "support_request" && n.conversationId) await conversationsService.assign(n.conversationId, revendeurId);
+    else if (n.orderId) await notificationsService.assignOrder(n.orderId, revendeurId);
+    if (!n.isRead) await notificationsService.markRead(n.id);
   });
-}
+
+/** Revendeur : accepter (la notification est lue) ou décliner la commande assignée. */
+export const useRevendeurReply = () =>
+  useNotifMutation(async ({ notification: n, accept, message }: { notification: Notification; accept: boolean; message?: string }) => {
+    if (!accept && n.orderId) await notificationsService.declineOrder(n.orderId, message);
+    await notificationsService.markRead(n.id);
+  });

@@ -1,7 +1,8 @@
 export * from "./types";
 export { ordersService } from "./services/orders.service";
+export { toOrder, toStatus, STATUS_FROM_API, STATUS_TO_API, PAYMENT_FROM_API, PAYMENT_TO_API, type OrderDto, type OrderSummaryDto, type OrderLineDto, type StatusEntryDto, type PersonDto, type ApiOrderStatus, type ApiPaymentMethod } from "./services/orders.mapper";
 export { orderWorkflow, canTransition, availableTransitions } from "./services/workflow.service";
-export { useOrders, useOrder, useCreateOrder, orderKeys } from "./hooks/useOrders";
+export { useOrders, useOrder, useCreateOrder, useCancelOrder, orderInvoiceUrl, orderKeys } from "./hooks/useOrders";
 export { useSetOrderStatus, useAssignOrder } from "./hooks/useOrderWorkflow";
 export { useResellerAvailability } from "./hooks/useResellerAvailability";
 export { OrderCard } from "./components/OrderCard";

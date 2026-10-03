@@ -114,7 +114,7 @@ function DealCard({ product, content }: { product: Product; content: HomeContent
       {/* Infos */}
       <div className="min-w-0">
         <Stars rating={product.rating ?? 5} count={product.reviewsCount} />
-        <Link href={ROUTES.product(product.id)} className="mt-2 block text-[16px] font-bold leading-[19.2px] transition-colors hover:text-primary">
+        <Link href={ROUTES.product(product.slug)} className="mt-2 block text-[16px] font-bold leading-[19.2px] transition-colors hover:text-primary">
           {product.name}
         </Link>
         <Price current={pricing.current} original={pricing.original} size="lg" className="mt-4" />

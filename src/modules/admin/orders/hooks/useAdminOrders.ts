@@ -4,6 +4,7 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRealtime } from "@/shared/hooks/useRealtime";
 import { channels, type UserEvent } from "@/shared/lib/realtime";
+import { can } from "@/modules/auth/permissions";
 import { useAuthStore } from "@/modules/auth/store/auth.store";
 import { adminOrdersService } from "../services/admin-orders.service";
 import type { AdminOrderListParams } from "../types";
@@ -27,7 +28,8 @@ export function useAdminOrder(id: number | undefined) {
   return useQuery({ queryKey: adminOrderKeys.detail(id ?? 0), queryFn: () => adminOrdersService.detail(id as number), enabled: !!id, retry: false });
 }
 
-/** Tous les revendeurs (actifs + inactifs) avec disponibilité et charge — pour l'assignation. */
+/** Revendeurs assignables avec disponibilité et charge — réservé à ceux qui assignent les commandes. */
 export function useResellerOptions(enabled = true) {
-  return useQuery({ queryKey: adminOrderKeys.resellers, queryFn: adminOrdersService.resellers, enabled, staleTime: 15_000 });
+  const canAssign = useAuthStore((s) => can(s.user, "orders.assign"));
+  return useQuery({ queryKey: adminOrderKeys.resellers, queryFn: adminOrdersService.resellers, enabled: enabled && canAssign, staleTime: 15_000 });
 }

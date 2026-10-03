@@ -8,4 +8,4 @@ export { conversationsService } from "./services/conversations.service";
 export { notificationsService } from "./services/notifications.service";
 export type { ResellerOption } from "./services/notifications.service";
 export { useConversations, useConversation, useMessages, useSendMessage, useCreateConversation, useUnreadMessagesCount, useTypingUsers, usePriceProposal, useRespondProposal, messagingKeys } from "./hooks/useConversations";
-export { useNotifications, useUnreadNotificationsCount, useAssignReseller, useMarkNotificationRead, useMukubwaReply, useRevendeurReply, useResellerOptions } from "./hooks/useNotifications";
+export { useNotifications, useUnreadCounts, useUnreadNotificationsCount, useAssignReseller, useMarkNotificationRead, useRevendeurReply, useResellerOptions } from "./hooks/useNotifications";

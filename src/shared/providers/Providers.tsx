@@ -3,12 +3,14 @@
 import { MotionConfig } from "motion/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState, type ReactNode } from "react";
-import { useSessionSync } from "@/modules/auth/hooks/useAuth";
+import { useAuth, useSessionSync } from "@/modules/auth/hooks/useAuth";
+import { useRealtimeSession } from "@/shared/hooks/useRealtime";
 import { Toaster } from "@/shared/ui/Toast";
 import { CartOwnerSync } from "@/modules/cart/components/CartOwnerSync";
 
 function SessionSync() {
   useSessionSync();
+  useRealtimeSession(useAuth().user?.id ?? null);
   return null;
 }
 

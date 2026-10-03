@@ -1,5 +1,5 @@
 import { cn } from "@/shared/lib/cn";
-import type { Availability } from "@/shared/mock-db";
+import type { ResellerAvailability as Availability } from "../types";
 
 const MAP: Record<Availability, { cls: string; label: string }> = {
   online: { cls: "bg-primary", label: "En ligne" },

@@ -7,3 +7,8 @@ import type { AuditListParams } from "../types";
 export function useAuditLog(params: AuditListParams) {
   return useQuery({ queryKey: ["admin", "audit", params], queryFn: () => auditService.list(params), placeholderData: keepPreviousData });
 }
+
+/** Types d'éléments suivis (filtre). */
+export function useAuditObjectTypes() {
+  return useQuery({ queryKey: ["admin", "audit", "object-types"], queryFn: auditService.objectTypes, staleTime: Infinity });
+}

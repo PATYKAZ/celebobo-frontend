@@ -12,8 +12,8 @@ import { ROUTES } from "@/config/routes";
 import { useRelatedProducts } from "../hooks/useProducts";
 import { ProductCard } from "./ProductCard";
 
-export function RelatedProducts({ productId }: { productId: number }) {
-  const { data, isLoading } = useRelatedProducts(productId);
+export function RelatedProducts({ slug }: { slug: string }) {
+  const { data, isLoading } = useRelatedProducts(slug);
   const [sw, setSw] = useState<SwiperType>();
   const [edge, setEdge] = useState({ begin: true, end: false });
 

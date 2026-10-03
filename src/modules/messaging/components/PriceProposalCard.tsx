@@ -10,8 +10,6 @@ import type { PriceProposalMeta } from "../types";
 import { useRespondProposal } from "../hooks/useConversations";
 
 interface Props {
-  conversationId: number;
-  messageId: number;
   meta: PriceProposalMeta;
   /** Le lecteur est le client concerné → boutons Accepter / Refuser */
   canRespond: boolean;
@@ -22,18 +20,19 @@ const STATUS = {
   pending: { label: "En attente de réponse du client", icon: Timer1, cls: "bg-star/15 text-[#b87400]" },
   accepted: { label: "Acceptée", icon: TickCircle, cls: "bg-primary-100 text-primary-dark" },
   refused: { label: "Refusée", icon: CloseCircle, cls: "bg-danger-100 text-danger" },
+  superseded: { label: "Remplacée par une nouvelle proposition", icon: Timer1, cls: "bg-chip text-ink-3" },
 } as const;
 
 /** Carte « Proposition de prix » : ancien prix barré → nouveau prix, motif, état, actions client. */
-export function PriceProposalCard({ conversationId, messageId, meta, canRespond, mine }: Props) {
-  const respond = useRespondProposal(conversationId);
+export function PriceProposalCard({ meta, canRespond, mine }: Props) {
+  const respond = useRespondProposal();
   const st = STATUS[meta.status];
   const Icon = st.icon;
   const diff = meta.oldPrice - meta.newPrice;
 
   const answer = (accept: boolean) =>
     respond.mutate(
-      { messageId, accept },
+      { proposalId: meta.proposalId, accept },
       {
         onSuccess: () => (accept ? toast.success("Prix mis à jour", `${meta.productName} : ${formatPrice(meta.newPrice)}`) : toast.info("Proposition refusée")),
         onError: (e) => toast.error("Action impossible", getErrorMessage(e)),
@@ -48,7 +47,7 @@ export function PriceProposalCard({ conversationId, messageId, meta, canRespond,
       <div className="space-y-3 p-3.5">
         <div>
           <p className="break-words text-[14px] font-bold leading-[19px]">{meta.productName}</p>
-          <p className="text-[12px] text-ink-3">Quantité : {meta.quantity} · Commande #{meta.orderId}</p>
+          <p className="text-[12px] text-ink-3">Quantité : {meta.quantity}</p>
         </div>
         <div className="flex items-end justify-between gap-3">
           <div>

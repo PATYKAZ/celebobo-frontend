@@ -58,9 +58,9 @@ function FeaturedBrands({ brands }: { brands?: Brand[] }) {
 }
 
 /** Pastille ronde « lanceur d'app » (mobile) / vignette 84 px (desktop). */
-function CategoryDot({ id, name, image, size }: { id: number; name: string; image: string | null; size: number }) {
+function CategoryDot({ slug, name, image, size }: { slug: string; name: string; image: string | null; size: number }) {
   return (
-    <Link href={ROUTES.category(id)} className="group flex flex-col items-center gap-2 py-1 active:scale-95">
+    <Link href={ROUTES.category(slug)} className="group flex flex-col items-center gap-2 py-1 active:scale-95">
       <span className="relative block overflow-hidden rounded-full bg-chip ring-2 ring-transparent transition-all duration-500 group-hover:-translate-y-1 group-hover:ring-primary" style={{ width: size, height: size }}>
         {image && <Image src={image} alt="" fill sizes={`${size}px`} className="object-cover transition-transform duration-700 group-hover:scale-125" />}
       </span>
@@ -90,7 +90,7 @@ function TopCategories() {
           <div className="snap-row -mx-4 mt-3 scroll-px-4 gap-1 px-4 md:hidden">
             {categories.map((c) => (
               <div key={c.id} className="w-[76px]">
-                <CategoryDot id={c.id} name={c.name} image={c.image} size={64} />
+                <CategoryDot slug={c.slug} name={c.name} image={c.image} size={64} />
               </div>
             ))}
           </div>
@@ -109,7 +109,7 @@ function TopCategories() {
             >
               {categories.map((c) => (
                 <SwiperSlide key={c.id}>
-                  <CategoryDot id={c.id} name={c.name} image={c.image} size={84} />
+                  <CategoryDot slug={c.slug} name={c.name} image={c.image} size={84} />
                 </SwiperSlide>
               ))}
             </Swiper>

@@ -1,112 +1,111 @@
 import { ENDPOINTS } from "@/config/endpoints";
-import { env } from "@/config/env";
-import { listConversations } from "@/modules/messaging/mocks/store";
+import { api, type PageEnvelope } from "@/shared/lib/api";
+import type { ProfileDto } from "@/modules/auth/services/auth.mapper";
+import { useAuthStore } from "@/modules/auth/store/auth.store";
+import { conversationsService } from "@/modules/messaging/services/conversations.service";
 import type { Availability } from "@/modules/messaging/types";
+import { money } from "@/modules/products/services/products.mapper";
+import { PAYMENT_FROM_API, STATUS_FROM_API, toOrder, type OrderSummaryDto } from "@/modules/orders/services/orders.mapper";
 import { availableTransitions } from "@/modules/orders/services/workflow.service";
-import { nextOrderStatus, type OrderStatus } from "@/modules/orders/types";
-import { api, ApiError, mockResponse } from "@/shared/lib/api";
-import { channels, realtime, type PresenceEvent } from "@/shared/lib/realtime";
-import { DB, fullName, userById } from "@/shared/mock-db";
-import { commissionFor, getActor, inPeriod, invitedBy, pctChange, periodMonth, productOf, resellerStats, saleTotal, totals } from "@/shared/mock-db/selectors";
+import { nextOrderStatus, ORDER_FINAL, type OrderStatus } from "@/modules/orders/types";
+import { periodLabels, type RecentSaleDto, type SummaryDto } from "../../dashboard/services/dashboard.mapper";
+import type { CommissionSummaryDto } from "../../commissions/services/commissions.mapper";
+import type { InviteeDto } from "../../resellers/services/resellers.mapper";
 import type { MyInvitesData, MyResellerStats, ResellerDashboardData } from "../types";
 
-const FINAL: OrderStatus[] = ["livree", "annulee", "retournee"];
+const { dashboard, orders, commissions, me } = ENDPOINTS.admin;
+const OPEN_ORDERS_SHOWN = 8;
 
-function buildDashboard(): ResellerDashboardData {
-  const me = getActor();
-  const u = userById(me.id);
-  const cur = periodMonth(0);
-  const prev = periodMonth(-1);
-  const mine = DB.sales.filter((s) => s.sellerId === me.id);
-  const now = totals(mine.filter((s) => inPeriod(s, cur)));
-  const before = totals(mine.filter((s) => inPeriod(s, prev)));
-  const orders = DB.orders.filter((o) => o.assignedRevendeur?.id === me.id);
-  const convs = listConversations();
-  const byStatus: ResellerDashboardData["orders"]["byStatus"] = {};
-  orders.forEach((o) => {
-    byStatus[o.status] = (byStatus[o.status] ?? 0) + 1;
-  });
-  const comm = commissionFor(me.id);
-
-  return {
-    period: { label: cur.label, previousLabel: prev.label },
-    availability: (u?.availability ?? "online") as Availability,
-    code: u?.codeRevendeur ?? "",
-    invitedCount: invitedBy(me.id).length,
-    orders: { assigned: orders.length, open: orders.filter((o) => !FINAL.includes(o.status)).length, byStatus },
-    awaitingReply: convs.filter((c) => c.awaitingReply).length,
-    sales: { revenue: now.revenue, previousRevenue: before.revenue, delta: pctChange(now.revenue, before.revenue), count: now.count, profit: now.profit },
-    commission: { rate: comm.rate, earned: comm.earned, paid: comm.paid, due: comm.due },
-    openOrders: orders
-      .filter((o) => !FINAL.includes(o.status))
-      .sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt))
-      .slice(0, 8)
-      .map((o) => {
-        const next = nextOrderStatus(o.status);
-        return {
-          id: o.id,
-          createdAt: o.createdAt,
-          status: o.status,
-          clientName: o.user.name,
-          total: o.totalPrice,
-          itemsSummary: o.items.map((i) => `${i.productName}${i.quantity > 1 ? ` ×${i.quantity}` : ""}`).join(", "),
-          conversationId: o.conversationId,
-          unread: convs.find((c) => c.id === o.conversationId)?.unreadCount ?? 0,
-          nextStatus: next && availableTransitions(me, o).includes(next) ? next : null,
-        };
-      }),
-    recentSales: mine
-      .filter((s) => s.status === "valide")
-      .slice(0, 6)
-      .map((s) => ({ id: s.id, productName: productOf(s.productId)?.name ?? "Produit", productImage: productOf(s.productId)?.image ?? null, quantity: s.quantity, total: saleTotal(s), soldAt: s.soldAt, method: s.method })),
-  };
-}
-
-function buildInvites(): MyInvitesData {
-  const me = getActor();
-  const u = userById(me.id);
-  const rows = invitedBy(me.id).map((c) => {
-    const orders = DB.orders.filter((o) => o.user.id === c.id && o.status !== "annulee");
-    return { id: c.id, name: fullName(c), email: c.email, joinedAt: c.joinedAt, ordersCount: orders.length, ordersTotal: orders.reduce((n, o) => n + o.totalPrice, 0) };
-  });
-  return { code: u?.codeRevendeur ?? "", invitedCount: rows.length, ordersTotal: rows.reduce((n, r) => n + r.ordersTotal, 0), invited: rows.sort((a, b) => +new Date(b.joinedAt) - +new Date(a.joinedAt)) };
+/** Compteurs par statut de l'API → statuts du front. */
+function byStatus(raw: Record<string, number> = {}): Partial<Record<OrderStatus, number>> {
+  const out: Partial<Record<OrderStatus, number>> = {};
+  for (const [status, n] of Object.entries(raw)) {
+    const front = STATUS_FROM_API[status as keyof typeof STATUS_FROM_API];
+    if (front && n) out[front] = n;
+  }
+  return out;
 }
 
 export const resellerSpaceService = {
-  dashboard(): Promise<ResellerDashboardData> {
-    if (env.USE_MOCKS) return mockResponse(buildDashboard, 250);
-    return api.get<ResellerDashboardData>(ENDPOINTS.admin.me.dashboard);
+  /** Tableau de bord du revendeur connecté (l'API limite chaque liste à ses commandes et ventes). */
+  async dashboard(): Promise<ResellerDashboardData> {
+    const actor = useAuthStore.getState().user;
+    const [profile, summary, list, recent, commission, conversations] = await Promise.all([
+      api.get<ProfileDto>(ENDPOINTS.auth.me),
+      api.get<SummaryDto>(dashboard.summary, { params: { period: "30d" } }),
+      api.get<PageEnvelope<OrderSummaryDto>>(orders.list, { params: { pageSize: 30 } }),
+      api.get<RecentSaleDto[]>(dashboard.recentSales),
+      api.get<CommissionSummaryDto>(commissions.summary),
+      conversationsService.list(),
+    ]);
+    const counts = byStatus(list.meta.counts as Record<string, number> | undefined);
+    const labels = periodLabels("30d", summary.start, summary.end);
+    const total = (statuses: OrderStatus[]) => statuses.reduce((n, s) => n + (counts[s] ?? 0), 0);
+    const all = Object.keys(counts) as OrderStatus[];
+    return {
+      period: { label: labels.periodLabel, previousLabel: labels.previousPeriodLabel },
+      availability: profile.reseller?.availability ?? "offline",
+      code: profile.reseller?.referralCode ?? "",
+      invitedCount: profile.reseller?.invitedCount ?? 0,
+      orders: { assigned: total(all), open: total(all.filter((s) => !ORDER_FINAL.includes(s))), byStatus: counts },
+      awaitingReply: conversations.filter((c) => c.awaitingReply).length,
+      sales: {
+        revenue: money(summary.revenue.value),
+        previousRevenue: money(summary.revenue.previous),
+        delta: summary.revenue.change,
+        count: Number(summary.salesCount.value),
+        profit: money(summary.profit.value),
+      },
+      commission: { rate: Number(commission.rate), earned: money(commission.earnedTotal), paid: money(commission.paidTotal), due: money(commission.due) },
+      openOrders: list.results
+        .map(toOrder)
+        .filter((o) => !ORDER_FINAL.includes(o.status))
+        .slice(0, OPEN_ORDERS_SHOWN)
+        .map((o) => {
+          const next = nextOrderStatus(o.status);
+          const conversation = conversations.find((c) => c.relatedOrderId === o.id);
+          return {
+            id: o.id,
+            createdAt: o.createdAt,
+            status: o.status,
+            clientName: o.user.name,
+            total: o.totalPrice,
+            itemsSummary: `${o.previewName ?? "Commande"}${(o.itemsCount ?? 1) > 1 ? ` +${(o.itemsCount ?? 1) - 1}` : ""}`,
+            conversationId: conversation?.id ?? null,
+            unread: conversation?.unreadCount ?? 0,
+            nextStatus: next && availableTransitions(actor, o).includes(next) ? next : null,
+          };
+        }),
+      recentSales: recent.slice(0, 6).map((s) => ({
+        id: s.id,
+        productName: s.productName,
+        productImage: s.productImage || null,
+        quantity: s.quantity,
+        total: money(s.total),
+        soldAt: s.soldAt,
+        method: PAYMENT_FROM_API[s.paymentMethod],
+      })),
+    };
   },
 
-  invites(): Promise<MyInvitesData> {
-    if (env.USE_MOCKS) return mockResponse(buildInvites, 250);
-    return api.get<MyInvitesData>(ENDPOINTS.admin.me.invites);
+  async invites(): Promise<MyInvitesData> {
+    const [referral, page] = await Promise.all([
+      api.get<{ code: string }>(me.referral),
+      api.get<PageEnvelope<InviteeDto>>(me.invitees, { params: { pageSize: 100 } }),
+    ]);
+    const invited = page.results.map((i) => ({ id: i.id, name: i.name, email: i.email, joinedAt: i.joinedAt, ordersCount: i.ordersCount, ordersTotal: money(i.ordersTotal) }));
+    return { code: referral.code, invitedCount: page.meta.count, ordersTotal: invited.reduce((n, r) => n + r.ordersTotal, 0), invited };
   },
 
-  /** Disponibilité (en ligne / absent / hors ligne) — diffusée en temps réel (canal presence). */
+  /** Disponibilité (en ligne / absent / hors ligne) — diffusée en temps réel par l'API (canal presence). */
   async setAvailability(availability: Availability): Promise<Availability> {
-    if (env.USE_MOCKS) {
-      const me = userById(getActor().id);
-      if (!me || me.role !== "revendeur") throw new ApiError(403, "Réservé aux revendeurs.");
-      me.availability = availability;
-      realtime.emit<PresenceEvent>(channels.presence, { type: "availability", userId: me.id, availability });
-      return mockResponse(availability, 150);
-    }
-    const r = await api.patch<{ availability: Availability }>(ENDPOINTS.admin.resellersAdmin.availability, { availability });
-    return r.availability;
+    const profile = await api.patch<ProfileDto>(me.availability, { availability });
+    return profile.reseller?.availability ?? availability;
   },
 
-  /** Code + nombre d'invités du revendeur connecté (source unique : base de démo / API). */
+  /** Code + nombre d'invités du revendeur connecté. */
   async myStats(): Promise<MyResellerStats> {
-    if (env.USE_MOCKS) {
-      return mockResponse(() => {
-        const id = getActor().id;
-        const u = userById(id);
-        const isReseller = u?.role === "revendeur";
-        return { code: isReseller ? (u?.codeRevendeur ?? null) : null, invitedCount: isReseller ? resellerStats(id).invitedCount : 0 };
-      }, 100);
-    }
-    const d = await api.get<MyInvitesData>(ENDPOINTS.admin.me.invites);
-    return { code: d.code, invitedCount: d.invitedCount };
+    const profile = await api.get<ProfileDto>(ENDPOINTS.auth.me);
+    return { code: profile.reseller?.referralCode ?? null, invitedCount: profile.reseller?.invitedCount ?? 0 };
   },
 };

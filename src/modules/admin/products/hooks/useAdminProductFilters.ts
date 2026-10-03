@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useMemo } from "react";
-import type { AdminProductListParams, ProductStatusFilter } from "../types";
+import type { AdminProductListParams, ProductBadgeCode, ProductStatusFilter } from "../types";
 
 export const PAGE_SIZE = 10;
 
@@ -23,10 +23,9 @@ export function useAdminProductFilters() {
       outOfStock: sp.get("out") === "1",
       lowStock: sp.get("low") === "1",
       status: sp.get("status") === "trash" ? "trash" : "active",
-      badge: sp.get("badge") ?? undefined,
+      badge: (sp.get("badge") as ProductBadgeCode | null) ?? undefined,
       minPrice: num("min"),
       maxPrice: num("max"),
-      minDiscount: num("disc"),
     };
   }, [sp]);
 
@@ -46,7 +45,7 @@ export function useAdminProductFilters() {
   );
 
   const reset = useCallback(() => router.replace(pathname, { scroll: false }), [router, pathname]);
-  const activeCount = ["cat", "sale", "out", "low", "badge", "min", "max", "disc"].filter((k) => sp.has(k)).length;
+  const activeCount = ["cat", "sale", "out", "low", "badge", "min", "max"].filter((k) => sp.has(k)).length;
 
   return { params, set, reset, activeCount };
 }

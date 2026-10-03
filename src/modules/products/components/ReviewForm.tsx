@@ -9,14 +9,12 @@ import { Button } from "@/shared/ui/Button";
 import { Textarea } from "@/shared/ui/Form";
 import { toast } from "@/shared/ui/Toast";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
-import { displayName } from "@/modules/auth/types";
-import { useCanReview } from "../hooks/useCanReview";
-import { useAddReview } from "../hooks/useProducts";
+import { useAddReview, useReviewEligibility } from "../hooks/useProducts";
 
-export function ReviewForm({ productId }: { productId: number }) {
+export function ReviewForm({ slug }: { slug: string }) {
   const { user, isAuthenticated } = useAuth();
-  const mutation = useAddReview(productId);
-  const canReview = useCanReview(productId);
+  const mutation = useAddReview(slug);
+  const eligibility = useReviewEligibility(slug);
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
   const [message, setMessage] = useState("");
@@ -26,19 +24,19 @@ export function ReviewForm({ productId }: { productId: number }) {
     return (
       <div className="rounded-box bg-page/60 p-5 text-center">
         <p className="text-[14px] text-ink-2">Connectez-vous pour donner votre avis sur ce produit.</p>
-        <Button href={ROUTES.login(`/produits/${productId}`)} size="sm" className="mt-3">Se connecter</Button>
+        <Button href={ROUTES.login(ROUTES.product(slug))} size="sm" className="mt-3">Se connecter</Button>
       </div>
     );
   }
 
-  if (canReview.isLoading) return <div className="skeleton h-[120px] w-full !rounded-box" />;
-  if (!canReview.data) {
+  if (eligibility.isLoading) return <div className="skeleton h-[120px] w-full !rounded-box" />;
+  if (!eligibility.data?.canReview) {
     return (
       <div className="flex items-start gap-3 rounded-box bg-page/60 p-5">
         <span className="grid size-10 shrink-0 place-items-center rounded-full bg-white text-primary"><TickCircle size={20} variant="Bold" /></span>
         <div>
           <h4 className="text-[15px]">Les avis sont réservés aux acheteurs</h4>
-          <p className="mt-1 text-[13px] leading-[20px] text-ink-2">Pour garantir des avis authentiques, vous pourrez noter ce produit une fois votre commande livrée. Les avis publiés portent le badge « Achat vérifié ».</p>
+          <p className="mt-1 text-[13px] leading-[20px] text-ink-2">{eligibility.data?.reason || "Pour garantir des avis authentiques, vous pourrez noter ce produit une fois votre commande livrée. Les avis publiés portent le badge « Achat vérifié »."}</p>
         </div>
       </div>
     );
@@ -50,7 +48,7 @@ export function ReviewForm({ productId }: { productId: number }) {
     if (message.trim().length < 10) return setError("Votre avis doit contenir au moins 10 caractères.");
     setError(undefined);
     mutation.mutate(
-      { input: { rating, message: message.trim() }, author: { id: user.id, name: displayName(user), avatar: user.avatar } },
+      { rating, message: message.trim() },
       {
         onSuccess: () => {
           toast.success("Merci pour votre avis !");

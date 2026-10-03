@@ -59,7 +59,7 @@ function ConvertPanel({ co, onDone }: { co: ConvertibleOrder; onDone: () => void
     <motion.form onSubmit={submit} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} className="min-w-0 space-y-4 sm:space-y-5">
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div className="min-w-0">
-          <h3 className="text-[17px] leading-[24px] sm:text-[18px]">Commande #{o.id} — {o.user.name}</h3>
+          <h3 className="text-[17px] leading-[24px] sm:text-[18px]">Commande {o.number ?? `#${o.id}`} — {o.user.name}</h3>
           <p className="text-[13px] text-ink-3">Passée le {formatDate(o.createdAt)}{o.assignedRevendeur ? ` · revendeur : ${o.assignedRevendeur.name}` : ""}</p>
         </div>
         <StatusDot tone={ORDER_STATUS_TONE[o.status]}>{ORDER_STATUS_LABEL[o.status]}</StatusDot>
@@ -128,10 +128,10 @@ function ResultCard({ co, active, onSelect }: { co: ConvertibleOrder; active: bo
         active ? "border-primary bg-primary-50" : "border-line-3",
       )}
     >
-      <span className="grid size-10 shrink-0 place-items-center rounded-full bg-chip text-[13px] font-bold">#{o.id}</span>
+      <span className="grid size-10 shrink-0 place-items-center rounded-full bg-chip text-[11px] font-bold">{o.number?.slice(-4) ?? `#${o.id}`}</span>
       <span className="min-w-0 flex-1">
         <span className="block truncate text-[14px] font-bold">{o.user.name}</span>
-        <span className="block truncate text-[12px] text-ink-3">{o.items.map((i) => i.productName).join(", ")}</span>
+        <span className="block truncate text-[12px] text-ink-3">{o.items.length ? o.items.map((i) => i.productName).join(", ") : `${o.itemsCount ?? 0} article${(o.itemsCount ?? 0) > 1 ? "s" : ""}`}</span>
         {co.blockedReason && <span className="mt-1 inline-flex items-center gap-1 text-[12px] font-semibold text-danger"><Lock size={12} variant="Bold" /> {co.blockedReason}</span>}
       </span>
       <span className="shrink-0 text-right">
@@ -163,7 +163,9 @@ function ConvertOrderContent() {
     if (picked && window.matchMedia("(max-width: 1279px)").matches) panel.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, [picked]);
 
-  const current = picked?.convertible ? picked : null;
+  // la recherche ne renvoie que des résumés : la fiche (lignes) est chargée à la sélection
+  const { data: pickedDetail } = useConvertibleOrder(picked?.convertible ? picked.order.id : undefined);
+  const current = picked?.convertible && pickedDetail?.order.id === picked.order.id && pickedDetail.convertible ? pickedDetail : null;
   const blockedPreset = picked && !picked.convertible ? picked : null;
 
   return (

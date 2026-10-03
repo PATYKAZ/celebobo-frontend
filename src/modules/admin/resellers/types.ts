@@ -1,6 +1,6 @@
 import type { Paginated } from "@/shared/lib/api";
-import type { Availability } from "@/shared/mock-db/types";
-import type { PeriodKey } from "../dashboard/lib/stats";
+import type { ResellerAvailability as Availability } from "@/modules/auth/types";
+import type { PeriodKey } from "../dashboard/lib/period";
 
 export type { Availability };
 
@@ -12,7 +12,7 @@ export interface InvitedClient {
   ordersCount: number;
 }
 
-/** Revendeur (groupe Django « revendeur ») + clients invités via son code. Chiffres = base de démo unique. */
+/** Revendeur + clients invités via son code. Ventes = période demandée ; charge et invités = fiche détaillée. */
 export interface Reseller {
   id: number;
   name: string;

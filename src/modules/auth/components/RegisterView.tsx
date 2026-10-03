@@ -2,15 +2,17 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Call, Lock, Profile, Sms, UserTick } from "iconsax-reactjs";
+import { Call, Lock, Profile, Sms, SmsTracking, UserTick } from "iconsax-reactjs";
 import { useState, type FormEvent } from "react";
 import { ROUTES } from "@/config/routes";
 import { Breadcrumb } from "@/shared/layout/Breadcrumb";
 import { Button } from "@/shared/ui/Button";
 import { GoogleButton } from "./GoogleButton";
+import { EmptyState } from "@/shared/ui/EmptyState";
 import { Checkbox, Input } from "@/shared/ui/Form";
 import { toast } from "@/shared/ui/Toast";
-import { useRegister } from "../hooks/useAuth";
+import { getErrorMessage } from "@/shared/lib/api";
+import { useRegister, useResendVerification } from "../hooks/useAuth";
 import { AuthLayoutCard } from "./AuthLayoutCard";
 import { fieldError, generalError } from "./fieldErrors";
 import { useAuthRedirect } from "./useAuthRedirect";
@@ -20,10 +22,12 @@ type Form = typeof INITIAL;
 
 export function RegisterView() {
   const register = useRegister();
-  const { redirect, searchSuffix } = useAuthRedirect();
-  // Lien d'invitation d'un revendeur : /inscription?ref=4821 pré-remplit le code
-  const ref = useSearchParams().get("ref");
-  const [form, setForm] = useState<Form>({ ...INITIAL, codeRevendeur: ref && /^d{4}$/.test(ref) ? ref : "" });
+  const resend = useResendVerification();
+  const { next, redirect, searchSuffix } = useAuthRedirect();
+  // Lien d'invitation d'un revendeur : /inscription?code=4821 (ou ?ref=) pré-remplit le code
+  const params = useSearchParams();
+  const ref = params.get("ref") ?? params.get("code");
+  const [form, setForm] = useState<Form>({ ...INITIAL, codeRevendeur: ref && /^\d{4}$/.test(ref) ? ref : "" });
   const [terms, setTerms] = useState(false);
   const [errors, setErrors] = useState<Partial<Record<keyof Form | "terms", string>>>({});
 
@@ -48,9 +52,8 @@ export function RegisterView() {
     register.mutate(
       { ...form, phoneNumber: form.phoneNumber || undefined, codeRevendeur: form.codeRevendeur || undefined },
       {
-        onSuccess: (u) => {
-          toast.success("Compte créé", `Bienvenue ${u.firstName} !`);
-          redirect();
+        onSuccess: (r) => {
+          if (!r.verificationRequired) redirect();
         },
       },
     );
@@ -58,6 +61,12 @@ export function RegisterView() {
 
   const e = (k: keyof Form, ...api: string[]) => errors[k] ?? fieldError(register.error, k, ...api);
   const general = generalError(register.error);
+
+  const resendLink = () =>
+    resend.mutate(form.email, {
+      onSuccess: () => toast.success("E-mail renvoyé", "Pensez à vérifier vos spams."),
+      onError: (err) => toast.error("Envoi impossible", getErrorMessage(err)),
+    });
 
   return (
     <>
@@ -69,26 +78,38 @@ export function RegisterView() {
         headline="Une boutique tech, des revendeurs de confiance."
         footer={<>Déjà inscrit ? <Link href={`${ROUTES.login()}${searchSuffix ? `${searchSuffix}` : ""}`} className="font-bold text-primary hover:underline">Se connecter</Link></>}
       >
-        <form onSubmit={submit} noValidate className="space-y-4">
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Input label="Prénom" required value={form.firstName} onChange={set("firstName")} error={e("firstName", "first_name")} leftIcon={<Profile size={17} />} autoComplete="given-name" />
-            <Input label="Nom" required value={form.lastName} onChange={set("lastName")} error={e("lastName", "last_name")} leftIcon={<Profile size={17} />} autoComplete="family-name" />
-          </div>
-          <Input label="E-mail" required type="email" value={form.email} onChange={set("email")} error={e("email")} leftIcon={<Sms size={17} />} autoComplete="email" inputMode="email" autoCapitalize="none" enterKeyHint="next" />
-          <Input label="Téléphone" value={form.phoneNumber} onChange={set("phoneNumber")} error={e("phoneNumber", "phone")} leftIcon={<Call size={17} />} placeholder="+243 …" autoComplete="tel" inputMode="tel" enterKeyHint="next" />
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Input label="Mot de passe" required type="password" value={form.password} onChange={set("password")} error={e("password")} leftIcon={<Lock size={17} />} autoComplete="new-password" />
-            <Input label="Confirmation" required type="password" value={form.passwordConfirm} onChange={set("passwordConfirm")} error={e("passwordConfirm", "password2")} leftIcon={<Lock size={17} />} autoComplete="new-password" enterKeyHint="next" />
-          </div>
-          <Input label="Code revendeur (optionnel)" value={form.codeRevendeur} onChange={set("codeRevendeur")} error={e("codeRevendeur")} inputMode="numeric" pattern="[0-9]*" maxLength={4} enterKeyHint="go" placeholder="Ex. 4821" leftIcon={<UserTick size={17} />} hint="Si un revendeur vous a invité, saisissez son code." />
-          <div>
-            <Checkbox checked={terms} onChange={(ev) => { setTerms(ev.target.checked); setErrors((er) => ({ ...er, terms: undefined })); }} label={<>J&apos;accepte les <Link href={ROUTES.guide} className="font-semibold text-ink underline">conditions d&apos;utilisation</Link> et la politique de confidentialité.</>} />
-            {errors.terms && <p role="alert" className="mt-1 text-[12px] text-danger">{errors.terms}</p>}
-          </div>
-          {general && <p role="alert" className="rounded-md bg-danger-50 px-3 py-2 text-[13px] text-danger">{general}</p>}
-          <Button type="submit" size="lg" fullWidth loading={register.isPending}>Créer mon compte</Button>
-        </form>
-        <GoogleButton label="S'inscrire avec Google" />
+        {register.data?.verificationRequired ? (
+          <EmptyState
+            className="sm:py-8"
+            icon={<SmsTracking size={40} variant="Bulk" />}
+            title="Vérifiez votre boîte e-mail"
+            description={`Nous avons envoyé un lien de confirmation à ${register.data.email}. Cliquez dessus pour activer votre compte, puis connectez-vous.`}
+            action={<Button variant="outline" upper={false} loading={resend.isPending} onClick={resendLink}>Renvoyer l&apos;e-mail</Button>}
+          />
+        ) : (
+          <>
+            <form onSubmit={submit} noValidate className="space-y-4">
+              <div className="grid gap-4 sm:grid-cols-2">
+                <Input label="Prénom" required value={form.firstName} onChange={set("firstName")} error={e("firstName")} leftIcon={<Profile size={17} />} autoComplete="given-name" />
+                <Input label="Nom" required value={form.lastName} onChange={set("lastName")} error={e("lastName")} leftIcon={<Profile size={17} />} autoComplete="family-name" />
+              </div>
+              <Input label="E-mail" required type="email" value={form.email} onChange={set("email")} error={e("email")} leftIcon={<Sms size={17} />} autoComplete="email" inputMode="email" autoCapitalize="none" enterKeyHint="next" />
+              <Input label="Téléphone" value={form.phoneNumber} onChange={set("phoneNumber")} error={e("phoneNumber")} leftIcon={<Call size={17} />} placeholder="+243 …" autoComplete="tel" inputMode="tel" enterKeyHint="next" />
+              <div className="grid gap-4 sm:grid-cols-2">
+                <Input label="Mot de passe" required type="password" value={form.password} onChange={set("password")} error={e("password")} leftIcon={<Lock size={17} />} autoComplete="new-password" />
+                <Input label="Confirmation" required type="password" value={form.passwordConfirm} onChange={set("passwordConfirm")} error={e("passwordConfirm")} leftIcon={<Lock size={17} />} autoComplete="new-password" enterKeyHint="next" />
+              </div>
+              <Input label="Code revendeur (optionnel)" value={form.codeRevendeur} onChange={set("codeRevendeur")} error={e("codeRevendeur", "referralCode")} inputMode="numeric" pattern="[0-9]*" maxLength={4} enterKeyHint="go" placeholder="Ex. 4821" leftIcon={<UserTick size={17} />} hint="Si un revendeur vous a invité, saisissez son code." />
+              <div>
+                <Checkbox checked={terms} onChange={(ev) => { setTerms(ev.target.checked); setErrors((er) => ({ ...er, terms: undefined })); }} label={<>J&apos;accepte les <Link href={ROUTES.guide} className="font-semibold text-ink underline">conditions d&apos;utilisation</Link> et la politique de confidentialité.</>} />
+                {errors.terms && <p role="alert" className="mt-1 text-[12px] text-danger">{errors.terms}</p>}
+              </div>
+              {general && <p role="alert" className="rounded-md bg-danger-50 px-3 py-2 text-[13px] text-danger">{general}</p>}
+              <Button type="submit" size="lg" fullWidth loading={register.isPending}>Créer mon compte</Button>
+            </form>
+            <GoogleButton next={next} label="S'inscrire avec Google" />
+          </>
+        )}
       </AuthLayoutCard>
     </>
   );

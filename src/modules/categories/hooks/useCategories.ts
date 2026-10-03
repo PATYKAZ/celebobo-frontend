@@ -1,25 +1,32 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import { useHydrated } from "@/shared/hooks/useHydrated";
 import { categoriesService } from "../services/categories.service";
 
 export const categoryKeys = {
   all: ["categories"] as const,
-  detail: (id: number) => ["categories", id] as const,
+  detail: (slug: string) => ["categories", slug] as const,
 };
 
+/**
+ * Catégories de la boutique. Partagées par l'en-tête et les pages : le cache peut être rempli avant
+ * l'hydratation d'une section, qui doit d'abord rendre comme le serveur (squelette).
+ */
 export function useCategories() {
-  return useQuery({
+  const hydrated = useHydrated();
+  const query = useQuery({
     queryKey: categoryKeys.all,
     queryFn: categoriesService.list,
     staleTime: 5 * 60_000,
   });
+  return hydrated ? query : { ...query, data: undefined, isLoading: true };
 }
 
-export function useCategory(id: number | undefined) {
+export function useCategory(slug: string | undefined) {
   return useQuery({
-    queryKey: categoryKeys.detail(id ?? 0),
-    queryFn: () => categoriesService.detail(id as number),
-    enabled: !!id,
+    queryKey: categoryKeys.detail(slug ?? ""),
+    queryFn: () => categoriesService.detail(slug as string),
+    enabled: !!slug,
   });
 }

@@ -1,31 +1,34 @@
 "use client";
 
 import Image from "next/image";
-import { Award, Box, Headphone, People, ShieldTick, TruckFast } from "iconsax-reactjs";
+import { ShieldTick } from "iconsax-reactjs";
 import { ROUTES } from "@/config/routes";
-import { SITE } from "@/config/site";
 import { CountUp } from "@/shared/animations/CountUp";
 import { Float, ParallaxImage, TiltCard } from "@/shared/animations/MotionImage";
 import { Reveal, RevealGroup, RevealItem } from "@/shared/animations/Reveal";
 import { Breadcrumb } from "@/shared/layout/Breadcrumb";
 import { Block } from "@/shared/ui/Block";
 import { Button } from "@/shared/ui/Button";
+import { markdownSections, plainText, usePage } from "@/modules/pages";
+import { MISSION, STATS, STORY, VALUES } from "../content";
 
-const STATS = [
-  { value: 12000, suffix: "+", label: "Clients satisfaits", icon: People },
-  { value: 450, suffix: "+", label: "Produits en catalogue", icon: Box },
-  { value: 60, suffix: "+", label: "Revendeurs partenaires", icon: Award },
-  { value: 98, suffix: "%", label: "Commandes livrées à temps", icon: TruckFast },
-];
-
-const VALUES = [
-  { icon: ShieldTick, title: "Confiance", text: "Produits testés, garantie 12 mois et paiement uniquement après confirmation de disponibilité." },
-  { icon: Headphone, title: "Proximité", text: "Chaque commande ouvre une discussion directe avec un revendeur qui vous accompagne jusqu'à la livraison." },
-  { icon: TruckFast, title: "Rapidité", text: "Livraison sous 24 à 48 h à Kinshasa et suivi de votre commande en temps réel." },
-  { icon: Award, title: "Qualité", text: "Nous sélectionnons les meilleures marques et vérifions chaque produit avant expédition." },
-];
+/** Histoire (1ʳᵉ section avec paragraphe) et engagements (1ʳᵉ liste) de la page `a-propos`, sinon textes par défaut. */
+function aboutContent(body?: string) {
+  const sections = body ? markdownSections(body) : [];
+  const story = sections.find((s) => s.blocks.some((b) => b.type === "paragraph"));
+  const paragraph = story?.blocks.find((b) => b.type === "paragraph");
+  const list = sections.flatMap((s) => s.blocks).find((b) => b.type === "list");
+  return {
+    badge: story?.heading ?? STORY.badge,
+    story: paragraph?.type === "paragraph" ? plainText(paragraph.text) : STORY.text,
+    points: list?.type === "list" ? list.items.map(plainText) : MISSION.points,
+  };
+}
 
 export function AboutView() {
+  const { data: page } = usePage("a-propos");
+  const content = aboutContent(page?.body);
+
   return (
     <>
       <Breadcrumb items={[{ label: "À propos" }]} />
@@ -34,9 +37,9 @@ export function AboutView() {
       <Block pad="none" className="relative overflow-hidden">
         <div className="grid items-center gap-8 lg:grid-cols-2">
           <div className="p-4 pt-6 sm:p-10 lg:p-[60px]">
-            <Reveal><span className="inline-block rounded-full bg-primary-50 px-4 py-1.5 text-[12px] font-bold uppercase tracking-wider text-primary">Notre histoire</span></Reveal>
+            <Reveal><span className="inline-block rounded-full bg-primary-50 px-4 py-1.5 text-[12px] font-bold uppercase tracking-wider text-primary">{content.badge}</span></Reveal>
             <Reveal delay={0.08}><h1 className="mt-4 text-[28px] font-extrabold leading-[34px] sm:mt-5 sm:text-[44px] sm:leading-[52px]">La technologie, <span className="text-primary">simplement</span> et en confiance.</h1></Reveal>
-            <Reveal delay={0.16}><p className="mt-4 max-w-[520px] text-[14px] leading-[23px] text-ink-2 sm:mt-5 sm:text-[15px] sm:leading-[26px]">{SITE.name} est née d&apos;un constat : acheter du matériel high-tech de qualité en RD Congo doit être simple, transparent et sécurisé. Nous mettons en relation des clients et un réseau de revendeurs de confiance.</p></Reveal>
+            <Reveal delay={0.16}><p className="mt-4 max-w-[520px] text-[14px] leading-[23px] text-ink-2 sm:mt-5 sm:text-[15px] sm:leading-[26px]">{content.story}</p></Reveal>
             <Reveal delay={0.24} className="mt-6 flex flex-col gap-2.5 sm:mt-8 sm:flex-row sm:flex-wrap sm:gap-3">
               <Button href={ROUTES.products} size="lg" className="max-sm:w-full">Découvrir la boutique</Button>
               <Button href={ROUTES.contact} size="lg" variant="outline" className="max-sm:w-full">Nous contacter</Button>
@@ -77,10 +80,10 @@ export function AboutView() {
             </div>
           </Reveal>
           <Reveal direction="up">
-            <h2 className="text-[22px] leading-[28px] sm:text-[28px] sm:leading-[34px]">Notre mission</h2>
-            <p className="mt-3 text-[14px] leading-[23px] text-ink-2 sm:mt-4 sm:text-[15px] sm:leading-[26px]">Rendre la technologie accessible à tous : smartphones, ordinateurs, audio, gaming et accessoires, aux meilleurs prix, avec un service humain. Pas de paiement en ligne risqué : vous échangez avec un vrai revendeur, vous payez par Mobile Money ou en cash à la livraison.</p>
+            <h2 className="text-[22px] leading-[28px] sm:text-[28px] sm:leading-[34px]">{MISSION.title}</h2>
+            <p className="mt-3 text-[14px] leading-[23px] text-ink-2 sm:mt-4 sm:text-[15px] sm:leading-[26px]">{MISSION.text}</p>
             <ul className="mt-5 space-y-2.5 sm:mt-6 sm:space-y-3">
-              {["Prix transparents, promotions régulières", "Revendeurs vérifiés et formés", "Garantie 12 mois sur tous les produits", "Support 7j/7 par discussion ou WhatsApp"].map((t) => (
+              {content.points.map((t) => (
                 <li key={t} className="flex items-center gap-3 text-[14px] font-semibold"><span className="grid size-6 place-items-center rounded-full bg-primary text-white"><ShieldTick size={14} variant="Bold" /></span>{t}</li>
               ))}
             </ul>

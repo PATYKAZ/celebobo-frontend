@@ -1,58 +1,61 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { DocumentDownload, DocumentUpload, TickCircle, CloseCircle } from "iconsax-reactjs";
 import { cn } from "@/shared/lib/cn";
-import { formatPrice } from "@/shared/lib/format";
 import { getErrorMessage } from "@/shared/lib/api";
 import { Button } from "@/shared/ui/Button";
 import { Modal } from "@/shared/ui/Overlay";
+import { Spinner } from "@/shared/ui/Spinner";
 import { toast } from "@/shared/ui/Toast";
-import { useAdminCategories } from "../../categories/hooks/useAdminCategories";
-import { useAdminProducts, useImportProducts } from "../hooks/useAdminProducts";
-import { CSV_HEADERS, CSV_TEMPLATE, downloadText, parseCsv, validateImport, type ImportRow } from "../utils/csv";
+import { useImportProducts } from "../hooks/useAdminProducts";
+import type { ImportSummary } from "../services/admin-products.service";
+import { CSV_HEADERS, CSV_REQUIRED, CSV_TEMPLATE, downloadText } from "../utils/csv";
 
-/** Import CSV : choix du fichier → analyse côté client → aperçu avec erreurs par ligne → confirmation. */
+/** Import CSV : choix du fichier → simulation par l'API (erreurs par ligne) → confirmation de l'import réel. */
 export function CsvImportModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const input = useRef<HTMLInputElement>(null);
-  const { data: categories } = useAdminCategories(open);
-  const { data: all } = useAdminProducts({ all: true, status: "active" }, open);
   const imp = useImportProducts();
-  const [fileName, setFileName] = useState("");
-  const [rows, setRows] = useState<ImportRow[] | null>(null);
-  const [missing, setMissing] = useState<string[]>([]);
+  const [file, setFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState<ImportSummary | null>(null);
   const [drag, setDrag] = useState(false);
 
-  const ids = useMemo(() => new Set((all?.results ?? []).map((p) => p.id)), [all]);
-  const valid = rows?.filter((r) => r.data) ?? [];
-  const invalid = rows?.filter((r) => !r.data) ?? [];
+  const valid = preview ? preview.created + preview.updated : 0;
 
   const reset = () => {
-    setFileName("");
-    setRows(null);
-    setMissing([]);
+    setFile(null);
+    setPreview(null);
+    imp.reset();
   };
   const close = () => {
     reset();
     onClose();
   };
 
-  const take = async (file?: File | null) => {
-    if (!file) return;
-    if (!/\.(csv|txt)$/i.test(file.name)) return toast.error("Format non pris en charge", "Importez un fichier .csv");
-    const text = await file.text();
-    const res = validateImport(parseCsv(text), categories ?? [], ids);
-    setFileName(file.name);
-    setRows(res.rows);
-    setMissing(res.missingColumns);
+  const take = (picked?: File | null) => {
+    if (!picked) return;
+    if (!/\.(csv|txt)$/i.test(picked.name)) return toast.error("Format non pris en charge", "Importez un fichier .csv");
+    setFile(picked);
+    setPreview(null);
+    imp.mutate(
+      { file: picked, dryRun: true },
+      {
+        onSuccess: setPreview,
+        onError: (e) => {
+          setFile(null);
+          toast.error("Fichier refusé", getErrorMessage(e));
+        },
+      },
+    );
   };
 
   const confirm = () =>
+    file &&
     imp.mutate(
-      valid.map((r) => ({ id: r.id, data: r.data! })),
+      { file, dryRun: false },
       {
         onSuccess: (res) => {
-          toast.success("Import terminé", `${res.created} créé(s), ${res.updated} mis à jour`);
+          toast.success("Import terminé", `${res.created} créé(s), ${res.updated} mis à jour${res.errorCount ? `, ${res.errorCount} ligne(s) ignorée(s)` : ""}`);
           close();
         },
         onError: (e) => toast.error("Import impossible", getErrorMessage(e)),
@@ -62,13 +65,13 @@ export function CsvImportModal({ open, onClose }: { open: boolean; onClose: () =
   return (
     <Modal open={open} onClose={close} title="Importer des produits (CSV)" className="max-w-[920px]">
       <div className="grid gap-4">
-        {!rows ? (
+        {!file ? (
           <>
             <div
               onClick={() => input.current?.click()}
               onDragOver={(e) => { e.preventDefault(); setDrag(true); }}
               onDragLeave={() => setDrag(false)}
-              onDrop={(e) => { e.preventDefault(); setDrag(false); void take(e.dataTransfer.files?.[0]); }}
+              onDrop={(e) => { e.preventDefault(); setDrag(false); take(e.dataTransfer.files?.[0]); }}
               role="button"
               tabIndex={0}
               onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && input.current?.click()}
@@ -77,65 +80,46 @@ export function CsvImportModal({ open, onClose }: { open: boolean; onClose: () =
               <DocumentUpload size={40} variant="Bulk" className="text-primary" />
               <p className="text-[15px] font-bold"><span className="sm:hidden">Touchez pour choisir un fichier CSV</span><span className="hidden sm:inline">Déposez votre fichier CSV ici ou cliquez pour parcourir</span></p>
               <p className="text-[13px] text-ink-3">Séparateur « ; » ou « , » · encodage UTF-8 · une ligne par produit</p>
-              <input ref={input} type="file" accept=".csv,text/csv" hidden onChange={(e) => { void take(e.target.files?.[0]); e.target.value = ""; }} />
+              <input ref={input} type="file" accept=".csv,text/csv" hidden onChange={(e) => { take(e.target.files?.[0]); e.target.value = ""; }} />
             </div>
             <div className="rounded-box bg-page/60 p-4 text-[13px] text-ink-2">
               <p className="font-semibold text-ink">Colonnes attendues</p>
               <p className="mt-1 break-words font-mono text-[12px]">{CSV_HEADERS.join(" ; ")}</p>
-              <p className="mt-2">Obligatoires : <strong>nom, description (20-100 car.), categorie, prix</strong>. Avec un <strong>id</strong> existant, la ligne met à jour le produit ; sans id, elle le crée.</p>
+              <p className="mt-2">Obligatoires : <strong>{CSV_REQUIRED.join(", ")}</strong> (catégorie : nom ou slug). Avec un <strong>slug</strong> existant, la ligne met à jour le produit ; sans slug, elle le crée.</p>
               <Button variant="chip" size="sm" upper={false} className="mt-3" leftIcon={<DocumentDownload size={16} />} onClick={() => downloadText("modele-produits.csv", CSV_TEMPLATE)}>Télécharger le modèle</Button>
             </div>
           </>
+        ) : !preview ? (
+          <div className="grid min-h-[200px] place-items-center gap-3 text-center">
+            <Spinner size={28} />
+            <p className="text-[14px] text-ink-2">Vérification de « {file.name} »…</p>
+          </div>
         ) : (
           <>
             <div className="flex flex-wrap items-center justify-between gap-3 text-[14px]">
-              <p className="font-semibold">{fileName}</p>
+              <p className="font-semibold">{file.name} · {preview.rows} ligne{preview.rows > 1 ? "s" : ""}</p>
               <div className="flex items-center gap-3">
-                <span className="inline-flex items-center gap-1 text-primary-dark"><TickCircle size={16} variant="Bold" /> {valid.length} valide{valid.length > 1 ? "s" : ""}</span>
-                <span className={cn("inline-flex items-center gap-1", invalid.length ? "text-danger" : "text-ink-3")}><CloseCircle size={16} variant="Bold" /> {invalid.length} en erreur</span>
+                <span className="inline-flex items-center gap-1 text-primary-dark"><TickCircle size={16} variant="Bold" /> {preview.created} création{preview.created > 1 ? "s" : ""} · {preview.updated} mise{preview.updated > 1 ? "s" : ""} à jour</span>
+                <span className={cn("inline-flex items-center gap-1", preview.errorCount ? "text-danger" : "text-ink-3")}><CloseCircle size={16} variant="Bold" /> {preview.errorCount} en erreur</span>
                 <button onClick={reset} className="text-[13px] font-semibold text-primary hover:underline">Changer de fichier</button>
               </div>
             </div>
-            {missing.length > 0 && <p role="alert" className="rounded-box bg-danger-50 p-3 text-[13px] text-danger">Colonnes obligatoires manquantes : {missing.join(", ")}.</p>}
-            {/* Mobile : une carte par ligne importée */}
-            <ul className="grid max-h-[46vh] gap-2 overflow-y-auto sm:hidden">
-              {rows.map((r) => (
-                <li key={r.line} className={cn("rounded-box border p-3", r.data ? "border-line-3" : "border-danger/30 bg-danger-50/60")}>
-                  <div className="flex items-center justify-between gap-2">
-                    <p className="min-w-0 truncate text-[14px] font-bold">{r.raw.nom || "—"}</p>
-                    {r.data ? <span className={cn("shrink-0 rounded-md px-2 py-0.5 text-[11px] font-bold", r.id ? "bg-info/10 text-info" : "bg-primary-100 text-primary-dark")}>{r.id ? "Mise à jour" : "Création"}</span> : <span className="shrink-0 text-[11px] font-bold text-danger">Erreur</span>}
-                  </div>
-                  <p className="mt-1 text-[12px] text-ink-2">Ligne {r.line} · {r.raw.categorie || "—"} · {r.data ? formatPrice(r.data.price) : r.raw.prix || "—"} · stock {r.data ? r.data.stock : r.raw.stock || "—"}</p>
-                  {r.errors.length > 0 && <ul className="mt-1.5 space-y-0.5 text-[12px] text-danger">{r.errors.map((e) => <li key={e}>• {e}</li>)}</ul>}
-                </li>
-              ))}
-            </ul>
-            <div className="hidden max-h-[380px] overflow-auto rounded-box border border-line sm:block">
-              <table className="w-full min-w-[640px] text-[13px]">
-                <thead className="sticky top-0 bg-page text-left text-[11px] uppercase tracking-wide text-ink-3">
-                  <tr><th className="px-3 py-2">Ligne</th><th className="px-3 py-2">Action</th><th className="px-3 py-2">Produit</th><th className="px-3 py-2">Catégorie</th><th className="px-3 py-2 text-right">Prix</th><th className="px-3 py-2 text-right">Stock</th><th className="px-3 py-2">Contrôle</th></tr>
-                </thead>
-                <tbody>
-                  {rows.map((r) => (
-                    <tr key={r.line} className={cn("border-t border-line-3", !r.data && "bg-danger-50/60")}>
-                      <td className="px-3 py-2 tabular-nums text-ink-3">{r.line}</td>
-                      <td className="px-3 py-2">{r.data ? <span className={cn("rounded-md px-2 py-0.5 text-[11px] font-bold", r.id ? "bg-info/10 text-info" : "bg-primary-100 text-primary-dark")}>{r.id ? "Mise à jour" : "Création"}</span> : "—"}</td>
-                      <td className="max-w-[220px] truncate px-3 py-2 font-semibold">{r.raw.nom || "—"}</td>
-                      <td className="px-3 py-2">{r.raw.categorie || "—"}</td>
-                      <td className="px-3 py-2 text-right tabular-nums">{r.data ? formatPrice(r.data.price) : r.raw.prix || "—"}</td>
-                      <td className="px-3 py-2 text-right tabular-nums">{r.data ? r.data.stock : r.raw.stock || "—"}</td>
-                      <td className="px-3 py-2 text-[12px]">{r.errors.length ? <ul className="space-y-0.5 text-danger">{r.errors.map((e) => <li key={e}>• {e}</li>)}</ul> : <span className="text-primary-dark">OK</span>}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            {invalid.length > 0 && <p className="text-[12px] text-ink-3">Les lignes en erreur seront ignorées. Corrigez-les dans le fichier puis réimportez-les.</p>}
+            {preview.errors.length > 0 && (
+              <ul className="grid max-h-[46vh] gap-2 overflow-y-auto">
+                {preview.errors.map((r) => (
+                  <li key={r.row} className="rounded-box border border-danger/30 bg-danger-50/60 p-3 text-[13px]">
+                    <p className="font-bold">Ligne {r.row}</p>
+                    <ul className="mt-1 space-y-0.5 text-[12px] text-danger">{Object.entries(r.errors).map(([field, msg]) => <li key={field}>• {field !== "row" ? `${field} : ` : ""}{msg}</li>)}</ul>
+                  </li>
+                ))}
+              </ul>
+            )}
+            {preview.errorCount > 0 && <p className="text-[12px] text-ink-3">Les lignes en erreur seront ignorées. Corrigez-les dans le fichier puis réimportez-les.</p>}
           </>
         )}
         <div className="grid grid-cols-[1fr_1.5fr] gap-3 sm:ml-auto sm:w-[360px] sm:grid-cols-2">
           <Button variant="chip" upper={false} onClick={close}>Annuler</Button>
-          <Button upper={false} disabled={!valid.length || missing.length > 0} loading={imp.isPending} onClick={confirm}>Importer {valid.length ? `(${valid.length})` : ""}</Button>
+          <Button upper={false} disabled={!valid} loading={imp.isPending && !!preview} onClick={confirm}>Importer {valid ? `(${valid})` : ""}</Button>
         </div>
       </div>
     </Modal>

@@ -99,7 +99,7 @@ function Content({ id }: { id: number }) {
                   <li key={it.id} className="flex items-center gap-3 p-4">
                     <span className="relative size-14 shrink-0 overflow-hidden rounded-md bg-page">{it.productImage && <Image src={it.productImage} alt="" fill sizes="56px" className="object-cover" />}</span>
                     <div className="min-w-0 flex-1">
-                      {it.productId ? <Link href={ROUTES.product(it.productId)} className="-my-1 line-clamp-2 py-1 text-[14px] font-semibold leading-[19px]">{it.productName}</Link> : <span className="text-[14px] font-semibold">{it.productName}</span>}
+                      {it.productSlug ? <Link href={ROUTES.product(it.productSlug)} className="-my-1 line-clamp-2 py-1 text-[14px] font-semibold leading-[19px]">{it.productName}</Link> : <span className="text-[14px] font-semibold">{it.productName}</span>}
                       {it.variantLabel && <p className="text-[12px] text-ink-3">{it.variantLabel}</p>}
                       <p className="mt-0.5 text-[12px] text-ink-2">{it.quantity} × {formatPrice(it.unitPrice)}</p>
                     </div>
@@ -128,7 +128,7 @@ function Content({ id }: { id: number }) {
                           <div className="flex items-center gap-3">
                             <span className="relative size-12 shrink-0 overflow-hidden rounded-md bg-page">{it.productImage && <Image src={it.productImage} alt="" fill sizes="48px" className="object-cover" />}</span>
                             <div className="min-w-0">
-                              {it.productId ? <Link href={ROUTES.product(it.productId)} className="line-clamp-2 font-semibold hover:text-primary">{it.productName}</Link> : <span className="font-semibold">{it.productName}</span>}
+                              {it.productSlug ? <Link href={ROUTES.product(it.productSlug)} className="line-clamp-2 font-semibold hover:text-primary">{it.productName}</Link> : <span className="font-semibold">{it.productName}</span>}
                               {it.variantLabel && <p className="text-[12px] text-ink-3">Variante : {it.variantLabel}</p>}
                             </div>
                           </div>

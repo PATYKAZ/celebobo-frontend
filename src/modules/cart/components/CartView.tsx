@@ -10,21 +10,28 @@ import { Reveal } from "@/shared/animations/Reveal";
 import { Block } from "@/shared/ui/Block";
 import { Button } from "@/shared/ui/Button";
 import { EmptyState } from "@/shared/ui/EmptyState";
+import { Skeleton } from "@/shared/ui/Skeleton";
+import { useHydrated } from "@/shared/hooks/useHydrated";
 import { ConfirmDialog } from "@/modules/admin/ui/ConfirmDialog";
 import { useCart } from "../hooks/useCart";
 import { CartLine } from "./CartLine";
 import { CartSummary } from "./CartSummary";
+import { CouponForm } from "./CouponForm";
 import { RecommendedProducts } from "./RecommendedProducts";
 
 export function CartView() {
-  const { items, count, total, savings, isEmpty, setQuantity, remove, clear } = useCart();
+  const hydrated = useHydrated();
+  const { items, quote, count, total, savings, isEmpty, isLoading, setQuantity, remove, clear } = useCart();
+  const payable = quote ? Math.max(0, total - quote.discount) + quote.shippingFee : total;
   const [confirmClear, setConfirmClear] = useState(false);
 
   return (
     <>
       <Breadcrumb items={[{ label: "Panier" }]} />
 
-      {isEmpty ? (
+      {!hydrated || (isEmpty && isLoading) ? (
+        <Block><Skeleton className="h-8 w-48" /><Skeleton className="mt-6 h-[110px] w-full" /><Skeleton className="mt-4 h-[110px] w-full" /></Block>
+      ) : isEmpty ? (
         <Block>
           <EmptyState
             icon={<Bag2 size={46} variant="Bulk" />}
@@ -59,6 +66,8 @@ export function CartView() {
               subtotal={total}
               savings={savings}
               count={count}
+              quote={quote}
+              coupon={<CouponForm quote={quote} />}
               actions={<Button href={ROUTES.checkout} size="lg" fullWidth rightIcon={<ArrowRight size={17} />}>Passer la commande</Button>}
             />
           </Reveal>
@@ -75,7 +84,7 @@ export function CartView() {
             <div className="mx-auto flex max-w-[640px] items-center gap-3">
               <div className="min-w-0">
                 <p className="text-[11px] font-semibold uppercase leading-[14px] text-ink-3">Total · {count} article{count > 1 ? "s" : ""}</p>
-                <p className="text-[20px] font-extrabold leading-[26px] text-primary">{formatPrice(total)}</p>
+                <p className="text-[20px] font-extrabold leading-[26px] text-primary">{formatPrice(payable)}</p>
               </div>
               <Button href={ROUTES.checkout} size="lg" className="ml-auto flex-1 sm:flex-none" rightIcon={<ArrowRight size={17} />}>Commander</Button>
             </div>

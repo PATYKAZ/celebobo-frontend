@@ -10,7 +10,7 @@ export interface AssistantMessage {
   animate?: boolean;
 }
 
-/** Réponse de POST ENDPOINTS.assistant.message */
+/** Réponse de l'assistant (texte + cartes produits liées à /produits/{slug}). */
 export interface AssistantReply {
   reply: string;
   products?: Product[];

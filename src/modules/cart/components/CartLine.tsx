@@ -22,7 +22,8 @@ export function CartLine({ item, onQuantity, onRemove }: Props) {
   const mobile = useMediaQuery("(max-width: 639px)");
   const unit = unitPrice(item);
   const original = unit < item.product.price ? item.product.price : null;
-  const href = ROUTES.product(item.productId);
+  const href = item.product.slug ? ROUTES.product(item.product.slug) : ROUTES.products;
+  const unavailable = item.available === false;
 
   return (
     <motion.li
@@ -43,7 +44,7 @@ export function CartLine({ item, onQuantity, onRemove }: Props) {
         {item.variantLabel && <span className="mt-1 inline-block rounded bg-chip px-2 py-0.5 text-[12px] font-semibold">{item.variantLabel}</span>}
         <div className="mt-2 flex flex-wrap items-center gap-2">
           <Price current={unit} original={original} size="sm" />
-          {item.product.freeShipping && <Pill tone="green">Livraison offerte</Pill>}
+          {unavailable ? <Pill tone="red">Plus disponible</Pill> : item.product.freeShipping && <Pill tone="green">Livraison offerte</Pill>}
         </div>
       </div>
 

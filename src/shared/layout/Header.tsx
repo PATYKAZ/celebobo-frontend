@@ -9,7 +9,6 @@ import {
 } from "iconsax-reactjs";
 import { useEffect } from "react";
 import { ROUTES } from "@/config/routes";
-import { SITE } from "@/config/site";
 import { cn } from "@/shared/lib/cn";
 import { formatPrice } from "@/shared/lib/format";
 import { CircleButton } from "@/shared/ui/CircleButton";
@@ -21,6 +20,8 @@ import { useCartStore } from "@/modules/cart/store/cart.store";
 import { CategoryIcon } from "@/modules/categories/components/CategoryIcon";
 import { useCategories } from "@/modules/categories/hooks/useCategories";
 import { useFavoritesStore } from "@/modules/favorites/store/favorites.store";
+import { useUnreadNotificationsCount } from "@/modules/messaging/hooks/useNotifications";
+import { useSiteSettings } from "@/modules/site";
 import { Logo } from "./Logo";
 import { SearchBar } from "./SearchBar";
 
@@ -74,7 +75,7 @@ function NavItem({ item }: { item: (typeof NAV)[number] }) {
           <div>
             <div className="grid grid-cols-2 gap-1">
               {categories?.map((c) => (
-                <Link key={c.id} href={ROUTES.category(c.id)} onClick={close} className="group/i flex items-center gap-3 rounded-md p-2.5 transition-colors hover:bg-chip">
+                <Link key={c.id} href={ROUTES.category(c.slug)} onClick={close} className="group/i flex items-center gap-3 rounded-md p-2.5 transition-colors hover:bg-chip">
                   <span className="grid size-9 place-items-center rounded-full bg-chip text-ink transition-colors group-hover/i:bg-primary group-hover/i:text-white">
                     <CategoryIcon name={c.icon} size={18} />
                   </span>
@@ -164,7 +165,7 @@ function AccountMenu() {
               <Link href={ROUTES.profile} className={item}><Profile size={17} /> Mon profil</Link>
               <Link href={ROUTES.orders} className={item}><Receipt2 size={17} /> Mes commandes</Link>
               <Link href={ROUTES.favorites} className={item}><Heart size={17} /> Mes favoris</Link>
-              {isStaff && <Link href={ROUTES.admin.notifications} className={item}><Notification size={17} /> Notifications</Link>}
+              <Link href={isStaff ? ROUTES.admin.notifications : ROUTES.notifications} className={item}><Notification size={17} /> Notifications</Link>
               {isStaff && <Link href={ROUTES.admin.root} className={cn(item, "text-primary")}><Setting2 size={17} /> {user.role === "revendeur" ? "Mon espace revendeur" : "Back-office"}</Link>}
               <button onClick={() => logout.mutate()} className={cn(item, "w-full text-danger hover:text-danger")}><Logout size={17} /> Déconnexion</button>
             </div>
@@ -193,17 +194,19 @@ function AccountMenu() {
 /** En-tête principal : ligne info + navigation (bloc blanc rad 10, hauteur 144 desktop). */
 export function Header() {
   const favCount = useFavoritesStore((s) => s.ids.length);
-  const { isStaff } = useAuth();
+  const { isStaff, isAuthenticated } = useAuth();
+  const site = useSiteSettings();
+  const notifCount = useUnreadNotificationsCount();
 
   return (
     <header className="rounded-box bg-white max-lg:sticky max-lg:top-0 max-lg:z-40 max-lg:-mx-[15px] max-lg:rounded-none max-lg:border-b max-lg:border-line-3/70 max-lg:pt-[env(safe-area-inset-top)] max-lg:bg-white/95 max-lg:backdrop-blur-md">
       {/* Ligne 1 */}
       <div className="hidden items-center justify-between px-[30px] pt-[15px] lg:flex">
         <div className="flex items-center gap-5">
-          <a href={SITE.hotlineHref} className="flex h-7 items-center gap-1.5 rounded-md bg-chip px-2.5 text-[12px] leading-[18px]">
+          <a href={site.hotlineHref} className="flex h-7 items-center gap-1.5 rounded-md bg-chip px-2.5 text-[12px] leading-[18px]">
             <Call size={12} variant="Bold" /> Hotline 24/7
           </a>
-          <a href={SITE.hotlineHref} className="text-[12px] font-bold leading-[18px] hover:text-primary">{SITE.hotline}</a>
+          <a href={site.hotlineHref} className="text-[12px] font-bold leading-[18px] hover:text-primary">{site.hotline}</a>
         </div>
         <div className="flex items-center text-[14px] leading-[21px]">
           <Link href={ROUTES.becomeReseller} className="px-5 transition-colors hover:text-primary">Devenir revendeur</Link>
@@ -233,7 +236,12 @@ export function Header() {
               <CircleButton href={ROUTES.favorites} label="Favoris" className="max-lg:!size-11"><Heart size={19} variant="Bold" /></CircleButton>
               {favCount > 0 && <span className="pointer-events-none absolute -right-1 -top-1 grid min-w-[18px] place-items-center rounded-full bg-danger px-1 text-[10px] leading-[18px] text-white ring-2 ring-white">{favCount}</span>}
             </span>
-            {isStaff && <CircleButton href={ROUTES.admin.notifications} label="Notifications" className="max-lg:!size-11"><Notification size={19} variant="Bold" /></CircleButton>}
+            {isAuthenticated && (
+              <span className="relative">
+                <CircleButton href={isStaff ? ROUTES.admin.notifications : ROUTES.notifications} label="Notifications" className="max-lg:!size-11"><Notification size={19} variant="Bold" /></CircleButton>
+                {notifCount > 0 && <span className="pointer-events-none absolute -right-1 -top-1 grid min-w-[18px] place-items-center rounded-full bg-danger px-1 text-[10px] leading-[18px] text-white ring-2 ring-white">{notifCount > 99 ? "99+" : notifCount}</span>}
+              </span>
+            )}
           </span>
           <span className="hidden lg:contents"><AccountMenu /><CartButton /></span>
         </div>

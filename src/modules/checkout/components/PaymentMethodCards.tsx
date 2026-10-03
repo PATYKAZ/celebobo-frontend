@@ -15,12 +15,14 @@ const BRAND: Record<PaymentMethod, { chip: string; hint: string; icon: "mobile" 
 interface Props {
   value: PaymentMethod;
   onChange: (v: PaymentMethod) => void;
+  /** Modes activés par la boutique (tous par défaut) */
+  methods?: PaymentMethod[];
 }
 
-export function PaymentMethodCards({ value, onChange }: Props) {
+export function PaymentMethodCards({ value, onChange, methods }: Props) {
   return (
     <div role="radiogroup" aria-label="Mode de paiement" className="grid gap-3 sm:grid-cols-2">
-      {PAYMENT_METHODS.map((m) => {
+      {PAYMENT_METHODS.filter((m) => !methods || methods.includes(m.value)).map((m) => {
         const selected = m.value === value;
         const b = BRAND[m.value];
         return (

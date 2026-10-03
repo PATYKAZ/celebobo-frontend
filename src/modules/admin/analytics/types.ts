@@ -1,5 +1,4 @@
 import type { PaymentMethod } from "@/modules/orders/types";
-import type { Availability } from "@/shared/mock-db/types";
 
 export type AnalyticsRange = "30d" | "90d" | "12m" | "ytd";
 
@@ -30,22 +29,14 @@ export interface AnalyticsSummary {
   avgBasketDelta: number | null;
 }
 
+/** Produit en stock sans vente récente. */
 export interface SlowMover {
   id: number;
   name: string;
   image: string | null;
-  category: string;
   stock: number;
-  /** stock × prix d'achat */
-  stockValue: number;
   /** null = jamais vendu */
   daysSinceLastSale: number | null;
-  unitsSold60d: number;
-  /** « Devrait être vendu avant le » */
-  dateWish: string | null;
-  /** jours restants (négatif = dépassé) */
-  dateWishDays: number | null;
-  reasons: ("rotation" | "echeance")[];
 }
 
 export interface AnalyticsData {
@@ -62,25 +53,19 @@ export interface AnalyticsData {
   /** heatmap[jour 0=lun..6=dim][heure → index] = nb de ventes */
   heatmap: number[][];
   heatmapHours: number[];
-  /** Valeur du stock (prix d'achat) dans le temps, reconstruite depuis les mouvements de stock */
-  stockValue: { label: string; labels: string[]; values: number[]; current: number; first: number };
   slowMovers: { total: number; rows: SlowMover[] };
 }
 
+/** Classement des vendeurs (revendeurs et responsables) sur la période. */
 export interface ResellerPerformanceRow {
   id: number;
   name: string;
-  avatar: string | null;
-  availability: Availability;
-  active: boolean;
-  ordersAssigned: number;
-  ordersDelivered: number;
-  /** % de commandes assignées menées à terme */
-  conversionRate: number;
-  /** délai moyen de première réponse, en minutes */
-  avgResponseMinutes: number;
   revenue: number;
+  profit: number;
   salesCount: number;
+  units: number;
+  /** Part du chiffre d'affaires (%) */
+  share: number;
 }
 
 export interface ResellerPerformance {

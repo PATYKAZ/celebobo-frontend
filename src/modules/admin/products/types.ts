@@ -13,14 +13,18 @@ export interface AdminProductListParams {
   lowStock?: boolean;
   /** Actifs (par défaut) ou corbeille */
   status?: ProductStatusFilter;
-  badge?: string;
+  badge?: ProductBadgeCode;
   minPrice?: number;
   maxPrice?: number;
-  /** % de remise minimum */
-  minDiscount?: number;
-  /** Retourne toute la liste filtrée (export CSV) */
-  all?: boolean;
 }
+
+/** Badges gérés par l'API ("" = aucun). */
+export type ProductBadgeCode = "new" | "best_seller";
+export const BADGE_OPTIONS: { value: ProductBadgeCode | ""; label: string }[] = [
+  { value: "", label: "Aucun" },
+  { value: "new", label: "Nouveauté" },
+  { value: "best_seller", label: "Best-seller" },
+];
 
 export interface AdminProductStats {
   total: number;
@@ -30,6 +34,20 @@ export interface AdminProductStats {
   /** Valeur du stock à l'achat : Σ stock × prix d'achat. */
   stockValue: number;
   trashed: number;
+}
+
+/** Mouvement de stock (le motif est le code de l'API : restock, sale, loss…). */
+export interface StockMovement {
+  id: number;
+  productId: number;
+  variantId: number | null;
+  at: string;
+  /** + entrée / − sortie */
+  delta: number;
+  reason: string;
+  by: { name: string };
+  note: string | null;
+  balanceAfter: number;
 }
 
 export type AdminProductPage = Paginated<Product> & { stats?: AdminProductStats };
@@ -53,7 +71,7 @@ export interface ProductFormValues {
   pricePrimary: string;
   priceSolde: string;
   categoryId: string;
-  badge: string;
+  badge: ProductBadgeCode | "";
   features: string[];
   charaEntretien: string;
   deliveryPolicyPhase1: string;
@@ -101,7 +119,9 @@ export const EMPTY_FORM: ProductFormValues = {
   variants: [],
 };
 
-export const VERB_RE = /\b(est|avec|permet|offre|dispose|intègre|embarque|équipé)\b/i;
+/** Bornes de la description courte imposées par l'API. */
+export const DESCRIPTION_MIN = 10;
+export const DESCRIPTION_MAX = 255;
 export const countSentences = (s: string) => s.split(/[.!?]+/).filter((x) => x.trim()).length;
 export const parseCare = (s: string) => s.split(/[\n;]+/).map((x) => x.trim()).filter(Boolean);
 
@@ -123,7 +143,7 @@ export function productToForm(p: Product): ProductFormValues {
     pricePrimary: p.pricePrimary != null ? String(p.pricePrimary) : "",
     priceSolde: p.priceSolde != null ? String(p.priceSolde) : "",
     categoryId: p.categoryId != null ? String(p.categoryId) : "",
-    badge: p.badge ?? "",
+    badge: p.badgeCode ?? "",
     features: [...p.features],
     charaEntretien: p.charaEntretienList.join("\n"),
     deliveryPolicyPhase1: p.deliveryPolicyPhase1 ?? "",
@@ -145,16 +165,15 @@ export function validateProductForm(v: ProductFormValues, hasImage: boolean, isN
   const e: FormErrors = {};
   if (!v.name.trim()) e.name = "Le nom est requis.";
   const d = v.description.trim();
-  if (d.length < 20) e.description = "La description doit contenir au moins 20 caractères.";
-  else if (d.length > 100) e.description = "La description ne doit pas dépasser 100 caractères.";
-  else if (!VERB_RE.test(d)) e.description = "La description doit ressembler à une phrase complète (ex : contenir un verbe).";
+  if (d.length < DESCRIPTION_MIN) e.description = `La description doit contenir au moins ${DESCRIPTION_MIN} caractères.`;
+  else if (d.length > DESCRIPTION_MAX) e.description = `La description ne doit pas dépasser ${DESCRIPTION_MAX} caractères.`;
   if (countSentences(v.longDescription) > 5) e.longDescription = "La description longue ne doit pas dépasser 5 phrases.";
   const price = Number(v.price);
   if (!v.price || Number.isNaN(price) || price <= 0) e.price = "Prix invalide.";
   if (v.priceSolde && (Number(v.priceSolde) <= 0 || Number(v.priceSolde) >= price)) e.priceSolde = "Le prix soldé doit être inférieur au prix normal.";
   if (v.pricePrimary && Number(v.pricePrimary) < 0) e.pricePrimary = "Prix d'achat invalide.";
   if (!v.categoryId) e.categoryId = "Choisissez une catégorie.";
-  if (!hasImage) e.image = "Ajoutez au moins l'image principale.";
+  if (isNew && !hasImage) e.image = "Ajoutez au moins l'image principale.";
   if (!v.variants.length && (v.stock === "" || Number(v.stock) < 0 || !Number.isInteger(Number(v.stock)))) e.stock = "Stock invalide (entier ≥ 0).";
   if (v.stockThreshold === "" || Number(v.stockThreshold) < 0 || !Number.isInteger(Number(v.stockThreshold))) e.stockThreshold = "Seuil invalide.";
   if (v.dateWish && isNew && v.dateWish < new Date().toISOString().slice(0, 10)) e.dateWish = "La date ne peut pas être dans le passé.";
@@ -166,12 +185,13 @@ export function validateProductForm(v: ProductFormValues, hasImage: boolean, isN
 export type StockState = "ok" | "low" | "out";
 export const stockState = (p: Pick<Product, "stock" | "stockThreshold">): StockState => (p.stock <= 0 ? "out" : p.stock <= p.stockThreshold ? "low" : "ok");
 
-export type StockReason = "réapprovisionnement" | "correction" | "perte" | "retour";
+export type StockReason = "restock" | "inventory" | "correction" | "loss" | "return";
 export const STOCK_REASONS: { value: StockReason; label: string }[] = [
-  { value: "réapprovisionnement", label: "Réapprovisionnement" },
+  { value: "restock", label: "Réapprovisionnement" },
+  { value: "inventory", label: "Inventaire" },
   { value: "correction", label: "Correction d'inventaire" },
-  { value: "perte", label: "Perte / casse" },
-  { value: "retour", label: "Retour client" },
+  { value: "loss", label: "Perte / casse" },
+  { value: "return", label: "Retour client" },
 ];
 
 export interface StockAdjustInput {

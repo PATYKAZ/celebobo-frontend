@@ -85,11 +85,11 @@ export function ProductFilters({ state, categories, hideCategories, onChange, on
               </button>
             </li>
             {categories?.map((c) => {
-              const active = state.category === c.id;
+              const active = state.category === c.slug;
               return (
                 <li key={c.id}>
                   <button
-                    onClick={() => onChange({ category: active ? null : c.id })}
+                    onClick={() => onChange({ category: active ? null : c.slug })}
                     className={cn("flex w-full items-center justify-between rounded-md px-2 py-2.5 text-[14px] transition-colors hover:bg-chip active:bg-chip sm:py-1.5 sm:text-[13px]", active && "bg-primary-50 font-bold text-primary")}
                   >
                     <span className="truncate">{c.name}</span>

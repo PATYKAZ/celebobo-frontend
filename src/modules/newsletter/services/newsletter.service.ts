@@ -1,31 +1,33 @@
 import { ENDPOINTS } from "@/config/endpoints";
-import { env } from "@/config/env";
-import { api, ApiError, mockResponse } from "@/shared/lib/api";
+import { api } from "@/shared/lib/api";
 
 export interface NewsletterResult {
   email: string;
-  /** Code de réduction envoyé par e-mail (10 % sur la 1ʳᵉ commande) */
+  /** Code de réduction envoyé par e-mail (1ʳᵉ commande) */
   discountCode: string;
+  /** Remise du code (%) */
+  discount: number;
   /** true si l'adresse était déjà inscrite */
   alreadySubscribed: boolean;
 }
 
-/** Abonnés (mock, en mémoire). */
-const subscribers = new Set<string>(["client@celebobo.com"]);
+/** Réponse de `POST /newsletter/subscribe/` (après camelCase). */
+interface SubscriptionDto {
+  email: string;
+  code: string;
+  discount: number;
+  alreadySubscribed: boolean;
+}
 
 export const newsletterService = {
-  /**
-   * Inscription à la newsletter. API : `POST ENDPOINTS.newsletter.subscribe { email }`
-   * → `{ discountCode, alreadySubscribed }`.
-   */
-  async subscribe(email: string): Promise<NewsletterResult> {
-    const clean = email.trim().toLowerCase();
-    if (!/^\S+@\S+\.\S+$/.test(clean)) throw new ApiError(400, "Adresse e-mail invalide", { email: ["Adresse e-mail invalide."] });
-    if (env.USE_MOCKS) {
-      const already = subscribers.has(clean);
-      subscribers.add(clean);
-      return mockResponse({ email: clean, discountCode: "BIENVENUE10", alreadySubscribed: already }, 700);
-    }
-    return api.post<NewsletterResult>(ENDPOINTS.newsletter.subscribe, { email: clean });
+  /** Inscription ; `source` indique l'emplacement du formulaire (footer, popup…). */
+  async subscribe(email: string, source = "footer"): Promise<NewsletterResult> {
+    const dto = await api.post<SubscriptionDto>(ENDPOINTS.newsletter.subscribe, { email: email.trim().toLowerCase(), source });
+    return { email: dto.email, discountCode: dto.code, discount: dto.discount, alreadySubscribed: dto.alreadySubscribed };
+  },
+
+  /** Désinscription via le jeton du lien envoyé par e-mail. */
+  async unsubscribe(token: string): Promise<void> {
+    await api.post(ENDPOINTS.newsletter.unsubscribe, { token });
   },
 };

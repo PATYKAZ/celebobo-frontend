@@ -32,7 +32,7 @@ export function ProductCard({ product, className, priority }: Props) {
   const pricing = getPricing(product);
   const fav = isFavorite(product.id);
   const second = product.images[1];
-  const href = ROUTES.product(product.id);
+  const href = ROUTES.product(product.slug);
 
   return (
     <motion.article

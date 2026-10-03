@@ -12,19 +12,16 @@ import { getErrorMessage } from "@/shared/lib/api";
 import { Block } from "@/shared/ui/Block";
 import { Button } from "@/shared/ui/Button";
 import { Pill } from "@/shared/ui/Badges";
-import { Input } from "@/shared/ui/Form";
-import { Modal } from "@/shared/ui/Overlay";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { Stars } from "@/shared/ui/Stars";
 import { toast } from "@/shared/ui/Toast";
 import { Reveal } from "@/shared/animations/Reveal";
 import { PermissionGuard, useCan } from "@/modules/auth/hooks/useCan";
-import { useProductReviews } from "@/modules/products/hooks/useProducts";
 import { getPricing } from "@/modules/products/utils";
 import { ConfirmDialog } from "../../ui/ConfirmDialog";
 import { PageHeader } from "../../ui/PageHeader";
 import { StatCard } from "../../ui/StatCard";
-import { useAdminProduct, usePurgeProduct, useProductSalesStats, useRestoreProducts, useTrashProducts } from "../hooks/useAdminProducts";
+import { useAdminProduct, useAdminProductReviews, useProductSalesStats, useRestoreProducts, useTrashProducts } from "../hooks/useAdminProducts";
 import { deadlineState } from "../types";
 import { DeadlineBadge, StockPill } from "./StockBadges";
 import { StockAdjustModal } from "./StockAdjustModal";
@@ -34,16 +31,13 @@ function Content({ id }: { id: number }) {
   const router = useRouter();
   const { data: p, isLoading, isError } = useAdminProduct(id);
   const { data: st } = useProductSalesStats(id);
-  const { data: reviews } = useProductReviews(id);
+  const { data: reviews } = useAdminProductReviews(id);
   const canManage = useCan("products.manage");
   const canStock = useCan("stock.adjust");
-  const canPurge = useCan("products.delete");
   const trash = useTrashProducts();
   const restore = useRestoreProducts();
-  const purge = usePurgeProduct();
   const [active, setActive] = useState(0);
-  const [confirm, setConfirm] = useState<"trash" | "purge" | null>(null);
-  const [purgeText, setPurgeText] = useState("");
+  const [confirm, setConfirm] = useState<"trash" | null>(null);
   const [adjust, setAdjust] = useState(false);
   const [history, setHistory] = useState(false);
 
@@ -86,13 +80,12 @@ function Content({ id }: { id: number }) {
         description={p.description}
         actions={
           <>
-            {!trashed && <Button href={ROUTES.product(p.id)} variant="chip" upper={false} leftIcon={<Shop size={17} />}>Voir en boutique</Button>}
+            {!trashed && <Button href={ROUTES.product(p.slug)} variant="chip" upper={false} leftIcon={<Shop size={17} />}>Voir en boutique</Button>}
             {canManage && !trashed && <Button href={ROUTES.admin.productEdit(p.id)} upper={false} leftIcon={<Edit2 size={17} />}>Modifier</Button>}
             {canManage && trashed && (
               <Button upper={false} leftIcon={<Refresh2 size={17} />} loading={restore.isPending} onClick={() => restore.mutate([p.id], { onSuccess: () => toast.success("Produit restauré", p.name), onError: (e) => toast.error("Restauration impossible", getErrorMessage(e)) })}>Restaurer</Button>
             )}
             {canManage && !trashed && <Button variant="danger" upper={false} leftIcon={<Trash size={17} />} onClick={() => setConfirm("trash")}>Corbeille</Button>}
-            {canPurge && trashed && <Button variant="danger" upper={false} leftIcon={<Trash size={17} />} onClick={() => { setConfirm("purge"); setPurgeText(""); }}>Supprimer définitivement</Button>}
           </>
         }
       />
@@ -236,14 +229,6 @@ function Content({ id }: { id: number }) {
         onConfirm={() => trash.mutate([p.id], { onSuccess: () => { toast.success("Produit mis à la corbeille", p.name); router.push(ROUTES.admin.products); }, onError: (e) => toast.error("Action impossible", getErrorMessage(e)) })}
       />
 
-      <Modal open={confirm === "purge"} onClose={() => setConfirm(null)} title="Suppression définitive" className="max-w-[460px]">
-        <p className="text-[14px] leading-[22px] text-ink-2">« <strong>{p.name}</strong> » sera supprimé <strong className="text-danger">définitivement</strong>. Cette action est irréversible.</p>
-        <div className="mt-4"><Input label="Tapez SUPPRIMER pour confirmer" value={purgeText} onChange={(e) => setPurgeText(e.target.value)} autoComplete="off" /></div>
-        <div className="mt-5 grid grid-cols-2 gap-3">
-          <Button variant="chip" upper={false} onClick={() => setConfirm(null)}>Annuler</Button>
-          <Button variant="danger" upper={false} disabled={purgeText !== "SUPPRIMER"} loading={purge.isPending} onClick={() => purge.mutate(p.id, { onSuccess: () => { toast.success("Produit supprimé définitivement"); router.push(ROUTES.admin.products); }, onError: (e) => toast.error("Suppression impossible", getErrorMessage(e)) })}>Supprimer</Button>
-        </div>
-      </Modal>
 
       <StockAdjustModal product={adjust ? p : null} onClose={() => setAdjust(false)} />
       <StockHistoryDrawer product={history ? p : null} onClose={() => setHistory(false)} />

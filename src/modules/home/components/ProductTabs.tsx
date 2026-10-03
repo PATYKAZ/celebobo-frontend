@@ -22,7 +22,7 @@ const TABS: { value: Tab; label: string }[] = [
 
 const PARAMS: Record<Tab, ProductListParams> = {
   best: { ordering: "-sales", pageSize: 10 },
-  new: { badge: "new", ordering: "-date_added", pageSize: 10 },
+  new: { badge: "new", ordering: "-created_at", pageSize: 10 },
   popular: { ordering: "-rating", pageSize: 10 },
 };
 

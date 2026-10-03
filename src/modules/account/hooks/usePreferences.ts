@@ -27,12 +27,42 @@ export function useSavePreferences() {
     onError: (_e, _v, ctx) => {
       if (ctx?.prev) qc.setQueryData(key, ctx.prev);
     },
+    onSuccess: (saved) => qc.setQueryData(key, saved),
   });
 }
 
+const devicesKey = (uid?: number) => ["account", "devices", uid] as const;
+
+export function usePushDevices() {
+  const uid = useAuthStore((s) => s.user?.id);
+  return useQuery({ queryKey: devicesKey(uid), queryFn: preferencesService.devices, enabled: !!uid });
+}
+
+export function useRemoveDevice() {
+  const qc = useQueryClient();
+  const uid = useAuthStore((s) => s.user?.id) ?? 0;
+  return useMutation({ mutationFn: (id: number) => preferencesService.removeDevice(id, uid), onSuccess: () => qc.invalidateQueries({ queryKey: devicesKey(uid) }) });
+}
+
+/** Permission du navigateur + appareil courant (mémorisé localement et encore présent côté API). */
 export function usePushPermission() {
+  const qc = useQueryClient();
+  const uid = useAuthStore((s) => s.user?.id) ?? 0;
+  const { data: devices } = usePushDevices();
   const [state, setState] = useState<PushState>("default");
-  useEffect(() => setState(preferencesService.pushState()), []);
-  const enable = async () => setState(await preferencesService.enablePush());
-  return { state, enable };
+  const [stored, setCurrentDevice] = useState<number | null>(null);
+  useEffect(() => {
+    setState(preferencesService.pushState());
+    setCurrentDevice(preferencesService.currentDevice(uid));
+  }, [uid]);
+  const currentDevice = stored && devices?.some((d) => d.id === stored) ? stored : null;
+  const enable = useMutation({
+    mutationFn: () => preferencesService.enablePush(uid),
+    onSuccess: (s) => {
+      setState(s);
+      setCurrentDevice(preferencesService.currentDevice(uid));
+      qc.invalidateQueries({ queryKey: devicesKey(uid) });
+    },
+  });
+  return { state, currentDevice, enable };
 }

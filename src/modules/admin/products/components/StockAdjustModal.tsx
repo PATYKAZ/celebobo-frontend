@@ -21,7 +21,7 @@ export function StockAdjustModal({ product, onClose }: Props) {
   const adjust = useAdjustStock(product?.id ?? 0);
   const [mode, setMode] = useState<"delta" | "set">("delta");
   const [value, setValue] = useState("");
-  const [reason, setReason] = useState<StockReason>("réapprovisionnement");
+  const [reason, setReason] = useState<StockReason>("restock");
   const [note, setNote] = useState("");
   const [variantId, setVariantId] = useState("");
 
@@ -29,7 +29,7 @@ export function StockAdjustModal({ product, onClose }: Props) {
     if (product) {
       setMode("delta");
       setValue("");
-      setReason("réapprovisionnement");
+      setReason("restock");
       setNote("");
       setVariantId("");
     }

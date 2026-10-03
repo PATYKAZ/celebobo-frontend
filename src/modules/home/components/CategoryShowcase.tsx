@@ -13,7 +13,7 @@ import { ProductCarousel } from "./ProductCarousel";
 
 /** Bloc catégorie : bannière + grille 3×2 de sous-catégories + carrousel de produits. Réutilisé 2× sur l'accueil. */
 export function CategoryShowcase({ config }: { config: ShowcaseConfig }) {
-  const { data, isLoading } = useProducts({ category: config.categoryId, ordering: "-sales", pageSize: 10 });
+  const { data, isLoading } = useProducts({ category: config.categorySlug, ordering: "-sales", pageSize: 10 });
   const { banner } = config;
   const dark = banner.tone === "dark";
 

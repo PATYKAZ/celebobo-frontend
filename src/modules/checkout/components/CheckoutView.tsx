@@ -3,7 +3,8 @@
 import Image from "next/image";
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowDown2, ArrowLeft, ArrowRight, Bag2, Send2 } from "iconsax-reactjs";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { ROUTES } from "@/config/routes";
 import { Breadcrumb } from "@/shared/layout/Breadcrumb";
 import { Reveal } from "@/shared/animations/Reveal";
@@ -13,19 +14,22 @@ import { Block } from "@/shared/ui/Block";
 import { BottomSheet } from "@/shared/ui/BottomSheet";
 import { Button } from "@/shared/ui/Button";
 import { EmptyState } from "@/shared/ui/EmptyState";
+import { Skeleton } from "@/shared/ui/Skeleton";
 import { Textarea } from "@/shared/ui/Form";
 import { toast } from "@/shared/ui/Toast";
 import { useAddresses, useSaveAddress } from "@/modules/account/hooks/useAddressBook";
-import { useProfile } from "@/modules/account/hooks/useAccount";
 import { AuthGuard } from "@/modules/auth/components/AuthGuard";
 import { generalError } from "@/modules/auth/components/fieldErrors";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
 import { displayName } from "@/modules/auth/types";
 import { CartSummary } from "@/modules/cart/components/CartSummary";
-import { useCart } from "@/modules/cart/hooks/useCart";
+import { CouponForm } from "@/modules/cart/components/CouponForm";
+import { cartKeys, useCart } from "@/modules/cart/hooks/useCart";
+import { cartTotal, cartSavings, cartCount } from "@/modules/cart/store/cart.store";
 import { unitPrice } from "@/modules/cart/types";
 import { useCreateOrder } from "@/modules/orders/hooks/useOrders";
 import { PAYMENT_METHODS, type Order } from "@/modules/orders/types";
+import { useCheckoutQuote, usePaymentMethods, useShippingZones } from "../hooks/useCheckout";
 import { CHECKOUT_STEPS, type CheckoutForm } from "../types";
 import { AddressPicker } from "./AddressPicker";
 import { CheckoutStepper } from "./CheckoutStepper";
@@ -48,23 +52,47 @@ const EMPTY_FORM: CheckoutForm = {
   note: "",
 };
 
+const PHONE = /^\+?[\d\s().-]{7,20}$/;
+
+/** Clé d'idempotence d'un envoi de commande (un double clic ne crée pas deux commandes). */
+const newKey = () => globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+
 function Content() {
   const { user } = useAuth();
-  const { data: profile } = useProfile();
-  const { data: saved, isSuccess: addressesLoaded } = useAddresses();
-  const { items, count, total, savings, isEmpty, clear } = useCart();
+  const qc = useQueryClient();
+  const { data: saved, isFetched: addressesLoaded } = useAddresses();
+  const { items: cartItems, quote: cartQuote, isEmpty, isLoading: cartLoading } = useCart();
+  const { data: methods } = usePaymentMethods();
+  const { data: zones } = useShippingZones();
   const createOrder = useCreateOrder();
   const saveAddress = useSaveAddress();
+  const idempotencyKey = useRef(newKey());
   const [step, setStep] = useState(0);
   const [dir, setDir] = useState(1);
   const [errors, setErrors] = useState<Errors>({});
-  const [done, setDone] = useState<{ order: Order; conversationId: number } | null>(null);
+  const [done, setDone] = useState<{ order: Order; conversationId: number | null } | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [recap, setRecap] = useState(false);
   const [form, setForm] = useState<CheckoutForm>(EMPTY_FORM);
   const initialised = useRef(false);
 
-  // Préremplissage : adresse par défaut du carnet, sinon profil (nouvelle adresse)
+  // Seules les lignes encore vendables partent en commande ; le devis serveur fait foi (zone, code promo).
+  const items = useMemo(() => cartItems.filter((i) => i.available !== false), [cartItems]);
+  const lines = useMemo(() => items.map((i) => ({ productId: i.productId, variantId: i.variantId ?? null, quantity: i.quantity })), [items]);
+  const couponCode = cartQuote?.couponCode ?? null;
+  const { data: quote } = useCheckoutQuote(lines, form.city, couponCode);
+  const count = cartCount(items);
+  const total = cartTotal(items);
+  const savings = cartSavings(items);
+  const payable = quote?.total ?? total;
+  const cities = useMemo(() => [...new Set(zones?.flatMap((z) => z.cities) ?? [])], [zones]);
+
+  // Mode de paiement par défaut : le premier activé par la boutique
+  useEffect(() => {
+    if (methods?.length && !methods.includes(form.paymentMethod)) setForm((f) => ({ ...f, paymentMethod: methods[0] }));
+  }, [methods, form.paymentMethod]);
+
+  // Préremplissage : adresse par défaut du carnet, sinon compte (nouvelle adresse)
   useEffect(() => {
     if (initialised.current || !addressesLoaded) return;
     initialised.current = true;
@@ -75,13 +103,11 @@ function Content() {
       setForm((f) => ({
         ...f,
         recipient: user ? displayName(user) : "",
-        phone: profile?.phoneNumber ?? user?.phoneNumber ?? "",
-        address: profile?.deliveryAddress.line1 ?? "",
-        quarter: profile?.deliveryAddress.line2 ?? "",
+        phone: user?.phoneNumber ?? "",
         saveToBook: true,
       }));
     }
-  }, [addressesLoaded, saved, profile, user]);
+  }, [addressesLoaded, saved, user]);
 
   const set = <K extends keyof CheckoutForm>(k: K, v: CheckoutForm[K]) => {
     setForm((f) => ({ ...f, [k]: v }));
@@ -110,7 +136,8 @@ function Content() {
     if (!form.address.trim()) e.address = "L'adresse de livraison est requise.";
     if (!form.quarter.trim()) e.quarter = "Indiquez votre quartier ou commune.";
     if (!form.country.trim()) e.country = "Le pays est requis.";
-    if (!/^[+\d][\d\s().-]{7,}$/.test(form.phone.trim())) e.phone = "Entrez un numéro valide pour que le revendeur vous joigne.";
+    if (!form.city.trim()) e.city = "Indiquez la ville de livraison.";
+    if (!PHONE.test(form.phone.trim())) e.phone = "Entrez un numéro valide pour que le revendeur vous joigne.";
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -122,33 +149,40 @@ function Content() {
 
   const submit = async () => {
     setSubmitError(null);
+    const isNew = form.addressId === null;
+    const address = { recipient: form.recipient.trim(), phone: form.phone.trim(), line1: form.address.trim(), quarter: form.quarter.trim(), city: form.city.trim(), country: form.country.trim() };
     try {
-      let addressId = form.addressId;
-      // Nouvelle adresse à conserver dans le carnet
-      if (addressId === null && form.saveToBook) {
-        const a = await saveAddress.mutateAsync({
-          input: { label: form.addressLabel, recipient: form.recipient, phone: form.phone, line1: form.address, quarter: form.quarter, city: form.city, country: form.country, isDefault: !saved?.length },
-        });
-        addressId = a.id;
-      }
       const res = await createOrder.mutateAsync({
-        items: items.map((i) => ({ productId: i.productId, quantity: i.quantity, variantId: i.variantId ?? null })),
-        addressId,
-        deliveryAddress: form.address,
-        deliveryQuarter: form.quarter,
-        deliveryCountry: form.country,
-        paymentMethod: form.paymentMethod,
-        note: [`Tél : ${form.phone}`, form.note].filter(Boolean).join("\n"),
+        input: { items: lines, paymentMethod: form.paymentMethod, couponCode, addressId: form.addressId, address: isNew ? address : null, note: form.note.trim() },
+        idempotencyKey: idempotencyKey.current,
       });
-      clear();
+      idempotencyKey.current = newKey();
       setDone({ order: res.order, conversationId: res.conversationId });
-      toast.success("Commande envoyée", `Commande #${res.order.id}`);
+      // Le backend a vidé le panier du compte
+      qc.invalidateQueries({ queryKey: cartKeys.all });
+      toast.success("Commande envoyée", `Commande ${res.order.number}`);
+      // Nouvelle adresse à conserver dans le carnet (n'empêche pas la commande en cas d'échec)
+      if (isNew && form.saveToBook) {
+        saveAddress.mutate(
+          { input: { label: form.addressLabel, recipient: address.recipient, phone: address.phone, line1: address.line1, quarter: address.quarter, city: address.city, country: address.country, isDefault: !saved?.length } },
+          { onError: () => toast.info("Adresse non enregistrée", "Vous pourrez l'ajouter depuis votre carnet d'adresses.") },
+        );
+      }
     } catch (e) {
       setSubmitError(generalError(e) ?? getErrorMessage(e));
     }
   };
 
   if (done) return <OrderSuccess order={done.order} conversationId={done.conversationId} />;
+
+  if (isEmpty && cartLoading) {
+    return (
+      <Block>
+        <Skeleton className="h-8 w-60" />
+        <Skeleton className="mt-6 h-40 w-full" />
+      </Block>
+    );
+  }
 
   if (isEmpty) {
     return (
@@ -159,7 +193,7 @@ function Content() {
   }
 
   const paymentLabel = PAYMENT_METHODS.find((m) => m.value === form.paymentMethod)?.label;
-  const pending = createOrder.isPending || saveAddress.isPending;
+  const pending = createOrder.isPending;
 
   return (
     <div className="grid gap-3 sm:gap-4 lg:grid-cols-[1fr_380px]">
@@ -174,7 +208,7 @@ function Content() {
               <span className="block text-[13px] font-bold leading-[18px]">Récapitulatif · {count} article{count > 1 ? "s" : ""}</span>
               <span className="block text-[12px] leading-[16px] text-ink-2">Appuyez pour voir le détail</span>
             </span>
-            <span className="text-[16px] font-extrabold text-primary">{formatPrice(total)}</span>
+            <span className="text-[16px] font-extrabold text-primary">{formatPrice(payable)}</span>
             <ArrowDown2 size={16} className="text-ink-3" />
           </button>
 
@@ -189,12 +223,12 @@ function Content() {
               exit={{ opacity: 0, x: dir * -40 }}
               transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
             >
-              {step === 0 && <AddressPicker form={form} errors={errors} set={set} onPick={pickAddress} />}
+              {step === 0 && <AddressPicker form={form} errors={errors} set={set} onPick={pickAddress} cities={cities} zone={quote} />}
 
               {step === 1 && (
                 <div className="space-y-4 sm:space-y-5">
                   <h2 className="text-[17px] sm:text-[18px]">Comment souhaitez-vous payer ?</h2>
-                  <PaymentMethodCards value={form.paymentMethod} onChange={(v) => set("paymentMethod", v)} />
+                  <PaymentMethodCards value={form.paymentMethod} onChange={(v) => set("paymentMethod", v)} methods={methods} />
                   <Textarea label="Note pour le revendeur (optionnel)" value={form.note} onChange={(e) => set("note", e.target.value)} placeholder="Horaires de livraison, point de repère…" maxLength={500} />
                 </div>
               )}
@@ -227,6 +261,7 @@ function Content() {
                       </li>
                     ))}
                   </ul>
+                  {cartItems.length > items.length && <p className="rounded-md bg-star/10 px-3 py-2 text-[13px] text-[#8a5a00]">Certains articles de votre panier ne sont plus disponibles : ils ne seront pas commandés.</p>}
                   {submitError && <p role="alert" className="rounded-md bg-danger-50 px-3 py-2 text-[13px] text-danger">{submitError}</p>}
                 </div>
               )}
@@ -253,12 +288,12 @@ function Content() {
       </Reveal>
 
       <Reveal delay={0.1} direction="up" className="hidden min-w-0 lg:block">
-        <CartSummary title="Votre commande" subtotal={total} savings={savings} count={count} />
+        <CartSummary title="Votre commande" subtotal={total} savings={savings} count={count} quote={quote} coupon={<CouponForm quote={cartQuote} />} />
       </Reveal>
 
       <BottomSheet open={recap} onClose={() => setRecap(false)} title="Votre commande">
         <div className="-mx-5 pb-2">
-          <CartSummary title="Récapitulatif" subtotal={total} savings={savings} count={count} />
+          <CartSummary title="Récapitulatif" subtotal={total} savings={savings} count={count} quote={quote} coupon={<CouponForm quote={cartQuote} />} />
         </div>
       </BottomSheet>
     </div>
