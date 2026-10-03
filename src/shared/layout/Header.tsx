@@ -9,7 +9,6 @@ import {
 } from "iconsax-reactjs";
 import { useEffect } from "react";
 import { ROUTES } from "@/config/routes";
-import { SITE } from "@/config/site";
 import { cn } from "@/shared/lib/cn";
 import { formatPrice } from "@/shared/lib/format";
 import { CircleButton } from "@/shared/ui/CircleButton";
@@ -21,6 +20,7 @@ import { useCartStore } from "@/modules/cart/store/cart.store";
 import { CategoryIcon } from "@/modules/categories/components/CategoryIcon";
 import { useCategories } from "@/modules/categories/hooks/useCategories";
 import { useFavoritesStore } from "@/modules/favorites/store/favorites.store";
+import { useSiteSettings } from "@/modules/site";
 import { Logo } from "./Logo";
 import { SearchBar } from "./SearchBar";
 
@@ -194,16 +194,17 @@ function AccountMenu() {
 export function Header() {
   const favCount = useFavoritesStore((s) => s.ids.length);
   const { isStaff } = useAuth();
+  const site = useSiteSettings();
 
   return (
     <header className="rounded-box bg-white max-lg:sticky max-lg:top-0 max-lg:z-40 max-lg:-mx-[15px] max-lg:rounded-none max-lg:border-b max-lg:border-line-3/70 max-lg:pt-[env(safe-area-inset-top)] max-lg:bg-white/95 max-lg:backdrop-blur-md">
       {/* Ligne 1 */}
       <div className="hidden items-center justify-between px-[30px] pt-[15px] lg:flex">
         <div className="flex items-center gap-5">
-          <a href={SITE.hotlineHref} className="flex h-7 items-center gap-1.5 rounded-md bg-chip px-2.5 text-[12px] leading-[18px]">
+          <a href={site.hotlineHref} className="flex h-7 items-center gap-1.5 rounded-md bg-chip px-2.5 text-[12px] leading-[18px]">
             <Call size={12} variant="Bold" /> Hotline 24/7
           </a>
-          <a href={SITE.hotlineHref} className="text-[12px] font-bold leading-[18px] hover:text-primary">{SITE.hotline}</a>
+          <a href={site.hotlineHref} className="text-[12px] font-bold leading-[18px] hover:text-primary">{site.hotline}</a>
         </div>
         <div className="flex items-center text-[14px] leading-[21px]">
           <Link href={ROUTES.becomeReseller} className="px-5 transition-colors hover:text-primary">Devenir revendeur</Link>

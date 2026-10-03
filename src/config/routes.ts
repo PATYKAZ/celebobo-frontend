@@ -23,6 +23,8 @@ export const ROUTES = {
   contact: "/contact",
   guide: "/guide",
   becomeReseller: "/devenir-revendeur",
+  page: (slug: string) => `/pages/${slug}`,
+  newsletterUnsubscribe: "/newsletter/desinscription",
   track: "/suivi",
   orderDetail: (id: number | string) => `/compte/commandes/${id}`,
   addresses: "/compte/adresses",

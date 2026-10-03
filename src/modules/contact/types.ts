@@ -8,16 +8,16 @@ export interface ContactInput {
 
 export type ContactErrors = Partial<Record<keyof ContactInput, string>>;
 
+/** Sujets acceptés par `POST /contact/`. */
 export const CONTACT_SUBJECTS = [
-  { value: "commande", label: "Suivi de commande" },
-  { value: "produit", label: "Question sur un produit" },
-  { value: "revendeur", label: "Devenir revendeur" },
-  { value: "retour", label: "Retour / garantie" },
-  { value: "autre", label: "Autre demande" },
+  { value: "order", label: "Suivi de commande" },
+  { value: "product", label: "Question sur un produit" },
+  { value: "reseller", label: "Devenir revendeur" },
+  { value: "partnership", label: "Partenariat" },
+  { value: "other", label: "Autre demande" },
 ];
 
-/** Accusé de réception d'un message (numéro de référence à citer au support). */
+/** Accusé de réception local (l'API répond 202 sans corps). */
 export interface ContactReceipt {
-  reference: string;
   sentAt: string;
 }

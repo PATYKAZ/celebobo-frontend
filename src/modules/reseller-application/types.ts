@@ -1,16 +1,17 @@
 export interface ResellerApplicationInput {
-  fullName: string;
+  firstName: string;
+  lastName: string;
   phone: string;
   email: string;
   city: string;
   /** Pourquoi souhaitez-vous devenir revendeur ? */
   motivation: string;
-  /** Code d'un revendeur parrain (optionnel) */
-  referralCode?: string;
 }
 
+/** Accusé de `POST /reseller-applications/`. */
 export interface ResellerApplicationReceipt {
   reference: string;
+  status: string;
   submittedAt: string;
 }
 

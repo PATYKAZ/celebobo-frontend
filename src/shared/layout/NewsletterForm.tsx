@@ -4,13 +4,13 @@ import { AnimatePresence, motion } from "motion/react";
 import { ArrowRight, Sms, TickCircle } from "iconsax-reactjs";
 import { useState, type FormEvent } from "react";
 import { getErrorMessage } from "@/shared/lib/api";
-import { useNewsletterSubscribe } from "@/modules/newsletter/hooks/useNewsletter";
+import { useNewsletterSubscribe } from "@/modules/newsletter";
 
 /** Inscription newsletter branchée sur le service (état de succès inline, doublons gérés). */
 export function NewsletterForm() {
   const [email, setEmail] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const subscribe = useNewsletterSubscribe();
+  const subscribe = useNewsletterSubscribe("footer");
   const done = subscribe.data;
 
   const submit = (e: FormEvent) => {
@@ -28,7 +28,7 @@ export function NewsletterForm() {
           <p className="text-[14px] leading-[21px]">
             <strong className="block">{done.alreadySubscribed ? "Vous êtes déjà abonné(e) !" : "Merci, vous êtes abonné(e) !"}</strong>
             <span className="text-ink-2">
-              {done.alreadySubscribed ? "Cette adresse reçoit déjà nos nouveautés." : <>Votre code <strong className="tracking-wider text-primary">{done.discountCode}</strong> (−10 %) a été envoyé à {done.email}.</>}
+              {done.alreadySubscribed ? "Cette adresse reçoit déjà nos nouveautés." : <>Votre code <strong className="tracking-wider text-primary">{done.discountCode}</strong> (−{done.discount} %) a été envoyé à {done.email}.</>}
             </span>
           </p>
         </motion.div>

@@ -2,18 +2,18 @@
 
 import { useMutation } from "@tanstack/react-query";
 import { useState, type ChangeEvent, type FormEvent } from "react";
-import { ApiError } from "@/shared/lib/api";
+import { ApiError, getErrorMessage } from "@/shared/lib/api";
 import { toast } from "@/shared/ui/Toast";
 import { contactService } from "../services/contact.service";
 import type { ContactErrors, ContactInput, ContactReceipt } from "../types";
 
-const EMPTY: ContactInput = { name: "", email: "", phone: "", subject: "commande", message: "" };
+const EMPTY: ContactInput = { name: "", email: "", phone: "", subject: "order", message: "" };
 
 export function validateContact(v: ContactInput): ContactErrors {
   const e: ContactErrors = {};
   if (v.name.trim().length < 2) e.name = "Entrez votre nom complet.";
   if (!/^\S+@\S+\.\S+$/.test(v.email)) e.email = "Adresse e-mail invalide.";
-  if (v.phone && !/^[+\d\s().-]{8,}$/.test(v.phone)) e.phone = "Numéro de téléphone invalide.";
+  if (v.phone && !/^\+?[\d\s().-]{7,20}$/.test(v.phone.trim())) e.phone = "Numéro de téléphone invalide.";
   if (v.message.trim().length < 10) e.message = "Votre message doit contenir au moins 10 caractères.";
   return e;
 }
@@ -39,13 +39,13 @@ export function useContactForm() {
       onSuccess: (r) => {
         setReceipt({ ...r, input: values });
         setValues(EMPTY);
-        toast.success("Message envoyé", `Référence ${r.reference}`);
+        toast.success("Message envoyé", "Nous vous répondons sous 24 h.");
       },
       onError: (err) => {
-        if (err instanceof ApiError && err.status === 400) {
+        if (err instanceof ApiError && Object.keys(err.fieldErrors).length) {
           const fe = err.fieldErrors;
           setErrors(Object.fromEntries(Object.entries(fe).map(([k, m]) => [k, Array.isArray(m) ? m[0] : m])) as ContactErrors);
-        } else toast.error("Envoi impossible", "Réessayez dans un instant.");
+        } else toast.error("Envoi impossible", getErrorMessage(err, "Réessayez dans un instant."));
       },
     });
   };

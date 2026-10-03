@@ -1,4 +1,4 @@
-/** accounts.models.Profile (adresses : def_* = livraison, deliv_* = facturation dans l'ancien backend). */
+/** @deprecated L'API n'a pas d'adresse sur le profil : utiliser le carnet d'adresses (`useAddresses`). */
 export interface Address {
   line1: string;
   /** quartier / commune */
@@ -6,6 +6,7 @@ export interface Address {
   country: string;
 }
 
+/** Profil de `GET /me/`. */
 export interface Profile {
   userId: number;
   firstName: string;
@@ -13,15 +14,16 @@ export interface Profile {
   email: string;
   phoneNumber: string | null;
   avatar: string | null;
+  emailVerified: boolean;
+  dateJoined: string;
   /** Code d'invitation propre (revendeur) */
   codeRevendeur: string | null;
   /** Nombre d'utilisateurs invités par ce revendeur */
   invitedCount: number;
-  /** Code du revendeur qui m'a invité */
+  /** Code du revendeur qui m'a invité (définitif une fois renseigné) */
   invitedByCode: string | null;
+  /** @deprecated toujours vide — l'adresse de livraison vient du carnet d'adresses. */
   deliveryAddress: Address;
-  billingAddress: Address;
-  sameAsDelivery: boolean;
 }
 
 export interface UpdatePersonalInput {
@@ -32,12 +34,13 @@ export interface UpdatePersonalInput {
   avatar?: File | null;
 }
 
-export interface UpdateAddressesInput {
-  deliveryAddress: Address;
-  billingAddress: Address;
-  sameAsDelivery: boolean;
+export interface ChangePasswordInput {
+  oldPassword: string;
+  newPassword: string;
+  newPasswordConfirm: string;
 }
 
+/** @deprecated cf. `Address`. */
 export const EMPTY_ADDRESS: Address = { line1: "", line2: "", country: "RD Congo" };
 
 /** Carnet d'adresses (v2) — plusieurs adresses, une par défaut. */
@@ -58,6 +61,7 @@ export interface SavedAddress {
 export type SavedAddressInput = Omit<SavedAddress, "id" | "isDefault"> & { isDefault?: boolean };
 
 export const ADDRESS_LABELS = ["Domicile", "Bureau", "Famille", "Autre"] as const;
+export type AddressLabel = (typeof ADDRESS_LABELS)[number];
 
 /** Préférences de notification (v2). */
 export type NotificationEvent = "orderAssigned" | "statusChanged" | "newMessage" | "promotions";
@@ -71,9 +75,10 @@ export const NOTIFICATION_EVENTS: { key: NotificationEvent; label: string; descr
   { key: "promotions", label: "Offres & nouveautés", description: "Promotions, nouveaux produits, codes de réduction." },
 ];
 
-export const DEFAULT_PREFERENCES: NotificationPreferences = {
-  orderAssigned: { email: true, push: true },
-  statusChanged: { email: true, push: true },
-  newMessage: { email: false, push: true },
-  promotions: { email: false, push: false },
-};
+/** Appareil abonné aux notifications push (`GET /me/devices/`). */
+export interface PushDevice {
+  id: number;
+  userAgent: string;
+  createdAt: string;
+  lastUsedAt: string | null;
+}

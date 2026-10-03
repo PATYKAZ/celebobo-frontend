@@ -1,12 +1,13 @@
 export * from "./types";
 export { ProfileView } from "./components/ProfileView";
 export { OrderHistoryView } from "./components/OrderHistoryView";
-export { useProfile, useUpdateProfile, useUpdateAddresses } from "./hooks/useAccount";
+export { useProfile, useUpdateProfile, useChangePassword, useDeleteAccount } from "./hooks/useAccount";
 export { accountService } from "./services/account.service";
-export { AddressBookView } from "./components/AddressBookView";
+export { uploadImage, type UploadPurpose, type UploadedMedia } from "./services/uploads.service";
+export { AddressBookView, addressIcon } from "./components/AddressBookView";
 export { AddressFormModal } from "./components/AddressFormModal";
 export { useAddresses, useSaveAddress, useDeleteAddress, useSetDefaultAddress } from "./hooks/useAddressBook";
 export { addressBookService } from "./services/address-book.service";
 export { NotificationSettingsView } from "./components/NotificationSettingsView";
-export { useNotificationPreferences, useSavePreferences, usePushPermission } from "./hooks/usePreferences";
+export { useNotificationPreferences, useSavePreferences, usePushPermission, usePushDevices, useRemoveDevice } from "./hooks/usePreferences";
 export { preferencesService } from "./services/preferences.service";

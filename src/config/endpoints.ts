@@ -57,9 +57,14 @@ export const ENDPOINTS = {
 
   // ---- Compte -----------------------------------------------------------
   profile: {
-    get: "/profile/", // profile/updateinfo/
-    update: "/profile/", // PATCH (multipart pour l'avatar)
-    addresses: "/profile/addresses/",
+    me: "/me/", // GET / PATCH / DELETE
+    devices: "/me/devices/",
+    device: (id: number | string) => `/me/devices/${id}/`,
+    pushPublicKey: "/push/public-key/",
+  },
+  uploads: {
+    sign: "/uploads/sign/",
+    complete: "/uploads/complete/",
   },
 
   // ---- Échanges ---------------------------------------------------------
@@ -86,9 +91,16 @@ export const ENDPOINTS = {
   },
   newsletter: {
     subscribe: "/newsletter/subscribe/",
+    unsubscribe: "/newsletter/unsubscribe/",
   },
   resellerApplication: {
     submit: "/reseller-applications/", // « Devenir revendeur »
+  },
+  site: {
+    settings: "/settings/public/",
+    pages: "/pages/",
+    page: (slug: string) => `/pages/${encodeURIComponent(slug)}/`,
+    faq: "/faq/",
   },
   tracking: {
     lookup: "/orders/track/", // ?number=&contact=  (suivi public sans compte)
@@ -99,12 +111,12 @@ export const ENDPOINTS = {
     sse: "/events/",
   },
   addressBook: {
-    list: "/profile/addresses-book/",
-    detail: (id: number | string) => `/profile/addresses-book/${id}/`,
+    list: "/me/addresses/",
+    detail: (id: number | string) => `/me/addresses/${id}/`,
+    setDefault: (id: number | string) => `/me/addresses/${id}/set-default/`,
   },
   notificationPreferences: {
-    get: "/profile/notification-preferences/",
-    pushSubscribe: "/profile/push-subscriptions/",
+    get: "/me/notification-preferences/",
   },
   orderActions: {
     cancel: (id: number | string) => `/orders/${id}/cancel/`,
