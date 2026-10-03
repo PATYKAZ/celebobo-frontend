@@ -121,6 +121,9 @@ async function request<T>(method: string, path: string, body?: unknown, opts: Re
   return parsed as T;
 }
 
+/** En-tête exigé par les écritures idempotentes de l'API (commande, ventes, paiements) : une clé par action. */
+export const idempotent = (key: string = crypto.randomUUID()): RequestOptions => ({ headers: { "Idempotency-Key": key } });
+
 /** Convertit l'enveloppe `{ results, next, previous, meta }` de l'API en `Paginated`. */
 export function toPaginated<T, R = T>(envelope: PageEnvelope<T>, map?: (item: T) => R): Paginated<R> {
   const { count, page, pageSize, totalPages, ...meta } = envelope.meta;

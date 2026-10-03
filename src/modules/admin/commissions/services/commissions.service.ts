@@ -1,5 +1,5 @@
 import { ENDPOINTS } from "@/config/endpoints";
-import { api, type PageEnvelope } from "@/shared/lib/api";
+import { api, idempotent, type PageEnvelope } from "@/shared/lib/api";
 import { formatDate } from "@/shared/lib/format";
 import { money } from "@/modules/products/services/products.mapper";
 import { monthLabel } from "../../dashboard/lib/period";
@@ -55,6 +55,6 @@ export const commissionsService = {
   },
 
   async pay(input: PayCommissionInput): Promise<CommissionPayment> {
-    return toPayment(await api.post<PayoutDto>(payouts, { resellerId: input.resellerId, amount: input.amount.toFixed(2), note: input.note ?? "" }));
+    return toPayment(await api.post<PayoutDto>(payouts, { resellerId: input.resellerId, amount: input.amount.toFixed(2), note: input.note ?? "" }, idempotent()));
   },
 };

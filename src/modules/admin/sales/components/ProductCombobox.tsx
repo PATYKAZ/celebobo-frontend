@@ -10,7 +10,7 @@ import { useMediaQuery } from "@/shared/hooks/useMediaQuery";
 import { BottomSheet } from "@/shared/ui/BottomSheet";
 import type { Product } from "@/modules/products/types";
 import { getPricing } from "@/modules/products/utils";
-import { useProducts } from "@/modules/products/hooks/useProducts";
+import { useAdminProducts } from "../../products/hooks/useAdminProducts";
 
 interface Props {
   value: Product | null;
@@ -25,7 +25,8 @@ export function ProductCombobox({ value, onChange, error, label, compact }: Prop
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
   const dq = useDebounce(q, 250);
-  const { data, isFetching } = useProducts({ search: dq, pageSize: 8 }, open);
+  // liste du back-office : stock réel et prix d'achat (marge) des produits
+  const { data, isFetching } = useAdminProducts({ search: dq, pageSize: 8 }, open);
   const ref = useRef<HTMLDivElement>(null);
   const isMobile = useMediaQuery("(max-width: 639px)");
 

@@ -1,5 +1,5 @@
 import { ENDPOINTS } from "@/config/endpoints";
-import { api, downloadJob, runJob, type Job, type PageEnvelope } from "@/shared/lib/api";
+import { api, downloadJob, idempotent, runJob, type Job, type PageEnvelope } from "@/shared/lib/api";
 import { formatDate } from "@/shared/lib/format";
 import { PAYMENT_TO_API, toOrder, type OrderDto } from "@/modules/orders/services/orders.mapper";
 import type { Order } from "@/modules/orders/types";
@@ -47,11 +47,20 @@ const toSaleBody = (input: SaleInput) => ({
   soldTo: input.venduA ?? "",
 });
 
+/** Motifs de blocage renvoyés par l'API (codes) → libellés. */
+const BLOCKED_LABEL: Record<string, string> = {
+  already_converted: "Déjà convertie en ventes",
+  cancelled: "Commande annulée",
+  returned: "Commande retournée",
+  no_products: "Aucun produit à convertir",
+};
+const blockedLabel = (code: string | null) => (code ? (BLOCKED_LABEL[code] ?? code) : null);
+
 /** Résumé de la recherche de conversion → commande partielle (les lignes viennent de la fiche, cf. `convertible`). */
 const toConvertible = (dto: ConvertibleOrderDto): ConvertibleOrder => ({
   order: toOrder({ ...dto, previewName: "", previewImage: "", resellerName: null }),
   convertible: dto.convertible,
-  blockedReason: dto.blockedReason,
+  blockedReason: blockedLabel(dto.blockedReason),
   convertedAt: null,
 });
 
@@ -74,11 +83,11 @@ export const salesService = {
   },
 
   async create(input: SaleInput): Promise<Sale> {
-    return toSale(await api.post<SaleDto>(sales.list, toSaleBody(input)));
+    return toSale(await api.post<SaleDto>(sales.list, toSaleBody(input), idempotent()));
   },
 
   async createMany(inputs: SaleInput[]): Promise<Sale[]> {
-    return (await api.post<SaleDto[]>(sales.bulk, { lines: inputs.map(toSaleBody) })).map(toSale);
+    return (await api.post<SaleDto[]>(sales.bulk, { lines: inputs.map(toSaleBody) }, idempotent())).map(toSale);
   },
 
   /** Le produit et la quantité d'une vente ne se modifient pas : prix, paiement, date et acheteur seulement. */
@@ -92,7 +101,7 @@ export const salesService = {
   },
 
   async refund(id: number, input: RefundInput): Promise<Sale> {
-    return toSale(await api.post<SaleDto>(sales.refund(id), { kind: input.type === "retour" ? "return" : "refund", amount: input.amount.toFixed(2), reason: input.reason.trim() }));
+    return toSale(await api.post<SaleDto>(sales.refund(id), { kind: input.type === "retour" ? "return" : "refund", amount: input.amount.toFixed(2), reason: input.reason.trim() }, idempotent()));
   },
 
   /** Par n° de commande, nom ou e-mail du client ; sans requête : commandes récentes convertibles. */
@@ -104,7 +113,7 @@ export const salesService = {
   async convertible(orderId: number): Promise<ConvertibleOrder> {
     const order = toOrder(await api.get<OrderDto>(orders.detail(orderId)));
     const match = (await api.get<ConvertibleOrderDto[]>(orders.convertible, { params: { search: order.number } })).find((o) => o.id === orderId);
-    return { order, convertible: match?.convertible ?? false, blockedReason: match?.blockedReason ?? "Commande non convertible.", convertedAt: null };
+    return { order, convertible: match?.convertible ?? false, blockedReason: match ? blockedLabel(match.blockedReason) : "Commande non convertible.", convertedAt: null };
   },
 
   /** Convertit une commande en ventes : 1 vente par ligne (quantité conservée). */
@@ -114,7 +123,7 @@ export const salesService = {
       soldAt: input.soldAt,
       soldTo: input.venduA ?? "",
       lines: input.lines.map((l) => ({ itemId: l.itemId, unitPrice: l.unitPrice.toFixed(2) })),
-    });
+    }, idempotent());
     return { sales: created.map(toSale), order: toOrder(await api.get<OrderDto>(orders.detail(orderId))) };
   },
 
