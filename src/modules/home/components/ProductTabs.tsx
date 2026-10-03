@@ -10,6 +10,7 @@ import Link from "next/link";
 import { ArrowRight2 } from "iconsax-reactjs";
 import { useProducts } from "@/modules/products/hooks/useProducts";
 import type { ProductListParams } from "@/modules/products/types";
+import type { HomeCatalog } from "../types";
 import { ProductCarousel } from "./ProductCarousel";
 
 type Tab = "best" | "new" | "popular";
@@ -20,18 +21,16 @@ const TABS: { value: Tab; label: string }[] = [
   { value: "popular", label: "Populaires" },
 ];
 
-const PARAMS: Record<Tab, ProductListParams> = {
-  best: { ordering: "-sales", pageSize: 10 },
-  new: { badge: "new", ordering: "-created_at", pageSize: 10 },
-  popular: { ordering: "-rating", pageSize: 10 },
-};
+const POPULAR: ProductListParams = { ordering: "-rating", pageSize: 10 };
 
-function TabPanel({ tab }: { tab: Tab }) {
-  const { data, isLoading } = useProducts(PARAMS[tab]);
-  return <ProductCarousel products={data?.results} loading={isLoading} />;
+/** « Meilleures ventes » et « Nouveautés » viennent de l'accueil (un seul appel) ; « Populaires » est chargé à l'ouverture. */
+function TabPanel({ tab, catalog }: { tab: Tab; catalog: HomeCatalog | null }) {
+  const popular = useProducts(POPULAR, tab === "popular");
+  if (tab === "popular") return <ProductCarousel products={popular.data?.results} loading={popular.isLoading} />;
+  return <ProductCarousel products={catalog ? (tab === "best" ? catalog.bestSellers : catalog.newArrivals) : undefined} loading={!catalog} />;
 }
 
-export function ProductTabs() {
+export function ProductTabs({ catalog }: { catalog: HomeCatalog | null }) {
   const [tab, setTab] = useState<Tab>("best");
   return (
     <Reveal>
@@ -45,7 +44,7 @@ export function ProductTabs() {
         <div className="mt-3 sm:mt-6">
           <AnimatePresence mode="wait" initial={false}>
             <motion.div key={tab} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.25 }}>
-              <TabPanel tab={tab} />
+              <TabPanel tab={tab} catalog={catalog} />
             </motion.div>
           </AnimatePresence>
         </div>

@@ -17,7 +17,6 @@ import { SectionHeader } from "@/shared/ui/SectionHeader";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { Stars } from "@/shared/ui/Stars";
 import { useCart } from "@/modules/cart/hooks/useCart";
-import { useProducts } from "@/modules/products/hooks/useProducts";
 import type { Product } from "@/modules/products/types";
 import { getPricing } from "@/modules/products/utils";
 import type { HomeContent } from "../types";
@@ -154,8 +153,8 @@ function DealCard({ product, content }: { product: Product; content: HomeContent
 }
 
 export function DealsOfTheDay({ content }: { content?: HomeContent }) {
-  const { data } = useProducts({ onSale: true, ordering: "-sales", pageSize: 6 });
-  const deal = useMemo(() => data?.results.find((p) => p.images.length >= 2) ?? data?.results[0], [data]);
+  const deals = content?.catalog?.deals;
+  const deal = useMemo(() => deals?.find((p) => p.images.length >= 2) ?? deals?.[0], [deals]);
 
   return (
     <section className="grid grid-cols-[minmax(0,1fr)] gap-3 sm:gap-4 xl:grid-cols-[minmax(0,971px)_minmax(0,1fr)]">

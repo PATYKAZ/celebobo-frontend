@@ -12,7 +12,7 @@ import { Button } from "@/shared/ui/Button";
 import { EmptyState } from "@/shared/ui/EmptyState";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { useCart } from "@/modules/cart/hooks/useCart";
-import { useProduct } from "../hooks/useProducts";
+import { useProduct, useProductReviews, useRelatedProducts } from "../hooks/useProducts";
 import { useVariantSelection } from "../hooks/useVariantSelection";
 import type { Product } from "../types";
 import { useRecentlyViewedStore } from "../store/recently-viewed.store";
@@ -90,6 +90,9 @@ function ProductContent({ product }: { product: Product }) {
 
 export function ProductDetailView({ slug }: { slug: string }) {
   const { data: product, isLoading, isError } = useProduct(slug);
+  // lancés en même temps que la fiche (même cache que les onglets avis et « produits similaires »)
+  useProductReviews(slug);
+  useRelatedProducts(slug);
 
   if (isLoading) {
     return (

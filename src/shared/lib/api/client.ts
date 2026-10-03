@@ -16,11 +16,19 @@ const REFRESH_PATH = "/auth/token/refresh/";
 /** Requêtes pour lesquelles un 401 ne déclenche pas de rafraîchissement du jeton. */
 const NO_REFRESH = ["/auth/login/", "/auth/register/", REFRESH_PATH, "/auth/social/google/"];
 const SAFE_METHODS = new Set(["GET", "HEAD", "OPTIONS"]);
+/** Au-delà, la requête est abandonnée : un serveur saturé ne doit pas bloquer l'interface indéfiniment. */
+const REQUEST_TIMEOUT_MS = 25_000;
 
 /** Hook global (ex: déconnexion automatique sur 401). Défini par le module `auth`. */
 let onUnauthorized: (() => void) | null = null;
 export const setUnauthorizedHandler = (fn: (() => void) | null) => {
   onUnauthorized = fn;
+};
+
+/** Une session est-elle connue ? Sans session (visiteur anonyme), un 401 ne déclenche aucun rafraîchissement. */
+let hasSession: () => boolean = () => true;
+export const setSessionProbe = (fn: () => boolean) => {
+  hasSession = fn;
 };
 
 function buildQuery(params?: Query): string {
@@ -53,9 +61,13 @@ function ensureCsrf(): Promise<void> {
   return csrfReady;
 }
 
-/** Un seul rafraîchissement à la fois : les requêtes en 401 simultanées attendent le même. */
-let refreshing: Promise<boolean> | null = null;
-function refreshSession(): Promise<boolean> {
+/**
+ * Un seul rafraîchissement à la fois : les requêtes en 401 simultanées attendent le même.
+ * `denied` = session réellement expirée (déconnexion) ; `failed` = serveur injoignable (on garde la session).
+ */
+type RefreshOutcome = "ok" | "denied" | "failed";
+let refreshing: Promise<RefreshOutcome> | null = null;
+function refreshSession(): Promise<RefreshOutcome> {
   refreshing ??= ensureCsrf()
     .then(() =>
       fetch(`${env.API_URL}${REFRESH_PATH}`, {
@@ -64,8 +76,8 @@ function refreshSession(): Promise<boolean> {
         headers: { Accept: "application/json", "X-CSRFToken": getCookie(env.CSRF_COOKIE) ?? "" },
       }),
     )
-    .then((res) => res.ok)
-    .catch(() => false)
+    .then((res): RefreshOutcome => (res.ok ? "ok" : res.status === 401 || res.status === 403 ? "denied" : "failed"))
+    .catch((): RefreshOutcome => "failed")
     .finally(() => {
       refreshing = null;
     });
@@ -73,7 +85,7 @@ function refreshSession(): Promise<boolean> {
 }
 
 async function send(method: string, path: string, body: unknown, opts: RequestOptions): Promise<Response> {
-  const { params, raw, headers, ...init } = opts;
+  const { params, raw, headers, signal, ...init } = opts;
   const isForm = typeof FormData !== "undefined" && body instanceof FormData;
   const finalHeaders = new Headers(headers);
   finalHeaders.set("Accept", "application/json");
@@ -83,6 +95,7 @@ async function send(method: string, path: string, body: unknown, opts: RequestOp
     const csrf = getCookie(env.CSRF_COOKIE);
     if (csrf) finalHeaders.set("X-CSRFToken", csrf);
   }
+  const timeout = AbortSignal.timeout(REQUEST_TIMEOUT_MS);
   try {
     return await fetch(`${env.API_URL}${path}${buildQuery(params)}`, {
       method,
@@ -90,16 +103,22 @@ async function send(method: string, path: string, body: unknown, opts: RequestOp
       headers: finalHeaders,
       body: body === undefined ? undefined : isForm ? (body as FormData) : JSON.stringify(raw ? body : snakeizeKeys(body)),
       ...init,
+      signal: signal ? AbortSignal.any([signal, timeout]) : timeout,
     });
-  } catch {
+  } catch (error) {
+    if (signal?.aborted) throw error;
+    if (timeout.aborted) throw new ApiError(0, "Le serveur met trop de temps à répondre. Réessayez.");
     throw new ApiError(0, "Impossible de joindre le serveur.");
   }
 }
 
 async function request<T>(method: string, path: string, body?: unknown, opts: RequestOptions = {}): Promise<T> {
   let res = await send(method, path, body, opts);
-  if (res.status === 401 && !NO_REFRESH.includes(path) && (await refreshSession())) {
-    res = await send(method, path, body, opts);
+  const refreshable = !NO_REFRESH.includes(path) && hasSession();
+  if (res.status === 401 && refreshable) {
+    const outcome = await refreshSession();
+    if (outcome === "failed") throw new ApiError(0, "Impossible de joindre le serveur.");
+    if (outcome === "ok") res = await send(method, path, body, opts);
   }
 
   const text = await res.text();
@@ -114,7 +133,7 @@ async function request<T>(method: string, path: string, body?: unknown, opts: Re
   const parsed = opts.raw ? data : camelizeKeys(data);
 
   if (!res.ok) {
-    if (res.status === 401 && !NO_REFRESH.includes(path)) onUnauthorized?.();
+    if (res.status === 401 && refreshable) onUnauthorized?.();
     const detail = (parsed as Problem | undefined)?.detail;
     throw new ApiError(res.status, detail ?? res.statusText ?? "Erreur API", parsed);
   }

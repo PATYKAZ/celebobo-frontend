@@ -113,7 +113,7 @@ function SalesListContent() {
           <span className="relative size-12 shrink-0 sm:size-11 overflow-hidden rounded-md bg-page">{s.productImage && <Image src={s.productImage} alt="" fill sizes="44px" className={cn("object-cover", s.status !== "valide" && "grayscale")} />}</span>
           <div className="min-w-0">
             <p className={cn("line-clamp-2 font-bold leading-[19px] sm:line-clamp-1", dim(s))}>{s.productName}{s.quantity > 1 && <span className="ml-1.5 rounded bg-chip px-1.5 py-0.5 text-[11px] no-underline">× {s.quantity}</span>}</p>
-            <p className="text-[12px] text-ink-3">{s.status !== "valide" && <span className="mr-1.5 rounded bg-chip px-1.5 py-0.5 font-semibold text-ink-2 sm:hidden">{SALE_STATUS_LABEL[s.status]}</span>}{s.category}{s.orderId && <> · <Link href={ROUTES.admin.order(s.orderId)} className="-my-2 inline-block px-1 py-2 text-primary hover:underline">Cmd #{s.orderId}</Link></>}</p>
+            <p className="text-[12px] text-ink-3">{s.status !== "valide" && <span className="mr-1.5 rounded bg-chip px-1.5 py-0.5 font-semibold text-ink-2 sm:hidden">{SALE_STATUS_LABEL[s.status]}</span>}{s.category}{s.orderId && <> · <Link prefetch={false} href={ROUTES.admin.order(s.orderId)} className="-my-2 inline-block px-1 py-2 text-primary hover:underline">Cmd #{s.orderId}</Link></>}</p>
           </div>
         </div>
       ),

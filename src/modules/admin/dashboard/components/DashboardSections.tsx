@@ -117,7 +117,7 @@ export function PendingOrdersCard({ data }: { data?: DashboardData }) {
           <RevealGroup stagger={0.07} className="flex flex-col gap-2.5">
             {data.pendingOrders.map((o) => (
               <RevealItem key={o.id}>
-                <Link href={ROUTES.admin.order(o.id)} className="group flex items-center gap-3 rounded-box border border-line-3 p-3 transition-colors hover:border-primary hover:bg-primary-50">
+                <Link prefetch={false} href={ROUTES.admin.order(o.id)} className="group flex items-center gap-3 rounded-box border border-line-3 p-3 transition-colors hover:border-primary hover:bg-primary-50">
                   <span className="grid size-10 shrink-0 place-items-center rounded-full bg-star/15 text-[#b87400]"><Messages2 size={18} variant="Bold" /></span>
                   <span className="min-w-0 flex-1">
                     <span className="block truncate text-[13px] font-bold leading-[18px]">Commande {o.number} · {o.buyer}</span>

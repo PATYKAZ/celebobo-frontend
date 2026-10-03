@@ -1,4 +1,4 @@
-export { api, idempotent, setUnauthorizedHandler, toPaginated } from "./client";
+export { api, idempotent, setSessionProbe, setUnauthorizedHandler, toPaginated } from "./client";
 export type { RequestOptions } from "./client";
 export { ApiError, getErrorMessage } from "./errors";
 export { camelizeKeys, snakeizeKeys } from "./case";

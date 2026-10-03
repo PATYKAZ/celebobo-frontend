@@ -11,6 +11,7 @@ const h = (n: string) => `/images/hero/${n}.jpg`;
  */
 export function buildHomeContent(): HomeContent {
   return {
+    catalog: null,
     slides: [
       {
         id: 1,
