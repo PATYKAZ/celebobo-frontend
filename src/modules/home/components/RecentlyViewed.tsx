@@ -35,7 +35,7 @@ function MiniCard({ p }: { p: ViewedProduct }) {
   return (
     <div className="group relative flex min-h-[117px] items-start gap-3 rounded-box border border-line-2/20 p-[11px] transition-all duration-300 hover:border-primary hover:shadow-[0_8px_24px_rgba(0,0,0,.07)] sm:items-center">
       <div className="relative shrink-0">
-        <Link href={ROUTES.product(p.id)} className="relative block h-[92px] w-[92px] overflow-hidden rounded-md bg-page/50 sm:h-[90px] sm:w-[120px]" aria-label={p.name}>
+        <Link href={ROUTES.product(p.slug)} className="relative block h-[92px] w-[92px] overflow-hidden rounded-md bg-page/50 sm:h-[90px] sm:w-[120px]" aria-label={p.name}>
           {p.image && <Image src={p.image} alt="" fill sizes="120px" className="object-cover transition-transform duration-500 group-hover:scale-110" />}
           {p.currentBadge === "Nouveauté" && <NewBadge className="absolute left-1 top-1 scale-90" />}
         </Link>
@@ -44,7 +44,7 @@ function MiniCard({ p }: { p: ViewedProduct }) {
       </div>
       <div className="min-w-0 flex-1 sm:pr-10">
         {p.reviewsCount > 0 && <Stars rating={p.rating} count={p.reviewsCount} size={11} />}
-        <Link href={ROUTES.product(p.id)} className="mt-1 line-clamp-3 text-[13px] font-bold leading-[18px] hover:text-primary sm:line-clamp-2 sm:leading-[19.5px]">{p.name}</Link>
+        <Link href={ROUTES.product(p.slug)} className="mt-1 line-clamp-3 text-[13px] font-bold leading-[18px] hover:text-primary sm:line-clamp-2 sm:leading-[19.5px]">{p.name}</Link>
         <p className="mt-1.5 flex flex-wrap items-baseline gap-x-1.5 text-[16px] font-bold leading-[19.2px]">
           <span className={sale ? "text-danger" : undefined}>{formatPrice(p.priceSolde ?? p.price)}</span>
           {sale && <span className="text-[13px] font-bold text-ink-2 line-through">{formatPrice(p.price)}</span>}

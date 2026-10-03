@@ -1,5 +1,6 @@
 import { ENDPOINTS } from "@/config/endpoints";
 import { env } from "@/config/env";
+import { slugify } from "@/shared/lib/slug";
 import { api, ApiError, mockResponse } from "@/shared/lib/api";
 import { getActor, logAudit } from "@/shared/mock-db/selectors";
 import { can } from "@/modules/auth/permissions";
@@ -48,6 +49,7 @@ export const adminCategoriesService = {
       if (nameTaken(v.name)) throw new ApiError(400, "Ce nom existe déjà", { name: ["Une catégorie porte déjà ce nom."] });
       const c: AdminCategory = {
         id: Math.max(0, ...all().map((x) => x.id)) + 1,
+        slug: slugify(v.name),
         name: v.name.trim(),
         description: v.description.trim() || null,
         image: image.url,

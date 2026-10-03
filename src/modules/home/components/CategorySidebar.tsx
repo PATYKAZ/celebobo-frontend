@@ -31,7 +31,7 @@ export function CategorySidebar() {
             ))
           : categories?.map((c, i) => (
               <motion.li key={c.id} initial={{ opacity: 0, x: -14 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.15 + i * 0.04, duration: 0.4 }}>
-                <Link href={ROUTES.category(c.id)} className="group flex items-center gap-3 text-[13px] font-semibold capitalize leading-[19.5px] transition-all duration-300 hover:translate-x-1.5 hover:text-primary">
+                <Link href={ROUTES.category(c.slug)} className="group flex items-center gap-3 text-[13px] font-semibold capitalize leading-[19.5px] transition-all duration-300 hover:translate-x-1.5 hover:text-primary">
                   <CategoryIcon name={c.icon} size={16} variant="Bold" />
                   <span className="flex-1 truncate">{c.name}</span>
                   <ArrowRight2 size={13} variant="Bold" className="opacity-60 transition-transform duration-300 group-hover:translate-x-1 group-hover:opacity-100" />

@@ -1,6 +1,7 @@
 /** Instantané produit stocké dans le panier (évite un refetch pour l'affichage). */
 export interface CartProduct {
   id: number;
+  slug: string;
   name: string;
   image: string | null;
   price: number;

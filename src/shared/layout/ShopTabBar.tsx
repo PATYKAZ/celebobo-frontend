@@ -46,7 +46,7 @@ export function ShopTabBar() {
     () => [
       {
         title: "Catégories",
-        items: (categories ?? []).map((c) => ({ label: c.name, href: ROUTES.category(c.id), iconNode: <CategoryIcon name={c.icon} size={22} /> })),
+        items: (categories ?? []).map((c) => ({ label: c.name, href: ROUTES.category(c.slug), iconNode: <CategoryIcon name={c.icon} size={22} /> })),
       },
       {
         title: "Mon compte",

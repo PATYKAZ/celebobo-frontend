@@ -22,7 +22,7 @@ export function CartLine({ item, onQuantity, onRemove }: Props) {
   const mobile = useMediaQuery("(max-width: 639px)");
   const unit = unitPrice(item);
   const original = unit < item.product.price ? item.product.price : null;
-  const href = ROUTES.product(item.productId);
+  const href = ROUTES.product(item.product.slug);
 
   return (
     <motion.li

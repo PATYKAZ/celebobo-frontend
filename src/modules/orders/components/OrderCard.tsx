@@ -65,7 +65,7 @@ export function OrderCard({ order, defaultOpen = false }: { order: Order; defaul
                       </span>
                       <div className="min-w-0 flex-1">
                         {it.productId ? (
-                          <Link href={ROUTES.product(it.productId)} className="line-clamp-2 text-[14px] font-bold leading-[18px] hover:text-primary">{it.productName}</Link>
+                          <Link href={ROUTES.product(it.productSlug ?? "")} className="line-clamp-2 text-[14px] font-bold leading-[18px] hover:text-primary">{it.productName}</Link>
                         ) : (
                           <p className="line-clamp-2 text-[14px] font-bold leading-[18px]">{it.productName}</p>
                         )}

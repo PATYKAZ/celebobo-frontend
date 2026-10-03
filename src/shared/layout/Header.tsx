@@ -74,7 +74,7 @@ function NavItem({ item }: { item: (typeof NAV)[number] }) {
           <div>
             <div className="grid grid-cols-2 gap-1">
               {categories?.map((c) => (
-                <Link key={c.id} href={ROUTES.category(c.id)} onClick={close} className="group/i flex items-center gap-3 rounded-md p-2.5 transition-colors hover:bg-chip">
+                <Link key={c.id} href={ROUTES.category(c.slug)} onClick={close} className="group/i flex items-center gap-3 rounded-md p-2.5 transition-colors hover:bg-chip">
                   <span className="grid size-9 place-items-center rounded-full bg-chip text-ink transition-colors group-hover/i:bg-primary group-hover/i:text-white">
                     <CategoryIcon name={c.icon} size={18} />
                   </span>

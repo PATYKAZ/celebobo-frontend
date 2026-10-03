@@ -53,6 +53,8 @@ export const toLegacyStatus = (s: OrderStatus): "attente" | "traitement" | "term
 export interface OrderItem {
   id: number;
   productId: number | null;
+  /** Lien vers la fiche produit (absent si le produit a été retiré du catalogue). */
+  productSlug?: string | null;
   productName: string;
   productImage: string | null;
   quantity: number;

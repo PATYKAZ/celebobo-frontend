@@ -7,12 +7,13 @@ import type { ProductListParams, ProductOrdering } from "../types";
 export const PAGE_SIZE = 12;
 export const PRICE_MAX = 2500;
 
-const ORDERINGS: ProductOrdering[] = ["-date_added", "date_added", "price", "-price", "-sales", "-rating", "name"];
+const ORDERINGS: ProductOrdering[] = ["-created_at", "created_at", "price", "-price", "-sales", "-rating", "name"];
 
 export interface ProductFilterState {
   page: number;
   q: string;
-  category: number | null;
+  /** slug de catégorie */
+  category: string | null;
   ordering: ProductOrdering;
   minPrice: number | null;
   maxPrice: number | null;
@@ -21,7 +22,7 @@ export interface ProductFilterState {
 }
 
 export interface LockedFilters {
-  category?: number;
+  category?: string;
   q?: string;
 }
 
@@ -43,8 +44,8 @@ export function useProductFilters(locked: LockedFilters = {}) {
     return {
       page: Math.max(1, num("page") ?? 1),
       q: locked.q ?? sp.get("q") ?? "",
-      category: locked.category ?? num("category"),
-      ordering: ord && ORDERINGS.includes(ord) ? ord : "-date_added",
+      category: locked.category ?? (sp.get("category") || null),
+      ordering: ord && ORDERINGS.includes(ord) ? ord : "-created_at",
       minPrice: num("minPrice"),
       maxPrice: num("maxPrice"),
       onSale: sp.get("onSale") === "1",
@@ -80,7 +81,7 @@ export function useProductFilters(locked: LockedFilters = {}) {
       if ("page" in merged) apply("page", merged.page && merged.page > 1 ? merged.page : null);
       if ("q" in merged && locked.q === undefined) apply("q", merged.q);
       if ("category" in merged && locked.category === undefined) apply("category", merged.category);
-      if ("ordering" in merged) apply("ordering", merged.ordering === "-date_added" ? null : merged.ordering);
+      if ("ordering" in merged) apply("ordering", merged.ordering === "-created_at" ? null : merged.ordering);
       if ("minPrice" in merged) apply("minPrice", merged.minPrice);
       if ("maxPrice" in merged) apply("maxPrice", merged.maxPrice);
       if ("onSale" in merged) apply("onSale", merged.onSale);

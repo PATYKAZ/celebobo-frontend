@@ -25,13 +25,13 @@ export function ProductListItem({ product }: { product: Product }) {
 
   return (
     <motion.article layout className="group grid grid-cols-[104px_minmax(0,1fr)] gap-x-3 gap-y-2 rounded-box py-3 transition-shadow hover:shadow-[0_10px_34px_rgba(0,0,0,.09)] sm:flex sm:flex-row sm:gap-5 sm:p-4">
-      <Link href={ROUTES.product(product.id)} className="relative block aspect-square w-full shrink-0 self-start overflow-hidden rounded-box bg-page/40 sm:aspect-[4/3] sm:w-[220px]">
+      <Link href={ROUTES.product(product.slug)} className="relative block aspect-square w-full shrink-0 self-start overflow-hidden rounded-box bg-page/40 sm:aspect-[4/3] sm:w-[220px]">
         {product.image && <Image src={product.image} alt={product.name} fill sizes="(min-width:640px) 220px, 104px" className="object-cover transition-transform duration-700 group-hover:scale-110" />}
         <div className="absolute left-2 top-2">{pricing.onSale ? <SaveBadge amount={pricing.saving} /> : isNew(product) ? <NewBadge /> : null}</div>
       </Link>
       <div className="flex min-w-0 flex-1 flex-col">
         <Stars rating={product.rating} count={product.reviewsCount} />
-        <Link href={ROUTES.product(product.id)} className="mt-1.5 line-clamp-2 text-[14px] font-bold leading-[18px] transition-colors hover:text-primary sm:mt-2 sm:line-clamp-none sm:text-[16px] sm:leading-[20px]">{product.name}</Link>
+        <Link href={ROUTES.product(product.slug)} className="mt-1.5 line-clamp-2 text-[14px] font-bold leading-[18px] transition-colors hover:text-primary sm:mt-2 sm:line-clamp-none sm:text-[16px] sm:leading-[20px]">{product.name}</Link>
         <p className="mt-2 hidden line-clamp-2 text-[13px] leading-[20px] text-ink-2 sm:block">{product.description}</p>
         <ul className="mt-2 hidden flex-wrap gap-x-4 gap-y-1 text-[12px] text-ink-2 md:flex">
           {product.features.slice(0, 3).map((f) => (

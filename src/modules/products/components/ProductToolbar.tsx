@@ -9,7 +9,7 @@ import type { ProductOrdering } from "../types";
 export type ViewMode = "grid" | "list";
 
 const SORTS: { value: ProductOrdering; label: string }[] = [
-  { value: "-date_added", label: "Nouveautés" },
+  { value: "-created_at", label: "Nouveautés" },
   { value: "price", label: "Prix croissant" },
   { value: "-price", label: "Prix décroissant" },
   { value: "-sales", label: "Meilleures ventes" },

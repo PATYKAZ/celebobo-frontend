@@ -27,7 +27,7 @@ function Bullets({ items }: { items: string[] }) {
 /** Onglets de la fiche : description, caractéristiques, entretien, livraison, avis. */
 export function ProductTabs({ product }: { product: Product }) {
   const [tab, setTab] = useState<Tab>("description");
-  const { data: reviews, isLoading } = useProductReviews(product.id);
+  const { data: reviews, isLoading } = useProductReviews(product.slug);
 
   const tabs: { value: Tab; label: string; count?: number }[] = [
     { value: "description", label: "Description" },
@@ -72,7 +72,7 @@ export function ProductTabs({ product }: { product: Product }) {
                   {reviews && reviews.length > 0 && <ReviewSummary reviews={reviews} />}
                   <ReviewList reviews={reviews} loading={isLoading} />
                 </div>
-                <ReviewForm productId={product.id} />
+                <ReviewForm slug={product.slug} />
               </div>
             )}
           </motion.div>

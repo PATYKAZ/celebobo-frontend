@@ -1,4 +1,5 @@
 import { MOCK_CATEGORIES } from "@/modules/categories/mocks/categories";
+import { slugify } from "@/shared/lib/slug";
 import type { Product, ProductVariant, VariantOption } from "../types";
 
 const img = (n: string) => `/images/products/${n}.jpg`;
@@ -111,6 +112,7 @@ function toProduct(s: Seed, id: number): Product {
   const onSale = s.solde != null && s.solde < s.price;
   return {
     id,
+    slug: slugify(s.name),
     name: s.name,
     description: s.description,
     longDescription: s.long ?? LONG,
@@ -120,6 +122,7 @@ function toProduct(s: Seed, id: number): Product {
     pricePrimary: s.cost,
     category: cat(s.category),
     categoryId: s.category,
+    categorySlug: slugify(cat(s.category)),
     image: imgs[0],
     images: imgs,
     badge: s.sales > 200 ? "Best-seller" : null,

@@ -6,6 +6,7 @@ import { actorName, getActor, isValidSale, logAudit, nextId, saleCost, saleTotal
 import { can } from "@/modules/auth/permissions";
 import { MOCK_CATEGORIES } from "@/modules/categories/mocks/categories";
 import { MOCK_PRODUCTS } from "@/modules/products/mocks/products";
+import { slugify } from "@/shared/lib/slug";
 import type { Product, ProductVariant } from "@/modules/products/types";
 import { getPricing } from "@/modules/products/utils";
 import { recountCategories } from "../../categories/services/recount";
@@ -85,6 +86,7 @@ function applyValues(base: Product | null, v: ProductFormValues, images: ImageSl
   const stock = variants.length ? variants.reduce((n, x) => n + x.stock, 0) : Number(v.stock) || 0;
   return {
     id: base?.id ?? Math.max(0, ...store.map((p) => p.id)) + 1,
+    slug: base?.slug ?? slugify(v.name),
     name: v.name.trim(),
     description: v.description.trim(),
     longDescription: v.longDescription.trim() || null,
@@ -94,6 +96,7 @@ function applyValues(base: Product | null, v: ProductFormValues, images: ImageSl
     pricePrimary: v.pricePrimary ? Number(v.pricePrimary) : null,
     category: cat?.name ?? base?.category ?? "",
     categoryId: cat?.id ?? null,
+    categorySlug: cat ? slugify(cat.name) : "",
     image: urls[0] ?? null,
     images: urls,
     badge: v.badge.trim() || null,

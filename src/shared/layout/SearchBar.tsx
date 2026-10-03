@@ -61,8 +61,8 @@ export function SearchBar({ className, compact }: { className?: string; compact?
     const cats: Option[] = (categories ?? [])
       .filter((c) => c.name.toLowerCase().includes(term.toLowerCase()))
       .slice(0, 3)
-      .map((c) => ({ id: `c-${c.id}`, kind: "category" as const, label: c.name, href: ROUTES.category(c.id), count: c.productsCount }));
-    const prods: Option[] = (suggestions ?? []).map((s) => ({ id: `p-${s.id}`, kind: "product" as const, label: s.name, href: ROUTES.product(s.id), image: s.image, category: s.category, price: s.priceSolde ?? s.price }));
+      .map((c) => ({ id: `c-${c.id}`, kind: "category" as const, label: c.name, href: ROUTES.category(c.slug), count: c.productsCount }));
+    const prods: Option[] = (suggestions ?? []).map((s) => ({ id: `p-${s.id}`, kind: "product" as const, label: s.name, href: ROUTES.product(s.slug), image: s.image, category: s.category, price: s.priceSolde ?? s.price }));
     return [...cats, ...prods, { id: "all", kind: "all" as const, label: term }];
   }, [typing, recent.items, categories, suggestions, term]);
 
@@ -134,7 +134,7 @@ export function SearchBar({ className, compact }: { className?: string; compact?
             >
               <option value="">Catégories</option>
               {categories?.map((c) => (
-                <option key={c.id} value={c.id}>
+                <option key={c.id} value={c.slug}>
                   {c.name}
                 </option>
               ))}

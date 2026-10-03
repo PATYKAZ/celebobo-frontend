@@ -67,7 +67,7 @@ export interface ShowcaseSubCategory {
 
 export interface ShowcaseConfig {
   title: string;
-  categoryId: number;
+  categorySlug: string;
   viewAllHref: string;
   banner: {
     image: string;

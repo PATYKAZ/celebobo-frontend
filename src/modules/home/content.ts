@@ -1,10 +1,15 @@
 import { ROUTES } from "@/config/routes";
-import type { HomeContent } from "../types";
+import type { HomeContent } from "./types";
 
 const p = (n: string) => `/images/products/${n}.jpg`;
 const h = (n: string) => `/images/hero/${n}.jpg`;
 
-export function buildMockHomeContent(): HomeContent {
+/**
+ * Contenu éditorial de l'accueil (textes et visuels du design), propre au front.
+ * Les liens pointent vers des catégories (slugs) ou des recherches, jamais vers des ids figés.
+ * Les bannières gérées dans le back-office remplacent les slides (cf. home.service).
+ */
+export function buildHomeContent(): HomeContent {
   return {
     slides: [
       {
@@ -18,7 +23,7 @@ export function buildMockHomeContent(): HomeContent {
           { text: "avec le Mac", className: "text-white" },
         ],
         text: "Découvrez la nouvelle génération d'ordinateurs et de smartphones à partir de $449.",
-        cta: { label: "Découvrir", href: ROUTES.category(2), variant: "primary" },
+        cta: { label: "Découvrir", href: ROUTES.category("ordinateurs-portables"), variant: "primary" },
         overlay: "from-black/80 via-black/45 to-transparent",
       },
       {
@@ -31,7 +36,7 @@ export function buildMockHomeContent(): HomeContent {
           { text: "JUSQU'À -50%", className: "text-primary font-bold" },
         ],
         text: "Consoles, casques, claviers et souris : équipez votre setup à prix réduit.",
-        cta: { label: "Acheter", href: ROUTES.category(6), variant: "white" },
+        cta: { label: "Acheter", href: ROUTES.category("gaming"), variant: "white" },
         overlay: "from-black/85 via-black/50 to-transparent",
       },
       {
@@ -44,7 +49,7 @@ export function buildMockHomeContent(): HomeContent {
           { text: "sans fil", className: "text-ink font-light" },
         ],
         bullets: ["Réduction de bruit active", "Bluetooth 5.0, micro intégré", "30 h d'autonomie"],
-        cta: { label: "Acheter", href: ROUTES.category(4), variant: "dark" },
+        cta: { label: "Acheter", href: ROUTES.category("audio"), variant: "dark" },
         overlay: "from-[#f4e6d0]/95 via-[#f4e6d0]/65 to-transparent",
       },
     ],
@@ -56,7 +61,7 @@ export function buildMockHomeContent(): HomeContent {
         lines: "Enceinte JBL Flip 5\nà partir de",
         highlight: "$99",
         highlightClass: "text-primary",
-        cta: { label: "Découvrir", href: ROUTES.product(12) },
+        cta: { label: "Découvrir", href: ROUTES.search("JBL Flip") },
         overlay: "from-white/95 via-white/70 to-transparent",
       },
       {
@@ -77,7 +82,7 @@ export function buildMockHomeContent(): HomeContent {
         tone: "light",
         eyebrow: "Pulse",
         title: "Montres connectées sport",
-        cta: { label: "Acheter", href: ROUTES.category(5) },
+        cta: { label: "Acheter", href: ROUTES.category("montres-connectees") },
         overlay: "from-[#eceef2]/95 via-[#eceef2]/50 to-transparent",
       },
       {
@@ -88,7 +93,7 @@ export function buildMockHomeContent(): HomeContent {
         title: "11 PRO\nGris sidéral",
         from: "À partir de",
         price: "$749",
-        cta: { label: "Acheter", href: ROUTES.product(1) },
+        cta: { label: "Acheter", href: ROUTES.search("iPhone") },
         overlay: "from-black/80 via-black/40 to-transparent",
       },
     ],
@@ -105,21 +110,21 @@ export function buildMockHomeContent(): HomeContent {
       { name: "HUAWEI", className: "text-[19px] font-bold tracking-[0.18em]", color: "#CF0A2C" },
     ],
     sideBanners: [
-      { id: 1, image: p("laptop-neon"), eyebrow: "Nouveau", title: "MacBook Pro M1\nà partir de $1,399", href: ROUTES.product(5) },
-      { id: 2, image: p("earbuds"), eyebrow: "Audio", title: "Écouteurs sans fil\ndès $59", href: ROUTES.category(4) },
-      { id: 3, image: p("console"), eyebrow: "Gaming", title: "PlayStation 4\n$349", href: ROUTES.product(17) },
+      { id: 1, image: p("laptop-neon"), eyebrow: "Nouveau", title: "MacBook Pro M1\nà partir de $1,399", href: ROUTES.search("MacBook") },
+      { id: 2, image: p("earbuds"), eyebrow: "Audio", title: "Écouteurs sans fil\ndès $59", href: ROUTES.category("audio") },
+      { id: 3, image: p("console"), eyebrow: "Gaming", title: "PlayStation 4\n$349", href: ROUTES.search("PlayStation") },
     ],
     editorial: [
-      { id: 1, image: p("workspace"), title: "Pack Home Office complet", text: "Laptop, enceinte et smartphone pour télétravailler sereinement.", href: ROUTES.product(25) },
-      { id: 2, image: p("gaming-setup"), title: "Soldes jusqu'à -50 % sur le gaming", text: "Offre limitée. Dépêchez-vous !", href: ROUTES.category(6) },
-      { id: 3, image: p("camera"), title: "Photo : Sony Alpha a6000 + 3 objectifs", text: "Hybride compact, autofocus ultra rapide, parfait pour débuter.", href: ROUTES.product(21) },
-      { id: 4, image: p("tablet"), title: "iPad Pro 12.9'' M1 — la puissance en main", text: "Dès $969 avec Apple Pencil compatible. Livraison offerte.", href: ROUTES.product(9) },
+      { id: 1, image: p("workspace"), title: "Pack Home Office complet", text: "Laptop, enceinte et smartphone pour télétravailler sereinement.", href: ROUTES.search("Home Office") },
+      { id: 2, image: p("gaming-setup"), title: "Soldes jusqu'à -50 % sur le gaming", text: "Offre limitée. Dépêchez-vous !", href: ROUTES.category("gaming") },
+      { id: 3, image: p("camera"), title: "Photo : Sony Alpha a6000 + 3 objectifs", text: "Hybride compact, autofocus ultra rapide, parfait pour débuter.", href: ROUTES.search("Sony Alpha") },
+      { id: 4, image: p("tablet"), title: "iPad Pro 12.9'' M1 — la puissance en main", text: "Dès $969 avec Apple Pencil compatible. Livraison offerte.", href: ROUTES.search("iPad Pro") },
     ],
     showcases: [
       {
         title: "Top smartphones & tablettes",
-        categoryId: 1,
-        viewAllHref: ROUTES.category(1),
+        categorySlug: "smartphones",
+        viewAllHref: ROUTES.category("smartphones"),
         banner: {
           image: p("phone-android"),
           title: ["REDMI NOTE", "11 PRO 5G"],
@@ -129,18 +134,18 @@ export function buildMockHomeContent(): HomeContent {
           overlay: "from-[#f3f4f8] via-[#f3f4f8]/80 to-transparent",
         },
         subCategories: [
-          { name: "iPhone (iOS)", count: 4, image: p("phone-iphone"), href: ROUTES.category(1) },
-          { name: "Android", count: 5, image: p("phone-android"), href: ROUTES.category(1) },
-          { name: "Support 5G", count: 3, image: p("phone-dark"), href: ROUTES.category(1) },
-          { name: "Tablettes", count: 2, image: p("tablet"), href: ROUTES.category(3) },
-          { name: "Xiaomi", count: 3, image: p("phone-android"), href: ROUTES.category(1) },
-          { name: "Accessoires", count: 3, image: p("charger"), href: ROUTES.category(7) },
+          { name: "iPhone (iOS)", count: 4, image: p("phone-iphone"), href: ROUTES.category("smartphones") },
+          { name: "Android", count: 5, image: p("phone-android"), href: ROUTES.category("smartphones") },
+          { name: "Support 5G", count: 3, image: p("phone-dark"), href: ROUTES.category("smartphones") },
+          { name: "Tablettes", count: 2, image: p("tablet"), href: ROUTES.category("tablettes") },
+          { name: "Xiaomi", count: 3, image: p("phone-android"), href: ROUTES.category("smartphones") },
+          { name: "Accessoires", count: 3, image: p("charger"), href: ROUTES.category("accessoires") },
         ],
       },
       {
         title: "Meilleurs ordinateurs",
-        categoryId: 2,
-        viewAllHref: ROUTES.category(2),
+        categorySlug: "ordinateurs-portables",
+        viewAllHref: ROUTES.category("ordinateurs-portables"),
         banner: {
           image: p("laptop-neon"),
           title: ["MacBook Pro", "puce M1"],
@@ -151,47 +156,47 @@ export function buildMockHomeContent(): HomeContent {
           overlay: "from-black/85 via-black/55 to-transparent",
         },
         subCategories: [
-          { name: "MacBook", count: 4, image: p("laptop-desk"), href: ROUTES.category(2) },
-          { name: "Ultrabooks", count: 3, image: p("laptop-ultra"), href: ROUTES.category(2) },
-          { name: "Tout-en-un", count: 2, image: p("monitor"), href: ROUTES.category(2) },
-          { name: "Packs bureau", count: 2, image: p("workspace"), href: ROUTES.category(2) },
-          { name: "Claviers", count: 2, image: p("keyboard"), href: ROUTES.category(10) },
-          { name: "Souris", count: 2, image: p("mouse"), href: ROUTES.category(10) },
+          { name: "MacBook", count: 4, image: p("laptop-desk"), href: ROUTES.category("ordinateurs-portables") },
+          { name: "Ultrabooks", count: 3, image: p("laptop-ultra"), href: ROUTES.category("ordinateurs-portables") },
+          { name: "Tout-en-un", count: 2, image: p("monitor"), href: ROUTES.category("ordinateurs-portables") },
+          { name: "Packs bureau", count: 2, image: p("workspace"), href: ROUTES.category("ordinateurs-portables") },
+          { name: "Claviers", count: 2, image: p("keyboard"), href: ROUTES.category("accessoires") },
+          { name: "Souris", count: 2, image: p("mouse"), href: ROUTES.category("accessoires") },
         ],
       },
     ],
     columns: [
       {
         title: "Audio & photo",
-        href: ROUTES.category(4),
+        href: ROUTES.category("audio"),
         banner: { image: p("speaker"), lines: ["Meilleures", "enceintes", "2025"], tone: "dark", overlay: "from-black/80 via-black/40 to-transparent" },
         items: [
-          { name: "Enceintes", count: 2, image: p("speaker"), href: ROUTES.category(4) },
-          { name: "Appareils photo", count: 1, image: p("camera"), href: ROUTES.category(8) },
-          { name: "Écouteurs", count: 3, image: p("earbuds"), href: ROUTES.category(4) },
-          { name: "Casques", count: 4, image: p("headphones-yellow"), href: ROUTES.category(4) },
+          { name: "Enceintes", count: 2, image: p("speaker"), href: ROUTES.category("audio") },
+          { name: "Appareils photo", count: 1, image: p("camera"), href: ROUTES.search("photo") },
+          { name: "Écouteurs", count: 3, image: p("earbuds"), href: ROUTES.category("audio") },
+          { name: "Casques", count: 4, image: p("headphones-yellow"), href: ROUTES.category("audio") },
         ],
       },
       {
         title: "Gaming",
-        href: ROUTES.category(6),
+        href: ROUTES.category("gaming"),
         banner: { image: p("gaming-setup"), lines: ["SOURIS", "GAMING", "SANS FIL"], tone: "dark", overlay: "from-black/80 via-black/45 to-transparent" },
         items: [
-          { name: "Consoles", count: 1, image: p("console"), href: ROUTES.category(6) },
-          { name: "Souris", count: 3, image: p("mouse"), href: ROUTES.category(10) },
-          { name: "Claviers", count: 2, image: p("keyboard"), href: ROUTES.category(10) },
-          { name: "Casques gaming", count: 2, image: p("headphones-white"), href: ROUTES.category(4) },
+          { name: "Consoles", count: 1, image: p("console"), href: ROUTES.category("gaming") },
+          { name: "Souris", count: 3, image: p("mouse"), href: ROUTES.category("accessoires") },
+          { name: "Claviers", count: 2, image: p("keyboard"), href: ROUTES.category("accessoires") },
+          { name: "Casques gaming", count: 2, image: p("headphones-white"), href: ROUTES.category("audio") },
         ],
       },
       {
         title: "Équipement bureau",
-        href: ROUTES.category(9),
+        href: ROUTES.search("imprimante"),
         banner: { image: p("projector"), lines: ["Home cinéma 4K", "Vidéoprojecteur"], tone: "dark", overlay: "from-black/80 via-black/45 to-transparent" },
         items: [
-          { name: "Imprimantes", count: 1, image: p("printer"), href: ROUTES.category(9) },
-          { name: "Écrans", count: 2, image: p("monitor"), href: ROUTES.category(2) },
-          { name: "Chargeurs", count: 3, image: p("charger"), href: ROUTES.category(7) },
-          { name: "Projecteurs", count: 1, image: p("projector"), href: ROUTES.category(8) },
+          { name: "Imprimantes", count: 1, image: p("printer"), href: ROUTES.search("imprimante") },
+          { name: "Écrans", count: 2, image: p("monitor"), href: ROUTES.category("ordinateurs-portables") },
+          { name: "Chargeurs", count: 3, image: p("charger"), href: ROUTES.category("accessoires") },
+          { name: "Projecteurs", count: 1, image: p("projector"), href: ROUTES.search("photo") },
         ],
       },
     ],

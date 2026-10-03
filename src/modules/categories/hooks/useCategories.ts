@@ -5,7 +5,7 @@ import { categoriesService } from "../services/categories.service";
 
 export const categoryKeys = {
   all: ["categories"] as const,
-  detail: (id: number) => ["categories", id] as const,
+  detail: (slug: string) => ["categories", slug] as const,
 };
 
 export function useCategories() {
@@ -16,10 +16,10 @@ export function useCategories() {
   });
 }
 
-export function useCategory(id: number | undefined) {
+export function useCategory(slug: string | undefined) {
   return useQuery({
-    queryKey: categoryKeys.detail(id ?? 0),
-    queryFn: () => categoriesService.detail(id as number),
-    enabled: !!id,
+    queryKey: categoryKeys.detail(slug ?? ""),
+    queryFn: () => categoriesService.detail(slug as string),
+    enabled: !!slug,
   });
 }

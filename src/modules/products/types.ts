@@ -1,5 +1,5 @@
 /**
- * Produit — correspond à shop.models.Product (Django), clés en camelCase.
+ * Produit — forme front, construite depuis l'API par `services/products.mapper.ts`.
  *
  * Tarification (cf. getPricing dans ../utils.ts) :
  *  - `price`      : prix de vente normal
@@ -8,6 +8,8 @@
  */
 export interface Product {
   id: number;
+  /** Identifiant d'URL (`/produits/{slug}`), utilisé par l'API pour la fiche produit. */
+  slug: string;
   name: string;
   /** Description courte (20–100 caractères côté backend). */
   description: string;
@@ -19,6 +21,7 @@ export interface Product {
   pricePrimary?: number | null;
   category: string;
   categoryId: number | null;
+  categorySlug: string;
   /** Image principale (Product.image). */
   image: string | null;
   /** Galerie complète : image, imageOne, imageTwo, imageThree (sans doublon). */
@@ -41,6 +44,8 @@ export interface Product {
   stock: number;
   /** Seuil d'alerte : stock <= seuil => « stock bas » */
   stockThreshold: number;
+  /** Stock bas signalé par l'API (la boutique ne reçoit pas la quantité exacte des produits simples). */
+  lowStock?: boolean;
   /** « Devrait être vendu avant le » (Product.date_wish en v1), ISO date ou null */
   dateWish: string | null;
   /** Options de variantes (ex: Couleur: [Noir, Argent]). Vide = produit simple. */
@@ -76,21 +81,20 @@ export interface ProductVariant {
   image?: string | null;
 }
 
-export type ProductOrdering = "-date_added" | "date_added" | "price" | "-price" | "-sales" | "-rating" | "name";
+export type ProductOrdering = "relevance" | "-created_at" | "created_at" | "price" | "-price" | "-sales" | "-rating" | "name";
 
 export interface ProductListParams {
   page?: number;
   pageSize?: number;
   search?: string;
-  /** id de catégorie */
-  category?: number | null;
+  /** slug de catégorie */
+  category?: string | null;
   ordering?: ProductOrdering;
   minPrice?: number;
   maxPrice?: number;
   onSale?: boolean;
   inStock?: boolean;
-  /** "new" => nouveautés uniquement */
-  badge?: string;
+  badge?: "new" | "best_seller";
   ids?: number[];
   /** admin : inclure la corbeille */
   trashed?: boolean;
@@ -102,12 +106,21 @@ export interface ProductListParams {
 
 export interface Review {
   id: number;
-  productId: number;
   user: { id: number; name: string; avatar: string | null };
   rating: number;
   message: string;
+  /** Achat vérifié (commande livrée contenant le produit). */
+  verified: boolean;
   dateCreated: string;
 }
+
+/** Droit de laisser un avis sur un produit (`reason` explique un refus). */
+export interface ReviewEligibility {
+  canReview: boolean;
+  reason: string | null;
+}
+
+export type ProductSuggestion = Pick<Product, "id" | "slug" | "name" | "image" | "price" | "priceSolde" | "category">;
 
 export interface NewReviewInput {
   rating: number;

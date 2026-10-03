@@ -12,8 +12,8 @@ import { ProductListView } from "@/modules/products/components/ProductListView";
 import { useCategory } from "../hooks/useCategories";
 import { CategoryBanner } from "./CategoryBanner";
 
-export function CategoryPageView({ id }: { id: number }) {
-  const { data: category, isLoading, isError } = useCategory(Number.isFinite(id) ? id : undefined);
+export function CategoryPageView({ slug }: { slug: string }) {
+  const { data: category, isLoading, isError } = useCategory(slug);
 
   if (isLoading) {
     return (
@@ -46,7 +46,7 @@ export function CategoryPageView({ id }: { id: number }) {
       <Breadcrumb items={[{ label: "Produits", href: ROUTES.products }, { label: category.name }]} />
       <CategoryBanner category={category} />
       <Suspense fallback={<Block><Skeleton className="h-[600px] w-full" /></Block>}>
-        <ProductListView locked={{ category: category.id }} />
+        <ProductListView locked={{ category: category.slug }} />
       </Suspense>
     </>
   );

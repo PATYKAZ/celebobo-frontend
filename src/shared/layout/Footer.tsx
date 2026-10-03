@@ -10,14 +10,14 @@ const COLUMNS = [
   {
     title: "Top catégories",
     links: [
-      ["Smartphones", ROUTES.category(1)],
-      ["Ordinateurs", ROUTES.category(2)],
-      ["Tablettes", ROUTES.category(3)],
-      ["Audio", ROUTES.category(4)],
-      ["Montres connectées", ROUTES.category(5)],
-      ["Gaming", ROUTES.category(6)],
-      ["Accessoires", ROUTES.category(7)],
-      ["Photo & vidéo", ROUTES.category(8)],
+      ["Smartphones", ROUTES.category("smartphones")],
+      ["Ordinateurs", ROUTES.category("ordinateurs-portables")],
+      ["Tablettes", ROUTES.category("tablettes")],
+      ["Audio", ROUTES.category("audio")],
+      ["Montres connectées", ROUTES.category("montres-connectees")],
+      ["Gaming", ROUTES.category("gaming")],
+      ["Accessoires", ROUTES.category("accessoires")],
+      ["Photo & vidéo", ROUTES.search("photo")],
     ],
   },
   {

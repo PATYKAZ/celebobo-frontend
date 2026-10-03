@@ -1,113 +1,46 @@
 import { ENDPOINTS } from "@/config/endpoints";
-import { env } from "@/config/env";
-import { api, ApiError, mockResponse, paginate, type Paginated } from "@/shared/lib/api";
-import { MOCK_PRODUCTS } from "../mocks/products";
-import { mockReviewsFor } from "../mocks/reviews";
-import type { NewReviewInput, Product, ProductListParams, Review } from "../types";
-import { getPricing } from "../utils";
-import { isVisibleProduct } from "@/modules/admin/categories/services/recount";
-
-/** En mémoire (mock) — avis ajoutés pendant la session. */
-const sessionReviews: Review[] = [];
-
-function filterMocks(p: ProductListParams): Product[] {
-  // Boutique : ni corbeille ni produits désactivés (admin)
-  let list = MOCK_PRODUCTS.filter(isVisibleProduct);
-  if (p.ids?.length) list = list.filter((x) => p.ids!.includes(x.id));
-  if (p.category) list = list.filter((x) => x.categoryId === p.category);
-  if (p.search) {
-    const q = p.search.toLowerCase();
-    list = list.filter((x) => `${x.name} ${x.description} ${x.category}`.toLowerCase().includes(q));
-  }
-  if (p.onSale) list = list.filter((x) => getPricing(x).onSale);
-  if (p.inStock) list = list.filter((x) => x.inStock);
-  if (p.badge === "new") list = list.filter((x) => x.currentBadge === "Nouveauté");
-  if (p.minPrice != null) list = list.filter((x) => getPricing(x).current >= p.minPrice!);
-  if (p.maxPrice != null) list = list.filter((x) => getPricing(x).current <= p.maxPrice!);
-
-  const key = (x: Product) => getPricing(x).current;
-  switch (p.ordering) {
-    case "price":
-      list.sort((a, b) => key(a) - key(b));
-      break;
-    case "-price":
-      list.sort((a, b) => key(b) - key(a));
-      break;
-    case "-sales":
-      list.sort((a, b) => (b.salesCount ?? 0) - (a.salesCount ?? 0));
-      break;
-    case "-rating":
-      list.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
-      break;
-    case "name":
-      list.sort((a, b) => a.name.localeCompare(b.name));
-      break;
-    case "date_added":
-      list.sort((a, b) => +new Date(a.dateAdded) - +new Date(b.dateAdded));
-      break;
-    default:
-      list.sort((a, b) => +new Date(b.dateAdded) - +new Date(a.dateAdded));
-  }
-  return list;
-}
+import { api, type Paginated, type PageEnvelope } from "@/shared/lib/api";
+import type { NewReviewInput, Product, ProductListParams, ProductSuggestion, Review, ReviewEligibility } from "../types";
+import {
+  toEligibility,
+  toProduct,
+  toReview,
+  toSuggestion,
+  type ProductCardDto,
+  type ProductDetailDto,
+  type ReviewDto,
+  type SuggestionDto,
+} from "./products.mapper";
 
 export const productsService = {
   list(params: ProductListParams = {}): Promise<Paginated<Product>> {
-    if (env.USE_MOCKS) {
-      return mockResponse(() => paginate(filterMocks(params), params.page ?? 1, params.pageSize ?? 12));
-    }
-    return api.get<Paginated<Product>>(ENDPOINTS.products.list, { params: params as never });
+    return api.page<ProductCardDto, Product>(ENDPOINTS.products.list, { params: { ...params } }, toProduct);
   },
 
-  async detail(id: number): Promise<Product> {
-    if (env.USE_MOCKS) {
-      const found = MOCK_PRODUCTS.find((p) => p.id === id && isVisibleProduct(p));
-      if (!found) throw new ApiError(404, "Produit introuvable");
-      return mockResponse(found);
-    }
-    return api.get<Product>(ENDPOINTS.products.detail(id));
+  async detail(slug: string): Promise<Product> {
+    return toProduct(await api.get<ProductDetailDto>(ENDPOINTS.products.detail(slug)));
   },
 
-  related(id: number): Promise<Product[]> {
-    if (env.USE_MOCKS) {
-      const base = MOCK_PRODUCTS.find((p) => p.id === id);
-      return mockResponse(() =>
-        MOCK_PRODUCTS.filter((p) => isVisibleProduct(p) && p.id !== id && p.categoryId === base?.categoryId)
-          .concat(MOCK_PRODUCTS.filter((p) => isVisibleProduct(p) && p.id !== id && p.categoryId !== base?.categoryId))
-          .slice(0, 8),
-      );
-    }
-    return api.get<Product[]>(ENDPOINTS.products.related(id));
+  async related(slug: string): Promise<Product[]> {
+    const page = await api.get<PageEnvelope<ProductCardDto>>(ENDPOINTS.products.related(slug));
+    return page.results.map(toProduct);
   },
 
   /** Autocomplétion de la barre de recherche. */
-  suggest(q: string): Promise<Pick<Product, "id" | "name" | "image" | "price" | "priceSolde" | "category">[]> {
-    if (env.USE_MOCKS) {
-      return mockResponse(() => filterMocks({ search: q }).slice(0, 6), 150);
-    }
-    return api.get(ENDPOINTS.products.suggest, { params: { q } });
+  async suggest(q: string): Promise<ProductSuggestion[]> {
+    return (await api.get<SuggestionDto[]>(ENDPOINTS.products.suggest, { params: { q } })).map(toSuggestion);
   },
 
-  reviews(productId: number): Promise<Review[]> {
-    if (env.USE_MOCKS) {
-      return mockResponse(() => [...sessionReviews.filter((r) => r.productId === productId), ...mockReviewsFor(productId)]);
-    }
-    return api.get<Review[]>(ENDPOINTS.products.testimonies(productId));
+  async reviews(slug: string): Promise<Review[]> {
+    const page = await api.get<PageEnvelope<ReviewDto>>(ENDPOINTS.products.reviews(slug), { params: { pageSize: 50 } });
+    return page.results.map(toReview);
   },
 
-  async addReview(productId: number, input: NewReviewInput, author?: { id: number; name: string; avatar: string | null }): Promise<Review> {
-    if (env.USE_MOCKS) {
-      const review: Review = {
-        id: Date.now(),
-        productId,
-        user: author ?? { id: 0, name: "Vous", avatar: null },
-        rating: input.rating,
-        message: input.message,
-        dateCreated: new Date().toISOString(),
-      };
-      sessionReviews.unshift(review);
-      return mockResponse(review, 300);
-    }
-    return api.post<Review>(ENDPOINTS.products.testimonies(productId), input);
+  async reviewEligibility(slug: string): Promise<ReviewEligibility> {
+    return toEligibility(await api.get(ENDPOINTS.products.reviewEligibility(slug)));
+  },
+
+  async addReview(slug: string, input: NewReviewInput): Promise<Review> {
+    return toReview(await api.post<ReviewDto>(ENDPOINTS.products.reviews(slug), input));
   },
 };

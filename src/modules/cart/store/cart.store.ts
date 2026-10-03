@@ -70,7 +70,7 @@ export const useCartStore = create<CartState>()(
         return merged;
       },
     }),
-    { name: "celebobo-cart-v2", partialize: (s) => ({ owner: s.owner, carts: s.carts, items: s.items }) },
+    { name: "celebobo-cart-v3", partialize: (s) => ({ owner: s.owner, carts: s.carts, items: s.items }) },
   ),
 );
 

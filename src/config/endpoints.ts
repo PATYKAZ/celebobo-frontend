@@ -26,18 +26,21 @@ export const ENDPOINTS = {
   // ---- Boutique ---------------------------------------------------------
   categories: {
     list: "/categories/",
-    detail: (id: number | string) => `/categories/${id}/`, // category/<pk>/
+    detail: (slug: string) => `/categories/${slug}/`,
   },
   products: {
-    list: "/products/", // products/, results/ (?search=), category/<pk>/ (?category=)
-    detail: (id: number | string) => `/products/${id}/`, // product/<pk>/
-    testimonies: (id: number | string) => `/products/${id}/testimonies/`, // GET + POST (testimony/add/)
-    related: (id: number | string) => `/products/${id}/related/`,
-    suggest: "/products/suggest/", // autocomplétion de recherche
+    list: "/products/",
+    facets: "/products/facets/",
+    detail: (slug: string) => `/products/${slug}/`,
+    related: (slug: string) => `/products/${slug}/related/`,
+    reviews: (slug: string) => `/products/${slug}/reviews/`,
+    reviewEligibility: (slug: string) => `/products/${slug}/reviews/eligibility/`,
+    suggest: "/search/suggest/",
   },
+  home: "/home/",
   favorites: {
-    list: "/favorites/", // favoris/
-    toggle: (productId: number | string) => `/favorites/${productId}/toggle/`, // favori/<id>/toggle/
+    list: "/me/favorites/",
+    remove: (productId: number) => `/me/favorites/${productId}/`,
   },
   cart: {
     get: "/cart/",

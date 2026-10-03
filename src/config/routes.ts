@@ -2,8 +2,8 @@
 export const ROUTES = {
   home: "/",
   products: "/produits",
-  product: (id: number | string) => `/produits/${id}`,
-  category: (id: number | string) => `/categorie/${id}`,
+  product: (slug: string) => `/produits/${slug}`,
+  category: (slug: string) => `/categorie/${slug}`,
   search: (q?: string) => (q ? `/recherche?q=${encodeURIComponent(q)}` : "/recherche"),
   favorites: "/favoris",
   cart: "/panier",

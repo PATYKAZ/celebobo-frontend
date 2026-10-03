@@ -1,16 +1,18 @@
 "use client";
 
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useAuthStore } from "@/modules/auth/store/auth.store";
 import { productsService } from "../services/products.service";
 import type { NewReviewInput, ProductListParams } from "../types";
 
 export const productKeys = {
   all: ["products"] as const,
   list: (p: ProductListParams) => ["products", "list", p] as const,
-  detail: (id: number) => ["products", "detail", id] as const,
-  related: (id: number) => ["products", "related", id] as const,
+  detail: (slug: string) => ["products", "detail", slug] as const,
+  related: (slug: string) => ["products", "related", slug] as const,
   suggest: (q: string) => ["products", "suggest", q] as const,
-  reviews: (id: number) => ["products", "reviews", id] as const,
+  reviews: (slug: string) => ["products", "reviews", slug] as const,
+  eligibility: (slug: string, userId?: number) => ["products", "can-review", slug, userId] as const,
 };
 
 /** Liste paginée / filtrée. */
@@ -23,19 +25,19 @@ export function useProducts(params: ProductListParams = {}, enabled = true) {
   });
 }
 
-export function useProduct(id: number | undefined) {
+export function useProduct(slug: string | undefined) {
   return useQuery({
-    queryKey: productKeys.detail(id ?? 0),
-    queryFn: () => productsService.detail(id as number),
-    enabled: !!id,
+    queryKey: productKeys.detail(slug ?? ""),
+    queryFn: () => productsService.detail(slug as string),
+    enabled: !!slug,
   });
 }
 
-export function useRelatedProducts(id: number | undefined) {
+export function useRelatedProducts(slug: string | undefined) {
   return useQuery({
-    queryKey: productKeys.related(id ?? 0),
-    queryFn: () => productsService.related(id as number),
-    enabled: !!id,
+    queryKey: productKeys.related(slug ?? ""),
+    queryFn: () => productsService.related(slug as string),
+    enabled: !!slug,
   });
 }
 
@@ -48,22 +50,32 @@ export function useProductSuggestions(q: string) {
   });
 }
 
-export function useProductReviews(id: number | undefined) {
+export function useProductReviews(slug: string | undefined) {
   return useQuery({
-    queryKey: productKeys.reviews(id ?? 0),
-    queryFn: () => productsService.reviews(id as number),
-    enabled: !!id,
+    queryKey: productKeys.reviews(slug ?? ""),
+    queryFn: () => productsService.reviews(slug as string),
+    enabled: !!slug,
   });
 }
 
-export function useAddReview(productId: number) {
+/** Droit de laisser un avis (acheteurs d'une commande livrée, un avis par produit). */
+export function useReviewEligibility(slug: string) {
+  const userId = useAuthStore((s) => s.user?.id);
+  return useQuery({
+    queryKey: productKeys.eligibility(slug, userId),
+    queryFn: () => productsService.reviewEligibility(slug),
+    enabled: !!userId,
+  });
+}
+
+export function useAddReview(slug: string) {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ input, author }: { input: NewReviewInput; author?: { id: number; name: string; avatar: string | null } }) =>
-      productsService.addReview(productId, input, author),
+    mutationFn: (input: NewReviewInput) => productsService.addReview(slug, input),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: productKeys.reviews(productId) });
-      qc.invalidateQueries({ queryKey: productKeys.detail(productId) });
+      qc.invalidateQueries({ queryKey: productKeys.reviews(slug) });
+      qc.invalidateQueries({ queryKey: productKeys.detail(slug) });
+      qc.invalidateQueries({ queryKey: ["products", "can-review", slug] });
     },
   });
 }

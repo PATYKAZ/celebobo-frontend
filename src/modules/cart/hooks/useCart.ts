@@ -9,6 +9,7 @@ import type { CartProduct } from "../types";
 
 const toCartProduct = (p: Product | CartProduct): CartProduct => ({
   id: p.id,
+  slug: p.slug,
   name: p.name,
   image: p.image,
   price: p.price,

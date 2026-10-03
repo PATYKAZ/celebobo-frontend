@@ -34,7 +34,7 @@ function Content({ id }: { id: number }) {
   const router = useRouter();
   const { data: p, isLoading, isError } = useAdminProduct(id);
   const { data: st } = useProductSalesStats(id);
-  const { data: reviews } = useProductReviews(id);
+  const { data: reviews } = useProductReviews(p?.slug);
   const canManage = useCan("products.manage");
   const canStock = useCan("stock.adjust");
   const canPurge = useCan("products.delete");
@@ -86,7 +86,7 @@ function Content({ id }: { id: number }) {
         description={p.description}
         actions={
           <>
-            {!trashed && <Button href={ROUTES.product(p.id)} variant="chip" upper={false} leftIcon={<Shop size={17} />}>Voir en boutique</Button>}
+            {!trashed && <Button href={ROUTES.product(p.slug)} variant="chip" upper={false} leftIcon={<Shop size={17} />}>Voir en boutique</Button>}
             {canManage && !trashed && <Button href={ROUTES.admin.productEdit(p.id)} upper={false} leftIcon={<Edit2 size={17} />}>Modifier</Button>}
             {canManage && trashed && (
               <Button upper={false} leftIcon={<Refresh2 size={17} />} loading={restore.isPending} onClick={() => restore.mutate([p.id], { onSuccess: () => toast.success("Produit restauré", p.name), onError: (e) => toast.error("Restauration impossible", getErrorMessage(e)) })}>Restaurer</Button>
