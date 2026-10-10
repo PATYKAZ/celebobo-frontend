@@ -1,4 +1,9 @@
 @import 'tailwindcss';
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/* Pas de thème sombre : les classes dark: des composants shadcn ne suivent pas le système. */
+@custom-variant dark (&:is(.dark *));
 
 @utility container {
   margin-inline: auto;
@@ -48,7 +53,6 @@
   --color-info: #0d6efd;
 
   --font-sans: var(--font-hanken), ui-sans-serif, system-ui, sans-serif;
-
 
   --spacing-tabbar: var(--tabbar-h);
   --spacing-safe-b: env(safe-area-inset-bottom);
@@ -256,24 +260,16 @@
   font-weight: 700;
 }
 
-/*
-  The default border color has changed to `currentcolor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
-
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
-*/
+/* Bordure par défaut = --border (#CCC, comme la v3) ; contour des anneaux shadcn. */
 @layer base {
   *,
   ::after,
   ::before,
   ::backdrop,
   ::file-selector-button {
-    border-color: #cccccc;
+    @apply border-border outline-ring/50;
   }
 }
-
 @utility wh-box {
   /* Bloc blanc standard du design (fond #FFF, rad 10) */
   @apply rounded-box bg-white;
@@ -413,4 +409,50 @@
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+/*
+  Variables shadcn/ui, alignées sur le design Swoo (aucun thème sombre).
+  Les jetons Swoo (@theme plus haut) restent la référence ; shadcn n'en est qu'un alias.
+*/
+@theme inline {
+  --font-heading: var(--font-sans);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+}
+
+:root {
+  --radius: 10px;
+  --background: #ffffff;
+  --foreground: var(--color-ink);
+  --card: #ffffff;
+  --card-foreground: var(--color-ink);
+  --popover: #ffffff;
+  --popover-foreground: var(--color-ink);
+  --primary: var(--color-primary);
+  --primary-foreground: #ffffff;
+  --secondary: var(--color-chip);
+  --secondary-foreground: var(--color-ink);
+  --muted: var(--color-chip);
+  --muted-foreground: var(--color-ink-2);
+  --accent: var(--color-chip);
+  --accent-foreground: var(--color-ink);
+  --destructive: var(--color-danger);
+  --border: var(--color-line);
+  --input: var(--color-line);
+  --ring: var(--color-primary);
 }
