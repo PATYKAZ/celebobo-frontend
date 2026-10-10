@@ -46,7 +46,7 @@ export function NewsletterForm() {
               placeholder="Votre adresse e-mail"
               aria-label="Adresse e-mail"
               aria-invalid={!!error}
-              className="min-w-0 flex-1 bg-transparent text-[16px] outline-none placeholder:text-ink-4 sm:text-[14px]"
+              className="min-w-0 flex-1 bg-transparent text-[16px] outline-hidden placeholder:text-ink-4 sm:text-[14px]"
             />
             <button disabled={subscribe.isPending} className="group flex items-center gap-2 text-[14px] font-bold uppercase text-primary disabled:opacity-50">
               {subscribe.isPending ? "…" : "S'abonner"}

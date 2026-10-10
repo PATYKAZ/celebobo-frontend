@@ -38,7 +38,7 @@ export function RelatedProducts({ slug }: { slug: string }) {
             breakpoints={{ 480: { slidesPerView: 2.2 }, 640: { slidesPerView: 3 }, 1024: { slidesPerView: 4 }, 1280: { slidesPerView: 5 } }}
           >
             {data?.map((p) => (
-              <SwiperSlide key={p.id} className="!h-auto">
+              <SwiperSlide key={p.id} className="h-auto!">
                 <ProductCard product={p} />
               </SwiperSlide>
             ))}

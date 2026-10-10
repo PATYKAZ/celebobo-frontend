@@ -50,8 +50,8 @@ function Content() {
       <div className="mt-5 grid gap-3 sm:mt-6 sm:gap-4 md:grid-cols-2">
         {isLoading ? (
           <>
-            <Skeleton className="h-[170px] !rounded-box" />
-            <Skeleton className="h-[170px] !rounded-box" />
+            <Skeleton className="h-[170px] rounded-box!" />
+            <Skeleton className="h-[170px] rounded-box!" />
           </>
         ) : data && data.length > 0 ? (
           <AnimatePresence initial={false}>
@@ -85,7 +85,7 @@ function Content() {
                       </Button>
                     )}
                     <Button size="xs" variant="chip" upper={false} leftIcon={<Edit2 size={13} />} onClick={() => open(a)}>Modifier</Button>
-                    <Button size="xs" variant="ghost" upper={false} className="text-danger hover:!bg-danger-100" leftIcon={<Trash size={13} />} onClick={() => setToDelete(a)}>Supprimer</Button>
+                    <Button size="xs" variant="ghost" upper={false} className="text-danger hover:bg-danger-100!" leftIcon={<Trash size={13} />} onClick={() => setToDelete(a)}>Supprimer</Button>
                   </div>
                 </motion.article>
               );

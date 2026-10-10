@@ -58,7 +58,7 @@ function OrderRow({ o }: { o: ResellerOpenOrder }) {
         {next && (
           <Button
             size="sm"
-            className="max-sm:min-h-12 max-sm:flex-[2] sm:h-9"
+            className="max-sm:min-h-12 max-sm:flex-2 sm:h-9"
             upper={false}
             loading={advance.isPending}
             leftIcon={<TickCircle size={14} variant="Bold" />}
@@ -174,7 +174,7 @@ export function ResellerDashboardView() {
                       </div>
                       <div className="text-right">
                         <p className="text-[14px] font-bold">{formatPrice(s.total)}</p>
-                        <span className={cn("rounded px-1.5 py-px text-[10px] font-bold", METHOD_STYLE[s.method].cls)}>{METHOD_STYLE[s.method].label}</span>
+                        <span className={cn("rounded-sm px-1.5 py-px text-[10px] font-bold", METHOD_STYLE[s.method].cls)}>{METHOD_STYLE[s.method].label}</span>
                       </div>
                     </li>
                   ))}

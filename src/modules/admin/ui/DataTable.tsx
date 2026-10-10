@@ -130,7 +130,7 @@ export function DataTable<T>({ columns, rows, rowKey, loading, empty, onRowClick
                     {metaCols.map((c) => (
                       <div key={c.key} className="min-w-0">
                         <dt className="text-[11px] font-semibold uppercase tracking-wide text-ink-3">{c.mobileLabel ?? c.header}</dt>
-                        <dd className="mt-0.5 min-w-0 break-words text-[13px] font-medium">{c.cell(row, i)}</dd>
+                        <dd className="mt-0.5 min-w-0 wrap-break-word text-[13px] font-medium">{c.cell(row, i)}</dd>
                       </div>
                     ))}
                   </dl>

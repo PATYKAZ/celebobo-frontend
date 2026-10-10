@@ -12,7 +12,7 @@ import { PhotoBanner } from "./PhotoBanner";
 const CTA_LINK = "mt-2 inline-block text-[12px] font-medium uppercase underline underline-offset-4";
 
 /** Rangée défilante (snap) sur mobile, grille dès sm. */
-const ROW = "max-sm:snap-row max-sm:-mx-[15px] max-sm:scroll-px-[15px] max-sm:px-[15px] max-sm:pb-1 sm:grid sm:grid-cols-2 sm:gap-4";
+const ROW = "max-sm:snap-row max-sm:mx-[-15px] max-sm:scroll-px-[15px] max-sm:px-[15px] max-sm:pb-1 sm:grid sm:grid-cols-2 sm:gap-4";
 
 export function HeroSection({ content }: { content?: HomeContent }) {
   return (

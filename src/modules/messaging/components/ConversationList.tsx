@@ -83,7 +83,7 @@ export function ConversationList({ activeId, onSelect, inbox }: Props) {
       </div>
 
       {/* Recherche + filtres : collants sur mobile (toujours à portée de pouce) */}
-      <div className="sticky top-0 z-20 space-y-2.5 border-b border-line-3 bg-white/95 px-4 pb-3 pt-2 backdrop-blur lg:static lg:bg-white lg:pt-0">
+      <div className="sticky top-0 z-20 space-y-2.5 border-b border-line-3 bg-white/95 px-4 pb-3 pt-2 backdrop-blur-sm lg:static lg:bg-white lg:pt-0">
         <div className="flex items-center gap-2">
           <div className="relative min-w-0 flex-1">
             <SearchNormal1 size={16} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-ink-3" />
@@ -102,7 +102,7 @@ export function ConversationList({ activeId, onSelect, inbox }: Props) {
         </div>
         {inbox && (
           <>
-            <div className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 pb-0.5 [mask-image:linear-gradient(90deg,transparent,#000_14px,#000_calc(100%-14px),transparent)] lg:mx-0 lg:flex-wrap lg:gap-1.5 lg:overflow-visible lg:px-0 lg:[mask-image:none]" role="tablist" aria-label="Filtres">
+            <div className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 pb-0.5 mask-[linear-gradient(90deg,transparent,#000_14px,#000_calc(100%-14px),transparent)] lg:mx-0 lg:flex-wrap lg:gap-1.5 lg:overflow-visible lg:px-0 lg:mask-none" role="tablist" aria-label="Filtres">
               {FILTERS.filter((f) => seeAll || f.value !== "unassigned").map((f) => (
                 <button
                   key={f.value}

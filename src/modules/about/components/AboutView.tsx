@@ -75,8 +75,8 @@ export function AboutView() {
         <div className="grid items-center gap-6 sm:gap-10 lg:grid-cols-[1fr_1.1fr]">
           <Reveal direction="up">
             <div className="grid grid-cols-2 gap-2.5 sm:gap-4">
-              <div className="relative aspect-[3/4] overflow-hidden rounded-box"><Image src="/images/about/store.jpg" alt="Notre espace de vente" fill sizes="300px" className="object-cover transition-transform duration-700 hover:scale-110" /></div>
-              <div className="relative mt-6 aspect-[3/4] sm:mt-10 overflow-hidden rounded-box"><Image src="/images/about/team-2.jpg" alt="Réunion d'équipe" fill sizes="300px" className="object-cover transition-transform duration-700 hover:scale-110" /></div>
+              <div className="relative aspect-3/4 overflow-hidden rounded-box"><Image src="/images/about/store.jpg" alt="Notre espace de vente" fill sizes="300px" className="object-cover transition-transform duration-700 hover:scale-110" /></div>
+              <div className="relative mt-6 aspect-3/4 sm:mt-10 overflow-hidden rounded-box"><Image src="/images/about/team-2.jpg" alt="Réunion d'équipe" fill sizes="300px" className="object-cover transition-transform duration-700 hover:scale-110" /></div>
             </div>
           </Reveal>
           <Reveal direction="up">

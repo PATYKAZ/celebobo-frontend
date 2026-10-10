@@ -34,7 +34,7 @@ interface Props {
  * desktop : une seule ligne (compteur, filtres masqués ≥ lg, tri, vues).
  */
 export function ProductToolbar({ total, loading, ordering, onOrderingChange, view, onViewChange, onOpenFilters, activeFilters }: Props) {
-  const seg = (active: boolean) => cn("grid size-10 place-items-center rounded-[10px] transition-colors sm:size-[45px] sm:rounded-box", active ? "bg-primary text-white" : "text-ink-2 hover:bg-chip-3");
+  const seg = (active: boolean) => cn("grid size-10 place-items-center rounded-box transition-colors sm:size-[45px] sm:rounded-box", active ? "bg-primary text-white" : "text-ink-2 hover:bg-chip-3");
   const count = loading || total == null ? "Chargement…" : <><strong className="text-ink">{pluralize(total, "produit")}</strong> trouvé{total > 1 ? "s" : ""}</>;
 
   return (
@@ -56,7 +56,7 @@ export function ProductToolbar({ total, loading, ordering, onOrderingChange, vie
             aria-label="Trier par"
             value={ordering}
             onChange={(e) => onOrderingChange(e.target.value as ProductOrdering)}
-            className="h-11 w-full appearance-none truncate rounded-box bg-chip pl-9 pr-8 text-[16px] font-semibold outline-none focus:ring-2 focus:ring-primary"
+            className="h-11 w-full appearance-none truncate rounded-box bg-chip pl-9 pr-8 text-[16px] font-semibold outline-hidden focus:ring-2 focus:ring-primary"
           >
             {SORTS.map((s) => (
               <option key={s.value} value={s.value}>{s.label}</option>

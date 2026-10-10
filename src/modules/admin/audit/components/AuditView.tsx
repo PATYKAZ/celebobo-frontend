@@ -59,10 +59,10 @@ function Row({ e, open, onToggle }: { e: AuditEntry; open: boolean; onToggle: ()
                 <div className="grid gap-2 px-4 py-3.5">
                   {e.diff!.map((d) => (
                     <div key={d.field} className="flex flex-wrap items-center gap-2 text-[13px]">
-                      <code className="rounded bg-white px-2 py-0.5 font-semibold">{d.field}</code>
-                      <span className="rounded bg-danger-100 px-2 py-0.5 text-danger line-through">{String(d.from ?? "—")}</span>
+                      <code className="rounded-sm bg-white px-2 py-0.5 font-semibold">{d.field}</code>
+                      <span className="rounded-sm bg-danger-100 px-2 py-0.5 text-danger line-through">{String(d.from ?? "—")}</span>
                       <ArrowRight size={14} className="text-ink-3" />
-                      <span className="rounded bg-primary-100 px-2 py-0.5 font-semibold text-primary-dark">{String(d.to ?? "—")}</span>
+                      <span className="rounded-sm bg-primary-100 px-2 py-0.5 font-semibold text-primary-dark">{String(d.to ?? "—")}</span>
                     </div>
                   ))}
                 </div>
@@ -80,10 +80,10 @@ function DiffList({ e }: { e: AuditEntry }) {
     <div className="grid gap-2">
       {e.diff!.map((d) => (
         <div key={d.field} className="flex flex-wrap items-center gap-2 text-[13px]">
-          <code className="rounded bg-white px-2 py-0.5 font-semibold">{d.field}</code>
-          <span className="rounded bg-danger-100 px-2 py-0.5 text-danger line-through">{String(d.from ?? "—")}</span>
+          <code className="rounded-sm bg-white px-2 py-0.5 font-semibold">{d.field}</code>
+          <span className="rounded-sm bg-danger-100 px-2 py-0.5 text-danger line-through">{String(d.from ?? "—")}</span>
           <ArrowRight size={14} className="text-ink-3" />
-          <span className="rounded bg-primary-100 px-2 py-0.5 font-semibold text-primary-dark">{String(d.to ?? "—")}</span>
+          <span className="rounded-sm bg-primary-100 px-2 py-0.5 font-semibold text-primary-dark">{String(d.to ?? "—")}</span>
         </div>
       ))}
     </div>

@@ -29,7 +29,7 @@ export function ResellerFilter({ value, onChange }: { value?: number; onChange: 
         <div>
           <div className="relative mb-2">
             <SearchNormal1 size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-3" />
-            <input autoFocus value={q} onChange={(e) => setQ(e.target.value)} placeholder="Rechercher…" className="h-9 w-full rounded-md border border-line bg-white pl-8 pr-2 text-[13px] outline-none focus:border-primary" />
+            <input autoFocus value={q} onChange={(e) => setQ(e.target.value)} placeholder="Rechercher…" className="h-9 w-full rounded-md border border-line bg-white pl-8 pr-2 text-[13px] outline-hidden focus:border-primary" />
           </div>
           <ul className="max-h-[240px] overflow-y-auto">
             <li>

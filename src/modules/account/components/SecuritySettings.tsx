@@ -76,7 +76,7 @@ export function SecuritySettings() {
             <h3 className="flex items-center gap-2 text-[16px] text-danger"><Trash size={16} /> Supprimer mon compte</h3>
             <p className="mt-1 text-[13px] leading-[20px] text-ink-2">Vos informations personnelles et vos adresses sont effacées. Cette action est définitive.</p>
           </div>
-          <Button variant="ghost" upper={false} leftIcon={<Trash size={15} />} className="text-danger hover:!bg-danger-100 max-sm:w-full" onClick={() => setConfirm(true)}>Supprimer</Button>
+          <Button variant="ghost" upper={false} leftIcon={<Trash size={15} />} className="text-danger hover:bg-danger-100! max-sm:w-full" onClick={() => setConfirm(true)}>Supprimer</Button>
         </div>
       )}
       <ConfirmDialog

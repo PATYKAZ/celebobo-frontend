@@ -86,7 +86,7 @@ export function VariantsEditor({ options, rows, basePrice, onChange, error }: Pr
                   onBlur={() => addValue(i)}
                   placeholder="Ajouter une valeur + Entrée"
                   aria-label="Nouvelle valeur"
-                  className="h-11 min-w-[150px] flex-1 rounded-full border border-dashed border-line bg-white px-4 text-[16px] outline-none focus:border-primary sm:h-9 sm:min-w-[180px] sm:px-3 sm:text-[13px]"
+                  className="h-11 min-w-[150px] flex-1 rounded-full border border-dashed border-line bg-white px-4 text-[16px] outline-hidden focus:border-primary sm:h-9 sm:min-w-[180px] sm:px-3 sm:text-[13px]"
                 />
               </div>
             </motion.div>
@@ -127,9 +127,9 @@ export function VariantsEditor({ options, rows, basePrice, onChange, error }: Pr
                 {rows.map((r) => (
                   <tr key={r.id} className="border-t border-line-3">
                     <td className="px-3 py-2 font-semibold">{r.label}</td>
-                    <td className="px-3 py-2"><input type="number" min="0" step="0.01" value={r.price} onChange={(e) => setRow(r.id, { price: e.target.value })} placeholder={basePrice ? formatPrice(basePrice) : "Prix du produit"} aria-label={`Prix ${r.label}`} className="field !h-9 w-[130px]" /></td>
-                    <td className="px-3 py-2"><input type="number" min="0" step="1" value={r.stock} onChange={(e) => setRow(r.id, { stock: e.target.value })} aria-label={`Stock ${r.label}`} className="field !h-9 w-[90px]" /></td>
-                    <td className="px-3 py-2"><input value={r.sku} onChange={(e) => setRow(r.id, { sku: e.target.value })} aria-label={`SKU ${r.label}`} className="field !h-9 w-[150px]" /></td>
+                    <td className="px-3 py-2"><input type="number" min="0" step="0.01" value={r.price} onChange={(e) => setRow(r.id, { price: e.target.value })} placeholder={basePrice ? formatPrice(basePrice) : "Prix du produit"} aria-label={`Prix ${r.label}`} className="field h-9! w-[130px]" /></td>
+                    <td className="px-3 py-2"><input type="number" min="0" step="1" value={r.stock} onChange={(e) => setRow(r.id, { stock: e.target.value })} aria-label={`Stock ${r.label}`} className="field h-9! w-[90px]" /></td>
+                    <td className="px-3 py-2"><input value={r.sku} onChange={(e) => setRow(r.id, { sku: e.target.value })} aria-label={`SKU ${r.label}`} className="field h-9! w-[150px]" /></td>
                   </tr>
                 ))}
               </tbody>

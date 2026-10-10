@@ -46,7 +46,7 @@ export function InviteCard({ code, invitedCount }: { code: string; invitedCount?
 
         <div className="mt-4 flex flex-col items-center gap-4 sm:flex-row">
           <div className="grid aspect-square w-[min(200px,62vw)] shrink-0 place-items-center rounded-box bg-white p-3 ring-1 ring-line-3 sm:size-[116px] sm:w-[116px] sm:p-2">
-            {link ? <QRCodeSVG value={link} size={256} level="M" fgColor="#139713" className="h-full w-full" /> : <span className="size-full animate-pulse rounded bg-chip" />}
+            {link ? <QRCodeSVG value={link} size={256} level="M" fgColor="#139713" className="h-full w-full" /> : <span className="size-full animate-pulse rounded-sm bg-chip" />}
           </div>
           <div className="w-full min-w-0 flex-1 space-y-2.5 sm:space-y-2">
             <p className="truncate rounded-md bg-chip px-3 py-2.5 text-center text-[12px] text-ink-2 sm:text-left" title={link}>{link || "…"}</p>

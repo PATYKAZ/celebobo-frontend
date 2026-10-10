@@ -124,7 +124,7 @@ export function ProductGallery({ product, activeImage }: { product: Product; /**
       </div>
 
       <Modal open={light} onClose={() => setLight(false)} title={product.name} className="max-w-[900px]">
-        <div className="relative aspect-[4/3] w-full overflow-hidden rounded-box bg-page/40">
+        <div className="relative aspect-4/3 w-full overflow-hidden rounded-box bg-page/40">
           {current && <Image src={current} alt={product.name} fill sizes="(min-width:640px) 900px, 100vw" className="object-contain" />}
         </div>
       </Modal>

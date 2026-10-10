@@ -49,7 +49,7 @@ export function CmsPageView({ slug }: { slug: string }) {
         </Reveal>
         {!!pages?.length && (
           <Reveal delay={0.1} className="min-w-0">
-            <Block pad="sm" className="!p-2 lg:sticky lg:top-4">
+            <Block pad="sm" className="p-2! lg:sticky lg:top-4">
               <p className="px-3 pb-1 pt-2 text-[12px] font-semibold uppercase tracking-wide text-ink-3">Informations utiles</p>
               {pages.map((p) => (
                 <Link key={p.slug} href={pageHref(p.slug)} aria-current={p.slug === slug ? "page" : undefined} className={cn("group flex min-h-12 items-center gap-3 rounded-box px-3 py-2 text-[14px] font-semibold transition-colors hover:bg-chip", p.slug === slug && "bg-primary-50 text-primary-dark")}>

@@ -11,9 +11,9 @@ export function CategoryBanner({ category }: { category: Category }) {
   return (
     <div className="relative overflow-hidden rounded-box">
       {category.image && (
-        <ParallaxImage src={category.image} alt="" fill sizes="1300px" priority wrapperClassName="!absolute inset-0" strength={50} />
+        <ParallaxImage src={category.image} alt="" fill sizes="1300px" priority wrapperClassName="absolute! inset-0" strength={50} />
       )}
-      <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent" />
+      <div className="absolute inset-0 bg-linear-to-r from-black/80 via-black/50 to-transparent" />
       <div className="relative flex min-h-[170px] flex-col justify-center gap-2 px-5 py-6 text-white sm:min-h-[240px] sm:gap-3 sm:px-[60px] sm:py-10">
         <motion.span initial={{ scale: 0, rotate: -30 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: "spring", delay: 0.1 }} className="grid size-11 place-items-center rounded-full bg-primary sm:size-12">
           <CategoryIcon name={category.icon} size={24} variant="Bold" />
@@ -26,7 +26,7 @@ export function CategoryBanner({ category }: { category: Category }) {
             {category.description}
           </motion.p>
         )}
-        <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} className="w-fit rounded-full bg-white/15 px-3 py-1 text-[12px] font-semibold backdrop-blur">
+        <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} className="w-fit rounded-full bg-white/15 px-3 py-1 text-[12px] font-semibold backdrop-blur-sm">
           {pluralize(category.productsCount, "produit")}
         </motion.span>
       </div>

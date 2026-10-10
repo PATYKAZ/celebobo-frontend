@@ -134,7 +134,7 @@ export function AssistantLauncher() {
       {/* ancrage : bas droite, au-dessus de la barre d'onglets / barre d'achat (mobile) et du bouton « haut de page » (desktop) */}
       <div
         ref={anchor}
-        className="pointer-events-none fixed right-4 z-[60] bottom-[calc(var(--tabbar-h)+var(--buybar-h,0px)+16px)] lg:right-5 lg:bottom-[92px]"
+        className="pointer-events-none fixed right-4 z-60 bottom-[calc(var(--tabbar-h)+var(--buybar-h,0px)+16px)] lg:right-5 lg:bottom-[92px]"
         style={{ width: SIZE, height: SIZE }}
       >
         <motion.div
@@ -178,7 +178,7 @@ export function AssistantLauncher() {
             animate={{ scale: dragging ? 1.12 : 1 }}
             transition={{ type: "spring", stiffness: 400, damping: 22 }}
             className={cn(
-              "relative grid size-full place-items-center rounded-full bg-[linear-gradient(145deg,#27d427,#139713)] text-white shadow-[0_8px_26px_rgba(26,186,26,.5)] outline-none",
+              "relative grid size-full place-items-center rounded-full bg-[linear-gradient(145deg,#27d427,#139713)] text-white shadow-[0_8px_26px_rgba(26,186,26,.5)] outline-hidden",
               dragging ? "cursor-grabbing" : "cursor-grab",
             )}
           >
@@ -217,7 +217,7 @@ export function AssistantLauncher() {
             exit={{ opacity: 0, y: 16, scale: 0.97 }}
             transition={{ type: "spring", stiffness: 340, damping: 30 }}
             className={cn(
-              "fixed bottom-[168px] z-[61] flex h-[min(560px,calc(100dvh-210px))] w-[390px] flex-col overflow-hidden rounded-box bg-white shadow-[0_20px_60px_rgba(0,0,0,.28)]",
+              "fixed bottom-[168px] z-61 flex h-[min(560px,calc(100dvh-210px))] w-[390px] flex-col overflow-hidden rounded-box bg-white shadow-[0_20px_60px_rgba(0,0,0,.28)]",
               side === "r" ? "right-5" : "left-5",
             )}
           >

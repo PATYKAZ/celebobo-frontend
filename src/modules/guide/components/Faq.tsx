@@ -12,7 +12,7 @@ export function Faq() {
   const { data: groups, isLoading } = useFaq();
   const [open, setOpen] = useState<number | null>(null);
 
-  if (isLoading) return <div className="space-y-3">{Array.from({ length: 4 }, (_, i) => <Skeleton key={i} className="h-12 !rounded-box" />)}</div>;
+  if (isLoading) return <div className="space-y-3">{Array.from({ length: 4 }, (_, i) => <Skeleton key={i} className="h-12 rounded-box!" />)}</div>;
   if (!groups?.length) return <p className="py-4 text-[14px] text-ink-3">Aucune question pour le moment.</p>;
 
   const first = groups[0].entries[0]?.id ?? null;

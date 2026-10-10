@@ -41,7 +41,7 @@ export function BottomSheet({ open, onClose, title, action, children, className,
   return createPortal(
     <AnimatePresence>
       {open && (
-        <div className="fixed inset-0 z-[95] flex items-end justify-center sm:items-center" role="dialog" aria-modal="true" aria-label={title}>
+        <div className="fixed inset-0 z-95 flex items-end justify-center sm:items-center" role="dialog" aria-modal="true" aria-label={title}>
           <motion.div className="absolute inset-0 bg-black/45 backdrop-blur-[2px]" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} />
           <motion.div
             drag="y"

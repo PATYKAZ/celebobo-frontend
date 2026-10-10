@@ -40,7 +40,7 @@ export function SlowMoversCard({ data }: { data?: AnalyticsData }) {
       subtitle={data ? `${data.slowMovers.total} produit(s) en stock sans vente récente` : "Stock immobilisé"}
       className="xl:col-span-3"
     >
-      <div className="-mx-5 -mb-5 sm:-mx-[26px] sm:-mb-[26px]">
+      <div className="-mx-5 -mb-5 sm:mx-[-26px] sm:mb-[-26px]">
         <DataTable columns={columns} rows={data?.slowMovers.rows} loading={!data} rowKey={(r) => r.id} skeletonRows={5} empty={<p className="py-12 text-center text-[14px] text-ink-3">Aucun produit à rotation lente. 🎉</p>} />
       </div>
     </ChartCard>
@@ -80,7 +80,7 @@ export function ResellerPerformanceCard({ perf }: { perf?: ResellerPerformance }
   ];
   return (
     <ChartCard title="Performance par vendeur" subtitle={perf ? perf.periodLabel : "Ventes, part du chiffre d'affaires, bénéfice"} className="xl:col-span-3">
-      <div className="-mx-5 -mb-5 sm:-mx-[26px] sm:-mb-[26px]">
+      <div className="-mx-5 -mb-5 sm:mx-[-26px] sm:mb-[-26px]">
         <DataTable columns={columns} rows={perf?.rows.slice(0, 12)} loading={!perf} rowKey={(r) => r.id} skeletonRows={6} />
       </div>
       {perf && perf.rows.length > 12 && <p className="mt-6 text-center text-[12px] text-ink-3">Top 12 sur {perf.rows.length} vendeurs.</p>}

@@ -31,10 +31,10 @@ export function ContactView() {
         {cards.map(({ icon: Icon, title, value, href }) => (
           <RevealItem key={title} className="min-w-0">
             <a href={href} className="group flex h-full flex-col items-start gap-2.5 rounded-box bg-white p-4 transition-transform duration-300 active:scale-[0.98] sm:flex-row sm:items-center sm:gap-4 sm:p-5 sm:hover:-translate-y-1.5">
-              <span className="grid size-11 shrink-0 sm:size-[52px] place-items-center rounded-full bg-primary-100 text-primary-dark transition-all duration-300 group-hover:rotate-[360deg] group-hover:bg-primary group-hover:text-white"><Icon size={24} variant="Bold" /></span>
+              <span className="grid size-11 shrink-0 sm:size-[52px] place-items-center rounded-full bg-primary-100 text-primary-dark transition-all duration-300 group-hover:rotate-360 group-hover:bg-primary group-hover:text-white"><Icon size={24} variant="Bold" /></span>
               <span className="min-w-0">
                 <span className="block text-[12px] uppercase tracking-wide text-ink-3">{title}</span>
-                <span className="block break-words text-[13px] font-bold leading-[18px] sm:text-[14px] sm:leading-[20px]">{value}</span>
+                <span className="block wrap-break-word text-[13px] font-bold leading-[18px] sm:text-[14px] sm:leading-[20px]">{value}</span>
               </span>
             </a>
           </RevealItem>

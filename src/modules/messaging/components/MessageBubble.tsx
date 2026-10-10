@@ -48,7 +48,7 @@ export function MessageBubble({ message, mine, showSender, onOpenImage, isBuyer 
         {!mine && showSender && (
           <span className="mb-1 ml-1 text-[12px] font-semibold text-ink-2">
             {message.sender.name}
-            {message.sender.role !== "client" && <span className="ml-1.5 rounded bg-primary-100 px-1.5 py-px text-[10px] font-bold uppercase text-primary-dark">{message.sender.role === "revendeur" ? "Revendeur" : "Équipe"}</span>}
+            {message.sender.role !== "client" && <span className="ml-1.5 rounded-sm bg-primary-100 px-1.5 py-px text-[10px] font-bold uppercase text-primary-dark">{message.sender.role === "revendeur" ? "Revendeur" : "Équipe"}</span>}
           </span>
         )}
         {proposal ? (
@@ -62,7 +62,7 @@ export function MessageBubble({ message, mine, showSender, onOpenImage, isBuyer 
               </button>
             )}
             {message.content &&
-              (fromCart ? <OrderSummaryCard content={message.content} orderId={(message.metadata as { orderId?: number } | null)?.orderId} mine={mine} /> : <p className="whitespace-pre-wrap break-words">{message.content}</p>)}
+              (fromCart ? <OrderSummaryCard content={message.content} orderId={(message.metadata as { orderId?: number } | null)?.orderId} mine={mine} /> : <p className="whitespace-pre-wrap wrap-break-word">{message.content}</p>)}
           </div>
         )}
         <span className="mt-1 flex items-center gap-1 px-1 text-[11px] text-ink-3">

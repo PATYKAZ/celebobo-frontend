@@ -59,7 +59,7 @@ export function MessagesView({ initialId = null, embedded }: Props) {
         <div className={cn("min-h-0", activeId ? "block" : "hidden lg:flex lg:flex-col")}>
           {activeId ? (
             <div
-              className={cn("flex min-h-0 flex-col bg-white", fullScreen && "max-lg:fixed max-lg:inset-x-0 max-lg:top-0 max-lg:z-[60] max-lg:h-dvh lg:h-full")}
+              className={cn("flex min-h-0 flex-col bg-white", fullScreen && "max-lg:fixed max-lg:inset-x-0 max-lg:top-0 max-lg:z-60 max-lg:h-dvh lg:h-full")}
               style={vv ? { top: vv.top, height: vv.height } : undefined}
             >
               <ChatWindow key={activeId} conversationId={activeId} onBack={() => select(null)} className="h-full min-h-0 flex-1" />

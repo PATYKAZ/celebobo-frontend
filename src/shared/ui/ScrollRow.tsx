@@ -19,8 +19,8 @@ export function ScrollRow({ fade = true, bleed, alwaysScroll, className, childre
   return (
     <div
       className={cn(
-        "no-scrollbar flex snap-x snap-mandatory gap-2 overflow-x-auto scroll-smooth [&>*]:shrink-0 [&>*]:snap-start",
-        fade && "[mask-image:linear-gradient(90deg,transparent,#000_16px,#000_calc(100%-16px),transparent)] sm:[mask-image:none]",
+        "no-scrollbar flex snap-x snap-mandatory gap-2 overflow-x-auto scroll-smooth *:shrink-0 *:snap-start",
+        fade && "mask-[linear-gradient(90deg,transparent,#000_16px,#000_calc(100%-16px),transparent)] sm:mask-none",
         !alwaysScroll && "sm:flex-wrap sm:overflow-visible",
         bleed && "-mx-4 px-4 sm:mx-0 sm:px-0",
         className,

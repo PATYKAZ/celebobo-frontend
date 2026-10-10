@@ -28,7 +28,7 @@ export function CircleButton({ size = 40, tone = "chip", href, label, children, 
   const cls = cn(
     "relative inline-grid shrink-0 place-items-center rounded-full transition-all duration-300 before:absolute before:-inset-1 before:content-[''] hover:-translate-y-0.5 hover:bg-primary hover:text-white active:scale-90",
     TONES[tone],
-    active && "!bg-primary !text-white",
+    active && "bg-primary! text-white!",
     className,
   );
   const style = { width: size, height: size };

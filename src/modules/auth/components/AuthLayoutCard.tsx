@@ -29,12 +29,12 @@ export function AuthLayoutCard({ title, subtitle, image, headline, children, foo
       {/* Mobile / tablette : bandeau visuel compact */}
       <div className="relative h-[132px] overflow-hidden bg-ink-dark sm:h-[170px] lg:hidden">
         <KenBurnsImage src={image} alt="" fill sizes="100vw" priority className="opacity-70" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-primary/30" />
+        <div className="absolute inset-0 bg-linear-to-t from-black/85 via-black/30 to-primary/30" />
         <div className="absolute inset-x-0 bottom-0 p-4 text-white sm:p-6">
           <p className="max-w-[320px] text-[18px] font-bold leading-[23px] sm:max-w-[420px] sm:text-[22px] sm:leading-[28px]">{headline}</p>
           <ul className="no-scrollbar mt-2 flex gap-2 overflow-x-auto">
             {BENEFITS.map(({ icon: Icon, short, label }) => (
-              <li key={label} className="flex shrink-0 items-center gap-1.5 rounded-full bg-white/20 py-1 pl-1.5 pr-2.5 text-[11px] font-semibold backdrop-blur">
+              <li key={label} className="flex shrink-0 items-center gap-1.5 rounded-full bg-white/20 py-1 pl-1.5 pr-2.5 text-[11px] font-semibold backdrop-blur-sm">
                 <Icon size={13} variant="Bold" /> {short}
               </li>
             ))}
@@ -52,7 +52,7 @@ export function AuthLayoutCard({ title, subtitle, image, headline, children, foo
 
         <div className="relative hidden min-h-[640px] overflow-hidden bg-ink-dark lg:block">
           <KenBurnsImage src={image} alt="" fill sizes="50vw" priority className="opacity-70" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-primary/30" />
+          <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-primary/30" />
           <motion.div animate={{ y: [0, -12, 0] }} transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }} className="absolute right-10 top-10 flex items-center gap-3 rounded-box bg-white/95 px-4 py-3">
             <span className="grid size-10 place-items-center rounded-full bg-primary text-white"><Bag2 size={20} variant="Bold" /></span>
             <span className="text-[13px] leading-[17px]"><strong className="block">+12 000 commandes</strong><span className="text-ink-3">livrées avec le sourire</span></span>

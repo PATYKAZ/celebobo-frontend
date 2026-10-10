@@ -17,7 +17,7 @@ export function ShopShell({ children }: { children: ReactNode }) {
       <div className="container pt-0">
         <Header />
         <GreenBar />
-        <main id="contenu" className="mt-3 flex min-w-0 flex-col gap-3 sm:mt-4 sm:gap-4 [&>*]:min-w-0">
+        <main id="contenu" className="mt-3 flex min-w-0 flex-col gap-3 sm:mt-4 sm:gap-4 *:min-w-0">
           {children}
         </main>
       </div>

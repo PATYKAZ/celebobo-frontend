@@ -29,7 +29,7 @@ export function ReviewForm({ slug }: { slug: string }) {
     );
   }
 
-  if (eligibility.isLoading) return <div className="skeleton h-[120px] w-full !rounded-box" />;
+  if (eligibility.isLoading) return <div className="skeleton h-[120px] w-full rounded-box!" />;
   if (!eligibility.data?.canReview) {
     return (
       <div className="flex items-start gap-3 rounded-box bg-page/60 p-5">

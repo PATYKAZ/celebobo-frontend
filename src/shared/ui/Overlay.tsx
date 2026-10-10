@@ -45,7 +45,7 @@ export function Modal({ open, onClose, title, children, className }: BaseProps) 
   return createPortal(
     <AnimatePresence>
       {open && (
-        <div className="fixed inset-0 z-[90] flex items-end justify-center sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-label={title}>
+        <div className="fixed inset-0 z-90 flex items-end justify-center sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-label={title}>
           <motion.div className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} />
           <motion.div
             initial={{ opacity: 0, y: 60, scale: 0.98 }}
@@ -78,7 +78,7 @@ export function Drawer({ open, onClose, title, children, className, side = "left
   return createPortal(
     <AnimatePresence>
       {open && (
-        <div className="fixed inset-0 z-[90]" role="dialog" aria-modal="true" aria-label={title}>
+        <div className="fixed inset-0 z-90" role="dialog" aria-modal="true" aria-label={title}>
           <motion.div className="absolute inset-0 bg-black/50" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} />
           <motion.aside
             initial={{ x }}
@@ -93,7 +93,7 @@ export function Drawer({ open, onClose, title, children, className, side = "left
                 <CloseCircle size={26} />
               </button>
             </div>
-            <div className="flex-1 overflow-y-auto overscroll-contain pb-[env(safe-area-inset-bottom)]">{children}</div>
+            <div className="flex-1 overflow-y-auto overscroll-contain pb-safe-b">{children}</div>
           </motion.aside>
         </div>
       )}

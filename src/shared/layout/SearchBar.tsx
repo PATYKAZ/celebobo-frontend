@@ -22,7 +22,7 @@ function Highlight({ text, q }: { text: string; q: string }): ReactNode {
   return (
     <>
       {text.slice(0, i)}
-      <mark className="rounded-sm bg-primary/20 px-0.5 text-inherit">{text.slice(i, i + term.length)}</mark>
+      <mark className="rounded-xs bg-primary/20 px-0.5 text-inherit">{text.slice(i, i + term.length)}</mark>
       {text.slice(i + term.length)}
     </>
   );
@@ -130,7 +130,7 @@ export function SearchBar({ className, compact }: { className?: string; compact?
               aria-label="Catégorie"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="h-full w-full appearance-none rounded-l-[4px] bg-white pl-3 pr-8 text-[13px] font-bold leading-[19.5px] text-[#212529] outline-none"
+              className="h-full w-full appearance-none rounded-l-[4px] bg-white pl-3 pr-8 text-[13px] font-bold leading-[19.5px] text-[#212529] outline-hidden"
             >
               <option value="">Catégories</option>
               {categories?.map((c) => (
@@ -159,7 +159,7 @@ export function SearchBar({ className, compact }: { className?: string; compact?
           aria-autocomplete="list"
           aria-activedescendant={active >= 0 ? `${uid}-${options[active]?.id}` : undefined}
           autoComplete="off"
-          className="min-w-0 flex-1 bg-white px-4 text-[16px] text-ink outline-none placeholder:text-ink-3 sm:border-l sm:border-line-3 sm:px-3 sm:text-[13px]"
+          className="min-w-0 flex-1 bg-white px-4 text-[16px] text-ink outline-hidden placeholder:text-ink-3 sm:border-l sm:border-line-3 sm:px-3 sm:text-[13px]"
         />
         {q && (
           <button

@@ -32,9 +32,9 @@ export function ProductSuggestion({ product, index }: { product: Product; index:
   return (
     <motion.div initial={{ opacity: 0, y: 14, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ delay: 0.15 * index + 0.2 }}>
       <Link href={ROUTES.product(product.slug)} className="group flex w-[200px] shrink-0 flex-col overflow-hidden rounded-box border border-line-3 bg-white transition-all hover:-translate-y-1 hover:border-primary">
-        <span className="relative block aspect-[4/3] overflow-hidden bg-page">
+        <span className="relative block aspect-4/3 overflow-hidden bg-page">
           {product.image && <Image src={product.image} alt={product.name} fill sizes="200px" className="object-cover transition-transform duration-500 group-hover:scale-110" />}
-          {pr.onSale && <span className="absolute left-2 top-2 rounded bg-danger px-1.5 py-0.5 text-[10px] font-bold text-white">-{pr.percent}%</span>}
+          {pr.onSale && <span className="absolute left-2 top-2 rounded-sm bg-danger px-1.5 py-0.5 text-[10px] font-bold text-white">-{pr.percent}%</span>}
         </span>
         <span className="p-3">
           <span className="line-clamp-2 block min-h-[34px] text-[13px] font-bold leading-[17px]">{product.name}</span>
@@ -105,7 +105,7 @@ export function AssistantView() {
       <Block
         pad="none"
         style={mobile && vv ? { height: vv.height, top: vv.top } : undefined}
-        className="overflow-hidden max-lg:fixed max-lg:inset-x-0 max-lg:top-0 max-lg:z-[70] max-lg:h-dvh max-lg:rounded-none"
+        className="overflow-hidden max-lg:fixed max-lg:inset-x-0 max-lg:top-0 max-lg:z-70 max-lg:h-dvh max-lg:rounded-none"
       >
         <div className="flex h-[calc(100vh-150px)] min-h-[560px] max-h-[780px] flex-col max-lg:h-full max-lg:max-h-none max-lg:min-h-0">
           <header className="flex items-center gap-2.5 border-b border-line-3 bg-primary px-3 pb-3 pt-[max(12px,env(safe-area-inset-top))] text-white sm:gap-3 sm:px-5 sm:py-4 lg:pt-4">
@@ -136,7 +136,7 @@ export function AssistantView() {
                       {mine ? m.content : <StreamedText text={m.content} animate={m.animate} onTick={scroll} />}
                     </div>
                     {m.products && m.products.length > 0 && (
-                      <div className="no-scrollbar -mx-1 flex max-w-full snap-x snap-mandatory gap-3 overflow-x-auto px-1 pb-1 [&>*]:snap-start">
+                      <div className="no-scrollbar -mx-1 flex max-w-full snap-x snap-mandatory gap-3 overflow-x-auto px-1 pb-1 *:snap-start">
                         {m.products.map((p, i) => <ProductSuggestion key={p.id} product={p} index={i} />)}
                       </div>
                     )}

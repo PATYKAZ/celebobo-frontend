@@ -69,7 +69,7 @@ export function Float({ children, className, slow }: { children: ReactNode; clas
 /** Bande défilante infinie (logos de marques). Le contenu est dupliqué pour la boucle. */
 export function Marquee({ children, className, pauseOnHover = true }: { children: ReactNode; className?: string; pauseOnHover?: boolean }) {
   return (
-    <div className={cn("group flex overflow-hidden [mask-image:linear-gradient(90deg,transparent,#000_8%,#000_92%,transparent)]", className)}>
+    <div className={cn("group flex overflow-hidden mask-[linear-gradient(90deg,transparent,#000_8%,#000_92%,transparent)]", className)}>
       {[0, 1].map((i) => (
         <div key={i} aria-hidden={i === 1} className={cn("flex min-w-full shrink-0 animate-marquee items-center justify-around gap-10 pr-10", pauseOnHover && "group-hover:[animation-play-state:paused]")}>
           {children}

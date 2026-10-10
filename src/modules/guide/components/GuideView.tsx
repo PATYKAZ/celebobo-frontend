@@ -37,7 +37,7 @@ function Stepper({ steps }: { steps: Step[] }) {
         const Icon = ICONS[i % ICONS.length];
         return (
           <li key={s.title} className="relative">
-            <motion.span initial={{ scale: 0 }} whileInView={{ scale: 1 }} viewport={{ once: true, amount: 0.8 }} transition={{ type: "spring", stiffness: 300, damping: 15 }} className="absolute -left-[60px] top-0 grid size-11 place-items-center rounded-full bg-primary text-white ring-4 ring-white sm:-left-20 sm:size-[72px]">
+            <motion.span initial={{ scale: 0 }} whileInView={{ scale: 1 }} viewport={{ once: true, amount: 0.8 }} transition={{ type: "spring", stiffness: 300, damping: 15 }} className="absolute left-[-60px] top-0 grid size-11 place-items-center rounded-full bg-primary text-white ring-4 ring-white sm:-left-20 sm:size-[72px]">
               <Icon size={22} variant="Bold" />
             </motion.span>
             <Reveal direction="up" className="rounded-box border border-line-3 p-4 transition-colors hover:border-primary sm:p-6">

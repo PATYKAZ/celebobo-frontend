@@ -44,7 +44,7 @@ function deviceName(ua: string) {
 function DevicesList({ current }: { current: number | null }) {
   const { data: devices, isLoading } = usePushDevices();
   const remove = useRemoveDevice();
-  if (isLoading) return <Skeleton className="mt-4 h-16 !rounded-box sm:mt-6" />;
+  if (isLoading) return <Skeleton className="mt-4 h-16 rounded-box! sm:mt-6" />;
   if (!devices?.length) return null;
   return (
     <div className="mt-4 rounded-box border border-line-3 sm:mt-6">
@@ -63,7 +63,7 @@ function DevicesList({ current }: { current: number | null }) {
                 </p>
                 <p className="text-[12px] text-ink-3">Ajouté le {formatDate(d.createdAt)}{d.lastUsedAt && ` · dernier envoi le ${formatDate(d.lastUsedAt)}`}</p>
               </div>
-              <Button size="xs" variant="ghost" upper={false} className="text-danger hover:!bg-danger-100" leftIcon={<Trash size={13} />} loading={remove.isPending && remove.variables === d.id} onClick={() => remove.mutate(d.id, { onSuccess: () => toast.success("Appareil retiré"), onError: (e) => toast.error("Suppression impossible", getErrorMessage(e)) })}>
+              <Button size="xs" variant="ghost" upper={false} className="text-danger hover:bg-danger-100!" leftIcon={<Trash size={13} />} loading={remove.isPending && remove.variables === d.id} onClick={() => remove.mutate(d.id, { onSuccess: () => toast.success("Appareil retiré"), onError: (e) => toast.error("Suppression impossible", getErrorMessage(e)) })}>
                 Retirer
               </Button>
             </li>
@@ -110,7 +110,7 @@ function Content() {
             <span className="flex items-center justify-center gap-1"><Notification size={14} /> Push</span>
           </div>
           {isLoading || !prefs
-            ? Array.from({ length: 4 }, (_, i) => <Skeleton key={i} className="m-4 h-12 !rounded-box" />)
+            ? Array.from({ length: 4 }, (_, i) => <Skeleton key={i} className="m-4 h-12 rounded-box!" />)
             : NOTIFICATION_EVENTS.map((e) => (
                 <div key={e.key} className="grid items-center gap-1 border-b border-line-3 px-4 py-3.5 last:border-0 sm:grid-cols-[1fr_90px_90px] sm:gap-4 sm:px-5 sm:py-4">
                   <div className="pb-1 sm:pb-0">

@@ -45,8 +45,8 @@ function Slide({ slide, active }: { slide: HeroSlide; active: boolean }) {
         className={cn("object-cover object-[65%_center] will-change-transform sm:object-center", active && "animate-ken-burns")}
       />
       {/* desktop : dégradé du design ; mobile : voile sombre bas → texte blanc toujours lisible */}
-      <div className={cn("absolute inset-0 hidden bg-gradient-to-r sm:block", slide.overlay)} />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-black/10 sm:hidden" />
+      <div className={cn("absolute inset-0 hidden bg-linear-to-r sm:block", slide.overlay)} />
+      <div className="absolute inset-0 bg-linear-to-t from-black/85 via-black/45 to-black/10 sm:hidden" />
       <motion.div
         variants={container}
         initial="hidden"
@@ -108,7 +108,7 @@ export function HeroSlider({ slides, className }: { slides?: HeroSlide[]; classN
         className="h-full w-full"
       >
         {slides.map((s, i) => (
-          <SwiperSlide key={s.id} className="!h-full">
+          <SwiperSlide key={s.id} className="h-full!">
             <Slide slide={s} active={i === index} />
           </SwiperSlide>
         ))}

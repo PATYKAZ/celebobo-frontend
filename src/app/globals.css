@@ -1,14 +1,340 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
 
-:root {
-  /* hauteur de la barre d'onglets mobile + zone sûre iOS ; 0 sur desktop */
-  --tabbar-h: 0px;
+@utility container {
+  margin-inline: auto;
+  padding-inline: 15px;
+  @media (width >= --theme(--breakpoint-xs)) {
+    max-width: none;
+  }
+  @media (width >= 1330px) {
+    max-width: 1330px;
+  }
 }
-@media (max-width: 1023px) {
+
+@theme {
+  --color-primary-50: rgba(26, 186, 26, 0.05);
+  --color-primary-100: rgba(26, 186, 26, 0.1);
+  --color-primary: #1aba1a;
+  --color-primary-light: #1bf11b;
+  --color-primary-dark: #139713;
+
+  --color-danger-50: rgba(241, 53, 43, 0.05);
+  --color-danger-100: rgba(241, 53, 43, 0.1);
+  --color-danger: #f1352b;
+
+  --color-star: #ffa500;
+
+  --color-sun-2: #ffc107;
+  --color-sun: #ffe400;
+
+  --color-page: #e2e4eb;
+
+  --color-chip-2: #ebedf3;
+  --color-chip-3: #edeff6;
+  --color-chip: #ebeef6;
+  --color-chip-social: #e1e3eb;
+
+  --color-ink-2: #666666;
+  --color-ink-3: #999999;
+  --color-ink-4: #757575;
+  --color-ink: #000000;
+  --color-ink-dark: #222222;
+  --color-ink-dark2: #333333;
+
+  --color-line-2: #999999;
+  --color-line-3: #dee2e6;
+  --color-line: #cccccc;
+
+  --color-info: #0d6efd;
+
+  --font-sans: var(--font-hanken), ui-sans-serif, system-ui, sans-serif;
+
+
+  --spacing-tabbar: var(--tabbar-h);
+  --spacing-safe-b: env(safe-area-inset-bottom);
+  --spacing-safe-t: env(safe-area-inset-top);
+
+  --radius-box: 10px;
+  --radius-pill: 30px;
+
+  --breakpoint-xs: 480px;
+  --breakpoint-3xl: 1400px;
+
+  --animate-fade-up: fade-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-fade-in: fade-in 0.5s ease both;
+  --animate-ken-burns: ken-burns 9s ease-out both;
+  --animate-float: float 5s ease-in-out infinite;
+  --animate-float-slow: float-slow 7s ease-in-out infinite;
+  --animate-marquee: marquee 28s linear infinite;
+  --animate-shimmer: shimmer 1.6s linear infinite;
+  --animate-pulse-ring: pulse-ring 1.8s ease-out infinite;
+  --animate-pop: pop 0.35s ease;
+  --animate-slide-in-right: slide-in-right 0.35s cubic-bezier(0.22, 1, 0.36, 1)
+    both;
+  --animate-typing-dot: typing-dot 1.1s ease-in-out infinite;
+  --animate-draw-line: draw-line 1.4s ease-out forwards;
+  --animate-bar-grow: bar-grow 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-sheen: sheen 1.1s ease;
+
+  @keyframes fade-up {
+    0% {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes fade-in {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  @keyframes ken-burns {
+    0% {
+      transform: scale(1) translate3d(0, 0, 0);
+    }
+    100% {
+      transform: scale(1.12) translate3d(-1.5%, -1%, 0);
+    }
+  }
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+  @keyframes float-slow {
+    0%,
+    100% {
+      transform: translateY(0) rotate(0deg);
+    }
+    50% {
+      transform: translateY(-14px) rotate(1.5deg);
+    }
+  }
+  @keyframes marquee {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+  @keyframes pulse-ring {
+    0% {
+      transform: scale(1);
+      opacity: 0.55;
+    }
+    100% {
+      transform: scale(2.2);
+      opacity: 0;
+    }
+  }
+  @keyframes pop {
+    0% {
+      transform: scale(1);
+    }
+    40% {
+      transform: scale(1.35);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  @keyframes slide-in-right {
+    0% {
+      transform: translateX(100%);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+  @keyframes typing-dot {
+    0%,
+    60%,
+    100% {
+      transform: translateY(0);
+      opacity: 0.4;
+    }
+    30% {
+      transform: translateY(-4px);
+      opacity: 1;
+    }
+  }
+  @keyframes draw-line {
+    0% {
+      stroke-dashoffset: var(--len, 1000);
+    }
+    100% {
+      stroke-dashoffset: 0;
+    }
+  }
+  @keyframes bar-grow {
+    0% {
+      transform: scaleY(0);
+    }
+    100% {
+      transform: scaleY(1);
+    }
+  }
+  @keyframes sheen {
+    0% {
+      transform: translateX(-120%) skewX(-20deg);
+    }
+    100% {
+      transform: translateX(320%) skewX(-20deg);
+    }
+  }
+}
+
+/*
+  Échelle typographique du design : utilitaires « fermés » (taille + interligne + graisse posés directement),
+  comme en Tailwind v3. Avec des jetons @theme, un `leading-*` de base l'emporterait sur `sm:text-h-page`.
+*/
+@utility text-section {
+  font-size: 18px;
+  line-height: 21.6px;
+  font-weight: 700;
+}
+@utility text-tab {
+  font-size: 18px;
+  line-height: 27px;
+}
+@utility text-link {
+  font-size: 13px;
+  line-height: 19.5px;
+}
+@utility text-name {
+  font-size: 14px;
+  line-height: 16.8px;
+  font-weight: 700;
+}
+@utility text-price {
+  font-size: 18px;
+  line-height: 21.6px;
+  font-weight: 600;
+}
+@utility text-body {
+  font-size: 14px;
+  line-height: 21px;
+}
+@utility text-body-lg {
+  font-size: 14px;
+  line-height: 25.2px;
+}
+@utility text-small {
+  font-size: 12px;
+  line-height: 18px;
+}
+@utility text-tiny {
+  font-size: 10px;
+  line-height: 15px;
+}
+@utility text-h-hero {
+  font-size: 30px;
+  line-height: 36px;
+}
+@utility text-h-page {
+  font-size: 28px;
+  line-height: 33.6px;
+  font-weight: 700;
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: #cccccc;
+  }
+}
+
+@utility wh-box {
+  /* Bloc blanc standard du design (fond #FFF, rad 10) */
+  @apply rounded-box bg-white;
+}
+
+@utility field {
+  /* 16px sur mobile : évite le zoom automatique d'iOS au focus */
+  @apply h-[48px] w-full rounded-md border border-line bg-white px-3 text-[16px] text-ink outline-hidden transition-colors placeholder:text-ink-3 focus:border-primary sm:h-[45px] sm:text-[14px];
+}
+
+@utility snap-row {
+  /* rangée défilante horizontale avec accroche (carrousels natifs, filtres, onglets) */
+  @apply no-scrollbar flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-smooth;
+  & > * {
+    @apply shrink-0 snap-start;
+  }
+}
+
+@utility pb-safe {
+  /* zone sûre basse (barres collantes, feuilles) */
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
+}
+
+@utility field-error {
+  @apply border-danger focus:border-danger;
+}
+
+@utility link-underline {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 0.3s ease;
+  &:hover {
+    background-size: 100% 1px;
+  }
+}
+
+@utility skeleton {
+  background: linear-gradient(90deg, #eceef4 25%, #f6f7fb 37%, #eceef4 63%);
+  background-size: 200% 100%;
+  @apply animate-shimmer rounded-md;
+}
+
+@utility no-scrollbar {
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@layer utilities {
   :root {
-    --tabbar-h: calc(64px + env(safe-area-inset-bottom));
+    /* hauteur de la barre d'onglets mobile + zone sûre iOS ; 0 sur desktop */
+    --tabbar-h: 0px;
+  }
+  @media (max-width: 1023px) {
+    :root {
+      --tabbar-h: calc(64px + env(safe-area-inset-bottom));
+    }
   }
 }
 
@@ -61,53 +387,6 @@
   input::placeholder,
   textarea::placeholder {
     @apply text-ink-3;
-  }
-}
-
-@layer components {
-  /* Bloc blanc standard du design (fond #FFF, rad 10) */
-  .wh-box {
-    @apply rounded-box bg-white;
-  }
-  /* 16px sur mobile : évite le zoom automatique d'iOS au focus */
-  .field {
-    @apply h-[48px] w-full rounded-md border border-line bg-white px-3 text-[16px] text-ink outline-none transition-colors placeholder:text-ink-3 focus:border-primary sm:h-[45px] sm:text-[14px];
-  }
-  /* rangée défilante horizontale avec accroche (carrousels natifs, filtres, onglets) */
-  .snap-row {
-    @apply no-scrollbar flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-smooth;
-  }
-  .snap-row > * {
-    @apply shrink-0 snap-start;
-  }
-  /* zone sûre basse (barres collantes, feuilles) */
-  .pb-safe {
-    padding-bottom: max(12px, env(safe-area-inset-bottom));
-  }
-  .field-error {
-    @apply border-danger focus:border-danger;
-  }
-  .link-underline {
-    background-image: linear-gradient(currentColor, currentColor);
-    background-size: 0 1px;
-    background-position: 0 100%;
-    background-repeat: no-repeat;
-    transition: background-size 0.3s ease;
-  }
-  .link-underline:hover {
-    background-size: 100% 1px;
-  }
-  .skeleton {
-    background: linear-gradient(90deg, #eceef4 25%, #f6f7fb 37%, #eceef4 63%);
-    background-size: 200% 100%;
-    @apply animate-shimmer rounded-md;
-  }
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-  .no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
   }
 }
 

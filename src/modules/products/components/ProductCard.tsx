@@ -41,7 +41,7 @@ export function ProductCard({ product, className, priority }: Props) {
     >
       {/* Image */}
       <div className="relative">
-        <Link href={href} className="relative block aspect-[4/3] overflow-hidden sm:aspect-[192/200] rounded-md border-b border-line-2/10 bg-page/40" aria-label={product.name}>
+        <Link href={href} className="relative block aspect-4/3 overflow-hidden sm:aspect-192/200 rounded-md border-b border-line-2/10 bg-page/40" aria-label={product.name}>
           {product.image ? (
             <Image
               src={product.image}
@@ -71,7 +71,7 @@ export function ProductCard({ product, className, priority }: Props) {
           aria-label={fav ? "Retirer des favoris" : "Ajouter aux favoris"}
           aria-pressed={fav}
           onClick={() => toggle(product.id, product.name)}
-          className="absolute right-1 top-1 grid size-9 place-items-center rounded-full bg-white/90 text-ink-3 backdrop-blur transition-colors hover:bg-danger-100 hover:text-danger active:scale-90 sm:right-0 sm:top-0 sm:size-[30px] sm:bg-page"
+          className="absolute right-1 top-1 grid size-9 place-items-center rounded-full bg-white/90 text-ink-3 backdrop-blur-sm transition-colors hover:bg-danger-100 hover:text-danger active:scale-90 sm:right-0 sm:top-0 sm:size-[30px] sm:bg-page"
         >
           <motion.span key={String(fav)} initial={{ scale: 0.4 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 500, damping: 12 }} className="grid">
             <Heart size={15} variant={fav ? "Bold" : "Linear"} color={fav ? "#F1352B" : "currentColor"} />

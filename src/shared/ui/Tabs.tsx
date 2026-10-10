@@ -34,7 +34,7 @@ export function Tabs<T extends string>({ tabs, value, onChange, variant = "title
   }, [value]);
 
   // fondu à droite uniquement (indique qu'on peut défiler) : un fondu à gauche rognerait le 1er onglet au repos
-  const fade = "[mask-image:linear-gradient(90deg,#000_calc(100%-28px),transparent)] sm:[mask-image:none]";
+  const fade = "mask-[linear-gradient(90deg,#000_calc(100%-28px),transparent)] sm:mask-none";
 
   if (variant === "pill") {
     return (

@@ -25,7 +25,7 @@ type Tab = "info" | "addresses" | "security";
 function DefaultAddress() {
   const { data, isLoading } = useAddresses();
   const a = data?.find((x) => x.isDefault) ?? data?.[0];
-  if (isLoading) return <Skeleton className="h-[120px] !rounded-box" />;
+  if (isLoading) return <Skeleton className="h-[120px] rounded-box!" />;
   if (!a) return <p className="rounded-box bg-page/60 p-4 text-[14px] text-ink-2">Aucune adresse enregistrée pour le moment.</p>;
   const Icon = addressIcon(a.label);
   return (
@@ -64,7 +64,7 @@ function Content() {
       <Reveal direction="up" className="min-w-0">
         <div className="space-y-3 sm:space-y-4">
           <ProfileSummaryCard user={user} profile={profile} previewAvatar={preview} onPickAvatar={setFile} />
-          <Block pad="sm" className="!p-2">
+          <Block pad="sm" className="p-2!">
             {[
               { href: ROUTES.orders, label: "Mes commandes", icon: Receipt2 },
               { href: ROUTES.addresses, label: "Mon carnet d'adresses", icon: Location },

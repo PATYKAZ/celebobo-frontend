@@ -63,7 +63,7 @@ export function ProductInfo({ product, selection, qty, onQtyChange }: { product:
       </div>
 
       <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 border-y border-line-3 py-4 sm:mt-5 sm:py-5">
-        <Price current={current} original={original} size="xl" className="[&>span:first-child]:max-sm:text-[26px]" />
+        <Price current={current} original={original} size="xl" className="max-sm:[&>span:first-child]:text-[26px]" />
         {base.onSale && <Pill tone="red" className="h-[26px] text-[12px]">-{base.percent}%</Pill>}
         {base.onSale && <span className="text-[13px] font-semibold text-primary">Vous économisez {formatPrice(base.saving)}</span>}
       </div>

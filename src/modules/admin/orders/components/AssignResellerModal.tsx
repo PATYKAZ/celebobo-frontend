@@ -89,7 +89,7 @@ export function AssignResellerModal({ order, onClose }: Props) {
                 <span className="min-w-0 flex-1">
                   <span className="flex items-center gap-2">
                     <span className="truncate text-[14px] font-semibold">{r.name}</span>
-                    <span className="rounded bg-chip px-1.5 text-[11px] font-bold tracking-wider text-ink-2">{r.code}</span>
+                    <span className="rounded-sm bg-chip px-1.5 text-[11px] font-bold tracking-wider text-ink-2">{r.code}</span>
                   </span>
                   <span className="flex items-center gap-3 text-[12px] text-ink-3">
                     <AvailabilityDot value={r.availability} withLabel />
