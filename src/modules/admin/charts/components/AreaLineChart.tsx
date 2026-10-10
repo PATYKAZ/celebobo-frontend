@@ -91,10 +91,10 @@ export function AreaLineChart({ labels, series, height: heightProp = 280, format
         {ticks.map((t) => (
           <g key={t}>
             <line x1={P.l} x2={width - P.r} y1={y(t)} y2={y(t)} stroke="#DEE2E6" strokeDasharray={t === 0 ? undefined : "3 4"} />
-            <text x={P.l - 6} y={y(t) + 4} textAnchor="end" fontSize="11" fill="#999">{format(t)}</text>
+            <text x={P.l - 6} y={y(t) + 4} textAnchor="end" fontSize="11" fill="var(--color-ink-3)">{format(t)}</text>
           </g>
         ))}
-        {labels.map((l, i) => (i % step === 0 ? <text key={i} x={x(i)} y={height - 8} textAnchor="middle" fontSize="11" fill="#999">{l}</text> : null))}
+        {labels.map((l, i) => (i % step === 0 ? <text key={i} x={x(i)} y={height - 8} textAnchor="middle" fontSize="11" fill="var(--color-ink-3)">{l}</text> : null))}
 
         {series.map((s, si) => {
           const pts = s.data.map((v, i) => [x(i), y(v)] as [number, number]);

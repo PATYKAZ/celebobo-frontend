@@ -66,7 +66,7 @@ function VBars({ data, height: heightProp, color, lineColor, format, title, line
         {[0, 0.25, 0.5, 0.75, 1].map((t) => (
           <g key={t}>
             <line x1={P.l} x2={width - P.r} y1={y(t * max)} y2={y(t * max)} stroke="#DEE2E6" strokeDasharray={t === 0 ? undefined : "3 4"} />
-            <text x={P.l - 6} y={y(t * max) + 4} textAnchor="end" fontSize="11" fill="#999">{format(t * max)}</text>
+            <text x={P.l - 6} y={y(t * max) + 4} textAnchor="end" fontSize="11" fill="var(--color-ink-3)">{format(t * max)}</text>
           </g>
         ))}
         {data.map((d, i) => {
@@ -85,7 +85,7 @@ function VBars({ data, height: heightProp, color, lineColor, format, title, line
                 animate={inView ? { y: y(d.value), height: bh } : {}}
                 transition={{ duration: 0.8, delay: i * 0.05, ease: [0.22, 1, 0.36, 1] }}
               />
-              {i % labelStep === 0 && <text x={cx} y={height - 8} textAnchor="middle" fontSize="11" fill="#999">{d.label}</text>}
+              {i % labelStep === 0 && <text x={cx} y={height - 8} textAnchor="middle" fontSize="11" fill="var(--color-ink-3)">{d.label}</text>}
             </g>
           );
         })}

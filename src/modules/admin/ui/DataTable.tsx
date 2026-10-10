@@ -53,7 +53,7 @@ const isSelect = (c: { key: string }) => c.key === "select" || c.key === "checkb
  * ≥ md : tableau classique (lignes animées, squelettes). < md : liste de cartes empilées, plus lisible au doigt.
  */
 export function DataTable<T>({ columns, rows, rowKey, loading, empty, onRowClick, page, pageCount, onPageChange, className, skeletonRows = 6 }: Props<T>) {
-  const th = (c: Column<T>) => cn("whitespace-nowrap px-4 py-3 text-[12px] font-semibold uppercase tracking-wide text-ink-3", ALIGN[c.align ?? "left"], c.hideBelow && HIDE[c.hideBelow]);
+  const th = (c: Column<T>) => cn("whitespace-nowrap px-4 py-3 text-[12px] font-semibold uppercase tracking-wide text-ink-2", ALIGN[c.align ?? "left"], c.hideBelow && HIDE[c.hideBelow]);
   const td = (c: Column<T>) => cn("px-4 py-3.5 align-middle text-[14px]", ALIGN[c.align ?? "left"], c.hideBelow && HIDE[c.hideBelow], c.className);
 
   // classement des colonnes pour le rendu carte

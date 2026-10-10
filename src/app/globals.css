@@ -40,7 +40,8 @@
   --color-chip-social: #e1e3eb;
 
   --color-ink-2: #666666;
-  --color-ink-3: #999999;
+  /* #767676 : 4,5:1 sur blanc (WCAG AA) ; l'ancien #999 plafonnait à 2,8:1 */
+  --color-ink-3: #767676;
   --color-ink-4: #757575;
   --color-ink: #000000;
   --color-ink-dark: #222222;

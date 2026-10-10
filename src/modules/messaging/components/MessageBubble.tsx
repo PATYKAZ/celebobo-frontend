@@ -69,7 +69,7 @@ export function MessageBubble({ message, mine, showSender, onOpenImage, isBuyer 
           {formatTime(message.timestamp)}
           {mine && (
             <motion.span key={String(message.seen)} initial={{ scale: 0.5 }} animate={{ scale: 1 }} className="inline-flex items-center gap-0.5" title={message.seen ? "Lu" : "Envoyé"}>
-              <TickCircle size={12} variant={message.seen ? "Bold" : "Linear"} color={message.seen ? "#1ABA1A" : "#999"} />
+              <TickCircle size={12} variant={message.seen ? "Bold" : "Linear"} color={message.seen ? "var(--color-primary)" : "var(--color-ink-3)"} />
               {message.seen && <span className="text-[10px] font-semibold text-primary">Lu</span>}
             </motion.span>
           )}
