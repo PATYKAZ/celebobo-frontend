@@ -22,7 +22,7 @@ const REASON: Record<string, string> = {
 export function StockHistoryDrawer({ product, onClose }: { product: Product | null; onClose: () => void }) {
   const { data, isLoading } = useStockMovements(product?.id, !!product);
   return (
-    <Drawer open={!!product} onClose={onClose} side="right" title="Historique du stock" className="max-w-[460px]">
+    <Drawer open={!!product} onClose={onClose} side="right" title="Historique du stock" className="sm:max-w-[460px]">
       <div className="p-5">
         <p className="line-clamp-2 text-[14px] font-bold">{product?.name}</p>
         <p className="mt-1 text-[13px] text-ink-3">Stock actuel : <strong className="text-ink">{product?.stock}</strong> · seuil d&apos;alerte : {product?.stockThreshold}</p>
