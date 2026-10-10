@@ -98,6 +98,10 @@ Regrouper les envois lors d'un import CSV (un seul appel avec tous les tags).
 
 **Acceptation.** Tests : bonnes étiquettes par type de modification ; aucun envoi si la variable est vide ; écriture réussie même si Next est injoignable.
 
+**État côté front : prêt.** `POST /revalidate` est implémenté (`src/app/revalidate/route.ts`) : 401 sans le bon
+secret, 400 si le corps est invalide, 200 `{ "revalidated": [...] }` sinon. Étiquettes reconnues :
+`product:<slug>`, `category:<slug>`, `home`, `sitemap`. `FRONTEND_REVALIDATE_SECRET` (Django) = `REVALIDATE_SECRET` (front).
+
 ## P1-4 · Jeu de données et environnement pour les tests bout-en-bout (Playwright)
 
 **Quoi.**
@@ -117,6 +121,22 @@ Regrouper les envois lors d'un import CSV (un seul appel avec tous les tags).
 - **Idempotence** : `core/api/idempotency.py` existe ; vérifier qu'elle couvre bien `POST` commande, vente, paiement de
   commission, avec un test « deux envois de la même clé → une seule commande ».
 - **Erreurs** : garder `problem+json` partout (y compris 429 avec `Retry-After`), le front s'appuie sur `fieldErrors`.
+
+## Déploiement (`deploy/` du dépôt backend) · variables du conteneur front
+
+Le rendu serveur est en place côté front (fiches produit, catégories, accueil, sitemap). Le conteneur front doit recevoir
+ces variables **à l'exécution** (pas au build) :
+
+| Variable | Exemple production | Rôle |
+|---|---|---|
+| `API_INTERNAL_URL` | `http://api:8000/api/v1` | API jointe par le serveur Next sur le réseau Docker (P0-2). Vide → pas de rendu serveur, le site reste fonctionnel. |
+| `SSR_SHARED_SECRET` | secret aléatoire | Envoyé en `X-SSR-Token` ; même valeur que `SSR_SHARED_SECRET` de Django (P0-1). |
+| `SITE_URL` | `https://celebobo.com` | URL canoniques, Open Graph, sitemap, JSON-LD. |
+| `REVALIDATE_SECRET` | secret aléatoire | Protège `POST /revalidate` ; même valeur que `FRONTEND_REVALIDATE_SECRET` de Django (P1-3). |
+
+nginx doit envoyer `/revalidate`, `/sitemap.xml` et `/robots.txt` vers Next (c'est déjà le cas : tout ce qui n'est ni
+`/api` ni `/ws` va au front). **Tant que P0-1 n'est pas en place, ne pas renseigner `API_INTERNAL_URL` en production** :
+le rendu serveur passerait par la limite anonyme (60/min) et dégraderait les pages au-delà.
 
 ## Déjà vérifié (aucun changement)
 
