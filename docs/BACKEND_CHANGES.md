@@ -38,6 +38,11 @@ le secret n'apparaît dans aucune réponse ni aucun log.
 
 **Acceptation.** Depuis le conteneur front : `GET http://web:8000/api/v1/products/<slug>/` → 200 JSON (pas de 301/400).
 
+**Constaté le 10/10 sur le stack local** : depuis un conteneur front sur le réseau `celebobo-local_default`,
+`GET http://api:8000/api/v1/products/?page_size=1` → **400** (hôte `api` absent de `ALLOWED_HOSTS`). Le rendu serveur
+a été validé en contournant (conteneur front dans l'espace réseau de nginx, hôte `localhost`) : sitemap 26 produits,
+accueil 16 fiches, canonique correcte. Il ne manque donc que ce réglage côté Django.
+
 ## P0-3 · Indicateur de session lisible par le serveur Next (cookie `cb_session`)
 
 **Pourquoi.** `cb_access` (Path=/) expire au bout de 15 min et `cb_refresh` n'est envoyé que sous `/api/`.
