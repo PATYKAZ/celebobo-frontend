@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useSyncExternalStore } from "react";
+import { useEffect, useEffectEvent, useSyncExternalStore } from "react";
 import { realtime, type RealtimeHandler } from "@/shared/lib/realtime";
 
 /**
@@ -8,11 +8,11 @@ import { realtime, type RealtimeHandler } from "@/shared/lib/realtime";
  * Passer `null` comme canal désactive l'abonnement.
  */
 export function useRealtime<T = unknown>(channel: string | null, handler: RealtimeHandler<T>) {
-  const ref = useRef(handler);
-  ref.current = handler;
+  // dernière version du gestionnaire, sans se réabonner à chaque rendu
+  const onEvent = useEffectEvent((payload: T) => handler(payload));
   useEffect(() => {
     if (!channel) return;
-    return realtime.subscribe<T>(channel, (p) => ref.current(p));
+    return realtime.subscribe<T>(channel, (p) => onEvent(p));
   }, [channel]);
 }
 

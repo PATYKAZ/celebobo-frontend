@@ -34,7 +34,7 @@ export function InviteCard({ code, invitedCount }: { code: string; invitedCount?
       <Block pad="sm" className="overflow-hidden bg-[radial-gradient(120%_120%_at_0%_0%,rgba(26,186,26,.09),transparent_60%),#fff]">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <h2 className="text-[16px] font-bold leading-[22px]">Mon code d'invitation</h2>
+            <h2 className="text-[16px] font-bold leading-[22px]">Mon code d&apos;invitation</h2>
             <p className="text-[12px] text-ink-3">{invitedCount != null ? `${invitedCount} client${invitedCount > 1 ? "s" : ""} invité${invitedCount > 1 ? "s" : ""}` : "Partagez-le pour gagner des commissions"}</p>
           </div>
         </div>

@@ -5,9 +5,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
 import {
-  ArrowDown2, Bag2, Call, Heart, HamburgerMenu, Logout, Messages2, Notification, Profile, Receipt2, Setting2, User,
+  ArrowDown2, Bag2, Call, Heart, Logout, Messages2, Notification, Profile, Receipt2, Setting2, User,
 } from "iconsax-reactjs";
-import { useEffect } from "react";
 import { ROUTES } from "@/config/routes";
 import { cn } from "@/shared/lib/cn";
 import { formatPrice } from "@/shared/lib/format";
@@ -23,7 +22,6 @@ import { useFavoritesStore } from "@/modules/favorites/store/favorites.store";
 import { useUnreadNotificationsCount } from "@/modules/messaging/hooks/useNotifications";
 import { useSiteSettings } from "@/modules/site";
 import { Logo } from "./Logo";
-import { SearchBar } from "./SearchBar";
 
 const NAV = [
   { label: "Accueil", href: ROUTES.home },
@@ -133,7 +131,7 @@ function CartButton() {
 }
 
 function AccountMenu() {
-  const { user, isAuthenticated, isStaff, isAdmin } = useAuth();
+  const { user, isAuthenticated, isStaff } = useAuth();
   const logout = useLogout();
   const item = "flex items-center gap-3 rounded-md px-3 py-2.5 text-[13px] font-semibold transition-colors hover:bg-chip hover:text-primary";
 

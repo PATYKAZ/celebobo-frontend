@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import { ArrowRight2, Call, Location, Notification, Receipt2, User } from "iconsax-reactjs";
 import { ROUTES } from "@/config/routes";
-import { useEffect, useState } from "react";
+import { createElement, useEffect, useState } from "react";
 import { Breadcrumb } from "@/shared/layout/Breadcrumb";
 import { Reveal } from "@/shared/animations/Reveal";
 import { Block } from "@/shared/ui/Block";
@@ -27,10 +27,9 @@ function DefaultAddress() {
   const a = data?.find((x) => x.isDefault) ?? data?.[0];
   if (isLoading) return <Skeleton className="h-[120px] rounded-box!" />;
   if (!a) return <p className="rounded-box bg-page/60 p-4 text-[14px] text-ink-2">Aucune adresse enregistrée pour le moment.</p>;
-  const Icon = addressIcon(a.label);
   return (
     <div className="flex items-start gap-3 rounded-box border-2 border-primary bg-primary-50 p-4 sm:p-5">
-      <span className="grid size-11 shrink-0 place-items-center rounded-full bg-primary text-white"><Icon size={20} variant="Bold" /></span>
+      <span className="grid size-11 shrink-0 place-items-center rounded-full bg-primary text-white">{createElement(addressIcon(a.label), { size: 20, variant: "Bold" })}</span>
       <div className="min-w-0 flex-1">
         <p className="flex flex-wrap items-center gap-2 text-[16px] font-bold">
           {a.label}

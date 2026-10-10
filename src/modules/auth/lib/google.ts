@@ -17,6 +17,8 @@ export function startGoogleLogin(next: string) {
     state,
     prompt: "select_account",
   });
+  // URL externe (Google) : la règle ne voit pas que AUTHORIZE_URL est absolue
+  // eslint-disable-next-line @next/next/no-location-assign-relative-destination
   window.location.assign(`${AUTHORIZE_URL}?${params}`);
 }
 

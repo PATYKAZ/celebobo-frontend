@@ -7,6 +7,10 @@ type Selected = Record<string, string>;
 
 const matches = (v: ProductVariant, sel: Selected, ignore?: string) => Object.entries(sel).every(([k, val]) => k === ignore || v.attributes[k] === val);
 
+/** Références stables : un `?? []` recréé à chaque rendu invaliderait les useMemo / useCallback ci-dessous. */
+const NO_OPTIONS: NonNullable<Product["variantOptions"]> = [];
+const NO_VARIANTS: NonNullable<Product["variants"]> = [];
+
 /**
  * Sélection de variante (couleur, stockage…) pour une fiche produit.
  * - choisit par défaut la première variante en stock ;
@@ -14,8 +18,8 @@ const matches = (v: ProductVariant, sel: Selected, ignore?: string) => Object.en
  * - changer une option qui rend la combinaison indisponible bascule automatiquement les autres options vers une combinaison valide.
  */
 export function useVariantSelection(product: Product) {
-  const options = product.variantOptions ?? [];
-  const variants = product.variants ?? [];
+  const options = product.variantOptions ?? NO_OPTIONS;
+  const variants = product.variants ?? NO_VARIANTS;
   const hasVariants = options.length > 0 && variants.length > 0;
 
   const [selected, setSelected] = useState<Selected>(() => {
