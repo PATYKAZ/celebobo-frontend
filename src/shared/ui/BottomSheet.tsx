@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import { useMediaQuery } from "@/shared/hooks/useMediaQuery";
+import { useReturnFocus } from "@/shared/hooks/useReturnFocus";
 import { cn } from "@/shared/lib/cn";
 import { Dialog, DialogClose, DialogContent, DialogTitle, OverlayCloseButton } from "./shadcn/dialog";
 import { Drawer, DrawerBody, DrawerContent, DrawerHeader, DrawerTitle } from "./shadcn/drawer";
@@ -24,6 +25,7 @@ interface Props {
  */
 export function BottomSheet({ open, onClose, title, action, children, className, maxVh = 86 }: Props) {
   const desktop = useMediaQuery("(min-width: 640px)");
+  const returnFocus = useReturnFocus(open);
   const onOpenChange = (o: boolean) => {
     if (!o) onClose();
   };
@@ -34,6 +36,7 @@ export function BottomSheet({ open, onClose, title, action, children, className,
         <DialogContent
           showCloseButton={false}
           aria-describedby={undefined}
+          onCloseAutoFocus={returnFocus}
           style={{ maxHeight: `${maxVh}vh` }}
           className={cn("max-w-[560px] overflow-hidden p-0 sm:p-0", className)}
         >
@@ -54,7 +57,7 @@ export function BottomSheet({ open, onClose, title, action, children, className,
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent aria-describedby={undefined} style={{ maxHeight: `${maxVh}dvh` }} className={className}>
+      <DrawerContent aria-describedby={undefined} onCloseAutoFocus={returnFocus} style={{ maxHeight: `${maxVh}dvh` }} className={className}>
         <DrawerHeader action={action}>
           <DrawerTitle>{title}</DrawerTitle>
         </DrawerHeader>
