@@ -1,7 +1,7 @@
 "use client";
 
-import { motion, type HTMLMotionProps, type Variants } from "motion/react";
-import type { ReactNode } from "react";
+import { motion, useInView, type HTMLMotionProps, type Variants } from "motion/react";
+import { useRef, type ReactNode } from "react";
 
 type Direction = "up" | "down" | "left" | "right" | "none";
 
@@ -50,10 +50,16 @@ const item: Variants = {
   show: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] } },
 };
 
-/** Conteneur dont les enfants `<RevealItem>` apparaissent en cascade. */
+/**
+ * Conteneur dont les enfants `<RevealItem>` apparaissent en cascade.
+ * `animate` (et non `whileInView`) : une fois visible, l'état « show » est transmis aussi aux enfants montés
+ * plus tard (nouveaux résultats après un filtre, page suivante) — sinon ils restaient à opacité 0.
+ */
 export function RevealGroup({ children, stagger = 0.08, delay = 0, amount = 0.1, ...rest }: Omit<HTMLMotionProps<"div">, "children"> & { children: ReactNode; stagger?: number; delay?: number; amount?: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const seen = useInView(ref, { once: true, amount });
   return (
-    <motion.div variants={container(stagger, delay)} initial="hidden" whileInView="show" viewport={{ once: true, amount }} {...rest}>
+    <motion.div ref={ref} variants={container(stagger, delay)} initial="hidden" animate={seen ? "show" : "hidden"} {...rest}>
       {children}
     </motion.div>
   );

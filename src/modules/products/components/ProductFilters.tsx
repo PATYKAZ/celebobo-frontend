@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { cn } from "@/shared/lib/cn";
 import { formatPrice } from "@/shared/lib/format";
 import { Checkbox } from "@/shared/ui/Form";
@@ -31,8 +31,14 @@ function Group({ title, children }: { title: string; children: React.ReactNode }
 function PriceRange({ min, max, onCommit }: { min: number | null; max: number | null; onCommit: (min: number | null, max: number | null) => void }) {
   const [lo, setLo] = useState(min ?? 0);
   const [hi, setHi] = useState(max ?? PRICE_MAX);
+  // dernière valeur envoyée : son retour par l'URL ne doit pas écraser un glissement en cours
+  const sent = useRef<{ min: number | null; max: number | null } | null>(null);
 
   useEffect(() => {
+    if (sent.current && sent.current.min === min && sent.current.max === max) {
+      sent.current = null;
+      return;
+    }
     setLo(min ?? 0);
     setHi(max ?? PRICE_MAX);
   }, [min, max]);
@@ -41,7 +47,10 @@ function PriceRange({ min, max, onCommit }: { min: number | null; max: number | 
     const id = setTimeout(() => {
       const nMin = lo > 0 ? lo : null;
       const nMax = hi < PRICE_MAX ? hi : null;
-      if (nMin !== min || nMax !== max) onCommit(nMin, nMax);
+      if (nMin !== min || nMax !== max) {
+        sent.current = { min: nMin, max: nMax };
+        onCommit(nMin, nMax);
+      }
     }, 400);
     return () => clearTimeout(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps

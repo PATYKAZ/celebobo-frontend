@@ -53,7 +53,7 @@ export function Pagination({ page, pageCount, onChange, className }: Props) {
           p === "…" ? (
             <span key={`e${i}`} className="px-1 text-ink-3">…</span>
           ) : (
-            <button key={p} onClick={() => onChange(p)} aria-current={p === page ? "page" : undefined} className={cn(base, p === page ? "bg-primary text-white" : "hover:bg-chip")}>
+            <button key={p} onClick={() => onChange(p)} aria-label={`Page ${p}`} aria-current={p === page ? "page" : undefined} className={cn(base, p === page ? "bg-primary text-white" : "hover:bg-chip")}>
               {p}
             </button>
           ),
