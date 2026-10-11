@@ -7,6 +7,21 @@ Ces deux évolutions exigent les changements ci-dessous. Chaque point indique *p
 
 Priorités : **P0** = bloquant pour la mise en production du rendu serveur · **P1** = nécessaire au bout-en-bout · **P2** = amélioration.
 
+> **État au 11/10/2026 : tout est livré** (branche backend `feat/ssr-support`, fusionnée) **et branché côté front**,
+> vérifié sur le stack Docker local :
+>
+> | Point | Côté front |
+> |---|---|
+> | P0-1 / P0-2 | Rendu serveur actif avec `API_INTERNAL_URL` + `X-SSR-Token` |
+> | P0-3 | `src/proxy.ts` : redirections avant rendu, testées pour les 4 rôles et après déconnexion |
+> | P1-1 | Titre / description SEO prioritaires dans les métadonnées, éditables dans les formulaires produit et catégorie ; devise du JSON-LD lue dans `/settings/public/` |
+> | P1-2 | `sitemap.xml` construit depuis `GET /sitemap/` (avec `lastmod`) |
+> | P1-3 | Modification back-office → webhook → `POST /revalidate` → page régénérée en ~5 s |
+> | P2 | Cœurs des cartes via `GET /me/favorites/ids/` ; page Favoris passée à la liste paginée (corrige un bug : l'enveloppe paginée était traitée comme un tableau) |
+>
+> En local, `REVALIDATE_SECRET` et `SSR_SHARED_SECRET` de `.env.local` doivent valoir `FRONTEND_REVALIDATE_SECRET` et
+> `SSR_SHARED_SECRET` du conteneur API, sinon le webhook reçoit 401.
+
 ---
 
 ## P0-1 · Limitation de débit : le rendu serveur ne doit pas épuiser le quota anonyme
@@ -140,8 +155,8 @@ ces variables **à l'exécution** (pas au build) :
 | `REVALIDATE_SECRET` | secret aléatoire | Protège `POST /revalidate` ; même valeur que `FRONTEND_REVALIDATE_SECRET` de Django (P1-3). |
 
 nginx doit envoyer `/revalidate`, `/sitemap.xml` et `/robots.txt` vers Next (c'est déjà le cas : tout ce qui n'est ni
-`/api` ni `/ws` va au front). **Tant que P0-1 n'est pas en place, ne pas renseigner `API_INTERNAL_URL` en production** :
-le rendu serveur passerait par la limite anonyme (60/min) et dégraderait les pages au-delà.
+`/api` ni `/ws` va au front). P0-1 étant livré, `API_INTERNAL_URL` peut être renseignée en production, **avec**
+`SSR_SHARED_SECRET` : sans le jeton, le rendu serveur retomberait sous la limite anonyme (60/min).
 
 ## Déjà vérifié (aucun changement)
 
