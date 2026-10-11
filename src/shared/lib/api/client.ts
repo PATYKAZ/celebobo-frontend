@@ -9,6 +9,8 @@ export interface RequestOptions extends Omit<RequestInit, "body" | "method"> {
   params?: Query;
   /** Désactive la conversion camelCase/snake_case du corps (rare). */
   raw?: boolean;
+  /** Délai maximal propre à cette requête (défaut 25 s) — ex. l'assistant, dont le modèle peut chercher plusieurs fois. */
+  timeoutMs?: number;
 }
 
 const CSRF_PATH = "/auth/csrf/";
@@ -85,7 +87,7 @@ function refreshSession(): Promise<RefreshOutcome> {
 }
 
 async function send(method: string, path: string, body: unknown, opts: RequestOptions): Promise<Response> {
-  const { params, raw, headers, signal, ...init } = opts;
+  const { params, raw, headers, signal, timeoutMs = REQUEST_TIMEOUT_MS, ...init } = opts;
   const isForm = typeof FormData !== "undefined" && body instanceof FormData;
   const finalHeaders = new Headers(headers);
   finalHeaders.set("Accept", "application/json");
@@ -95,7 +97,7 @@ async function send(method: string, path: string, body: unknown, opts: RequestOp
     const csrf = getCookie(env.CSRF_COOKIE);
     if (csrf) finalHeaders.set("X-CSRFToken", csrf);
   }
-  const timeout = AbortSignal.timeout(REQUEST_TIMEOUT_MS);
+  const timeout = AbortSignal.timeout(timeoutMs);
   try {
     return await fetch(`${env.API_URL}${path}${buildQuery(params)}`, {
       method,

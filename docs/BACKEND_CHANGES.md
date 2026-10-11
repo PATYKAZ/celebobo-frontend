@@ -142,6 +142,34 @@ secret, 400 si le corps est invalide, 200 `{ "revalidated": [...] }` sinon. Éti
   commission, avec un test « deux envois de la même clé → une seule commande ».
 - **Erreurs** : garder `problem+json` partout (y compris 429 avec `Retry-After`), le front s'appuie sur `fieldErrors`.
 
+## A-1 · Assistant : réponses hors sujet (diagnostic du 11/10/2026)
+
+**Symptôme.** À « un smartphone Samsung à moins de 400 $ », l'assistant propose un Galaxy S24 à 899 $, des
+écouteurs et une Nintendo Switch ; à « quels sont les délais de livraison ? », la même liste de produits, toujours
+avec la phrase fixe « Voici ce que je vous propose : … ».
+
+**Cause : configuration backend.** Le conteneur API tourne avec `ASSISTANT_PROVIDER=offline` et une
+`GEMINI_API_KEY` vide. L'adaptateur `offline` (`apps/assistant/adapters/offline.py`) est un bouchon de test :
+recherche par empreinte de mots (hachage), sans compréhension du sens, qui transmet la question brute à l'outil de
+recherche (ni catégorie ni prix maximum) et répond par un gabarit. Le vrai modèle (`gemini`) appelle la même
+recherche avec `category` et `max_price` : le problème disparaît dès qu'il est activé.
+
+**À faire (backend / déploiement)**
+1. Renseigner `GEMINI_API_KEY` et `ASSISTANT_PROVIDER=gemini` (production et, pour tester, `deploy/.env.local`).
+2. Réindexer le catalogue après le changement de fournisseur : `POST /api/v1/bo/embeddings/reindex/` (les vecteurs
+   actuels viennent de l'empreinte hors ligne et ne sont pas comparables à ceux de Gemini ; l'empreinte de contenu
+   inclut le nom du moteur, la réindexation les recalcule tous).
+3. Échouer au démarrage si `ASSISTANT_PROVIDER=gemini` sans clé : aujourd'hui chaque message lèverait une erreur
+   (500) et l'utilisateur ne verrait que « problème technique ».
+4. Recommandé : que le bouchon `offline` réponde « assistant indisponible » plutôt que des produits au hasard, s'il
+   peut être actif ailleurs qu'en test.
+
+**Critères d'acceptation** : la question « Samsung à moins de 400 $ » ne renvoie que des produits Samsung ≤ 400 $
+(ou dit qu'il n'y en a pas) ; une question sur la livraison obtient une réponse sur la livraison, sans cartes produits.
+
+**Côté front (corrigé)** : historique effacé à l'ouverture en plein écran ou au rechargement ; délai de 25 s qui
+aurait coupé les réponses longues du vrai modèle (porté à 90 s ; nginx en accorde 120).
+
 ## Déploiement (`deploy/` du dépôt backend) · variables du conteneur front
 
 Le rendu serveur est en place côté front (fiches produit, catégories, accueil, sitemap). Le conteneur front doit recevoir

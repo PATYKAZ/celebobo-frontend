@@ -17,7 +17,9 @@ export const assistantService = {
   },
 
   async ask(sessionId: string, content: string): Promise<AssistantReply> {
-    const res = await api.post<ReplyDto>(ENDPOINTS.assistant.messages(sessionId), { content }, { params: { stream: false } });
+    // le modèle peut appeler la recherche produits jusqu'à 2 fois (≤ 30 s chacune côté serveur) ;
+    // nginx accorde 120 s à l'assistant : 25 s par défaut couperait des réponses en cours
+    const res = await api.post<ReplyDto>(ENDPOINTS.assistant.messages(sessionId), { content }, { params: { stream: false }, timeoutMs: 90_000 });
     if (res.error && !res.content) throw new ApiError(502, res.error.detail, res.error);
     return { reply: res.content, products: res.products.map(toProduct) };
   },
