@@ -7,7 +7,7 @@ import { Reveal } from "@/shared/animations/Reveal";
 import { Block } from "@/shared/ui/Block";
 import { Tabs } from "@/shared/ui/Tabs";
 import Link from "next/link";
-import { ArrowRight2 } from "iconsax-reactjs";
+import { ArrowRight2 } from "@/shared/ui/icons";
 import { useProducts } from "@/modules/products/hooks/useProducts";
 import type { ProductListParams } from "@/modules/products/types";
 import type { HomeCatalog } from "../types";

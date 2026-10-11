@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowDown2, Category2, Clock, CloseCircle, SearchNormal1, Trash } from "iconsax-reactjs";
+import { ArrowDown2, Category2, Clock, CloseCircle, SearchNormal1, Trash } from "@/shared/ui/icons";
 import { Fragment, useEffect, useId, useMemo, useRef, useState, type FormEvent, type KeyboardEvent, type ReactNode } from "react";
 import { ROUTES } from "@/config/routes";
 import { cn } from "@/shared/lib/cn";

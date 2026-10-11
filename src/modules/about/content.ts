@@ -1,4 +1,4 @@
-import { Award, Box, Headphone, People, ShieldTick, TruckFast } from "iconsax-reactjs";
+import { Award, Box, Headphone, People, ShieldTick, TruckFast } from "@/shared/ui/icons";
 
 /** Textes de mise en page de « À propos » (l'histoire et les engagements viennent de la page `a-propos` du back-office). */
 export const STATS = [

@@ -1,6 +1,6 @@
 "use client";
 
-import { Bag2, Heart } from "iconsax-reactjs";
+import { Bag2, Heart } from "@/shared/ui/icons";
 import { AnimatePresence, motion } from "motion/react";
 import { ROUTES } from "@/config/routes";
 import { Breadcrumb } from "@/shared/layout/Breadcrumb";

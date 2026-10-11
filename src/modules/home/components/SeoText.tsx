@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "motion/react";
-import { ArrowDown2 } from "iconsax-reactjs";
+import { ArrowDown2 } from "@/shared/ui/icons";
 import { Reveal } from "@/shared/animations/Reveal";
 import { Block } from "@/shared/ui/Block";
 

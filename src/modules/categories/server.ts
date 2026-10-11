@@ -10,6 +10,12 @@ import type { Category } from "./types";
 /** Étiquette de cache Next d'une catégorie (revalidation à la demande, cf. BACKEND_CHANGES P1-3). */
 export const categoryTag = (slug: string) => `category:${slug}`;
 
+/** Liste des catégories (menu de l'en-tête, filtres) ; `null` si l'API ne répond pas. */
+export const loadCategories = cache(async (): Promise<Category[] | null> => {
+  const res = await serverGet<CategoryDto[]>(ENDPOINTS.categories.list, { revalidate: 300, tags: ["categories"] });
+  return res.ok ? res.data.map(toCategory) : null;
+});
+
 /** Catégorie côté serveur, une requête par rendu ; `category: null` → chargement navigateur comme avant. */
 export const loadCategory = cache(async (slug: string): Promise<{ category: Category | null; notFound: boolean }> => {
   const res = await serverGet<CategoryDto>(ENDPOINTS.categories.detail(slug), { revalidate: 300, tags: [categoryTag(slug)] });

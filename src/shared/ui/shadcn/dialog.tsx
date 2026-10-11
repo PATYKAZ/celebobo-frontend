@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { CloseCircle } from "iconsax-reactjs"
+import { CloseCircle } from "@/shared/ui/icons"
 import { Dialog as DialogPrimitive } from "radix-ui"
 
 import { cn } from "@/shared/lib/cn"

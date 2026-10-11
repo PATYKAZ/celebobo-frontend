@@ -1,6 +1,6 @@
 "use client";
 
-import { Key, Lock, Trash } from "iconsax-reactjs";
+import { Key, Lock, Trash } from "@/shared/ui/icons";
 import { useState, type FormEvent } from "react";
 import { getErrorMessage } from "@/shared/lib/api";
 import { Button } from "@/shared/ui/Button";

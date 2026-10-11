@@ -1,6 +1,6 @@
 "use client";
 
-import { Gift, InfoCircle, Messages2, ShieldTick } from "iconsax-reactjs";
+import { Gift, InfoCircle, Messages2, ShieldTick } from "@/shared/ui/icons";
 import type { ReactNode } from "react";
 import { CountUp } from "@/shared/animations/CountUp";
 import { formatPrice } from "@/shared/lib/format";

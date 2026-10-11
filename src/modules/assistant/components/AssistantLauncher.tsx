@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { AnimatePresence, animate, motion, useMotionValue } from "motion/react";
-import { ArrowDown2, MagicStar } from "iconsax-reactjs";
+import { ArrowDown2, MagicStar } from "@/shared/ui/icons";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "@/shared/lib/cn";
 import { BottomSheet } from "@/shared/ui/BottomSheet";

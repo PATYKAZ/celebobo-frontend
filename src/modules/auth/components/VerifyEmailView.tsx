@@ -1,6 +1,6 @@
 "use client";
 
-import { CloseCircle, TickCircle } from "iconsax-reactjs";
+import { CloseCircle, TickCircle } from "@/shared/ui/icons";
 import { useEffect, useRef } from "react";
 import { ROUTES } from "@/config/routes";
 import { getErrorMessage } from "@/shared/lib/api";

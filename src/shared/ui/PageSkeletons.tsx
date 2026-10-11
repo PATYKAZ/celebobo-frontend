@@ -300,3 +300,31 @@ export function HomeSkeleton() {
     </SkeletonRoot>
   );
 }
+
+/** Carte d'authentification (connexion, inscription, mot de passe) : bandeau mobile + formulaire, image ≥ lg. */
+export function AuthCardSkeleton({ fields = 2 }: { fields?: number }) {
+  return (
+    <SkeletonRoot>
+      <BreadcrumbSkeleton />
+      <Block pad="none" className="overflow-hidden">
+        <Skeleton className="h-[132px] w-full rounded-none! sm:h-[170px] lg:hidden" />
+        <div className="grid lg:grid-cols-[1fr_1.05fr]">
+          <div className="mx-auto flex w-full min-w-0 max-w-[520px] flex-col gap-4 px-4 py-6 sm:px-10 sm:py-14">
+            <Skeleton className="h-8 w-40" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="mb-2 h-4 w-3/4" />
+            {Array.from({ length: fields }, (_, i) => (
+              <div key={i} className="flex flex-col gap-2">
+                <Skeleton className="h-3.5 w-20" />
+                <Skeleton className="h-12 w-full rounded-box sm:h-[45px]" />
+              </div>
+            ))}
+            <Skeleton className="mt-2 h-12 w-full rounded-box" />
+            <Skeleton className="mx-auto mt-4 h-5 w-56" />
+          </div>
+          <Skeleton className="hidden min-h-[560px] rounded-none! lg:block" />
+        </div>
+      </Block>
+    </SkeletonRoot>
+  );
+}

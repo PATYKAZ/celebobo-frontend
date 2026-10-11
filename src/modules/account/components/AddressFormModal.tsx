@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Call, Location, Map1, User } from "iconsax-reactjs";
+import { Call, Location, Map1, User } from "@/shared/ui/icons";
 import { getErrorMessage, ApiError } from "@/shared/lib/api";
 import { Button } from "@/shared/ui/Button";
 import { Checkbox, Input, Select } from "@/shared/ui/Form";

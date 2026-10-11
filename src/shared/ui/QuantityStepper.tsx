@@ -1,6 +1,6 @@
 "use client";
 
-import { Add, Minus } from "iconsax-reactjs";
+import { Add, Minus } from "@/shared/ui/icons";
 import { cn } from "@/shared/lib/cn";
 
 interface Props {

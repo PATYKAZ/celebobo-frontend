@@ -21,7 +21,7 @@ interface Props {
 function Group({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="border-b border-line-3 py-5 first:pt-0 last:border-0">
-      <h3 className="mb-3 text-[14px] font-bold uppercase leading-[21px]">{title}</h3>
+      <h2 className="mb-3 text-[14px] font-bold uppercase leading-[21px]">{title}</h2>
       {children}
     </section>
   );

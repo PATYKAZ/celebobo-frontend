@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
-import { Location } from "iconsax-reactjs";
+import { Location } from "@/shared/ui/icons";
 import { SITE } from "@/config/site";
 import { useSiteSettings } from "@/modules/site";
 

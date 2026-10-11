@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "motion/react";
-import { Bag2, CloseCircle, Heart, TickCircle } from "iconsax-reactjs";
+import { Bag2, CloseCircle, Heart, TickCircle } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import { cn } from "@/shared/lib/cn";
 import { formatPrice } from "@/shared/lib/format";
@@ -71,7 +71,7 @@ export function ProductCard({ product, className, priority }: Props) {
           aria-label={fav ? "Retirer des favoris" : "Ajouter aux favoris"}
           aria-pressed={fav}
           onClick={() => toggle(product.id, product.name)}
-          className="absolute right-1 top-1 grid size-9 place-items-center rounded-full bg-white/90 text-ink-3 backdrop-blur-sm transition-colors hover:bg-danger-100 hover:text-danger active:scale-90 sm:right-0 sm:top-0 sm:size-[30px] sm:bg-page"
+          className="touch-target absolute right-1 top-1 grid size-9 place-items-center rounded-full bg-white/90 text-ink-3 backdrop-blur-sm transition-colors hover:bg-danger-100 hover:text-danger active:scale-90 sm:right-0 sm:top-0 sm:size-[30px] sm:bg-page"
         >
           <motion.span key={String(fav)} initial={{ scale: 0.4 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 500, damping: 12 }} className="grid">
             <Heart size={15} variant={fav ? "Bold" : "Linear"} color={fav ? "#C4261D" : "currentColor"} />
@@ -91,7 +91,7 @@ export function ProductCard({ product, className, priority }: Props) {
           onClick={() => add(product)}
           disabled={!product.inStock}
           aria-label="Ajouter au panier"
-          className="absolute bottom-1.5 right-1.5 grid size-10 place-items-center rounded-full bg-primary text-white shadow-[0_4px_14px_rgba(34,109,104,.45)] transition-transform active:scale-90 disabled:bg-ink-3 disabled:shadow-none sm:hidden"
+          className="touch-target absolute bottom-1.5 right-1.5 grid size-10 place-items-center rounded-full bg-primary text-white shadow-[0_4px_14px_rgba(34,109,104,.45)] transition-transform active:scale-90 disabled:bg-ink-3 disabled:shadow-none sm:hidden"
         >
           <Bag2 size={18} variant="Bold" />
         </button>

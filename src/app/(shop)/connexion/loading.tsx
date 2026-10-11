@@ -1,5 +1,5 @@
-import { FormPageSkeleton } from "@/shared/ui/PageSkeletons";
+import { AuthCardSkeleton } from "@/shared/ui/PageSkeletons";
 
 export default function Loading() {
-  return <FormPageSkeleton fields={2} />;
+  return <AuthCardSkeleton />;
 }

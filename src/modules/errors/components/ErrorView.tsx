@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
-import { Danger, Refresh2 } from "iconsax-reactjs";
+import { Danger, Refresh2 } from "@/shared/ui/icons";
 import { useEffect } from "react";
 import { ROUTES } from "@/config/routes";
 import { Logo } from "@/shared/layout/Logo";

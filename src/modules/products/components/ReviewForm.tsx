@@ -1,6 +1,6 @@
 "use client";
 
-import { Star1, TickCircle } from "iconsax-reactjs";
+import { Star1, TickCircle } from "@/shared/ui/icons";
 import { useState, type FormEvent } from "react";
 import { ROUTES } from "@/config/routes";
 import { cn } from "@/shared/lib/cn";

@@ -1,6 +1,6 @@
 "use client";
 
-import { Call, Lock, Profile as ProfileIcon, UserTick } from "iconsax-reactjs";
+import { Call, Lock, Profile as ProfileIcon, UserTick } from "@/shared/ui/icons";
 import { useEffect, useState, type FormEvent } from "react";
 import { Button } from "@/shared/ui/Button";
 import { Input } from "@/shared/ui/Form";

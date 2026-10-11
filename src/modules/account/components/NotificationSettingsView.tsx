@@ -1,6 +1,6 @@
 "use client";
 
-import { Devices, Monitor, Mobile, Notification, NotificationBing, Sms, Trash } from "iconsax-reactjs";
+import { Devices, Monitor, Mobile, Notification, NotificationBing, Sms, Trash } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import { Reveal } from "@/shared/animations/Reveal";
 import { Breadcrumb } from "@/shared/layout/Breadcrumb";

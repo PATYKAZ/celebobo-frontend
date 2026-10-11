@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import { TickCircle } from "iconsax-reactjs";
+import { TickCircle } from "@/shared/ui/icons";
 import { useState } from "react";
 import { Tabs } from "@/shared/ui/Tabs";
 import { useProductReviews } from "../hooks/useProducts";

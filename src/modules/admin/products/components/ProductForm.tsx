@@ -2,7 +2,7 @@
 
 
 import { useMemo, useState, type KeyboardEvent, type ReactNode } from "react";
-import { Add, CloseCircle } from "iconsax-reactjs";
+import { Add, CloseCircle } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import { ApiError, getErrorMessage } from "@/shared/lib/api";
 import { cn } from "@/shared/lib/cn";
@@ -180,7 +180,7 @@ export function ProductForm({ product }: Props) {
             {v.features.map((f) => (
               <li key={f} className="inline-flex min-h-9 items-center gap-1 rounded-full bg-primary-50 py-0.5 pl-3.5 pr-1 text-[13px] font-medium text-primary-dark">
                 {f}
-                <button type="button" aria-label={`Retirer ${f}`} onClick={() => set("features", v.features.filter((x) => x !== f))} className="grid size-8 place-items-center rounded-full text-primary-dark/60 hover:text-danger active:scale-90"><CloseCircle size={17} variant="Bold" /></button>
+                <button type="button" aria-label={`Retirer ${f}`} onClick={() => set("features", v.features.filter((x) => x !== f))} className="touch-target relative grid size-8 place-items-center rounded-full text-primary-dark/60 hover:text-danger active:scale-90"><CloseCircle size={17} variant="Bold" /></button>
               </li>
             ))}
           </ul>

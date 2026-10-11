@@ -8,15 +8,14 @@ import "./globals.css";
 /**
  * Alibaba Sans (Latin W1G) — gratuite y compris en usage commercial (fonts.alibabagroup.com), auto-hébergée.
  * Pas de SemiBold dans la famille : la Medium couvre 500–600 pour que `font-semibold` reste distinct de `font-bold`.
+ * 4 fichiers réduits au latin (français, Latin étendu A) : ~83 Ko au lieu de 277 Ko pour 6 graisses complètes.
  */
 const alibabaSans = localFont({
   src: [
-    { path: "./fonts/alibaba-sans/AlibabaSans-Light.woff2", weight: "300", style: "normal" },
-    { path: "./fonts/alibaba-sans/AlibabaSans-Regular.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/alibaba-sans/AlibabaSans-Regular.woff2", weight: "300 400", style: "normal" },
     { path: "./fonts/alibaba-sans/AlibabaSans-Medium.woff2", weight: "500 600", style: "normal" },
     { path: "./fonts/alibaba-sans/AlibabaSans-Bold.woff2", weight: "700", style: "normal" },
-    { path: "./fonts/alibaba-sans/AlibabaSans-Heavy.woff2", weight: "800", style: "normal" },
-    { path: "./fonts/alibaba-sans/AlibabaSans-Black.woff2", weight: "900", style: "normal" },
+    { path: "./fonts/alibaba-sans/AlibabaSans-Heavy.woff2", weight: "800 900", style: "normal" },
   ],
   variable: "--font-alibaba",
   display: "swap",

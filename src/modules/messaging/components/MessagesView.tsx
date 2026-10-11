@@ -1,6 +1,6 @@
 "use client";
 
-import { Messages3 } from "iconsax-reactjs";
+import { Messages3 } from "@/shared/ui/icons";
 import { useCallback, useEffect, useState } from "react";
 import { ROUTES } from "@/config/routes";
 import { Breadcrumb } from "@/shared/layout/Breadcrumb";

@@ -1,4 +1,4 @@
-import { MoneyRecive } from "iconsax-reactjs";
+import { MoneyRecive } from "@/shared/ui/icons";
 import { RevealGroup, RevealItem } from "@/shared/animations/Reveal";
 import { formatDateTime, formatPrice } from "@/shared/lib/format";
 import type { CommissionPayment } from "../types";

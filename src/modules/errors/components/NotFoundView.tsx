@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { motion } from "motion/react";
-import { SearchNormal1 } from "iconsax-reactjs";
+import { SearchNormal1 } from "@/shared/ui/icons";
 import { useState, type FormEvent } from "react";
 import { ROUTES } from "@/config/routes";
 import { Float } from "@/shared/animations/MotionImage";

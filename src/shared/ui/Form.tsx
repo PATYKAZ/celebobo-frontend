@@ -1,7 +1,7 @@
 "use client";
 
 import { forwardRef, useId, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttributes, type TextareaHTMLAttributes } from "react";
-import { ArrowDown2, Eye, EyeSlash } from "iconsax-reactjs";
+import { ArrowDown2, Eye, EyeSlash } from "@/shared/ui/icons";
 import { useState } from "react";
 import { cn } from "@/shared/lib/cn";
 

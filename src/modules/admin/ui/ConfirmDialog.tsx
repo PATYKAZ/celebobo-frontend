@@ -1,6 +1,6 @@
 "use client";
 
-import { Warning2 } from "iconsax-reactjs";
+import { Warning2 } from "@/shared/ui/icons";
 import { useReturnFocus } from "@/shared/hooks/useReturnFocus";
 import { Button } from "@/shared/ui/Button";
 import {

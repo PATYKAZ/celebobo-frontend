@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { Bag2, Call, DocumentText, Heart, Home2, InfoCircle, Location, Login, Logout, MagicStar, Messages2, Notification, People, Profile, Receipt2, Setting2, Shop, TruckFast, UserAdd } from "iconsax-reactjs";
+import { Bag2, Call, DocumentText, Heart, Home2, InfoCircle, Location, Login, Logout, MagicStar, Messages2, Notification, People, Profile, Receipt2, Setting2, Shop, TruckFast, UserAdd } from "@/shared/ui/icons";
 import { useMemo, useState } from "react";
 import { ROUTES } from "@/config/routes";
 import { MoreSheet, type MoreSection } from "@/shared/ui/MoreSheet";

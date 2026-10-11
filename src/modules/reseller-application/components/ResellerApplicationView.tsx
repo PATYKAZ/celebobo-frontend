@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowDown2, Award, Chart2, Messages2, People, Share, Wallet3 } from "iconsax-reactjs";
+import { ArrowDown2, Award, Chart2, Messages2, People, Share, Wallet3 } from "@/shared/ui/icons";
 import { useState } from "react";
 import { Reveal, RevealGroup, RevealItem } from "@/shared/animations/Reveal";
 import { CountUp } from "@/shared/animations/CountUp";

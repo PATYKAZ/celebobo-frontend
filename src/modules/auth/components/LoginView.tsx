@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Lock, Profile } from "iconsax-reactjs";
+import { Lock, Profile } from "@/shared/ui/icons";
 import { useState, type FormEvent } from "react";
 import { ROUTES } from "@/config/routes";
 import { Breadcrumb } from "@/shared/layout/Breadcrumb";

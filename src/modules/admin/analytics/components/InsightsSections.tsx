@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { motion } from "motion/react";
-import { Clock } from "iconsax-reactjs";
+import { Clock } from "@/shared/ui/icons";
 import { formatCompact, formatPrice } from "@/shared/lib/format";
 import { Avatar } from "@/shared/ui/Avatar";
 import { Pill } from "@/shared/ui/Badges";

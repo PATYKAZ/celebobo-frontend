@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Copy, Wallet3 } from "iconsax-reactjs";
+import { Copy, Wallet3 } from "@/shared/ui/icons";
 import { useEffect, useState } from "react";
 import { ROUTES } from "@/config/routes";
 import { RevealGroup, RevealItem } from "@/shared/animations/Reveal";

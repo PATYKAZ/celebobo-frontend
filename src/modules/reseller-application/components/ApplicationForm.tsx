@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import { Call, Location, Sms, TickCircle, User } from "iconsax-reactjs";
+import { Call, Location, Sms, TickCircle, User } from "@/shared/ui/icons";
 import { useState, type FormEvent } from "react";
 import { ROUTES } from "@/config/routes";
 import { ApiError, getErrorMessage } from "@/shared/lib/api";

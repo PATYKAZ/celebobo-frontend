@@ -1,6 +1,6 @@
 "use client";
 
-import { Bag2, Chart2, MoneyRecive, ShoppingCart } from "iconsax-reactjs";
+import { Bag2, Chart2, MoneyRecive, ShoppingCart } from "@/shared/ui/icons";
 import { useState } from "react";
 import { formatCompact, formatPrice } from "@/shared/lib/format";
 import { Select } from "@/shared/ui/Form";

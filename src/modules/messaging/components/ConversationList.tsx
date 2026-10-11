@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import { Add, Filter, Messages2, SearchNormal1, TickCircle } from "iconsax-reactjs";
+import { Add, Filter, Messages2, SearchNormal1, TickCircle } from "@/shared/ui/icons";
 import { useMemo, useState } from "react";
 import { cn } from "@/shared/lib/cn";
 import { BottomSheet } from "@/shared/ui/BottomSheet";

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowDown2, ArrowLeft, ArrowRight, Bag2, Send2 } from "iconsax-reactjs";
+import { ArrowDown2, ArrowLeft, ArrowRight, Bag2, Send2 } from "@/shared/ui/icons";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { ROUTES } from "@/config/routes";
@@ -182,6 +182,7 @@ function Content() {
   if (isEmpty) {
     return (
       <Block>
+        <h1 className="sr-only">Finaliser la commande</h1>
         <EmptyState icon={<Bag2 size={46} variant="Bulk" />} title="Rien à commander" description="Votre panier est vide." action={<Button href={ROUTES.products}>Voir les produits</Button>} />
       </Block>
     );

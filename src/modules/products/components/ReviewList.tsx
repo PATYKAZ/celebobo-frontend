@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import { TickCircle } from "iconsax-reactjs";
+import { TickCircle } from "@/shared/ui/icons";
 import { formatRelative } from "@/shared/lib/format";
 import { Avatar } from "@/shared/ui/Avatar";
 import { Skeleton } from "@/shared/ui/Skeleton";

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useScroll, useSpring } from "motion/react";
-import { Box, Messages2, ShoppingCart, TruckFast, Wallet3 } from "iconsax-reactjs";
+import { Box, Messages2, ShoppingCart, TruckFast, Wallet3 } from "@/shared/ui/icons";
 import { useRef } from "react";
 import { ROUTES } from "@/config/routes";
 import { Reveal, RevealGroup, RevealItem } from "@/shared/animations/Reveal";

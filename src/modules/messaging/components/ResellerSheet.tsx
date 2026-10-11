@@ -1,6 +1,6 @@
 "use client";
 
-import { SearchNormal1, TickCircle } from "iconsax-reactjs";
+import { SearchNormal1, TickCircle } from "@/shared/ui/icons";
 import { useMemo, useState } from "react";
 import { cn } from "@/shared/lib/cn";
 import { Avatar } from "@/shared/ui/Avatar";

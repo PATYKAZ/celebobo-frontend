@@ -5,6 +5,7 @@ import { ENDPOINTS } from "@/config/endpoints";
 import { SITE } from "@/config/site";
 import { siteUrl } from "@/config/site-url";
 import { serverGet } from "@/shared/lib/api/server";
+import { loadSettings } from "@/modules/site/server";
 import { toProduct, type ProductDetailDto } from "./services/products.mapper";
 import type { Product } from "./types";
 import { getPricing } from "./utils";
@@ -20,12 +21,6 @@ export const loadProduct = cache(async (slug: string): Promise<{ product: Produc
   const res = await serverGet<ProductDetailDto>(ENDPOINTS.products.detail(slug), { tags: [productTag(slug)] });
   if (res.ok) return { product: toProduct(res.data), notFound: false };
   return { product: null, notFound: res.status === 404 };
-});
-
-/** Devise de la boutique (`GET /settings/public/`), USD si l'API ne répond pas. */
-const loadCurrency = cache(async (): Promise<string> => {
-  const res = await serverGet<{ currency?: string }>(ENDPOINTS.site.settings, { revalidate: 3600, tags: ["settings"] });
-  return (res.ok && res.data.currency) || "USD";
 });
 
 const excerpt = (text: string, max = 158) => (text.length > max ? `${text.slice(0, max - 1).trimEnd()}…` : text);
@@ -49,7 +44,7 @@ export function productMetadata(product: Product): Metadata {
 /** Données structurées schema.org/Product (résultats enrichis : prix, disponibilité, note). */
 export async function ProductJsonLd({ product }: { product: Product }) {
   const url = `${siteUrl()}/produits/${product.slug}`;
-  const priceCurrency = await loadCurrency();
+  const priceCurrency = (await loadSettings())?.currency ?? "USD";
   const { current } = getPricing(product);
   const data = {
     "@context": "https://schema.org",

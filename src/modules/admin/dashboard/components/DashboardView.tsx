@@ -1,6 +1,6 @@
 "use client";
 
-import { Bag2, Calendar, Chart2, Clock, DocumentDownload, MoneyRecive, ShoppingCart, TrendUp } from "iconsax-reactjs";
+import { Bag2, Calendar, Chart2, Clock, DocumentDownload, MoneyRecive, ShoppingCart, TrendUp } from "@/shared/ui/icons";
 import { useState } from "react";
 import { ROUTES } from "@/config/routes";
 import { Button } from "@/shared/ui/Button";

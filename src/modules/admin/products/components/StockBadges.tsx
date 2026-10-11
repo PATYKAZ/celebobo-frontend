@@ -1,4 +1,4 @@
-import { Clock, Danger } from "iconsax-reactjs";
+import { Clock, Danger } from "@/shared/ui/icons";
 import { cn } from "@/shared/lib/cn";
 import { formatDate } from "@/shared/lib/format";
 import { Pill } from "@/shared/ui/Badges";

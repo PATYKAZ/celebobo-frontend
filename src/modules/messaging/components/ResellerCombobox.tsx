@@ -31,6 +31,7 @@ export function ResellerCombobox({ options, value, onChange, label = "Assigner Ã
     <Combobox
       className={className}
       label={label}
+      ariaLabel="Choisir un revendeur"
       items={list}
       getKey={(o) => String(o.id)}
       selectedKey={value}

@@ -1,6 +1,6 @@
 "use client";
 
-import { Copy, Crown, People, SearchNormal1, UserAdd } from "iconsax-reactjs";
+import { Copy, Crown, People, SearchNormal1, UserAdd } from "@/shared/ui/icons";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useDebounce } from "@/shared/hooks/useDebounce";

@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import { Add, Briefcase, Call, Edit2, Home2, Location, Trash, User, Star1 } from "iconsax-reactjs";
+import { Add, Briefcase, Call, Edit2, Home2, Location, Trash, User, Star1 } from "@/shared/ui/icons";
 import { useState } from "react";
 import { ROUTES } from "@/config/routes";
 import { Breadcrumb } from "@/shared/layout/Breadcrumb";

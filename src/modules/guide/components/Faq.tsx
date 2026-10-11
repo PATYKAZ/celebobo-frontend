@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import { Add } from "iconsax-reactjs";
+import { Add } from "@/shared/ui/icons";
 import { useState } from "react";
 import { cn } from "@/shared/lib/cn";
 import { Skeleton } from "@/shared/ui/Skeleton";

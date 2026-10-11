@@ -1,6 +1,6 @@
 "use client";
 
-import { SearchStatus } from "iconsax-reactjs";
+import { SearchStatus } from "@/shared/ui/icons";
 import { AnimatePresence } from "motion/react";
 import { useState, type ReactNode } from "react";
 import { RevealGroup, RevealItem } from "@/shared/animations/Reveal";

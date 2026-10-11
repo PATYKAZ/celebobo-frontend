@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { InfoCircle, Lock, SearchNormal1, TickCircle } from "iconsax-reactjs";
+import { InfoCircle, Lock, SearchNormal1, TickCircle } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import { cn } from "@/shared/lib/cn";
 import { formatDate, formatPrice } from "@/shared/lib/format";

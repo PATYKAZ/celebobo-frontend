@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import { Notification as BellIcon, TickSquare } from "iconsax-reactjs";
+import { Notification as BellIcon, TickSquare } from "@/shared/ui/icons";
 import { useState } from "react";
 import { Breadcrumb } from "@/shared/layout/Breadcrumb";
 import { Block } from "@/shared/ui/Block";

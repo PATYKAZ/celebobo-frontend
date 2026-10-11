@@ -2,7 +2,7 @@
 
 
 import { useState, type FormEvent } from "react";
-import { Add, Trash } from "iconsax-reactjs";
+import { Add, Trash } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import { formatPrice } from "@/shared/lib/format";
 import { getErrorMessage } from "@/shared/lib/api";

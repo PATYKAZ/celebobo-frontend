@@ -75,7 +75,7 @@ export function Tabs<T extends string>({ tabs, value, onChange, variant = "title
           <ToggleGroup.Item
             key={t.value}
             value={t.value}
-            className={cn("relative shrink-0 snap-center whitespace-nowrap py-2 text-[15px] uppercase leading-[22px] transition-all sm:py-0 sm:pb-1 sm:text-tab", t.value === value ? "font-semibold" : "opacity-60 hover:opacity-100")}
+            className={cn("relative min-h-11 shrink-0 snap-center whitespace-nowrap text-[15px] uppercase leading-[22px] transition-all sm:min-h-0 sm:py-0 sm:pb-1 sm:text-tab", t.value === value ? "font-semibold" : "opacity-60 hover:opacity-100")}
           >
             {t.label}
             {t.value === value && <motion.span layoutId={`tab-${id}`} className="absolute inset-x-0 -bottom-0.5 h-[3px] rounded-full bg-primary" transition={{ type: "spring", stiffness: 400, damping: 32 }} />}

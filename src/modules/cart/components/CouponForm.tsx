@@ -1,6 +1,6 @@
 "use client";
 
-import { CloseCircle, TicketDiscount } from "iconsax-reactjs";
+import { CloseCircle, TicketDiscount } from "@/shared/ui/icons";
 import { useState, type FormEvent } from "react";
 import { getErrorMessage } from "@/shared/lib/api";
 import { Button } from "@/shared/ui/Button";

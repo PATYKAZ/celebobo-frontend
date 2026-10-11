@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowUp2 } from "iconsax-reactjs";
+import { ArrowUp2 } from "@/shared/ui/icons";
 import { useEffect, useState } from "react";
 
 export function ScrollTop() {

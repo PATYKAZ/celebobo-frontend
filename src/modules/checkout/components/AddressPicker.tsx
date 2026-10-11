@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import { Add, Call, Location, Map1, TickCircle, TruckFast, User } from "iconsax-reactjs";
+import { Add, Call, Location, Map1, TickCircle, TruckFast, User } from "@/shared/ui/icons";
 import { cn } from "@/shared/lib/cn";
 import { formatPrice } from "@/shared/lib/format";
 import { Checkbox, Input, Select } from "@/shared/ui/Form";

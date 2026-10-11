@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { useState, type ReactNode } from "react";
-import { ArrowLeft2, Call, Convert, Location, MessageText1, Note, Sms, User, Wallet3 } from "iconsax-reactjs";
+import { ArrowLeft2, Call, Convert, Location, MessageText1, Note, Sms, User, Wallet3 } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import { formatDateTime, formatPrice, formatRelative } from "@/shared/lib/format";
 import { Reveal } from "@/shared/animations/Reveal";

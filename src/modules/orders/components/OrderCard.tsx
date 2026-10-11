@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowDown2, ArrowRight2, Messages2, Profile } from "iconsax-reactjs";
+import { ArrowDown2, ArrowRight2, Messages2, Profile } from "@/shared/ui/icons";
 import { useState } from "react";
 import { ROUTES } from "@/config/routes";
 import { cn } from "@/shared/lib/cn";

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
-import { CloseCircle, Money3, TickCircle, Timer1 } from "iconsax-reactjs";
+import { CloseCircle, Money3, TickCircle, Timer1 } from "@/shared/ui/icons";
 import { cn } from "@/shared/lib/cn";
 import { formatPrice } from "@/shared/lib/format";
 import { toast } from "@/shared/ui/Toast";

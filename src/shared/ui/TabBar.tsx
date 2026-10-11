@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
-import { More, type Icon } from "iconsax-reactjs";
+import { More, type Icon } from "@/shared/ui/icons";
 import { useEffect, useId } from "react";
 import { cn } from "@/shared/lib/cn";
 

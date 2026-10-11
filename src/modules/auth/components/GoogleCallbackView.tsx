@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { CloseCircle } from "iconsax-reactjs";
+import { CloseCircle } from "@/shared/ui/icons";
 import { useEffect, useRef, useState } from "react";
 import { ROUTES } from "@/config/routes";
 import { getErrorMessage } from "@/shared/lib/api";

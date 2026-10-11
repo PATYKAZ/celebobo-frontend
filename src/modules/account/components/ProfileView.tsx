@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
-import { ArrowRight2, Call, Location, Notification, Receipt2, User } from "iconsax-reactjs";
+import { ArrowRight2, Call, Location, Notification, Receipt2, User } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import { createElement, useEffect, useState } from "react";
 import { Breadcrumb } from "@/shared/layout/Breadcrumb";

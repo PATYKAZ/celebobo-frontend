@@ -1,7 +1,7 @@
 "use client";
 
 
-import { Bag2, CloseCircle, Heart, Refresh2, ShieldTick, TickCircle, Truck } from "iconsax-reactjs";
+import { Bag2, CloseCircle, Heart, Refresh2, ShieldTick, TickCircle, Truck } from "@/shared/ui/icons";
 import { useEffect } from "react";
 import { ROUTES } from "@/config/routes";
 import { cn } from "@/shared/lib/cn";
@@ -60,7 +60,7 @@ export function ProductInfo({ product, selection, qty, onQtyChange }: { product:
 
       <div className="mt-3 flex flex-wrap items-center gap-3">
         <Stars rating={product.rating} count={product.reviewsCount} size={15} />
-        <a href="#avis" className="text-[13px] text-ink-2 underline-offset-2 hover:text-primary hover:underline">Voir les avis</a>
+        <a href="#avis" className="touch-target relative text-[13px] text-ink-2 underline-offset-2 hover:text-primary hover:underline">Voir les avis</a>
       </div>
 
       <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 border-y border-line-3 py-4 sm:mt-5 sm:py-5">

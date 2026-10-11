@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft2, ArrowRight2 } from "iconsax-reactjs";
+import { ArrowLeft2, ArrowRight2 } from "@/shared/ui/icons";
 import { cn } from "@/shared/lib/cn";
 
 interface Props {

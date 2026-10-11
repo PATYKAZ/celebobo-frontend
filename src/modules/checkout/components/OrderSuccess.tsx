@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { motion } from "motion/react";
-import { ArrowRight, Messages2, Receipt2 } from "iconsax-reactjs";
+import { ArrowRight, Messages2, Receipt2 } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import { formatPrice, pluralize } from "@/shared/lib/format";
 import { Block } from "@/shared/ui/Block";

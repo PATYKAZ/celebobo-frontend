@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { Gallery, Trash } from "iconsax-reactjs";
+import { Gallery, Trash } from "@/shared/ui/icons";
 import { cn } from "@/shared/lib/cn";
 import type { ImageSlotValue } from "../types";
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
-import { Bag2, Messages2, ShieldTick, Truck } from "iconsax-reactjs";
+import { Bag2, Messages2, ShieldTick, Truck } from "@/shared/ui/icons";
 import type { ReactNode } from "react";
 import { KenBurnsImage } from "@/shared/animations/MotionImage";
 import { Reveal } from "@/shared/animations/Reveal";
@@ -32,7 +32,7 @@ export function AuthLayoutCard({ title, subtitle, image, headline, children, foo
         <div className="absolute inset-0 bg-linear-to-t from-black/85 via-black/30 to-primary/30" />
         <div className="absolute inset-x-0 bottom-0 p-4 text-white sm:p-6">
           <p className="max-w-[320px] text-[18px] font-bold leading-[23px] sm:max-w-[420px] sm:text-[22px] sm:leading-[28px]">{headline}</p>
-          <ul className="no-scrollbar mt-2 flex gap-2 overflow-x-auto">
+          <ul className="mt-2 flex flex-wrap gap-1.5">
             {BENEFITS.map(({ icon: Icon, short, label }) => (
               <li key={label} className="flex shrink-0 items-center gap-1.5 rounded-full bg-white/20 py-1 pl-1.5 pr-2.5 text-[11px] font-semibold backdrop-blur-sm">
                 <Icon size={13} variant="Bold" /> {short}

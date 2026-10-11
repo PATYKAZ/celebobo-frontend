@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { AnimatePresence, motion } from "motion/react";
-import { Bag2, Maximize4 } from "iconsax-reactjs";
+import { Bag2, Maximize4 } from "@/shared/ui/icons";
 import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { cn } from "@/shared/lib/cn";
 import { NewBadge, SaveBadge } from "@/shared/ui/Badges";

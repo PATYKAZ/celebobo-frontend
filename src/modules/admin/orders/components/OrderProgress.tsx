@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
-import { TickCircle } from "iconsax-reactjs";
+import { TickCircle } from "@/shared/ui/icons";
 import { cn } from "@/shared/lib/cn";
 import { formatDateTime } from "@/shared/lib/format";
 import { ORDER_FLOW, ORDER_STATUS_LABEL, type Order } from "@/modules/orders/types";

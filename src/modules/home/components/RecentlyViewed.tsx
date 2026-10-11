@@ -4,7 +4,7 @@ import "swiper/css";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { Heart } from "iconsax-reactjs";
+import { Heart } from "@/shared/ui/icons";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { Swiper as SwiperType } from "swiper";
 import { ROUTES } from "@/config/routes";

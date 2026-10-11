@@ -1,6 +1,6 @@
 "use client";
 
-import { Add, Bag2, Box1, Minus } from "iconsax-reactjs";
+import { Add, Bag2, Box1, Minus } from "@/shared/ui/icons";
 import { useEffect, useState } from "react";
 import { ROUTES } from "@/config/routes";
 import { Breadcrumb } from "@/shared/layout/Breadcrumb";

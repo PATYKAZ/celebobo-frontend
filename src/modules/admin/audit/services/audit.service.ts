@@ -10,9 +10,10 @@ export const auditService = {
     return api.get<ObjectTypeDto[]>(audit.objectTypes);
   },
 
-  async list(params: AuditListParams = {}): Promise<AuditResponse> {
+  /** `loadTypes` : libellés des types d'éléments, fournis par le cache de la requête dédiée (cf. useAuditLog). */
+  async list(params: AuditListParams, loadTypes: () => Promise<ObjectTypeDto[]>): Promise<AuditResponse> {
     const [types, page] = await Promise.all([
-      auditService.objectTypes(),
+      loadTypes(),
       api.page<ChangeDto>(audit.list, {
         params: {
           search: params.search || undefined,

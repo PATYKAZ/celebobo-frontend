@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState, type MouseEvent } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { Add, RecordCircle } from "iconsax-reactjs";
+import { Add, RecordCircle } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import { CountUp } from "@/shared/animations/CountUp";
 import { Reveal } from "@/shared/animations/Reveal";

@@ -1,6 +1,6 @@
 "use client";
 
-import { Lock, ReceiptItem } from "iconsax-reactjs";
+import { Lock, ReceiptItem } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import { Button, type ButtonVariant } from "@/shared/ui/Button";
 import { useCan } from "@/modules/auth/hooks/useCan";

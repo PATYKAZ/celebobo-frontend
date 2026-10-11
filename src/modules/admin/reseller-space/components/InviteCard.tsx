@@ -1,7 +1,7 @@
 "use client";
 
 import { QRCodeSVG } from "qrcode.react";
-import { Copy, Link21, Whatsapp } from "iconsax-reactjs";
+import { Copy, Link21, Whatsapp } from "@/shared/ui/icons";
 import { useEffect, useState } from "react";
 import { ROUTES } from "@/config/routes";
 import { Reveal } from "@/shared/animations/Reveal";

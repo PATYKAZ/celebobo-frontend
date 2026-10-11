@@ -16,7 +16,7 @@ export function EmptyState({ icon, title, description, action, className }: Prop
         <span className="absolute inset-0 animate-pulse-ring rounded-full bg-primary/15" />
         <span className="animate-float">{icon}</span>
       </div>
-      <h3 className="mt-2 text-[18px] leading-[26px] sm:text-[20px] sm:leading-[28px]">{title}</h3>
+      <h2 className="mt-2 text-[18px] leading-[26px] sm:text-[20px] sm:leading-[28px]">{title}</h2>
       {description && <p className="max-w-[420px] text-[14px] leading-[22px] text-ink-2">{description}</p>}
       {action && <div className="mt-3">{action}</div>}
     </div>

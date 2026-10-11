@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { ShieldTick } from "iconsax-reactjs";
+import { ShieldTick } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import { CountUp } from "@/shared/animations/CountUp";
 import { Float, ParallaxImage, TiltCard } from "@/shared/animations/MotionImage";

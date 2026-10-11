@@ -1,6 +1,6 @@
 "use client";
 
-import { Copy, Link21, Share, Whatsapp } from "iconsax-reactjs";
+import { Copy, Link21, Share, Whatsapp } from "@/shared/ui/icons";
 import { Popover } from "@/shared/ui/Popover";
 import { toast } from "@/shared/ui/Toast";
 

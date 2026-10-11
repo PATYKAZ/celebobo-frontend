@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "motion/react";
 import { useMediaQuery } from "@/shared/hooks/useMediaQuery";
-import { Trash } from "iconsax-reactjs";
+import { Trash } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import { formatPrice } from "@/shared/lib/format";
 import { Price } from "@/shared/ui/Price";

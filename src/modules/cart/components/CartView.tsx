@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence } from "motion/react";
-import { ArrowLeft, ArrowRight, Bag2, Trash } from "iconsax-reactjs";
+import { ArrowLeft, ArrowRight, Bag2, Trash } from "@/shared/ui/icons";
 import { useState } from "react";
 import { ROUTES } from "@/config/routes";
 import { Breadcrumb } from "@/shared/layout/Breadcrumb";
@@ -33,6 +33,7 @@ export function CartView() {
         <CartLayoutSkeleton breadcrumb={false} />
       ) : isEmpty ? (
         <Block>
+          <h1 className="sr-only">Mon panier</h1>
           <EmptyState
             icon={<Bag2 size={46} variant="Bulk" />}
             title="Votre panier est vide"

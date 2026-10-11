@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
-import { Maximize4, MagicStar, Refresh2, Send2 } from "iconsax-reactjs";
+import { Maximize4, MagicStar, Refresh2, Send2 } from "@/shared/ui/icons";
 import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 import { ROUTES } from "@/config/routes";
 import { cn } from "@/shared/lib/cn";

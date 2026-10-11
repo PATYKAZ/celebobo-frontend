@@ -1,4 +1,4 @@
-import { Star1 } from "iconsax-reactjs";
+import { Star1 } from "@/shared/ui/icons";
 import { cn } from "@/shared/lib/cn";
 
 interface Props {

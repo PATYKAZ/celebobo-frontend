@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
 import { Suspense, useEffect, useState } from "react";
-import { Add, ArrowSwapVertical, Box, DocumentDownload, DocumentUpload, Edit2, Eye, EyeSlash, Filter, Refresh2, Star1, Tag, Trash, Warning2, Wallet3, Clock } from "iconsax-reactjs";
+import { Add, ArrowSwapVertical, Box, DocumentDownload, DocumentUpload, Edit2, Eye, EyeSlash, Filter, Refresh2, Star1, Tag, Trash, Warning2, Wallet3, Clock } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import { cn } from "@/shared/lib/cn";
 import { formatDate, formatPrice } from "@/shared/lib/format";

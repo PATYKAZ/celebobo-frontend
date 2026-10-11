@@ -8,7 +8,7 @@ import { motion, type Variants } from "motion/react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
-import { ArrowLeft2, ArrowRight2, RecordCircle } from "iconsax-reactjs";
+import { ArrowLeft2, ArrowRight2, RecordCircle } from "@/shared/ui/icons";
 import { cn } from "@/shared/lib/cn";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import type { HeroSlide } from "../types";
@@ -117,7 +117,7 @@ export function HeroSlider({ slides, className }: { slides?: HeroSlide[]; classN
       {/* mobile : points (zone tactile 24 px) */}
       <div className="absolute inset-x-0 bottom-3 z-20 flex justify-center gap-0.5 sm:hidden">
         {slides.map((s, i) => (
-          <button key={s.id} aria-label={`Slide ${i + 1}`} aria-current={i === index} onClick={() => swiper?.slideToLoop(i)} className="grid h-6 w-6 place-items-center">
+          <button key={s.id} aria-label={`Slide ${i + 1}`} aria-current={i === index} onClick={() => swiper?.slideToLoop(i)} className="touch-target relative grid h-6 w-6 place-items-center">
             <span className={cn("h-2 rounded-full bg-white transition-all duration-300", i === index ? "w-6 opacity-100" : "w-2 opacity-50")} />
           </button>
         ))}

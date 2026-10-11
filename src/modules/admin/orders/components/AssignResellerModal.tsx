@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import { SearchNormal1, TickCircle } from "iconsax-reactjs";
+import { SearchNormal1, TickCircle } from "@/shared/ui/icons";
 import { useEffect, useMemo, useState } from "react";
 import { cn } from "@/shared/lib/cn";
 import { getErrorMessage } from "@/shared/lib/api";

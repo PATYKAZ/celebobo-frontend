@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
 import {
   ArrowDown2, Bag2, Call, Heart, Logout, Messages2, Notification, Profile, Receipt2, Setting2, User,
-} from "iconsax-reactjs";
+} from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import { cn } from "@/shared/lib/cn";
 import { formatPrice } from "@/shared/lib/format";

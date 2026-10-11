@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Eye, Messages2, SearchNormal1, UserAdd, UserTick } from "iconsax-reactjs";
+import { Eye, Messages2, SearchNormal1, UserAdd, UserTick } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import { formatDate, formatPrice } from "@/shared/lib/format";
 import { useDebounce } from "@/shared/hooks/useDebounce";

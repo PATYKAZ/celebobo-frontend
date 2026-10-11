@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Star1 } from "iconsax-reactjs";
+import { Star1 } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import { Float, ParallaxImage } from "@/shared/animations/MotionImage";
 import { Reveal } from "@/shared/animations/Reveal";

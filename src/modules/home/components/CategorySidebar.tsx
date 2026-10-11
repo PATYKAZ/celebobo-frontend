@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "motion/react";
-import { ArrowRight2, Flash } from "iconsax-reactjs";
+import { ArrowRight2, Flash } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { CategoryIcon } from "@/modules/categories/components/CategoryIcon";

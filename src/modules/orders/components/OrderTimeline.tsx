@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
-import { BoxTick, CloseCircle, Refresh2, TickCircle, Timer1, TruckFast, UserTick, Wallet3, type Icon } from "iconsax-reactjs";
+import { BoxTick, CloseCircle, Refresh2, TickCircle, Timer1, TruckFast, UserTick, Wallet3, type Icon } from "@/shared/ui/icons";
 import { cn } from "@/shared/lib/cn";
 import { formatDateTime } from "@/shared/lib/format";
 import { ORDER_FLOW, ORDER_STATUS_LABEL, type Order, type OrderStatus, type OrderStatusEvent } from "../types";

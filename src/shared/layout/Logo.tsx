@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Bag2 } from "iconsax-reactjs";
+import { Bag2 } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import { SITE } from "@/config/site";
 import { cn } from "@/shared/lib/cn";

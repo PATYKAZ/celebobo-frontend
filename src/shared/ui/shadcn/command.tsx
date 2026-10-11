@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { Command as CommandPrimitive } from "cmdk"
-import { SearchNormal1 } from "iconsax-reactjs"
+import { SearchNormal1 } from "@/shared/ui/icons"
 
 import { cn } from "@/shared/lib/cn"
 

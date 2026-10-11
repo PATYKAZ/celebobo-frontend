@@ -29,6 +29,7 @@ export function ProductCombobox({ value, onChange, error, label, compact }: Prop
   return (
     <Combobox
       label={label}
+      ariaLabel="Choisir un produit"
       required={!!label}
       error={error}
       items={data?.results ?? []}

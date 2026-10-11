@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight2, Crown, Messages2, Notification } from "iconsax-reactjs";
+import { ArrowRight2, Crown, Messages2, Notification } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import { RevealGroup, RevealItem } from "@/shared/animations/Reveal";
 import { formatCompact, formatDateTime, formatPrice, formatRelative } from "@/shared/lib/format";

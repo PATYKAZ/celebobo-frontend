@@ -1,4 +1,4 @@
-import { Box, Category2, Chart2, DocumentText, Element3, Messages2, MoneyRecive, Notification, People, Profile2User, Share, Wallet3, type Icon } from "iconsax-reactjs";
+import { Box, Category2, Chart2, DocumentText, Element3, Messages2, MoneyRecive, Notification, People, Profile2User, Share, Wallet3, type Icon } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import type { Permission } from "@/modules/auth/permissions";
 import type { UserRole } from "@/modules/auth/types";

@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { motion } from "motion/react";
 import { useState, type ReactNode } from "react";
-import { ArrowSwapVertical, Chart2, Clock, Edit2, MoneyRecive, Refresh2, Shop, Trash } from "iconsax-reactjs";
+import { ArrowSwapVertical, Chart2, Clock, Edit2, MoneyRecive, Refresh2, Shop, Trash } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import { cn } from "@/shared/lib/cn";
 import { formatDate, formatPrice } from "@/shared/lib/format";
