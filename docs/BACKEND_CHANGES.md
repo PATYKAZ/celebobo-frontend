@@ -193,6 +193,12 @@ indisponible ». La limite applicative (12 messages/min par utilisateur) ne prot
 Côté front (fait) : message du serveur affiché + bouton « Réessayer » ; réponses en Markdown mises en forme
 (gras, italique, listes) au lieu des astérisques.
 
+Relevé du 11/10/2026 au soir : le palier gratuit a aussi un **quota journalier** —
+`GenerateRequestsPerDayPerProjectPerModel-FreeTier`, **20 requêtes par jour** (≈ 10 questions pour tout le site).
+Une fois atteint, l'assistant reste indisponible jusqu'au lendemain. Facturation Google indispensable avant la mise
+en ligne. Le commit de journalisation (`03fad8f`) n'était pas encore dans l'image du conteneur API : reconstruire
+l'image pour voir le statut Gemini dans les logs.
+
 ## A-2 · Zone de service : Bukavu et Goma d'abord, pas Kinshasa (11/10/2026)
 
 La boutique sert d'abord **Bukavu et Goma**, puis leurs environs, puis le reste du pays. Le front ne contient plus
@@ -222,6 +228,14 @@ Aussi : `docs/business/*`, `README.md`, et 33 occurrences dans les tests.
 (responsable et admin, `/bo/shipping-zones/`) ; taux USD → FC, coordonnées dont l'adresse, horaires, moyens de
 paiement, réseaux, newsletter (admin seul, `/bo/settings/`). L'adresse et les zones se corrigent donc sans
 développeur ; il reste à les saisir (adresse réelle, zones Bukavu / Goma / environs / reste du pays).
+
+## A-3 · Étiquettes de revalidation des réglages (corrigé côté front, 11/10/2026)
+
+Quand les réglages du site changent, Django revalide l'étiquette `home` ; le front mettait les réglages en cache
+sous `settings` (30 min) : un nouveau taux du franc n'apparaissait qu'à l'expiration. Le front étiquette désormais
+réglages et catégories `settings`/`categories` **et** `home` (cache 5 min en secours) ; côté navigateur, réglages
+considérés à jour 60 s. Vérifié : taux 2300 → 2400 → 2300 visible sur la boutique en 6 s.
+Si Django ajoute un jour une étiquette dédiée (`settings`), le front la gère déjà.
 
 ## Déploiement (`deploy/` du dépôt backend) · variables du conteneur front
 

@@ -12,7 +12,8 @@ export const categoryTag = (slug: string) => `category:${slug}`;
 
 /** Liste des catégories (menu de l'en-tête, filtres) ; `null` si l'API ne répond pas. */
 export const loadCategories = cache(async (): Promise<Category[] | null> => {
-  const res = await serverGet<CategoryDto[]>(ENDPOINTS.categories.list, { revalidate: 300, tags: ["categories"] });
+  // Django revalide « home » à chaque modification de catégorie
+  const res = await serverGet<CategoryDto[]>(ENDPOINTS.categories.list, { revalidate: 300, tags: ["categories", "home"] });
   return res.ok ? res.data.map(toCategory) : null;
 });
 

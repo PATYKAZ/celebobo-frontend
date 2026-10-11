@@ -12,6 +12,7 @@ import type { SiteSettings } from "../types";
  * de `SITE` tant que l'API n'a pas répondu.
  */
 export function useSiteSettings(): SiteSettings {
-  const { data } = useQuery({ queryKey: siteKeys.settings, queryFn: siteService.settings, staleTime: 30 * 60_000 });
+  // 60 s, comme le cache HTTP de l'API : un nouveau taux du franc s'affiche dans la minute
+  const { data } = useQuery({ queryKey: siteKeys.settings, queryFn: siteService.settings, staleTime: 60_000, refetchOnWindowFocus: true });
   return useHydrationSafe(siteKeys.settings, data) ?? FALLBACK_SETTINGS;
 }
