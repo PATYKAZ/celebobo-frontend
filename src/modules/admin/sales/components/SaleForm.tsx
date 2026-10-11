@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+
 import { useEffect, useState, type FormEvent } from "react";
 import { ROUTES } from "@/config/routes";
 import { formatPrice } from "@/shared/lib/format";
@@ -17,12 +17,13 @@ import { useSaveSale } from "../hooks/useSales";
 import { METHOD_STYLE, type PaymentMethod, type Sale } from "../types";
 import { fieldErrorsOf, todayStr, toDateInput } from "../utils";
 import { ProductCombobox } from "./ProductCombobox";
+import { useAppRouter } from "@/shared/hooks/useAppRouter";
 
 const METHOD_OPTIONS = (Object.keys(METHOD_STYLE) as PaymentMethod[]).map((m) => ({ value: m, label: METHOD_STYLE[m].label }));
 
 /** Vente unique : création ou modification (date de la vente, quantité, prix final, moyen de paiement, « vendu à »). */
 export function SaleForm({ sale }: { sale?: Sale }) {
-  const router = useRouter();
+  const router = useAppRouter();
   const save = useSaveSale(sale?.id ?? null);
   const { data: existing } = useAdminProduct(sale?.productId);
   const [product, setProduct] = useState<Product | null>(null);

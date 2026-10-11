@@ -9,7 +9,6 @@ import { formatPrice } from "@/shared/lib/format";
 import { Block } from "@/shared/ui/Block";
 import { Button } from "@/shared/ui/Button";
 import { EmptyState } from "@/shared/ui/EmptyState";
-import { Skeleton } from "@/shared/ui/Skeleton";
 import { useCart } from "@/modules/cart/hooks/useCart";
 import { useProduct, useProductReviews, useRelatedProducts } from "../hooks/useProducts";
 import { useVariantSelection } from "../hooks/useVariantSelection";
@@ -20,6 +19,7 @@ import { ProductGallery } from "./ProductGallery";
 import { ProductInfo } from "./ProductInfo";
 import { ProductTabs } from "./ProductTabs";
 import { RelatedProducts } from "./RelatedProducts";
+import { ProductDetailSkeleton } from "@/shared/ui/PageSkeletons";
 
 /** Contenu de la fiche (monté une fois le produit chargé : la sélection de variante dépend du produit). */
 function ProductContent({ product }: { product: Product }) {
@@ -93,23 +93,7 @@ export function ProductDetailView({ slug }: { slug: string }) {
   useProductReviews(slug);
   useRelatedProducts(slug);
 
-  if (isLoading) {
-    return (
-      <>
-        <Breadcrumb items={[{ label: "Produits", href: ROUTES.products }, { label: "…" }]} />
-        <Block pad="none" className="grid gap-5 p-3 sm:gap-8 sm:p-[30px] lg:grid-cols-2">
-          <Skeleton className="aspect-square w-full rounded-box" />
-          <div className="flex flex-col gap-4">
-            <Skeleton className="h-4 w-24" />
-            <Skeleton className="h-9 w-full" />
-            <Skeleton className="h-6 w-40" />
-            <Skeleton className="h-12 w-48" />
-            <Skeleton className="h-24 w-full" />
-          </div>
-        </Block>
-      </>
-    );
-  }
+  if (isLoading) return <ProductDetailSkeleton />;
 
   if (isError || !product) {
     return (

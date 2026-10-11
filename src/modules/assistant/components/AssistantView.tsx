@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowLeft2, Cpu, MagicStar, Refresh2, Send2 } from "iconsax-reactjs";
-import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 import { ROUTES } from "@/config/routes";
 import { Breadcrumb } from "@/shared/layout/Breadcrumb";
@@ -17,6 +16,7 @@ import type { Product } from "@/modules/products/types";
 import { useAssistant } from "../hooks/useAssistant";
 import { SUGGESTIONS } from "../types";
 import { StreamedText } from "./StreamedText";
+import { useAppRouter } from "@/shared/hooks/useAppRouter";
 
 export function BotAvatar() {
   return (
@@ -65,7 +65,7 @@ function useVisualViewport(enabled: boolean) {
 }
 
 export function AssistantView() {
-  const router = useRouter();
+  const router = useAppRouter();
   const mobile = useMediaQuery("(max-width: 1023px)");
   const vv = useVisualViewport(mobile);
   const { messages, loading, send, reset } = useAssistant();

@@ -10,6 +10,7 @@ import { AuthGuard } from "@/modules/auth/components/AuthGuard";
 import { useVisualViewport } from "../hooks/useVisualViewport";
 import { ChatWindow } from "./ChatWindow";
 import { ConversationList } from "./ConversationList";
+import { MessagesSkeleton } from "@/shared/ui/PageSkeletons";
 
 interface Props {
   initialId?: number | null;
@@ -81,7 +82,7 @@ export function MessagesView({ initialId = null, embedded }: Props) {
   );
 
   return (
-    <AuthGuard>
+    <AuthGuard fallback={<MessagesSkeleton />}>
       {!embedded && (
         <div className="hidden lg:block">
           <Breadcrumb items={[{ label: "Messages", href: activeId ? ROUTES.messages : undefined }, ...(activeId ? [{ label: `Discussion #${activeId}` }] : [])]} />

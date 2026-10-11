@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ROUTES } from "@/config/routes";
 import { setSessionProbe, setUnauthorizedHandler } from "@/shared/lib/api";
 import { authService } from "../services/auth.service";
 import { useAuthStore } from "../store/auth.store";
 import type { LoginInput, RegisterInput, ResetPasswordInput, UserRole } from "../types";
+import { useAppRouter } from "@/shared/hooks/useAppRouter";
 
 /** État d'authentification + helpers de rôle. */
 export function useAuth() {
@@ -96,7 +96,7 @@ export function useResetPassword() {
 export function useLogout() {
   const setUser = useAuthStore((s) => s.setUser);
   const qc = useQueryClient();
-  const router = useRouter();
+  const router = useAppRouter();
   return useMutation({
     mutationFn: () => authService.logout(),
     onSettled: () => {

@@ -14,7 +14,6 @@ import { Block } from "@/shared/ui/Block";
 import { BottomSheet } from "@/shared/ui/BottomSheet";
 import { Button } from "@/shared/ui/Button";
 import { EmptyState } from "@/shared/ui/EmptyState";
-import { Skeleton } from "@/shared/ui/Skeleton";
 import { Textarea } from "@/shared/ui/Form";
 import { toast } from "@/shared/ui/Toast";
 import { useAddresses, useSaveAddress } from "@/modules/account/hooks/useAddressBook";
@@ -35,6 +34,7 @@ import { AddressPicker } from "./AddressPicker";
 import { CheckoutStepper } from "./CheckoutStepper";
 import { OrderSuccess } from "./OrderSuccess";
 import { PaymentMethodCards } from "./PaymentMethodCards";
+import { CartLayoutSkeleton } from "@/shared/ui/PageSkeletons";
 
 type Errors = Partial<Record<keyof CheckoutForm, string>>;
 
@@ -176,12 +176,7 @@ function Content() {
   if (done) return <OrderSuccess order={done.order} conversationId={done.conversationId} />;
 
   if (isEmpty && cartLoading) {
-    return (
-      <Block>
-        <Skeleton className="h-8 w-60" />
-        <Skeleton className="mt-6 h-40 w-full" />
-      </Block>
-    );
+    return <CartLayoutSkeleton label="Chargement de la commande" lines={2} breadcrumb={false} />;
   }
 
   if (isEmpty) {
@@ -304,7 +299,7 @@ export function CheckoutView() {
   return (
     <>
       <Breadcrumb items={[{ label: "Panier", href: ROUTES.cart }, { label: "Commande" }]} />
-      <AuthGuard>
+      <AuthGuard fallback={<CartLayoutSkeleton label="Chargement de la commande" lines={2} breadcrumb={false} />}>
         <Content />
       </AuthGuard>
     </>

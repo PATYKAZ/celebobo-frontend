@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
 import { SearchNormal1 } from "iconsax-reactjs";
 import { useState, type FormEvent } from "react";
@@ -9,10 +8,11 @@ import { ROUTES } from "@/config/routes";
 import { Float } from "@/shared/animations/MotionImage";
 import { Logo } from "@/shared/layout/Logo";
 import { Button } from "@/shared/ui/Button";
+import { useAppRouter } from "@/shared/hooks/useAppRouter";
 
 /** Page 404 autonome (rendue hors ShopShell) : gros « 404 » animé, produit flottant, recherche. */
 export function NotFoundView() {
-  const router = useRouter();
+  const router = useAppRouter();
   const [q, setQ] = useState("");
   const submit = (e: FormEvent) => {
     e.preventDefault();

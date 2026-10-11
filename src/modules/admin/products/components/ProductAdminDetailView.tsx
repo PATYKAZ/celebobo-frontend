@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
 import { useState, type ReactNode } from "react";
 import { ArrowSwapVertical, Chart2, Clock, Edit2, MoneyRecive, Refresh2, Shop, Trash } from "iconsax-reactjs";
@@ -26,9 +25,10 @@ import { deadlineState } from "../types";
 import { DeadlineBadge, StockPill } from "./StockBadges";
 import { StockAdjustModal } from "./StockAdjustModal";
 import { StockHistoryDrawer } from "./StockHistoryDrawer";
+import { useAppRouter } from "@/shared/hooks/useAppRouter";
 
 function Content({ id }: { id: number }) {
-  const router = useRouter();
+  const router = useAppRouter();
   const { data: p, isLoading, isError } = useAdminProduct(id);
   const { data: st } = useProductSalesStats(id);
   const { data: reviews } = useAdminProductReviews(id);

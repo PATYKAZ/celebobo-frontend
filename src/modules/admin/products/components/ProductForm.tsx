@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+
 import { useMemo, useState, type KeyboardEvent, type ReactNode } from "react";
 import { Add, CloseCircle } from "iconsax-reactjs";
 import { ROUTES } from "@/config/routes";
@@ -21,6 +21,7 @@ import {
 } from "../types";
 import { ImageSlot } from "./ImageSlot";
 import { VariantsEditor } from "./VariantsEditor";
+import { useAppRouter } from "@/shared/hooks/useAppRouter";
 
 function Section({ title, hint, children, delay = 0 }: { title: string; hint?: string; children: ReactNode; delay?: number }) {
   return (
@@ -45,7 +46,7 @@ interface Props {
 }
 
 export function ProductForm({ product }: Props) {
-  const router = useRouter();
+  const router = useAppRouter();
   const { data: categories } = useCategories();
   const save = useSaveProduct(product?.id ?? null);
 

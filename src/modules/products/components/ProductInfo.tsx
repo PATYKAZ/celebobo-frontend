@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+
 import { Bag2, CloseCircle, Heart, Refresh2, ShieldTick, TickCircle, Truck } from "iconsax-reactjs";
 import { useEffect } from "react";
 import { ROUTES } from "@/config/routes";
@@ -17,6 +17,7 @@ import type { VariantSelection } from "../hooks/useVariantSelection";
 import type { Product } from "../types";
 import { getPricing } from "../utils";
 import { ProductShareMenu } from "./ProductShareMenu";
+import { useAppRouter } from "@/shared/hooks/useAppRouter";
 
 const TRUST = [
   { icon: Truck, title: "Livraison rapide", text: "24–48 h à Kinshasa" },
@@ -33,7 +34,7 @@ function stockLabel(stock: number, threshold: number) {
 }
 
 export function ProductInfo({ product, selection, qty, onQtyChange }: { product: Product; selection: VariantSelection; qty: number; onQtyChange: (n: number) => void }) {
-  const router = useRouter();
+  const router = useAppRouter();
   const { add } = useCart();
   const { isFavorite, toggle } = useFavoriteToggle();
   const base = getPricing(product);

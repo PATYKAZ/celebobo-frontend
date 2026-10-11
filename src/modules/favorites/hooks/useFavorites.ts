@@ -1,13 +1,13 @@
 "use client";
 
 import { useCallback, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { useInfiniteQuery, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ROUTES } from "@/config/routes";
 import { toast } from "@/shared/ui/Toast";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
 import { favoritesService } from "../services/favorites.service";
 import { useFavoritesStore } from "../store/favorites.store";
+import { useAppRouter } from "@/shared/hooks/useAppRouter";
 
 const favoritesKeys = {
   all: (userId?: number) => ["favorites", userId] as const,
@@ -37,7 +37,7 @@ function useFavoriteIds() {
 
 /** Bascule optimiste d'un favori ; redirige vers la connexion si l'utilisateur est anonyme. */
 export function useFavoriteToggle() {
-  const router = useRouter();
+  const router = useAppRouter();
   const qc = useQueryClient();
   const { user } = useAuth();
   const ids = useFavoritesStore((s) => s.ids);

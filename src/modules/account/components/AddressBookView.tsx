@@ -18,6 +18,7 @@ import { ConfirmDialog } from "@/modules/admin/ui/ConfirmDialog";
 import { useAddresses, useDeleteAddress, useSetDefaultAddress } from "../hooks/useAddressBook";
 import type { SavedAddress } from "../types";
 import { AddressFormModal } from "./AddressFormModal";
+import { AccountSkeleton } from "@/shared/ui/PageSkeletons";
 
 export function addressIcon(label: string) {
   return label === "Bureau" ? Briefcase : label === "Domicile" ? Home2 : Location;
@@ -116,7 +117,7 @@ export function AddressBookView() {
   return (
     <>
       <Breadcrumb items={[{ label: "Mon compte", href: ROUTES.profile }, { label: "Adresses" }]} />
-      <AuthGuard>
+      <AuthGuard fallback={<AccountSkeleton breadcrumb={false} />}>
         <Content />
       </AuthGuard>
     </>

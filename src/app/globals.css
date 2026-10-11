@@ -90,7 +90,17 @@
   --animate-draw-line: draw-line 1.4s ease-out forwards;
   --animate-bar-grow: bar-grow 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
   --animate-sheen: sheen 1.1s ease;
+  /* barre de navigation : avance vite puis ralentit, sans jamais finir seule */
+  --animate-nav-progress: nav-progress 8s cubic-bezier(0.1, 0.7, 0.2, 1) forwards;
 
+  @keyframes nav-progress {
+    0% {
+      transform: scaleX(0.08);
+    }
+    100% {
+      transform: scaleX(1);
+    }
+  }
   @keyframes fade-up {
     0% {
       opacity: 0;
@@ -320,9 +330,10 @@
 }
 
 @utility skeleton {
-  background: linear-gradient(90deg, #eceef4 25%, #f6f7fb 37%, #eceef4 63%);
+  /* teintes de la palette (#ECF8F6) ; immobile si l'utilisateur réduit les animations */
+  background: linear-gradient(90deg, #e4f0ed 25%, #f3faf8 37%, #e4f0ed 63%);
   background-size: 200% 100%;
-  @apply animate-shimmer rounded-md;
+  @apply animate-shimmer rounded-md motion-reduce:animate-none;
 }
 
 @utility no-scrollbar {

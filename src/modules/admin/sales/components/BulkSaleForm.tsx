@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+
 import { useState, type FormEvent } from "react";
 import { Add, Trash } from "iconsax-reactjs";
 import { ROUTES } from "@/config/routes";
@@ -18,6 +18,7 @@ import { useCreateSales } from "../hooks/useSales";
 import { METHOD_STYLE, type PaymentMethod } from "../types";
 import { fieldErrorsOf, todayStr } from "../utils";
 import { ProductCombobox } from "./ProductCombobox";
+import { useAppRouter } from "@/shared/hooks/useAppRouter";
 
 interface Line {
   key: number;
@@ -34,7 +35,7 @@ const blank = (): Line => ({ key: seq++, product: null, quantity: 1, price: "", 
 
 /** Ventes multiples (lignes libres) : date, moyen de paiement et client communs ; quantité, prix et client modifiables par ligne. */
 export function BulkSaleForm() {
-  const router = useRouter();
+  const router = useAppRouter();
   const create = useCreateSales();
   const [lines, setLines] = useState<Line[]>(() => [blank(), blank()]);
   const [method, setMethod] = useState<PaymentMethod>("Cash");
