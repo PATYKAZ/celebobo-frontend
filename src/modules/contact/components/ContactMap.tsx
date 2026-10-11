@@ -1,13 +1,52 @@
 "use client";
 
 import { motion } from "motion/react";
-import { Location } from "@/shared/ui/icons";
+import { useState } from "react";
+import { Location, Routing } from "@/shared/ui/icons";
 import { SITE } from "@/config/site";
 import { useSiteSettings } from "@/modules/site";
 
-/** Carte décorative (SVG pur, sans embed externe) : quartier stylisé + épingle animée. */
+/**
+ * Plan de la page Contact : carte Google Maps intégrée (gratuite, sans clé), centrée sur l'adresse saisie dans
+ * le back-office (Réglages du site) — elle suit donc toute correction d'adresse. Seule une adresse précise
+ * (rue, quartier, ville) place l'épingle au bon endroit ; « Bukavu · Goma » tombe au milieu du lac Kivu.
+ * Sans adresse : carte décorative.
+ */
 export function ContactMap() {
   const { address } = useSiteSettings();
+  const query = address.join(", ").trim();
+  const [loaded, setLoaded] = useState(false);
+  if (!query) return <DecorativeMap address={address} />;
+  const encoded = encodeURIComponent(query);
+
+  return (
+    // mobile : carte puis encadré (la carte reste dégagée) ; desktop : encadré en haut à droite, hors des commandes Google
+    <div className="overflow-hidden rounded-box bg-white sm:relative">
+      <div className="relative h-[300px] bg-mint sm:h-[420px]">
+        {!loaded && <div className="skeleton absolute inset-0 rounded-none!" aria-hidden />}
+        <iframe
+          title={`Plan d'accès : ${query}`}
+          src={`https://maps.google.com/maps?q=${encoded}&hl=fr&z=15&output=embed`}
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+          onLoad={() => setLoaded(true)}
+          className="absolute inset-0 size-full border-0"
+          allowFullScreen
+        />
+      </div>
+      <div className="p-4 sm:absolute sm:right-4 sm:top-4 sm:max-w-[340px] sm:rounded-box sm:bg-white sm:shadow-[0_8px_30px_rgba(0,0,0,.12)]">
+        <p className="flex items-center gap-2 text-[14px] font-bold"><Location size={18} variant="Bold" className="text-primary" /> {SITE.name} Business</p>
+        <p className="mt-1 text-[13px] leading-[19px] text-ink-2">{query}</p>
+        <a href={`https://www.google.com/maps/dir/?api=1&destination=${encoded}`} target="_blank" rel="noreferrer" className="mt-1 inline-flex min-h-11 items-center gap-1.5 text-[13px] font-bold text-primary hover:underline">
+          <Routing size={16} /> Itinéraire
+        </a>
+      </div>
+    </div>
+  );
+}
+
+/** Carte décorative (SVG pur, sans service externe) quand aucune adresse n'est renseignée. */
+function DecorativeMap({ address }: { address: string[] }) {
   return (
     <div className="relative h-[280px] overflow-hidden rounded-box bg-[#E8F2EA] sm:h-[400px]">
       <svg viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice" className="absolute inset-0 size-full" aria-hidden>
