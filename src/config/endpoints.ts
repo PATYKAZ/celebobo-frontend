@@ -117,6 +117,8 @@ export const ENDPOINTS = {
   resellerApplication: {
     submit: "/reseller-applications/", // « Devenir revendeur »
   },
+  /** Sitemap SEO (serveur Next uniquement) : produits, catégories, pages visibles + updated_at. */
+  sitemap: "/sitemap/",
   site: {
     settings: "/settings/public/",
     pages: "/pages/",
