@@ -63,7 +63,7 @@
 
   --color-info: #0d6efd;
 
-  --font-sans: var(--font-hanken), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-alibaba), ui-sans-serif, system-ui, sans-serif;
 
   --spacing-tabbar: var(--tabbar-h);
   --spacing-safe-b: env(safe-area-inset-bottom);
