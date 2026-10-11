@@ -77,7 +77,7 @@ function Inner({ embedded }: { embedded?: boolean }) {
             exit={{ opacity: 0, y: 24 }}
             className="fixed inset-x-4 bottom-[calc(var(--tabbar-h)+12px)] z-40 lg:hidden"
           >
-            <Button fullWidth upper={false} size="md" leftIcon={<TickSquare size={18} variant="Bold" />} loading={markAll.isPending} onClick={readAll} className="shadow-[0_10px_28px_rgba(26,186,26,.4)]">
+            <Button fullWidth upper={false} size="md" leftIcon={<TickSquare size={18} variant="Bold" />} loading={markAll.isPending} onClick={readAll} className="shadow-[0_10px_28px_rgba(34,109,104,.4)]">
               Tout marquer comme lu ({unread})
             </Button>
           </motion.div>

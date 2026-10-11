@@ -66,7 +66,7 @@ export function ReviewForm({ slug }: { slug: string }) {
       <div className="flex items-center gap-1" onMouseLeave={() => setHover(0)} role="radiogroup" aria-label="Note">
         {[1, 2, 3, 4, 5].map((n) => (
           <button key={n} type="button" role="radio" aria-checked={rating === n} aria-label={`${n} étoile${n > 1 ? "s" : ""}`} onMouseEnter={() => setHover(n)} onClick={() => setRating(n)} className="transition-transform hover:scale-125">
-            <Star1 size={28} variant="Bold" color={n <= (hover || rating) ? "#FFA500" : "#C9CBD3"} />
+            <Star1 size={28} variant="Bold" color={n <= (hover || rating) ? "#D6955B" : "#C9CBD3"} />
           </button>
         ))}
         {rating > 0 && <span className="ml-2 text-[13px] font-semibold text-ink-2">{rating}/5</span>}

@@ -9,7 +9,7 @@ import { Block } from "@/shared/ui/Block";
 import { Button } from "@/shared/ui/Button";
 import type { Order } from "@/modules/orders/types";
 
-const CONFETTI = Array.from({ length: 14 }, (_, i) => ({ id: i, x: Math.cos((i / 14) * Math.PI * 2) * 120, y: Math.sin((i / 14) * Math.PI * 2) * 120, c: ["#1ABA1A", "#FFE400", "#F1352B", "#FFA500"][i % 4] }));
+const CONFETTI = Array.from({ length: 14 }, (_, i) => ({ id: i, x: Math.cos((i / 14) * Math.PI * 2) * 120, y: Math.sin((i / 14) * Math.PI * 2) * 120, c: ["#226D68", "#FEEAA1", "#D6955B", "#18534F"][i % 4] }));
 
 const NEXT_STEPS = [
   { title: "Un revendeur est assigné", text: "Le responsable attribue votre commande au revendeur le plus disponible." },

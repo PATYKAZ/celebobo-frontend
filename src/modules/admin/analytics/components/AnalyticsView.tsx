@@ -18,7 +18,7 @@ import { DEFAULT_FILTERS, RANGES, type AnalyticsFilters } from "../types";
 import { Heatmap } from "./Heatmap";
 import { ResellerPerformanceCard, SlowMoversCard } from "./InsightsSections";
 
-const PALETTE = ["#1ABA1A", "#222222", "#FFA500", "#0D6EFD", "#F1352B", "#7E57C2", "#00A8A8", "#999999", "#E91E8C", "#8BC34A"];
+const PALETTE = ["#226D68", "#222222", "#D6955B", "#0D6EFD", "#F1352B", "#7E57C2", "#00A8A8", "#999999", "#E91E8C", "#8BC34A"];
 const money = (n: number) => (n >= 1000 ? `$${formatCompact(n)}` : formatPrice(n).replace(".00", ""));
 
 export function AnalyticsView() {
@@ -77,7 +77,7 @@ function AnalyticsContent() {
       </section>
 
       <div className="grid min-w-0 gap-3 sm:gap-4 xl:grid-cols-3">
-        <ChartCard title="Ventes par période" subtitle="Revenu (barres) et bénéfice (ligne)" className="xl:col-span-2" legend={<><LegendDot color="#1ABA1A" label="Revenu" /><LegendDot color="#222222" label="Bénéfice" /></>}>
+        <ChartCard title="Ventes par période" subtitle="Revenu (barres) et bénéfice (ligne)" className="xl:col-span-2" legend={<><LegendDot color="#226D68" label="Revenu" /><LegendDot color="#222222" label="Bénéfice" /></>}>
           {data ? (
             <BarChart title="Ventes par période" format={money} lineLabel="Bénéfice" data={data.monthly.labels.map((l, i) => ({ label: l, value: data.monthly.revenue[i], line: data.monthly.profit[i] }))} />
           ) : (
@@ -103,7 +103,7 @@ function AnalyticsContent() {
         </ChartCard>
         <ChartCard title="Marge par catégorie" subtitle="Taux de marge moyen (%)" delay={0.1}>
           {data ? (
-            <BarChart orientation="horizontal" color="#FFA500" title="Marge par catégorie" format={(n) => `${n.toFixed(1)}%`} data={data.marginByCategory.slice(0, 7).map((m) => ({ label: m.name, value: m.margin }))} />
+            <BarChart orientation="horizontal" color="#D6955B" title="Marge par catégorie" format={(n) => `${n.toFixed(1)}%`} data={data.marginByCategory.slice(0, 7).map((m) => ({ label: m.name, value: m.margin }))} />
           ) : (
             <Skeleton className="h-[280px] w-full" />
           )}

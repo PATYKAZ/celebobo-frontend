@@ -24,7 +24,7 @@ const TRUST = [
   { icon: ShieldTick, title: "Paiement mobile", text: "Orange, Airtel, M-Pesa" },
 ];
 
-const SWATCH: Record<string, string> = { Noir: "#111827", Blanc: "#FFFFFF", Argent: "#C7CCD4", Gris: "#6B7280", Bleu: "#3B82F6", Jaune: "#FFD400", Rouge: "#F1352B", Vert: "#1ABA1A", Or: "#D4AF37" };
+const SWATCH: Record<string, string> = { Noir: "#111827", Blanc: "#FFFFFF", Argent: "#C7CCD4", Gris: "#6B7280", Bleu: "#3B82F6", Jaune: "#FFD400", Rouge: "#F1352B", Vert: "#16A34A", Or: "#D4AF37" };
 
 /** Libellé de stock : « Plus que 3 en stock » sous le seuil d'alerte. */
 function stockLabel(stock: number, threshold: number) {
@@ -149,7 +149,7 @@ export function ProductInfo({ product, selection, qty, onQtyChange }: { product:
           onClick={() => toggle(product.id, product.name)}
           className={cn("grid size-12 place-items-center rounded-box bg-chip transition-colors hover:bg-danger-100 active:scale-90 sm:size-[45px]", fav && "bg-danger-100")}
         >
-          <Heart size={20} variant={fav ? "Bold" : "Linear"} color={fav ? "#F1352B" : "currentColor"} />
+          <Heart size={20} variant={fav ? "Bold" : "Linear"} color={fav ? "#C4261D" : "currentColor"} />
         </button>
         <ProductShareMenu name={product.name} />
       </div>

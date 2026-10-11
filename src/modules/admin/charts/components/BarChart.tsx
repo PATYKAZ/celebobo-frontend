@@ -36,7 +36,7 @@ function niceMax(v: number) {
   return (n <= 1 ? 1 : n <= 2 ? 2 : n <= 5 ? 5 : 10) * p;
 }
 
-export function BarChart({ data, orientation = "vertical", height = 280, color = "#1ABA1A", lineColor = "#222222", format = (n) => String(Math.round(n)), title, lineLabel }: Props) {
+export function BarChart({ data, orientation = "vertical", height = 280, color = "#226D68", lineColor = "#222222", format = (n) => String(Math.round(n)), title, lineLabel }: Props) {
   if (orientation === "horizontal") return <HBars data={data} color={color} format={format} title={title} />;
   return <VBars data={data} height={height} color={color} lineColor={lineColor} format={format} title={title} lineLabel={lineLabel} />;
 }

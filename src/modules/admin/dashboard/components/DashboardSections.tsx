@@ -18,7 +18,7 @@ export function RevenueChart({ data }: { data?: DashboardData }) {
     <ChartCard
       title="Revenus & bénéfices"
       subtitle={data ? data.periodLabel : "Évolution du chiffre d'affaires et de la marge"}
-      legend={<><LegendDot color="#1ABA1A" label="Revenu" /><LegendDot color="#FFA500" label="Bénéfice" /></>}
+      legend={<><LegendDot color="#226D68" label="Revenu" /><LegendDot color="#D6955B" label="Bénéfice" /></>}
       className="xl:col-span-2"
     >
       {data ? (
@@ -27,8 +27,8 @@ export function RevenueChart({ data }: { data?: DashboardData }) {
           labels={data.series.labels}
           format={(n) => (n >= 1000 ? `${formatCompact(n)}` : formatPrice(n).replace(".00", ""))}
           series={[
-            { key: "revenue", label: "Revenu", color: "#1ABA1A", data: data.series.revenue },
-            { key: "profit", label: "Bénéfice", color: "#FFA500", data: data.series.profit },
+            { key: "revenue", label: "Revenu", color: "#226D68", data: data.series.revenue },
+            { key: "profit", label: "Bénéfice", color: "#D6955B", data: data.series.profit },
           ]}
         />
       ) : (

@@ -17,31 +17,41 @@
 }
 
 @theme {
-  --color-primary-50: rgba(26, 186, 26, 0.05);
-  --color-primary-100: rgba(26, 186, 26, 0.1);
-  --color-primary: #1aba1a;
-  --color-primary-light: #1bf11b;
-  --color-primary-dark: #139713;
+  /* Palette Celebobo : #18534F, #226D68, #ECF8F6, #FEEAA1, #D6955B */
+  --color-primary-50: rgba(34, 109, 104, 0.05);
+  --color-primary-100: rgba(34, 109, 104, 0.1);
+  /* 6,1:1 avec le blanc (AA) */
+  --color-primary: #226d68;
+  /* accent clair sur fonds sombres (7,3:1 sur #18534F) */
+  --color-primary-light: #feeaa1;
+  --color-primary-dark: #18534f;
 
-  --color-danger-50: rgba(241, 53, 43, 0.05);
-  --color-danger-100: rgba(241, 53, 43, 0.1);
-  --color-danger: #f1352b;
+  --color-mint: #ecf8f6;
+  --color-cream: #feeaa1;
+  /* décoratif uniquement : 2,5:1 avec le blanc, jamais pour du texte sur fond clair */
+  --color-sand: #d6955b;
 
-  --color-star: #ffa500;
+  --color-danger-50: rgba(196, 38, 29, 0.05);
+  --color-danger-100: rgba(196, 38, 29, 0.1);
+  /* 5,5:1 sur blanc, 5:1 sur danger-100 (AA) ; l'ancien #F1352B plafonnait à 4:1 */
+  --color-danger: #c4261d;
 
-  --color-sun-2: #ffc107;
-  --color-sun: #ffe400;
+  --color-star: #d6955b;
 
-  --color-page: #e2e4eb;
+  --color-sun-2: #d6955b;
+  --color-sun: #feeaa1;
 
-  --color-chip-2: #ebedf3;
-  --color-chip-3: #edeff6;
-  --color-chip: #ebeef6;
-  --color-chip-social: #e1e3eb;
+  /* neutres teintés de la palette (dérivés de #ECF8F6) : fond de page plus soutenu que les surfaces */
+  --color-page: #dfeeeb;
+
+  --color-chip-2: #e8f4f1;
+  --color-chip-3: #ecf8f6;
+  --color-chip: #ecf8f6;
+  --color-chip-social: #dfeeeb;
 
   --color-ink-2: #666666;
-  /* #767676 : 4,5:1 sur blanc (WCAG AA) ; l'ancien #999 plafonnait à 2,8:1 */
-  --color-ink-3: #767676;
+  /* #6E6E6E : 5,1:1 sur blanc, 4,7:1 sur chip (#ECF8F6) — WCAG AA ; l'ancien #999 plafonnait à 2,8:1 */
+  --color-ink-3: #6e6e6e;
   --color-ink-4: #757575;
   --color-ink: #000000;
   --color-ink-dark: #222222;
@@ -375,7 +385,7 @@
     max-width: 100%;
   }
   ::selection {
-    background: rgba(26, 186, 26, 0.25);
+    background: rgba(34, 109, 104, 0.25);
   }
   :focus-visible {
     outline: 2px solid #1aba1a;

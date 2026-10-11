@@ -5,7 +5,7 @@ import { formatPrice } from "@/shared/lib/format";
 import { useSiteSettings } from "@/modules/site";
 import { SearchBar } from "./SearchBar";
 
-/** Barre verte `nav-style3` : recherche à gauche + 3 arguments à droite (1300×75, #1ABA1A, rad 10). */
+/** Barre verte `nav-style3` : recherche à gauche + 3 arguments à droite (1300×75, #226D68, rad 10). */
 export function GreenBar() {
   const { freeThreshold } = useSiteSettings().shipping;
   const perks = [

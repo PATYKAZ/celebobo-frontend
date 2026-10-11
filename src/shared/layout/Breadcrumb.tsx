@@ -7,7 +7,7 @@ export interface Crumb {
   href?: string;
 }
 
-/** Fil d'Ariane (bloc blanc 1300×81, rad 10) : liens ink-3 (#767676), séparateur #6C757D, page courante #000. */
+/** Fil d'Ariane (bloc blanc 1300×81, rad 10) : liens ink-3 (#6E6E6E), séparateur #6C757D, page courante #000. */
 export function Breadcrumb({ items, className }: { items: Crumb[]; className?: string }) {
   const all: Crumb[] = [{ label: "Accueil", href: ROUTES.home }, ...items];
   return (

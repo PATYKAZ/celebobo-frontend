@@ -195,7 +195,7 @@ function Content() {
       header: "Note",
       hideBelow: "xl",
       mobile: "hide",
-      cell: (p) => (p.rating ? <span className="inline-flex items-center gap-1 font-semibold"><Star1 size={14} variant="Bold" color="#FFA500" />{p.rating.toFixed(1)} <span className="font-normal text-ink-3">({p.reviewsCount})</span></span> : <span className="text-ink-3">—</span>),
+      cell: (p) => (p.rating ? <span className="inline-flex items-center gap-1 font-semibold"><Star1 size={14} variant="Bold" color="#D6955B" />{p.rating.toFixed(1)} <span className="font-normal text-ink-3">({p.reviewsCount})</span></span> : <span className="text-ink-3">—</span>),
     },
     {
       key: "actions",

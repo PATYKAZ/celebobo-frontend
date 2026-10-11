@@ -22,8 +22,8 @@ export function ContactMap() {
           "M0 120 H800", "M0 220 H800", "M180 0 V400", "M520 0 V400",
         ].map((d) => <path key={d} d={d} stroke="#fff" strokeWidth="14" />)}
         <path d="M0 40 L 800 160" stroke="#FFE08A" strokeWidth="10" />
-        <circle cx="610" cy="90" r="46" fill="#CFE9CF" />
-        <circle cx="120" cy="170" r="30" fill="#CFE9CF" />
+        <circle cx="610" cy="90" r="46" fill="#ECF8F6" />
+        <circle cx="120" cy="170" r="30" fill="#ECF8F6" />
       </svg>
       <div className="absolute left-[56%] top-[44%] -translate-x-1/2 -translate-y-1/2">
         <span className="absolute left-1/2 top-full size-14 -translate-x-1/2 -translate-y-1/2 animate-pulse-ring rounded-full bg-primary/40" />

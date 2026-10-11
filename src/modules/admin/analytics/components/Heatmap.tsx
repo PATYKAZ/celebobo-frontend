@@ -33,7 +33,7 @@ export function Heatmap({ data, hours }: { data: number[][]; hours: number[] }) 
                   animate={inView ? { opacity: 1, scale: 1 } : {}}
                   transition={{ delay: (d + i) * 0.025, type: "spring", stiffness: 300, damping: 20 }}
                   className="aspect-square min-h-[24px] rounded-[5px] transition-transform hover:z-10 hover:scale-125"
-                  style={{ background: v === 0 ? "#EBEEF6" : `rgba(26,186,26,${0.15 + (v / max) * 0.85})` }}
+                  style={{ background: v === 0 ? "#EBEEF6" : `rgba(34,109,104,${0.15 + (v / max) * 0.85})` }}
                 />
               ))}
             </div>
@@ -42,7 +42,7 @@ export function Heatmap({ data, hours }: { data: number[][]; hours: number[] }) 
         <div className="mt-3 flex items-center justify-between text-[12px] text-ink-3">
           <span aria-live="polite">{hover ? `${DAYS[hover.d]} ${hours[hover.h]}h : ${data[hover.d][hover.h]} vente(s)` : "Touchez une case pour voir le détail"}</span>
           <span className="flex items-center gap-1.5">Moins
-            {[0.15, 0.4, 0.65, 1].map((o) => <span key={o} className="size-3.5 rounded-[4px]" style={{ background: `rgba(26,186,26,${o})` }} />)}
+            {[0.15, 0.4, 0.65, 1].map((o) => <span key={o} className="size-3.5 rounded-[4px]" style={{ background: `rgba(34,109,104,${o})` }} />)}
             Plus
           </span>
         </div>

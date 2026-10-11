@@ -28,7 +28,7 @@ export function CommissionSimulator() {
         onChange={(e) => setSales(Number(e.target.value))}
         aria-label="Ventes mensuelles"
         className="mt-5 h-2 w-full cursor-pointer touch-pan-y appearance-none rounded-full accent-primary [&::-webkit-slider-thumb]:size-6"
-        style={{ background: `linear-gradient(90deg,#1ABA1A ${pct}%,rgba(255,255,255,.18) ${pct}%)` }}
+        style={{ background: `linear-gradient(90deg,#226D68 ${pct}%,rgba(255,255,255,.18) ${pct}%)` }}
       />
       <div className="mt-1 flex justify-between text-[11px] text-white/50"><span>$200</span><span>$6,000</span></div>
 
