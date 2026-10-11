@@ -43,7 +43,7 @@ export function CartLine({ item, onQuantity, onRemove }: Props) {
         <Link href={href} className="line-clamp-2 text-[14px] font-bold leading-[19px] transition-colors hover:text-primary sm:text-[15px] sm:leading-[20px]">{item.product.name}</Link>
         {item.variantLabel && <span className="mt-1 inline-block rounded-sm bg-chip px-2 py-0.5 text-[12px] font-semibold">{item.variantLabel}</span>}
         <div className="mt-2 flex flex-wrap items-center gap-2">
-          <Price current={unit} original={original} size="sm" />
+          <Price current={unit} original={original} size="sm" usd />
           {unavailable ? <Pill tone="red">Plus disponible</Pill> : item.product.freeShipping && <Pill tone="green">Livraison offerte</Pill>}
         </div>
       </div>

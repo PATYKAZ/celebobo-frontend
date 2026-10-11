@@ -22,6 +22,7 @@ import { useFavoritesStore } from "@/modules/favorites/store/favorites.store";
 import { useUnreadNotificationsCount } from "@/modules/messaging/hooks/useNotifications";
 import { useSiteSettings } from "@/modules/site";
 import { Logo } from "./Logo";
+import { CurrencySwitch } from "@/shared/currency/CurrencySwitch";
 
 const NAV = [
   { label: "Accueil", href: ROUTES.home },
@@ -209,8 +210,8 @@ export function Header() {
         <div className="flex items-center text-[14px] leading-[21px]">
           <Link href={ROUTES.becomeReseller} className="px-5 transition-colors hover:text-primary">Devenir revendeur</Link>
           <Link href={ROUTES.track} className="px-5 transition-colors hover:text-primary">Suivre ma commande</Link>
-          {/* une seule devise et une seule langue : information, pas de faux menu déroulant */}
-          <span className="border-l border-line-2/60 pl-5 text-ink-2">Prix en dollars (USD)</span>
+          {/* devise d'affichage (les paiements restent en USD) ; une seule langue : pas de sélecteur */}
+          <span className="flex items-center gap-2 border-l border-line-2/60 pl-5 text-[13px] text-ink-2">Prix en <CurrencySwitch /></span>
         </div>
       </div>
 

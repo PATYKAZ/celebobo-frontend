@@ -1,12 +1,14 @@
 "use client";
 
 import { Refresh2, ShieldTick, Truck } from "@/shared/ui/icons";
-import { formatPrice } from "@/shared/lib/format";
+import { useFormatPrice } from "@/shared/currency/CurrencyProvider";
 import { useSiteSettings } from "@/modules/site";
 import { SearchBar } from "./SearchBar";
 
 /** Barre verte `nav-style3` : recherche à gauche + 3 arguments à droite (1300×75, #226D68, rad 10). */
 export function GreenBar() {
+  // prix affichés dans la devise choisie par le visiteur (USD ou FC)
+  const formatPrice = useFormatPrice();
   const { freeThreshold } = useSiteSettings().shipping;
   const perks = [
     { icon: Truck, label: freeThreshold !== null ? `Livraison offerte dès ${formatPrice(freeThreshold).replace(/\.00$/, "")}` : "Livraison rapide" },

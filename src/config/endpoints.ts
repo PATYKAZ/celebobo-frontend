@@ -196,6 +196,11 @@ export const ENDPOINTS = {
       convertible: "/bo/orders/convertible/",
       convertToSales: (id: number) => `/bo/orders/${id}/convert-to-sales/`,
     },
+    settings: "/bo/settings/", // GET / PATCH (admin)
+    shippingZones: {
+      list: "/bo/shipping-zones/", // GET / POST (responsable, admin)
+      detail: (id: number) => `/bo/shipping-zones/${id}/`, // PATCH / DELETE
+    },
     categories: {
       list: "/bo/categories/",
       detail: (id: number) => `/bo/categories/${id}/`,

@@ -6,7 +6,7 @@ import { ArrowDown2, Category2, Clock, CloseCircle, SearchNormal1, Trash } from 
 import { Fragment, useEffect, useId, useMemo, useRef, useState, type FormEvent, type KeyboardEvent, type ReactNode } from "react";
 import { ROUTES } from "@/config/routes";
 import { cn } from "@/shared/lib/cn";
-import { formatPrice } from "@/shared/lib/format";
+import { useFormatPrice } from "@/shared/currency/CurrencyProvider";
 import { useDebounce } from "@/shared/hooks/useDebounce";
 import { useCategories } from "@/modules/categories/hooks/useCategories";
 import { useProductSuggestions } from "@/modules/products/hooks/useProducts";
@@ -40,6 +40,8 @@ type Option =
  * catégories correspondantes, produits suggérés et recherches récentes (effaçables).
  */
 export function SearchBar({ className, compact }: { className?: string; compact?: boolean }) {
+  // prix affichés dans la devise choisie par le visiteur (USD ou FC)
+  const formatPrice = useFormatPrice();
   const router = useAppRouter();
   const uid = useId();
   const { data: categories } = useCategories();

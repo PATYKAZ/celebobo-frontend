@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { ROUTES } from "@/config/routes";
 import { Breadcrumb } from "@/shared/layout/Breadcrumb";
 import { Reveal } from "@/shared/animations/Reveal";
-import { formatPrice } from "@/shared/lib/format";
+import { useFormatPrice } from "@/shared/currency/CurrencyProvider";
 import { Block } from "@/shared/ui/Block";
 import { Button } from "@/shared/ui/Button";
 import { EmptyState } from "@/shared/ui/EmptyState";
@@ -23,6 +23,8 @@ import { ProductDetailSkeleton } from "@/shared/ui/PageSkeletons";
 
 /** Contenu de la fiche (monté une fois le produit chargé : la sélection de variante dépend du produit). */
 function ProductContent({ product }: { product: Product }) {
+  // prix affichés dans la devise choisie par le visiteur (USD ou FC)
+  const formatPrice = useFormatPrice();
   const { add } = useCart();
   const selection = useVariantSelection(product);
   const [qty, setQty] = useState(1);

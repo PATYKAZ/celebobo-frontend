@@ -8,6 +8,7 @@ import { CircleButton } from "@/shared/ui/CircleButton";
 import { paymentMethod, useSiteSettings, type SocialNetwork } from "@/modules/site";
 import { FooterColumn } from "./FooterColumn";
 import { NewsletterForm } from "./NewsletterForm";
+import { CurrencySwitch } from "@/shared/currency/CurrencySwitch";
 
 const COLUMNS = [
   {
@@ -94,6 +95,11 @@ export function Footer() {
 
         {/* Ligne 2 */}
         <div className="mt-12 flex flex-col gap-8 lg:flex-row lg:items-start">
+          <div>
+            <p className="mb-2 text-[13px] font-semibold text-ink-2">Afficher les prix en</p>
+            <CurrencySwitch size="md" />
+            <p className="mt-2 max-w-[260px] text-[12px] leading-[17px] text-ink-3">Paiement toujours calculé en dollars, au taux du jour.</p>
+          </div>
           <div className="w-full max-w-[857px] lg:ml-auto">
             <h2 className="text-section uppercase">Abonnez-vous et obtenez <span className="text-danger">{site.newsletterDiscount} % de remise</span> sur votre première commande</h2>
             <div className="mt-6"><NewsletterForm /></div>

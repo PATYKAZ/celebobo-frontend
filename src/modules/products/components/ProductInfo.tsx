@@ -5,7 +5,7 @@ import { Bag2, CloseCircle, Heart, Refresh2, ShieldTick, TickCircle, Truck } fro
 import { useEffect } from "react";
 import { ROUTES } from "@/config/routes";
 import { cn } from "@/shared/lib/cn";
-import { formatPrice } from "@/shared/lib/format";
+import { useFormatPrice } from "@/shared/currency/CurrencyProvider";
 import { Pill } from "@/shared/ui/Badges";
 import { Button } from "@/shared/ui/Button";
 import { Price } from "@/shared/ui/Price";
@@ -34,6 +34,8 @@ function stockLabel(stock: number, threshold: number) {
 }
 
 export function ProductInfo({ product, selection, qty, onQtyChange }: { product: Product; selection: VariantSelection; qty: number; onQtyChange: (n: number) => void }) {
+  // prix affichés dans la devise choisie par le visiteur (USD ou FC)
+  const formatPrice = useFormatPrice();
   const router = useAppRouter();
   const { add } = useCart();
   const { isFavorite, toggle } = useFavoriteToggle();

@@ -6,7 +6,7 @@ import { motion } from "motion/react";
 import { Bag2, CloseCircle, Heart, TickCircle } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import { cn } from "@/shared/lib/cn";
-import { formatPrice } from "@/shared/lib/format";
+import { useFormatPrice } from "@/shared/currency/CurrencyProvider";
 import { NewBadge, Pill, SaveBadge } from "@/shared/ui/Badges";
 import { Price } from "@/shared/ui/Price";
 import { Stars } from "@/shared/ui/Stars";
@@ -27,6 +27,8 @@ interface Props {
  * Animations : zoom/échange d'image au survol, bouton « Ajouter » qui glisse, cœur qui « pop ».
  */
 export function ProductCard({ product, className, priority }: Props) {
+  // prix affichés dans la devise choisie par le visiteur (USD ou FC)
+  const formatPrice = useFormatPrice();
   const { add } = useCart();
   const { isFavorite, toggle } = useFavoriteToggle();
   const pricing = getPricing(product);

@@ -1,9 +1,19 @@
 const usd = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
 const compact = new Intl.NumberFormat("fr-FR", { notation: "compact", maximumFractionDigits: 1 });
 
-/** 1689 -> "$1,689.00" (format du design). */
-export const formatPrice = (value: number | string | null | undefined): string =>
-  usd.format(Number(value ?? 0));
+const cdf = new Intl.NumberFormat("fr-CD", { maximumFractionDigits: 0 });
+
+/**
+ * Seul point de formatage des prix. Sans devise : USD, ce qui est réellement payé et enregistré
+ * (panier, commande, factures, back-office) — 1689 → "$1,689.00".
+ * En francs congolais (affichage seul) : montant × taux, arrondi sans décimales — 250 × 2850 → "712 500 FC".
+ * En navigation, passer par `useFormatPrice()` (devise choisie par le visiteur et taux du jour).
+ */
+export const formatPrice = (value: number | string | null | undefined, display?: { currency: "USD" | "CDF"; rate: number }): string => {
+  const amount = Number(value ?? 0);
+  if (display?.currency === "CDF" && display.rate > 0) return `${cdf.format(Math.round(amount * display.rate))} FC`;
+  return usd.format(amount);
+};
 
 export const formatCompact = (value: number) => compact.format(value);
 

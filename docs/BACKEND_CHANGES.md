@@ -218,8 +218,10 @@ aucune mention de Kinshasa ; tout ce qui reste vient du backend.
 
 Aussi : `docs/business/*`, `README.md`, et 33 occurrences dans les tests.
 
-**Manque côté back-office** : aucune API d'écriture n'est branchée dans le front pour les réglages du site (adresse)
-et les zones de livraison (`/bo/shipping-zones/` existe côté API) ; les corrections passent aujourd'hui par le backend.
+**Back-office (fait côté front)** : écran « Réglages du site » (`/admin/reglages`) — zones de livraison
+(responsable et admin, `/bo/shipping-zones/`) ; taux USD → FC, coordonnées dont l'adresse, horaires, moyens de
+paiement, réseaux, newsletter (admin seul, `/bo/settings/`). L'adresse et les zones se corrigent donc sans
+développeur ; il reste à les saisir (adresse réelle, zones Bukavu / Goma / environs / reste du pays).
 
 ## Déploiement (`deploy/` du dépôt backend) · variables du conteneur front
 

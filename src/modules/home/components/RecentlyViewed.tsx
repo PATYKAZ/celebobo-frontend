@@ -9,7 +9,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import type { Swiper as SwiperType } from "swiper";
 import { ROUTES } from "@/config/routes";
 import { Reveal } from "@/shared/animations/Reveal";
-import { formatPrice } from "@/shared/lib/format";
+import { useFormatPrice } from "@/shared/currency/CurrencyProvider";
 import { NewBadge } from "@/shared/ui/Badges";
 import { Block } from "@/shared/ui/Block";
 import { SectionHeader } from "@/shared/ui/SectionHeader";
@@ -20,6 +20,8 @@ import type { Product } from "@/modules/products/types";
 import { useRecentlyViewedStore, type ViewedProduct } from "@/modules/products/store/recently-viewed.store";
 
 function MiniCard({ p }: { p: ViewedProduct }) {
+  // prix affichés dans la devise choisie par le visiteur (USD ou FC)
+  const formatPrice = useFormatPrice();
   const { isFavorite, toggle } = useFavoriteToggle();
   const fav = isFavorite(p.id);
   const sale = p.priceSolde != null && p.priceSolde < p.price;

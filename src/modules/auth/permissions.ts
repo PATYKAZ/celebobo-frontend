@@ -46,7 +46,9 @@ export type Permission =
   | "audit.view"
   | "inbox.view.own"
   | "inbox.view.all"
-  | "price.adjust"; // proposer un prix final dans la discussion
+  | "price.adjust" // proposer un prix final dans la discussion
+  | "shipping.manage" // zones de livraison (backend : responsable et admin)
+  | "settings.manage"; // réglages du site : taux USD → FC, coordonnées, horaires (backend : admin seul)
 
 const RESELLER: Permission[] = [
   "backoffice.access",
@@ -84,9 +86,10 @@ const MANAGER: Permission[] = [
   "analytics.view",
   "analytics.resellers",
   "inbox.view.all",
+  "shipping.manage",
 ];
 
-const ADMIN: Permission[] = [...MANAGER, "sales.delete", "products.delete", "commissions.pay", "users.manage", "audit.view"];
+const ADMIN: Permission[] = [...MANAGER, "sales.delete", "products.delete", "commissions.pay", "users.manage", "audit.view", "settings.manage"];
 
 export const PERMISSIONS: Record<UserRole, ReadonlySet<Permission>> = {
   client: new Set<Permission>(),

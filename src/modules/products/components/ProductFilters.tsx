@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/shared/lib/cn";
-import { formatPrice } from "@/shared/lib/format";
+import { useFormatPrice } from "@/shared/currency/CurrencyProvider";
 import { Checkbox } from "@/shared/ui/Form";
 import { Button } from "@/shared/ui/Button";
 import type { Category } from "@/modules/categories/types";
@@ -29,6 +29,8 @@ function Group({ title, children }: { title: string; children: React.ReactNode }
 
 /** Curseur double (prix min / max), validé après 400 ms d'inactivité. */
 function PriceRange({ min, max, onCommit }: { min: number | null; max: number | null; onCommit: (min: number | null, max: number | null) => void }) {
+  // prix affichés dans la devise choisie par le visiteur (USD ou FC)
+  const formatPrice = useFormatPrice();
   const [lo, setLo] = useState(min ?? 0);
   const [hi, setHi] = useState(max ?? PRICE_MAX);
   // dernière valeur envoyée : son retour par l'URL ne doit pas écraser un glissement en cours
