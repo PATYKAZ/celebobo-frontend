@@ -16,7 +16,7 @@ import { useCategories } from "@/modules/categories/hooks/useCategories";
 import type { Product } from "@/modules/products/types";
 import { useSaveProduct } from "../hooks/useAdminProducts";
 import {
-  BADGE_OPTIONS, countSentences, DESCRIPTION_MAX, DESCRIPTION_MIN, EMPTY_FORM, parseCare, productToForm, validateProductForm,
+  BADGE_OPTIONS, countSentences, DESCRIPTION_MAX, DESCRIPTION_MIN, EMPTY_FORM, parseCare, productToForm, SEO_LIMITS, validateProductForm,
   type FormErrors, type ImageSlotValue, type ProductBadgeCode, type ProductFormValues,
 } from "../types";
 import { ImageSlot } from "./ImageSlot";
@@ -201,6 +201,17 @@ export function ProductForm({ product }: Props) {
         <div className="grid gap-5 sm:grid-cols-2">
           <Input label="Frais de livraison ($)" type="number" inputMode="decimal" min="0" step="0.01" value={v.shippingFee} onChange={(e) => set("shippingFee", e.target.value)} disabled={v.freeShipping} />
           <label className="flex min-h-12 cursor-pointer items-center justify-between gap-3 rounded-box border border-line px-4 active:bg-chip"><span className="text-[14px] font-semibold">Livraison offerte</span><Switch label="Livraison offerte" checked={v.freeShipping} onChange={(x) => set("freeShipping", x)} /></label>
+        </div>
+      </Section>
+
+      <Section title="Référencement" hint="Titre et description affichés par Google et sur les réseaux sociaux. Laissés vides, le nom et la description courte sont utilisés." delay={0.03}>
+        <div>
+          <Input label="Titre SEO" value={v.seoTitle} onChange={(e) => set("seoTitle", e.target.value)} error={errors.seoTitle} placeholder={v.name || "Nom du produit"} />
+          <div className="mt-1 text-right"><Counter n={v.seoTitle.trim().length} max={SEO_LIMITS.title} /></div>
+        </div>
+        <div>
+          <Textarea label="Description SEO" className="min-h-[84px]" value={v.seoDescription} onChange={(e) => set("seoDescription", e.target.value)} error={errors.seoDescription} placeholder={v.description || "Description courte"} />
+          <div className="mt-1 text-right"><Counter n={v.seoDescription.trim().length} max={SEO_LIMITS.description} /></div>
         </div>
       </Section>
 

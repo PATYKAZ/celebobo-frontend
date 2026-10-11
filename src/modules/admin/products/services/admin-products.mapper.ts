@@ -44,6 +44,8 @@ export interface AdminProductDetailDto extends AdminProductRowDto {
   deliveryPolicySecondary: string;
   freeShipping: boolean;
   shippingFee: string | null;
+  seoTitle?: string;
+  seoDescription?: string;
   sellBy: string | null;
   features: string[];
   options: { name: string; values: string[] }[];
@@ -118,6 +120,8 @@ export function toAdminProduct(dto: AdminProductRowDto | AdminProductDetailDto):
     isActive: dto.status === "active",
     freeShipping: detail?.freeShipping ?? false,
     shippingFee: orNull(detail?.shippingFee),
+    seoTitle: detail?.seoTitle || null,
+    seoDescription: detail?.seoDescription || null,
     salesCount: dto.salesCount,
   };
 }
@@ -160,6 +164,8 @@ export function toProductPayload(v: ProductFormValues) {
     deliveryPolicySecondary: v.deliveryPolicyPhase2.trim(),
     freeShipping: v.freeShipping,
     shippingFee: v.freeShipping ? null : orEmpty(v.shippingFee),
+    seoTitle: v.seoTitle.trim(),
+    seoDescription: v.seoDescription.trim(),
     stockThreshold: Number(v.stockThreshold),
     sellBy: v.dateWish || null,
     isActive: v.isActive,

@@ -8,6 +8,8 @@ export interface CategoryFormValues {
   /** Nom d'icône de l'API (cf. CategoryIcon) */
   icon: string;
   active: boolean;
+  seoTitle: string;
+  seoDescription: string;
 }
 
 export interface CategoryImageValue {
@@ -19,4 +21,4 @@ export interface CategoryImageValue {
 /** Icônes sélectionnables (clés de CategoryIcon). */
 export const CATEGORY_ICONS = ["mobile", "monitor", "tablet", "headphone", "watch", "game", "flash", "camera", "printer", "keyboard"] as const;
 
-export const EMPTY_CATEGORY_FORM: CategoryFormValues = { name: "", description: "", icon: "mobile", active: true };
+export const EMPTY_CATEGORY_FORM: CategoryFormValues = { name: "", description: "", icon: "mobile", active: true, seoTitle: "", seoDescription: "" };

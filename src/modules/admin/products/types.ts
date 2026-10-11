@@ -62,6 +62,9 @@ export interface VariantRow {
   sku: string;
 }
 
+/** Longueurs maximales des champs SEO (modèle Django ; au-delà, Google tronque l'affichage). */
+export const SEO_LIMITS = { title: 70, description: 160 } as const;
+
 /** Valeurs du formulaire (tout en chaînes pour les inputs). */
 export interface ProductFormValues {
   name: string;
@@ -78,6 +81,8 @@ export interface ProductFormValues {
   deliveryPolicyPhase2: string;
   freeShipping: boolean;
   shippingFee: string;
+  seoTitle: string;
+  seoDescription: string;
   /** Stock global (ignoré s'il y a des variantes : somme des variantes) */
   stock: string;
   stockThreshold: string;
@@ -111,6 +116,8 @@ export const EMPTY_FORM: ProductFormValues = {
   deliveryPolicyPhase2: "",
   freeShipping: false,
   shippingFee: "",
+  seoTitle: "",
+  seoDescription: "",
   stock: "10",
   stockThreshold: "5",
   dateWish: "",
@@ -150,6 +157,8 @@ export function productToForm(p: Product): ProductFormValues {
     deliveryPolicyPhase2: p.deliveryPolicyPhase2 ?? "",
     freeShipping: p.freeShipping,
     shippingFee: p.shippingFee != null ? String(p.shippingFee) : "",
+    seoTitle: p.seoTitle ?? "",
+    seoDescription: p.seoDescription ?? "",
     stock: String(p.stock),
     stockThreshold: String(p.stockThreshold),
     dateWish: p.dateWish ? p.dateWish.slice(0, 10) : "",
@@ -168,6 +177,8 @@ export function validateProductForm(v: ProductFormValues, hasImage: boolean, isN
   if (d.length < DESCRIPTION_MIN) e.description = `La description doit contenir au moins ${DESCRIPTION_MIN} caractères.`;
   else if (d.length > DESCRIPTION_MAX) e.description = `La description ne doit pas dépasser ${DESCRIPTION_MAX} caractères.`;
   if (countSentences(v.longDescription) > 5) e.longDescription = "La description longue ne doit pas dépasser 5 phrases.";
+  if (v.seoTitle.trim().length > SEO_LIMITS.title) e.seoTitle = `${SEO_LIMITS.title} caractères maximum.`;
+  if (v.seoDescription.trim().length > SEO_LIMITS.description) e.seoDescription = `${SEO_LIMITS.description} caractères maximum.`;
   const price = Number(v.price);
   if (!v.price || Number.isNaN(price) || price <= 0) e.price = "Prix invalide.";
   if (v.priceSolde && (Number(v.priceSolde) <= 0 || Number(v.priceSolde) >= price)) e.priceSolde = "Le prix soldé doit être inférieur au prix normal.";
