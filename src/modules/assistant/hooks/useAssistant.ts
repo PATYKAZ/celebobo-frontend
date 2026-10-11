@@ -2,7 +2,7 @@
 
 import { useCallback, useSyncExternalStore } from "react";
 import { ApiError, getErrorMessage } from "@/shared/lib/api";
-import { assistantService } from "../services/assistant.service";
+import { AssistantError, assistantService } from "../services/assistant.service";
 import type { AssistantMessage } from "../types";
 
 const KEY = "celebobo-assistant";
@@ -116,8 +116,15 @@ export function useAssistant() {
       });
       push({ id: `a${Date.now()}`, role: "assistant", content: res.reply, products: res.products, createdAt: Date.now(), animate: true });
     } catch (e) {
-      const detail = e instanceof ApiError && e.status !== 0 && e.status < 500 ? getErrorMessage(e) : "Désolé, je rencontre un problème technique. Réessayez dans un instant.";
-      push({ id: `a${Date.now()}`, role: "assistant", content: detail, createdAt: Date.now(), animate: true });
+      const detail =
+        e instanceof AssistantError
+          ? `${e.message} Réessayez dans une minute.`
+          : e instanceof ApiError && e.status !== 0 && e.status < 500
+            ? getErrorMessage(e)
+            : e instanceof ApiError && e.status === 0
+              ? getErrorMessage(e)
+              : "Désolé, je rencontre un problème technique. Réessayez dans un instant.";
+      push({ id: `a${Date.now()}`, role: "assistant", content: detail, createdAt: Date.now(), animate: true, retry: content });
     } finally {
       update(() => ({ loading: false }));
     }
@@ -130,5 +137,21 @@ export function useAssistant() {
     update(() => ({ messages: [{ ...WELCOME, createdAt: Date.now() }] }));
   }, []);
 
-  return { messages, loading, send, reset };
+  /** Relance la question d'un message d'erreur (le message d'erreur est retiré). */
+  const retry = useCallback(
+    (message: AssistantMessage) => {
+      if (!message.retry || load().loading) return;
+      const question = message.retry;
+      update((s) => {
+        const i = s.messages.findIndex((m) => m.id === message.id);
+        // retire l'erreur et la question qui la précède : send() la remet
+        const from = i > 0 && s.messages[i - 1].role === "user" ? i - 1 : i;
+        return { messages: [...s.messages.slice(0, from), ...s.messages.slice(i + 1)] };
+      });
+      void send(question);
+    },
+    [send],
+  );
+
+  return { messages, loading, send, reset, retry };
 }

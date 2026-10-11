@@ -170,6 +170,29 @@ recherche avec `category` et `max_price` : le problème disparaît dès qu'il es
 **Côté front (corrigé)** : historique effacé à l'ouverture en plein écran ou au rechargement ; délai de 25 s qui
 aurait coupé les réponses longues du vrai modèle (porté à 90 s ; nginx en accorde 120).
 
+### Suivi après passage à Gemini (11/10/2026)
+
+Fait : `ASSISTANT_PROVIDER=gemini`, clé renseignée, catalogue réindexé (26 produits en `gemini-embedding-001`,
+4 s). Les réponses sont désormais pertinentes : « Samsung à moins de 400 $ » → « pas de Samsung sous 400 $ » et
+des alternatives dans le budget ; « livraison à Kinshasa » → « 24 à 48 h », sans cartes produits ; « cadeau audio,
+150 $ » → recherche `category=audio, max_price=150`, trois produits ≤ 150 $.
+
+**Nouveau problème bloquant : quota Google.** La clé est sur le palier gratuit : `GenerateRequestsPerMinutePerProjectPerModel-FreeTier`,
+**5 requêtes par minute pour tout le projet**. Chaque question coûte 2 requêtes (recherche puis rédaction) : le site
+entier traite 2 à 3 questions par minute ; au-delà Google répond 429 et l'utilisateur voit « assistant
+indisponible ». La limite applicative (12 messages/min par utilisateur) ne protège donc rien.
+
+À faire :
+1. Activer la facturation du projet Google (palier payant) ou changer de modèle/plan avant la mise en ligne.
+2. Journaliser la cause des `AssistantUnavailable` (`apps/assistant/adapters/gemini.py` lève sans trace : il a fallu
+   rejouer la question dans un shell pour voir le 429).
+3. Distinguer le 429 (`assistant_busy` + délai `Retry-After` / `retryDelay` de Google) d'une vraie panne ; le front
+   affichera alors « très sollicité, réessayez dans N s ».
+4. Aligner la limite applicative sur le quota réel (globale, pas seulement par utilisateur).
+
+Côté front (fait) : message du serveur affiché + bouton « Réessayer » ; réponses en Markdown mises en forme
+(gras, italique, listes) au lieu des astérisques.
+
 ## Déploiement (`deploy/` du dépôt backend) · variables du conteneur front
 
 Le rendu serveur est en place côté front (fiches produit, catégories, accueil, sitemap). Le conteneur front doit recevoir
