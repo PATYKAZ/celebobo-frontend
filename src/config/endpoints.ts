@@ -39,7 +39,8 @@ export const ENDPOINTS = {
   },
   home: "/home/",
   favorites: {
-    list: "/me/favorites/",
+    list: "/me/favorites/", // paginé (page_size max 48)
+    ids: "/me/favorites/ids/", // { ids } : état des cœurs sans charger les cartes
     remove: (productId: number) => `/me/favorites/${productId}/`,
   },
   /** Panier serveur ; invité identifié par l'en-tête `X-Cart-Token` (jeton renvoyé dans `token`). */
