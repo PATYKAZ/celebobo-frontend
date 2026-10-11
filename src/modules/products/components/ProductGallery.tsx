@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { AnimatePresence, motion } from "motion/react";
-import { Maximize4 } from "iconsax-reactjs";
+import { Bag2, Maximize4 } from "iconsax-reactjs";
 import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { cn } from "@/shared/lib/cn";
 import { NewBadge, SaveBadge } from "@/shared/ui/Badges";
@@ -47,6 +47,19 @@ export function ProductGallery({ product, activeImage }: { product: Product; /**
     const i = Math.round(el.scrollLeft / el.clientWidth);
     if (i !== index) setIndex(i);
   };
+
+  // sans photo : même cadre carré qu'une image (pas de zone à hauteur nulle), sans zoom ni plein écran
+  if (!images.length) {
+    return (
+      <div className="relative grid aspect-4/3 min-w-0 place-items-center rounded-box bg-page/40 text-ink-3 md:aspect-square">
+        <div className="flex flex-col items-center gap-2">
+          <Bag2 size={56} variant="Bulk" />
+          <p className="text-small">Photo bientôt disponible</p>
+        </div>
+        <div className="pointer-events-none absolute left-3 top-3 z-10">{badge}</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-w-0">

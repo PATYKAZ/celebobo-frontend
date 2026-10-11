@@ -38,7 +38,8 @@ export function CategoryFormModal({ open, category, existingNames, onClose }: Pr
     const e: typeof errors = {};
     if (!name) e.name = "Le nom est requis.";
     else if (existingNames.some((n) => n.trim().toLowerCase() === name.toLowerCase() && n !== category?.name)) e.name = "Une catégorie porte déjà ce nom.";
-    if (!image.url) e.image = "Ajoutez une image.";
+    // image exigée à la création ; une catégorie existante sans image reste modifiable
+    if (!image.url && !category) e.image = "Ajoutez une image.";
     setErrors(e);
     if (Object.keys(e).length) return;
     save.mutate(
