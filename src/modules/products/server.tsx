@@ -22,6 +22,12 @@ export const loadProduct = cache(async (slug: string): Promise<{ product: Produc
   return { product: null, notFound: res.status === 404 };
 });
 
+/** Devise de la boutique (`GET /settings/public/`), USD si l'API ne répond pas. */
+const loadCurrency = cache(async (): Promise<string> => {
+  const res = await serverGet<{ currency?: string }>(ENDPOINTS.site.settings, { revalidate: 3600, tags: ["settings"] });
+  return (res.ok && res.data.currency) || "USD";
+});
+
 const excerpt = (text: string, max = 158) => (text.length > max ? `${text.slice(0, max - 1).trimEnd()}…` : text);
 
 export function productMetadata(product: Product): Metadata {
@@ -41,8 +47,9 @@ export function productMetadata(product: Product): Metadata {
 }
 
 /** Données structurées schema.org/Product (résultats enrichis : prix, disponibilité, note). */
-export function ProductJsonLd({ product }: { product: Product }) {
+export async function ProductJsonLd({ product }: { product: Product }) {
   const url = `${siteUrl()}/produits/${product.slug}`;
+  const priceCurrency = await loadCurrency();
   const { current } = getPricing(product);
   const data = {
     "@context": "https://schema.org",
@@ -55,8 +62,7 @@ export function ProductJsonLd({ product }: { product: Product }) {
     offers: {
       "@type": "Offer",
       url,
-      // devise affichée par la boutique ; à lire depuis l'API quand elle l'exposera (BACKEND_CHANGES P1-1)
-      priceCurrency: "USD",
+      priceCurrency,
       price: current.toFixed(2),
       availability: product.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
     },
