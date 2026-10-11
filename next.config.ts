@@ -8,6 +8,8 @@ const mediaHost = process.env.NEXT_PUBLIC_MEDIA_HOST;
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  /** Image Docker autonome (deploy/compose du backend) : `node server.js`, sans node_modules complet. */
+  output: "standalone",
   /** Le rond « N » de dev recouvrait les boutons (retour du chat, barre d'onglets) : on le masque. */
   devIndicators: false,
   /** Django attend la barre oblique finale : Next ne doit pas la retirer avant le proxy /api. */
@@ -28,9 +30,9 @@ const nextConfig: NextConfig = {
     ],
   },
   /**
-   * Proxy vers l'API Django (dev ET production) : le navigateur ne parle qu'au domaine du front,
-   * les cookies JWT/CSRF restent first-party (Safari bloque les cookies tiers).
-   * NEXT_PUBLIC_API_URL=/api/v1  +  API_PROXY_TARGET=https://<api>.koyeb.app
+   * Proxy optionnel vers l'API Django, quand le front n'est pas servi derrière le nginx du backend
+   * (ex. hébergé sur Vercel) : NEXT_PUBLIC_API_URL=/api/v1 + API_PROXY_TARGET=https://<api>.
+   * Derrière nginx (local et production auto-hébergée), nginx route déjà /api et /ws : laisser vide.
    */
   async rewrites() {
     const target = process.env.API_PROXY_TARGET;

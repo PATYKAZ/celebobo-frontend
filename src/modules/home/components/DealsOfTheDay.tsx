@@ -101,7 +101,7 @@ function DealCard({ product, content }: { product: Product; content: HomeContent
             </button>
           ))}
         </div>
-        <div className="relative aspect-[4/3] w-full min-w-0 sm:aspect-[405/330] sm:flex-1">
+        <div className="relative aspect-4/3 w-full min-w-0 sm:aspect-405/330 sm:flex-1">
           {gallery[active] && <ZoomImage src={gallery[active]} alt={product.name} />}
           {pricing.onSale && <SaveBadge large amount={pricing.saving} className="absolute left-3 top-3 z-10" />}
           <button onClick={() => add(product)} aria-label="Ajouter au panier" className="absolute right-3 top-3 z-10 grid size-11 place-items-center rounded-pill bg-chip-2 sm:size-[30px] transition-all hover:rotate-90 hover:bg-primary hover:text-white">
@@ -137,7 +137,7 @@ function DealCard({ product, content }: { product: Product; content: HomeContent
         <div className="mt-5 border-t border-line-3 pt-5 sm:mt-6">
           <div className="h-2 overflow-hidden rounded-full bg-page">
             <motion.div initial={{ width: 0 }} whileInView={{ width: `${pct}%` }} viewport={{ once: true }} transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }} className="relative h-full rounded-full bg-primary">
-              <span className="absolute inset-y-0 right-0 w-8 animate-shimmer bg-gradient-to-r from-transparent via-white/50 to-transparent bg-[length:200%_100%]" />
+              <span className="absolute inset-y-0 right-0 w-8 animate-shimmer bg-linear-to-r from-transparent via-white/50 to-transparent bg-size-[200%_100%]" />
             </motion.div>
           </div>
           <div className="mt-3 flex items-center justify-between">
@@ -165,7 +165,7 @@ export function DealsOfTheDay({ content }: { content?: HomeContent }) {
         {content && deal ? <DealCard product={deal} content={content} /> : <Skeleton className="h-[420px] rounded-b-box rounded-t-none" />}
       </div>
 
-      <div className="max-sm:snap-row max-sm:-mx-[15px] max-sm:scroll-px-[15px] max-sm:px-[15px] sm:grid sm:grid-cols-3 sm:gap-4 xl:grid-cols-1 xl:grid-rows-3">
+      <div className="max-sm:snap-row max-sm:mx-[-15px] max-sm:scroll-px-[15px] max-sm:px-[15px] sm:grid sm:grid-cols-3 sm:gap-4 xl:grid-cols-1 xl:grid-rows-3">
         {content
           ? content.sideBanners.map((b, i) => (
               <Reveal key={b.id} delay={i * 0.1} className="h-full min-h-[150px] max-sm:w-[78%] sm:min-h-[170px]">

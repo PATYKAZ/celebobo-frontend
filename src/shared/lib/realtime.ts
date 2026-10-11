@@ -116,6 +116,12 @@ function route({ type, data: raw = {} }: ServerMessage) {
   }
 }
 
+/** `NEXT_PUBLIC_WS_URL` absolu (ws://…) ou relatif (`/ws/`, même domaine que le site derrière nginx). */
+function socketUrl() {
+  if (!env.WS_URL.startsWith("/")) return env.WS_URL;
+  return `${window.location.protocol === "https:" ? "wss:" : "ws:"}//${window.location.host}${env.WS_URL}`;
+}
+
 function scheduleReconnect() {
   clearTimeout(retryTimer);
   if (session == null) return;
@@ -142,7 +148,7 @@ async function connect() {
   connecting = false;
   if (session !== owner || socket) return;
 
-  const ws = new WebSocket(`${env.WS_URL}${env.WS_URL.includes("?") ? "&" : "?"}ticket=${encodeURIComponent(ticket)}`);
+  const ws = new WebSocket(`${socketUrl()}${env.WS_URL.includes("?") ? "&" : "?"}ticket=${encodeURIComponent(ticket)}`);
   socket = ws;
   ws.onmessage = (e) => {
     let msg: ServerMessage;

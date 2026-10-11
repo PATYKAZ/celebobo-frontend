@@ -20,7 +20,7 @@ export function PageHeader({ title, description, actions, children }: Props) {
           {description && <p className="mt-1 text-[13px] leading-[19px] text-ink-2 sm:text-[14px] sm:leading-[21px]">{description}</p>}
         </div>
         {actions && (
-          <div className="grid grid-cols-2 gap-2 max-sm:[&>*]:w-full max-sm:[&>*:only-child]:col-span-2 max-sm:[&>*:last-child:nth-child(odd)]:col-span-2 sm:flex sm:flex-wrap sm:items-center">
+          <div className="grid grid-cols-2 gap-2 max-sm:*:w-full max-sm:[&>*:only-child]:col-span-2 max-sm:[&>*:last-child:nth-child(odd)]:col-span-2 sm:flex sm:flex-wrap sm:items-center">
             {actions}
           </div>
         )}

@@ -103,7 +103,7 @@ function Content() {
   const rows = data?.results ?? [];
   const allChecked = rows.length > 0 && rows.every((p) => selected.has(p.id));
   const toggleAll = () => setSelected(allChecked ? new Set() : new Set(rows.map((p) => p.id)));
-  const toggleOne = (id: number) => setSelected((s) => { const n = new Set(s); n.has(id) ? n.delete(id) : n.add(id); return n; });
+  const toggleOne = (id: number) => setSelected((s) => { const n = new Set(s); if (n.has(id)) n.delete(id); else n.add(id); return n; });
 
   const runBulk = (action: BulkAction) =>
     bulk.mutate({ ids: [...selected], action }, { onSuccess: (r) => { toast.success("Action appliquée", `${r.updated} produit(s)`); setSelected(new Set()); }, onError: (e) => toast.error("Action impossible", getErrorMessage(e)) });

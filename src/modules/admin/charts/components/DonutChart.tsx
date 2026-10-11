@@ -31,7 +31,8 @@ export function DonutChart({ segments, size = 190, centerLabel = "Total", format
   const r = (size - stroke) / 2;
   const c = size / 2;
   const gap = segments.length > 1 ? 0.8 : 0;
-  let acc = 0;
+  // début de chaque segment (%), calculé une fois : pas de variable mutée pendant le rendu
+  const starts = segments.map((_, i) => segments.slice(0, i).reduce((sum, s) => sum + (s.value / total) * 100, 0));
   const shown = active != null ? segments[active] : null;
 
   return (
@@ -42,8 +43,7 @@ export function DonutChart({ segments, size = 190, centerLabel = "Total", format
           <circle cx={c} cy={c} r={r} fill="none" stroke="#EBEEF6" strokeWidth={stroke} />
           {segments.map((s, i) => {
             const len = (s.value / total) * 100;
-            const start = acc;
-            acc += len;
+            const start = starts[i];
             return (
               <motion.circle
                 key={s.label}

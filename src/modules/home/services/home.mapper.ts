@@ -1,5 +1,6 @@
 import { toProduct, type ProductCardDto } from "@/modules/products/services/products.mapper";
-import type { HeroSlide, HomeCatalog } from "../types";
+import { buildHomeContent } from "../content";
+import type { HeroSlide, HomeCatalog, HomeContent } from "../types";
 
 /** Bannière gérée dans le back-office (après camelCase). */
 export interface BannerDto {
@@ -40,3 +41,10 @@ export const toCatalog = (dto: HomeDto): HomeCatalog => ({
   bestSellers: dto.bestSellers.map(toProduct),
   byCategory: Object.fromEntries(dto.categories.map((block) => [block.category.slug, block.products.map(toProduct)])),
 });
+
+/** Contenu complet de l'accueil : éditorial du front + produits et bannières de l'API (service client et rendu serveur). */
+export function toHomeContent(dto: HomeDto): HomeContent {
+  const content = buildHomeContent();
+  const slides = dto.banners.filter((b) => b.image).map(toSlide);
+  return { ...content, catalog: toCatalog(dto), slides: slides.length ? slides : content.slides };
+}

@@ -139,7 +139,7 @@ export function OrderDetailView({ number }: { number: string }) {
                   </span>
                   <div className="min-w-0 flex-1">
                     {it.productSlug ? <Link href={ROUTES.product(it.productSlug)} className="line-clamp-2 text-[14px] font-bold leading-[19px] hover:text-primary sm:text-[15px] sm:leading-[20px]">{it.productName}</Link> : <p className="text-[14px] font-bold sm:text-[15px]">{it.productName}</p>}
-                    {it.variantLabel && <p className="mt-0.5 inline-block rounded bg-chip px-2 py-0.5 text-[12px] font-semibold">{it.variantLabel}</p>}
+                    {it.variantLabel && <p className="mt-0.5 inline-block rounded-sm bg-chip px-2 py-0.5 text-[12px] font-semibold">{it.variantLabel}</p>}
                     <p className="mt-1 text-[13px] text-ink-3">{formatPrice(it.unitPrice)} × {it.quantity}</p>
                   </div>
                   <p className="text-[15px] font-bold sm:text-[16px]">{formatPrice(it.unitPrice * it.quantity)}</p>

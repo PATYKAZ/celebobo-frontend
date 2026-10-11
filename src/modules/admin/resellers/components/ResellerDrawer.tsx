@@ -57,7 +57,7 @@ export function ResellerDrawer({ id, period, onClose }: { id: number | null; per
   };
 
   return (
-    <Drawer open={id != null} onClose={onClose} title="Détail du revendeur" side="right" className="max-w-[460px]">
+    <Drawer open={id != null} onClose={onClose} title="Détail du revendeur" side="right" className="sm:max-w-[460px]">
       {isLoading || !r ? (
         <div className="space-y-4 p-5"><Skeleton className="h-16 w-full" /><Skeleton className="h-24 w-full" /><Skeleton className="h-40 w-full" /></div>
       ) : (

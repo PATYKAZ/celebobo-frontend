@@ -110,7 +110,7 @@ function AllCommissions({ data }: { data?: CommissionsOverview }) {
         <DataTable columns={columns} rows={data?.rows} loading={!data} rowKey={(r) => r.resellerId} onRowClick={(r) => setHistory(r.resellerId)} skeletonRows={8} />
       </div>
 
-      <Drawer open={history != null} onClose={() => setHistory(null)} title={historyRow ? `Paiements · ${historyRow.name}` : "Paiements"} side="right" className="max-w-[460px]">
+      <Drawer open={history != null} onClose={() => setHistory(null)} title={historyRow ? `Paiements · ${historyRow.name}` : "Paiements"} side="right" className="sm:max-w-[460px]">
         <div className="p-5">
           {historyRow && (
             <div className="mb-5 grid grid-cols-3 gap-3 text-center">

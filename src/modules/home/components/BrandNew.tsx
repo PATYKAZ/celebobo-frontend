@@ -39,11 +39,11 @@ export function BrandNew({ cards }: { cards?: EditorialCard[] }) {
               breakpoints={{ 560: { slidesPerView: 2 }, 900: { slidesPerView: 3 }, 1200: { slidesPerView: 4 } }}
             >
               {cards.map((c) => (
-                <SwiperSlide key={c.id} className="!h-auto">
+                <SwiperSlide key={c.id} className="h-auto!">
                   <article className="group flex h-full flex-col">
-                    <div className="relative aspect-[303/230] overflow-hidden rounded-box bg-chip">
-                      <Image src={c.image} alt={c.title} fill sizes="303px" className="object-cover transition-transform duration-[900ms] group-hover:scale-110" />
-                      <span aria-hidden className="absolute inset-y-0 left-0 w-1/4 -translate-x-[120%] bg-white/25 group-hover:animate-sheen" />
+                    <div className="relative aspect-303/230 overflow-hidden rounded-box bg-chip">
+                      <Image src={c.image} alt={c.title} fill sizes="303px" className="object-cover transition-transform duration-900 group-hover:scale-110" />
+                      <span aria-hidden className="absolute inset-y-0 left-0 w-1/4 translate-x-[-120%] bg-white/25 group-hover:animate-sheen" />
                     </div>
                     <h3 className="mt-3 text-[16px] leading-[19.2px] sm:mt-5">{c.title}</h3>
                     <p className="mt-2 flex-1 text-[13px] leading-[22.1px] text-ink-2">{c.text}</p>

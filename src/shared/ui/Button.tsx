@@ -54,7 +54,7 @@ export function Button(props: ButtonProps | LinkProps) {
     <>
       <span
         aria-hidden
-        className="pointer-events-none absolute inset-y-0 left-0 w-1/4 -translate-x-[120%] bg-white/25 group-hover:animate-sheen"
+        className="pointer-events-none absolute inset-y-0 left-0 w-1/4 translate-x-[-120%] bg-white/25 group-hover:animate-sheen"
       />
       {loading ? <Spinner size={16} className="text-current" /> : leftIcon}
       {children}

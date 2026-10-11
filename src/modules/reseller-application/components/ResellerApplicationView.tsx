@@ -68,7 +68,7 @@ export function ResellerApplicationView() {
       <Reveal>
         <section className="relative overflow-hidden rounded-box bg-ink-dark text-white">
           <ParallaxImage src="/images/about/team-1.jpg" alt="" fill sizes="1300px" strength={30} wrapperClassName="absolute inset-0 opacity-35" />
-          <div className="absolute inset-0 bg-gradient-to-r from-ink-dark via-ink-dark/80 to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-r from-ink-dark via-ink-dark/80 to-transparent" />
           <div className="relative grid gap-6 px-4 py-9 sm:gap-8 sm:px-12 sm:py-14 lg:grid-cols-[1.2fr_1fr] lg:py-20">
             <div>
               <span className="inline-block rounded-full bg-primary px-3 py-1 text-[12px] font-bold uppercase tracking-wider">Programme revendeur</span>
@@ -85,7 +85,7 @@ export function ResellerApplicationView() {
                 { n: 10, s: " %", l: "commission max." },
                 { n: 48, s: " h", l: "pour être activé" },
               ].map((x) => (
-                <div key={x.l} className="rounded-box bg-white/10 p-2.5 backdrop-blur sm:p-4">
+                <div key={x.l} className="rounded-box bg-white/10 p-2.5 backdrop-blur-sm sm:p-4">
                   <p className="text-[22px] font-extrabold leading-[28px] text-primary-light sm:text-[28px] sm:leading-[34px]"><CountUp to={x.n} suffix={x.s} /></p>
                   <p className="mt-1 text-[11px] leading-[14px] text-white/70 sm:text-[12px]">{x.l}</p>
                 </div>
@@ -102,7 +102,7 @@ export function ResellerApplicationView() {
           {BENEFITS.map(({ icon: Icon, title, text }) => (
             <RevealItem key={title}>
               <div className="group flex h-full gap-3.5 rounded-box border border-line-3 p-4 transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 sm:block sm:p-5">
-                <span className="grid size-11 shrink-0 place-items-center rounded-full bg-primary-100 text-primary-dark transition-all duration-500 group-hover:rotate-[360deg] group-hover:bg-primary group-hover:text-white sm:size-12"><Icon size={22} variant="Bold" /></span>
+                <span className="grid size-11 shrink-0 place-items-center rounded-full bg-primary-100 text-primary-dark transition-all duration-500 group-hover:rotate-360 group-hover:bg-primary group-hover:text-white sm:size-12"><Icon size={22} variant="Bold" /></span>
                 <div className="min-w-0">
                   <h3 className="text-[15px] leading-[21px] sm:mt-4 sm:text-[16px] sm:leading-[22px]">{title}</h3>
                   <p className="mt-1 text-[13px] leading-[19px] text-ink-2 sm:mt-1.5 sm:text-[14px] sm:leading-[21px]">{text}</p>

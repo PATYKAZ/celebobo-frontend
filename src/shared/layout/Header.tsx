@@ -5,9 +5,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
 import {
-  ArrowDown2, Bag2, Call, Heart, HamburgerMenu, Logout, Messages2, Notification, Profile, Receipt2, Setting2, User,
+  ArrowDown2, Bag2, Call, Heart, Logout, Messages2, Notification, Profile, Receipt2, Setting2, User,
 } from "iconsax-reactjs";
-import { useEffect } from "react";
 import { ROUTES } from "@/config/routes";
 import { cn } from "@/shared/lib/cn";
 import { formatPrice } from "@/shared/lib/format";
@@ -23,7 +22,6 @@ import { useFavoritesStore } from "@/modules/favorites/store/favorites.store";
 import { useUnreadNotificationsCount } from "@/modules/messaging/hooks/useNotifications";
 import { useSiteSettings } from "@/modules/site";
 import { Logo } from "./Logo";
-import { SearchBar } from "./SearchBar";
 
 const NAV = [
   { label: "Accueil", href: ROUTES.home },
@@ -66,7 +64,7 @@ function NavItem({ item }: { item: (typeof NAV)[number] }) {
     <Popover
       openOn="hover"
       className="group"
-      triggerClassName="outline-none"
+      triggerClassName="outline-hidden"
       trigger={label}
       panelClassName={"mega" in item ? "w-[560px] p-4" : "w-[220px]"}
     >
@@ -133,7 +131,7 @@ function CartButton() {
 }
 
 function AccountMenu() {
-  const { user, isAuthenticated, isStaff, isAdmin } = useAuth();
+  const { user, isAuthenticated, isStaff } = useAuth();
   const logout = useLogout();
   const item = "flex items-center gap-3 rounded-md px-3 py-2.5 text-[13px] font-semibold transition-colors hover:bg-chip hover:text-primary";
 
@@ -199,7 +197,7 @@ export function Header() {
   const notifCount = useUnreadNotificationsCount();
 
   return (
-    <header className="rounded-box bg-white max-lg:sticky max-lg:top-0 max-lg:z-40 max-lg:-mx-[15px] max-lg:rounded-none max-lg:border-b max-lg:border-line-3/70 max-lg:pt-[env(safe-area-inset-top)] max-lg:bg-white/95 max-lg:backdrop-blur-md">
+    <header className="rounded-box bg-white max-lg:sticky max-lg:top-0 max-lg:z-40 max-lg:mx-[-15px] max-lg:rounded-none max-lg:border-b max-lg:border-line-3/70 max-lg:pt-safe-t max-lg:bg-white/95 max-lg:backdrop-blur-md">
       {/* Ligne 1 */}
       <div className="hidden items-center justify-between px-[30px] pt-[15px] lg:flex">
         <div className="flex items-center gap-5">
@@ -233,12 +231,12 @@ export function Header() {
           <span className="contents">
             <CircleButton href={ROUTES.messages} label="Messages" className="hidden lg:grid"><Messages2 size={19} variant="Bold" /></CircleButton>
             <span className="relative">
-              <CircleButton href={ROUTES.favorites} label="Favoris" className="max-lg:!size-11"><Heart size={19} variant="Bold" /></CircleButton>
+              <CircleButton href={ROUTES.favorites} label="Favoris" className="max-lg:size-11!"><Heart size={19} variant="Bold" /></CircleButton>
               {favCount > 0 && <span className="pointer-events-none absolute -right-1 -top-1 grid min-w-[18px] place-items-center rounded-full bg-danger px-1 text-[10px] leading-[18px] text-white ring-2 ring-white">{favCount}</span>}
             </span>
             {isAuthenticated && (
               <span className="relative">
-                <CircleButton href={isStaff ? ROUTES.admin.notifications : ROUTES.notifications} label="Notifications" className="max-lg:!size-11"><Notification size={19} variant="Bold" /></CircleButton>
+                <CircleButton href={isStaff ? ROUTES.admin.notifications : ROUTES.notifications} label="Notifications" className="max-lg:size-11!"><Notification size={19} variant="Bold" /></CircleButton>
                 {notifCount > 0 && <span className="pointer-events-none absolute -right-1 -top-1 grid min-w-[18px] place-items-center rounded-full bg-danger px-1 text-[10px] leading-[18px] text-white ring-2 ring-white">{notifCount > 99 ? "99+" : notifCount}</span>}
               </span>
             )}

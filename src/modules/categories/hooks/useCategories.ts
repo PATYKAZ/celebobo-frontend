@@ -2,12 +2,10 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useHydrated } from "@/shared/hooks/useHydrated";
+import { categoryKeys } from "../keys";
 import { categoriesService } from "../services/categories.service";
 
-export const categoryKeys = {
-  all: ["categories"] as const,
-  detail: (slug: string) => ["categories", slug] as const,
-};
+export { categoryKeys };
 
 /**
  * Catégories de la boutique. Partagées par l'en-tête et les pages : le cache peut être rempli avant

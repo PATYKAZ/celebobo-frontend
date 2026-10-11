@@ -93,7 +93,7 @@ export function RecentSalesTable({ data }: { data?: DashboardData }) {
   ];
   return (
     <ChartCard title="Ventes récentes" subtitle="Dernières transactions enregistrées" className="xl:col-span-2" legend={<Link href={ROUTES.admin.sales} className="group inline-flex min-h-10 items-center gap-1 text-[13px] font-semibold text-primary">Tout voir <ArrowRight2 size={13} className="transition-transform group-hover:translate-x-1" /></Link>}>
-      <div className="-mx-5 -mb-5 sm:-mx-[26px] sm:-mb-[26px]">
+      <div className="-mx-5 -mb-5 sm:mx-[-26px] sm:mb-[-26px]">
         <DataTable columns={columns} rows={data?.recentSales} loading={!data} rowKey={(s) => s.id} skeletonRows={5} />
       </div>
     </ChartCard>

@@ -3,17 +3,10 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuthStore } from "@/modules/auth/store/auth.store";
 import { productsService } from "../services/products.service";
+import { productKeys } from "../keys";
 import type { NewReviewInput, ProductListParams } from "../types";
 
-export const productKeys = {
-  all: ["products"] as const,
-  list: (p: ProductListParams) => ["products", "list", p] as const,
-  detail: (slug: string) => ["products", "detail", slug] as const,
-  related: (slug: string) => ["products", "related", slug] as const,
-  suggest: (q: string) => ["products", "suggest", q] as const,
-  reviews: (slug: string) => ["products", "reviews", slug] as const,
-  eligibility: (slug: string, userId?: number) => ["products", "can-review", slug, userId] as const,
-};
+export { productKeys };
 
 /** Liste paginée / filtrée. */
 export function useProducts(params: ProductListParams = {}, enabled = true) {

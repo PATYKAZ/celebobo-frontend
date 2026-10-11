@@ -43,10 +43,10 @@ export function ProductCarousel({ products, loading, perView = 5 }: Props) {
           slidesPerView={1.6}
           breakpoints={{ 480: { slidesPerView: 2.2 }, 640: { slidesPerView: 3 }, 1024: { slidesPerView: 4 }, 1280: { slidesPerView: perView } }}
           spaceBetween={0}
-          className="w-full !overflow-hidden"
+          className="w-full overflow-hidden!"
         >
           {products.map((p, i) => (
-            <SwiperSlide key={p.id} className="!h-auto">
+            <SwiperSlide key={p.id} className="h-auto!">
               <ProductCard product={p} priority={i < 3} />
             </SwiperSlide>
           ))}

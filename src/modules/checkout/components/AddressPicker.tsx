@@ -38,8 +38,8 @@ export function AddressPicker({ form, errors, set, onPick, cities = [], zone }: 
       <div role="radiogroup" aria-label="Adresse de livraison" className="grid gap-3 sm:grid-cols-2">
         {isLoading && (
           <>
-            <Skeleton className="h-[120px] !rounded-box" />
-            <Skeleton className="h-[120px] !rounded-box" />
+            <Skeleton className="h-[120px] rounded-box!" />
+            <Skeleton className="h-[120px] rounded-box!" />
           </>
         )}
         {saved?.map((a) => {
@@ -96,7 +96,7 @@ export function AddressPicker({ form, errors, set, onPick, cities = [], zone }: 
               </div>
               <div className="flex flex-wrap items-center gap-4">
                 <Checkbox label="Enregistrer cette adresse dans mon carnet" checked={form.saveToBook} onChange={(e) => set("saveToBook", e.target.checked)} />
-                {form.saveToBook && <Select aria-label="Libellé" value={form.addressLabel} onChange={(e) => set("addressLabel", e.target.value)} options={ADDRESS_LABELS.map((l) => ({ value: l, label: l }))} wrapperClassName="w-full sm:w-[160px]" className="sm:!h-9" />}
+                {form.saveToBook && <Select aria-label="Libellé" value={form.addressLabel} onChange={(e) => set("addressLabel", e.target.value)} options={ADDRESS_LABELS.map((l) => ({ value: l, label: l }))} wrapperClassName="w-full sm:w-[160px]" className="sm:h-9!" />}
               </div>
             </div>
           </motion.div>

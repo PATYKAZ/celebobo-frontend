@@ -29,7 +29,7 @@ function Inner() {
       <Breadcrumb items={[{ label: "Recherche" }]} />
       <Reveal>
         <Block pad="none" className="px-4 py-4 sm:px-[30px] sm:py-6">
-          <h1 className="break-words text-[22px] leading-[28px] sm:text-h-page">
+          <h1 className="wrap-break-word text-[22px] leading-[28px] sm:text-h-page">
             {q ? (
               <>Résultats pour « <span className="rounded-md bg-primary-50 px-1.5 text-primary">{q}</span> »</>
             ) : (

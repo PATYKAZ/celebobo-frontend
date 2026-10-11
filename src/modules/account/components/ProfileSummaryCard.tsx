@@ -42,7 +42,7 @@ export function ProfileSummaryCard({ user, profile, previewAvatar, onPickAvatar 
   };
 
   return (
-    <Block className="overflow-hidden !p-0">
+    <Block className="overflow-hidden p-0!">
       <div className="relative h-16 bg-primary sm:h-24">
         <motion.span aria-hidden className="absolute -right-6 -top-10 size-40 rounded-full bg-white/10" animate={{ scale: [1, 1.15, 1] }} transition={{ duration: 6, repeat: Infinity }} />
         <motion.span aria-hidden className="absolute left-10 top-8 size-20 rounded-full bg-white/10" animate={{ y: [0, -8, 0] }} transition={{ duration: 5, repeat: Infinity }} />

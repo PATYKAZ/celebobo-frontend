@@ -18,7 +18,7 @@ export function SeoText({ title, paragraphs }: { title: string; paragraphs: stri
               <p key={p.slice(0, 24)}>{p}</p>
             ))}
           </div>
-          {!open && <div className="pointer-events-none absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-white to-transparent" />}
+          {!open && <div className="pointer-events-none absolute inset-x-0 bottom-0 h-14 bg-linear-to-t from-white to-transparent" />}
         </motion.div>
         <button onClick={() => setOpen((o) => !o)} aria-expanded={open} className="mt-2 inline-flex h-11 items-center gap-1 text-link font-semibold text-primary transition-colors hover:text-primary-dark sm:mt-3 sm:h-auto sm:font-normal sm:text-ink">
           {open ? "Voir moins" : "Voir tout"}

@@ -9,7 +9,7 @@ import { deadlineState, stockState } from "../types";
 export function StockPill({ product, className }: { product: Pick<Product, "stock" | "stockThreshold">; className?: string }) {
   const s = stockState(product);
   if (s === "out") return <Pill tone="red" className={className}>Rupture</Pill>;
-  if (s === "low") return <Pill tone="yellow" className={cn("!text-[#9a6a00]", className)}>Bas · {product.stock}</Pill>;
+  if (s === "low") return <Pill tone="yellow" className={cn("text-[#9a6a00]!", className)}>Bas · {product.stock}</Pill>;
   return <Pill tone="green" className={className}>{product.stock} en stock</Pill>;
 }
 

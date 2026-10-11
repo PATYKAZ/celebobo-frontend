@@ -75,7 +75,7 @@ export function AssistantPanel({ showHeader, onClose, onNavigate, className }: P
                   {mine ? m.content : <StreamedText text={m.content} animate={m.animate} onTick={scroll} />}
                 </div>
                 {m.products && m.products.length > 0 && (
-                  <div className="no-scrollbar -mx-1 flex max-w-full snap-x snap-mandatory gap-2.5 overflow-x-auto px-1 pb-1 [&>*]:snap-start" onClick={onNavigate}>
+                  <div className="no-scrollbar -mx-1 flex max-w-full snap-x snap-mandatory gap-2.5 overflow-x-auto px-1 pb-1 *:snap-start" onClick={onNavigate}>
                     {m.products.map((p, i) => <ProductSuggestion key={p.id} product={p} index={i} />)}
                   </div>
                 )}

@@ -56,7 +56,7 @@ export function PriceProposalModal({ open, onClose, conversation }: Props) {
   return (
     <BottomSheet open={open} onClose={onClose} title="Proposer un prix final">
       <div className="space-y-4 pb-2 pt-1">
-        <p className="text-[13px] leading-[19px] text-ink-2">Le client recevra une carte avec Accepter / Refuser. Le prix de la commande n'est modifié qu'après son accord.</p>
+        <p className="text-[13px] leading-[19px] text-ink-2">Le client recevra une carte avec Accepter / Refuser. Le prix de la commande n&apos;est modifié qu&apos;après son accord.</p>
         <Select
           label="Article de la commande"
           value={itemId}

@@ -46,7 +46,7 @@ export function PriceProposalCard({ meta, canRespond, mine }: Props) {
       </div>
       <div className="space-y-3 p-3.5">
         <div>
-          <p className="break-words text-[14px] font-bold leading-[19px]">{meta.productName}</p>
+          <p className="wrap-break-word text-[14px] font-bold leading-[19px]">{meta.productName}</p>
           <p className="text-[12px] text-ink-3">Quantité : {meta.quantity}</p>
         </div>
         <div className="flex items-end justify-between gap-3">

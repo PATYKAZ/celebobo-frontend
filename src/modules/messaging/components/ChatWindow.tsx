@@ -232,7 +232,7 @@ export function ChatWindow({ conversationId, onBack, className }: Props) {
       <section className={cn("grid min-h-0 place-items-center p-8 text-center", className)}>
         <div>
           <h2 className="text-[18px]">Discussion inaccessible</h2>
-          <p className="mt-1 max-w-[320px] text-[14px] text-ink-2">Cette discussion n'existe pas ou ne fait pas partie de vos conversations.</p>
+          <p className="mt-1 max-w-[320px] text-[14px] text-ink-2">Cette discussion n&apos;existe pas ou ne fait pas partie de vos conversations.</p>
           {onBack && <button onClick={onBack} className="mt-4 min-h-12 rounded-box bg-chip px-6 text-[14px] font-bold active:scale-95 hover:bg-primary hover:text-white">Retour</button>}
         </div>
       </section>
@@ -350,7 +350,7 @@ export function ChatWindow({ conversationId, onBack, className }: Props) {
             <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden">
               <div className="relative mb-3 inline-block">
                 <Image src={preview} alt="Aperçu" width={96} height={96} unoptimized className="size-20 rounded-box object-cover sm:size-24" />
-                <button onClick={() => setFile(null)} aria-label="Retirer l'image" className="absolute -right-2 -top-2 grid size-8 place-items-center rounded-full bg-white text-danger shadow">
+                <button onClick={() => setFile(null)} aria-label="Retirer l'image" className="absolute -right-2 -top-2 grid size-8 place-items-center rounded-full bg-white text-danger shadow-sm">
                   <CloseCircle size={24} variant="Bold" />
                 </button>
               </div>
@@ -480,15 +480,14 @@ export function ChatWindow({ conversationId, onBack, className }: Props) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setLightbox(null)}
-            className="fixed inset-0 z-[80] grid place-items-center bg-black/90 p-3"
+            className="fixed inset-0 z-80 grid place-items-center bg-black/90 p-3"
             role="dialog"
             aria-modal="true"
             aria-label="Image agrandie"
           >
-            <button onClick={() => setLightbox(null)} aria-label="Fermer" className="absolute right-3 top-[max(12px,env(safe-area-inset-top))] grid size-11 place-items-center rounded-full bg-white/15 text-white backdrop-blur active:scale-90">
+            <button onClick={() => setLightbox(null)} aria-label="Fermer" className="absolute right-3 top-[max(12px,env(safe-area-inset-top))] grid size-11 place-items-center rounded-full bg-white/15 text-white backdrop-blur-sm active:scale-90">
               <CloseCircle size={26} />
             </button>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
             <motion.img initial={{ scale: 0.92 }} animate={{ scale: 1 }} src={lightbox} alt="Pièce jointe agrandie" className="max-h-[88dvh] max-w-full rounded-box object-contain" onClick={(e) => e.stopPropagation()} />
           </motion.div>
         )}

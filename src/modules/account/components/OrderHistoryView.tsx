@@ -63,7 +63,7 @@ function Content() {
 
       <div className="mt-4 space-y-3 sm:mt-6 sm:space-y-4">
         {isLoading ? (
-          Array.from({ length: 3 }, (_, i) => <Skeleton key={i} className="h-[92px] w-full !rounded-box" />)
+          Array.from({ length: 3 }, (_, i) => <Skeleton key={i} className="h-[92px] w-full rounded-box!" />)
         ) : isError ? (
           <EmptyState icon={<Bag2 size={44} />} title="Chargement impossible" description="Une erreur est survenue lors de la récupération de vos commandes." action={<Button onClick={() => refetch()}>Réessayer</Button>} />
         ) : rows.length > 0 ? (

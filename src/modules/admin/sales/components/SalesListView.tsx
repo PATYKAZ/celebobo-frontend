@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { Add, Chart2, DocumentDownload, Edit2, Eye, MoneyRecive, ReceiptItem, Refresh2, Trash, Wallet3 } from "iconsax-reactjs";
-import { env } from "@/config/env";
 import { ROUTES } from "@/config/routes";
 import { cn } from "@/shared/lib/cn";
 import { formatDateTime, formatPrice } from "@/shared/lib/format";
@@ -15,7 +14,6 @@ import { Block } from "@/shared/ui/Block";
 import { Button } from "@/shared/ui/Button";
 import { EmptyState } from "@/shared/ui/EmptyState";
 import { Select } from "@/shared/ui/Form";
-import { Tabs } from "@/shared/ui/Tabs";
 import { toast } from "@/shared/ui/Toast";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
 import { PermissionGuard, useCan } from "@/modules/auth/hooks/useCan";
@@ -112,8 +110,8 @@ function SalesListContent() {
         <div className="flex min-w-0 items-center gap-3 sm:min-w-[210px]">
           <span className="relative size-12 shrink-0 sm:size-11 overflow-hidden rounded-md bg-page">{s.productImage && <Image src={s.productImage} alt="" fill sizes="44px" className={cn("object-cover", s.status !== "valide" && "grayscale")} />}</span>
           <div className="min-w-0">
-            <p className={cn("line-clamp-2 font-bold leading-[19px] sm:line-clamp-1", dim(s))}>{s.productName}{s.quantity > 1 && <span className="ml-1.5 rounded bg-chip px-1.5 py-0.5 text-[11px] no-underline">× {s.quantity}</span>}</p>
-            <p className="text-[12px] text-ink-3">{s.status !== "valide" && <span className="mr-1.5 rounded bg-chip px-1.5 py-0.5 font-semibold text-ink-2 sm:hidden">{SALE_STATUS_LABEL[s.status]}</span>}{s.category}{s.orderId && <> · <Link prefetch={false} href={ROUTES.admin.order(s.orderId)} className="-my-2 inline-block px-1 py-2 text-primary hover:underline">Cmd #{s.orderId}</Link></>}</p>
+            <p className={cn("line-clamp-2 font-bold leading-[19px] sm:line-clamp-1", dim(s))}>{s.productName}{s.quantity > 1 && <span className="ml-1.5 rounded-sm bg-chip px-1.5 py-0.5 text-[11px] no-underline">× {s.quantity}</span>}</p>
+            <p className="text-[12px] text-ink-3">{s.status !== "valide" && <span className="mr-1.5 rounded-sm bg-chip px-1.5 py-0.5 font-semibold text-ink-2 sm:hidden">{SALE_STATUS_LABEL[s.status]}</span>}{s.category}{s.orderId && <> · <Link prefetch={false} href={ROUTES.admin.order(s.orderId)} className="-my-2 inline-block px-1 py-2 text-primary hover:underline">Cmd #{s.orderId}</Link></>}</p>
           </div>
         </div>
       ),
@@ -182,8 +180,8 @@ function SalesListContent() {
                 <Button variant="chip" upper={false} leftIcon={<DocumentDownload size={17} />} loading={exporting === "pdf"} onClick={() => exportFile("pdf")} className="max-sm:order-3">PDF</Button>
               </>
             )}
-            {canConvert && <Button href={ROUTES.admin.saleConvert} variant="dark" upper={false} leftIcon={<ReceiptItem size={18} />} className="max-sm:order-2 max-sm:!col-span-2">Convertir une commande</Button>}
-            {canCreate && <Button href={ROUTES.admin.saleNew} leftIcon={<Add size={18} />} className="max-sm:order-1 max-sm:!col-span-2">Nouvelle vente</Button>}
+            {canConvert && <Button href={ROUTES.admin.saleConvert} variant="dark" upper={false} leftIcon={<ReceiptItem size={18} />} className="max-sm:order-2 max-sm:col-span-2!">Convertir une commande</Button>}
+            {canCreate && <Button href={ROUTES.admin.saleNew} leftIcon={<Add size={18} />} className="max-sm:order-1 max-sm:col-span-2!">Nouvelle vente</Button>}
           </>
         }
       >

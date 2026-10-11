@@ -45,7 +45,7 @@ export function ImageSlot({ label, value, onChange, main, error }: Props) {
         aria-label={`Choisir : ${label}`}
         className={cn(
           "group relative grid cursor-pointer place-items-center overflow-hidden rounded-box border-2 border-dashed transition-all",
-          main ? "aspect-square" : "aspect-[4/3]",
+          main ? "aspect-square" : "aspect-4/3",
           drag ? "scale-[1.02] border-primary bg-primary-50" : error ? "border-danger bg-danger-50" : "border-line bg-page/40 hover:border-primary",
         )}
       >
@@ -61,7 +61,7 @@ export function ImageSlot({ label, value, onChange, main, error }: Props) {
                 e.stopPropagation();
                 onChange({ url: null, file: null });
               }}
-              className="absolute right-2 top-2 grid size-10 place-items-center rounded-full bg-white text-danger shadow transition-opacity hover:bg-danger hover:text-white active:scale-90 sm:size-8 sm:opacity-0 sm:group-hover:opacity-100"
+              className="absolute right-2 top-2 grid size-10 place-items-center rounded-full bg-white text-danger shadow-sm transition-opacity hover:bg-danger hover:text-white active:scale-90 sm:size-8 sm:opacity-0 sm:group-hover:opacity-100"
             >
               <Trash size={16} />
             </button>

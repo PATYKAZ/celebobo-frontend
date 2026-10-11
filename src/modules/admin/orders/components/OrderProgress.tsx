@@ -19,8 +19,8 @@ export function StatusStepper({ order }: { order: Order }) {
           return (
             <li key={s} className="relative flex flex-1 flex-col items-center text-center">
               {i > 0 && (
-                <span className="absolute right-1/2 top-[15px] h-[3px] w-full rounded bg-chip">
-                  <motion.span initial={{ scaleX: 0 }} animate={{ scaleX: done ? 1 : 0 }} transition={{ duration: 0.5, delay: i * 0.08 }} className={cn("block h-full origin-left rounded", terminal ? "bg-ink-3" : "bg-primary")} />
+                <span className="absolute right-1/2 top-[15px] h-[3px] w-full rounded-sm bg-chip">
+                  <motion.span initial={{ scaleX: 0 }} animate={{ scaleX: done ? 1 : 0 }} transition={{ duration: 0.5, delay: i * 0.08 }} className={cn("block h-full origin-left rounded-sm", terminal ? "bg-ink-3" : "bg-primary")} />
                 </span>
               )}
               <motion.span
@@ -59,7 +59,7 @@ export function StatusHistory({ order }: { order: Order }) {
     <ol className="relative space-y-5 border-l-2 border-line-3 pl-5">
       {items.map((h, i) => (
         <motion.li key={`${h.status}-${h.at}-${i}`} initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }} className="relative">
-          <span className={cn("absolute -left-[27px] top-1 size-3 rounded-full ring-4 ring-white", i === 0 ? "bg-primary" : "bg-line")} />
+          <span className={cn("absolute left-[-27px] top-1 size-3 rounded-full ring-4 ring-white", i === 0 ? "bg-primary" : "bg-line")} />
           <p className="text-[14px] font-semibold leading-[20px]">{ORDER_STATUS_LABEL[h.status]}</p>
           <p className="text-[12px] text-ink-3">
             {formatDateTime(h.at)} · par {h.by.name}

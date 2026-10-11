@@ -33,7 +33,7 @@ export function OrderSummaryCard({ content, orderId, mine }: { content: string; 
         {lines.map((l, i) => (
           <li key={i} className="flex items-start justify-between gap-3 py-2 text-[13px] leading-[18px]">
             <span className="min-w-0">
-              <span className="block break-words font-semibold">{l.name}</span>
+              <span className="block wrap-break-word font-semibold">{l.name}</span>
               <span className="opacity-70">Quantité : {l.qty}</span>
             </span>
             <span className="shrink-0 font-bold">{l.amount}</span>

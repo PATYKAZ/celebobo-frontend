@@ -45,7 +45,7 @@ export function BulkBar({ count, status, busy, onClear, onAction }: Props) {
                 <button className={btn} disabled={busy} onClick={() => onAction({ type: "deactivate" })}><EyeSlash size={15} /> Désactiver</button>
                 <button className={btn} disabled={busy} onClick={() => setDialog("category")}><Category2 size={15} /> Catégorie</button>
                 <button className={btn} disabled={busy} onClick={() => setDialog("discount")}><Tag size={15} /> Remise</button>
-                <button className={`${btn} !bg-danger/80 hover:!bg-danger`} disabled={busy} onClick={() => onAction({ type: "trash" })}><Trash size={15} /> Corbeille</button>
+                <button className={`${btn} bg-danger/80! hover:bg-danger!`} disabled={busy} onClick={() => onAction({ type: "trash" })}><Trash size={15} /> Corbeille</button>
               </>
             )}
             <button aria-label="Tout désélectionner" onClick={onClear} className="grid size-11 shrink-0 place-items-center rounded-full text-white/70 hover:text-white sm:size-9"><CloseCircle size={20} /></button>

@@ -66,7 +66,7 @@ export function OrderCard({ order: summary, defaultOpen = false }: { order: Orde
             <div className="grid gap-5 border-t border-line-3 p-4 sm:gap-6 sm:p-6 lg:grid-cols-[minmax(0,1fr)_320px]">
               <div>
                 <p className="mb-3 text-[13px] font-bold uppercase text-ink-2">{pluralize(count, "article")}</p>
-                {isLoading && <Skeleton className="h-[120px] w-full !rounded-box" />}
+                {isLoading && <Skeleton className="h-[120px] w-full rounded-box!" />}
                 <ul className="divide-y divide-line-3">
                   {order.items.map((it) => (
                     <li key={it.id} className="flex items-center gap-3 py-3">
