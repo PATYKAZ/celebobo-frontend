@@ -8,7 +8,7 @@ import { Reveal } from "@/shared/animations/Reveal";
 import { Block } from "@/shared/ui/Block";
 
 const BENEFITS = [
-  { icon: Truck, label: "Livraison rapide à Kinshasa", short: "Livraison rapide" },
+  { icon: Truck, label: "Livraison rapide à Bukavu et Goma", short: "Livraison rapide" },
   { icon: Messages2, label: "Un revendeur dédié à chaque commande", short: "Revendeur dédié" },
   { icon: ShieldTick, label: "Paiement Mobile Money ou cash", short: "Mobile Money" },
 ];

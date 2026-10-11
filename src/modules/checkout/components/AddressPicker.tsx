@@ -90,7 +90,7 @@ export function AddressPicker({ form, errors, set, onPick, cities = [], zone }: 
               <Input label="Adresse" required value={form.address} onChange={(e) => set("address", e.target.value)} error={errors.address} leftIcon={<Location size={17} />} placeholder="N°, avenue, rue" autoComplete="street-address" />
               <div className="grid gap-4 sm:grid-cols-3 sm:gap-5">
                 <Input label="Quartier / Commune" required value={form.quarter} onChange={(e) => set("quarter", e.target.value)} error={errors.quarter} leftIcon={<Map1 size={17} />} />
-                <Input label="Ville" required value={form.city} onChange={(e) => set("city", e.target.value)} error={errors.city} list="checkout-cities" autoComplete="address-level2" />
+                <Input label="Ville" required value={form.city} onChange={(e) => set("city", e.target.value)} error={errors.city} list="checkout-cities" autoComplete="address-level2" placeholder="Ex. Bukavu, Goma" />
                 <datalist id="checkout-cities">{cities.map((c) => <option key={c} value={c} />)}</datalist>
                 <Input label="Pays" required value={form.country} onChange={(e) => set("country", e.target.value)} error={errors.country} />
               </div>

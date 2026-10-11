@@ -193,6 +193,34 @@ indisponible ». La limite applicative (12 messages/min par utilisateur) ne prot
 Côté front (fait) : message du serveur affiché + bouton « Réessayer » ; réponses en Markdown mises en forme
 (gras, italique, listes) au lieu des astérisques.
 
+## A-2 · Zone de service : Bukavu et Goma d'abord, pas Kinshasa (11/10/2026)
+
+La boutique sert d'abord **Bukavu et Goma**, puis leurs environs, puis le reste du pays. Le front ne contient plus
+aucune mention de Kinshasa ; tout ce qui reste vient du backend.
+
+**Logique et configuration (à corriger en priorité)**
+| Où | Aujourd'hui | Impact |
+|---|---|---|
+| `config/settings/base.py` `TIME_ZONE`, `.env.example`, `deploy/.env.*.example` | `Africa/Kinshasa` (UTC+1) | Bukavu et Goma sont en **`Africa/Lubumbashi` (UTC+2)** : heures des commandes, « aujourd'hui », rapports et quotas décalés d'une heure |
+| `apps/orders/migrations/0003_seed_shipping_zones.py` | zones « Kinshasa » (2,98 $, offerte dès 199 $, 24–48 h) et « Autres villes » (7,50 $, 3–7 j) | un client de Bukavu ou Goma paie le tarif « autres villes » ; prévoir Bukavu, Goma, leurs environs, puis le reste du pays |
+| Base locale (après le jeu E2E) | `GET /shipping/zones/` renvoie `[]` | aucune zone : tarif tiré des réglages du site |
+| `apps/assistant/domain/prompts.py` | « boutique… à Kinshasa », « livraison à Kinshasa 24 à 48 h » | l'assistant répond Kinshasa à tous les clients |
+| `apps/documents/conf.py`, `DOCUMENTS_COMPANY_ADDRESS` | « Kinshasa, RD Congo » | adresse imprimée sur les factures et documents |
+
+**Données affichées sur le site (seeder de démo et base actuelle)**
+| Où | Texte |
+|---|---|
+| Réglages du site (`GET /settings/public/` `address`, `apps/demo/seeder.py`) | « Avenue du Commerce 12, Gombe, Kinshasa » (pied de page, contact) |
+| Bannière d'accueil (`apps/demo/content.py`) | « Livraison offerte dès 199 $ — À Kinshasa, en 24 à 48 h » |
+| Pages « À propos » et « Guide », FAQ (`apps/demo/content.py`) | « née à Kinshasa », « livraison rapide à Kinshasa », « 2,98 $ à Kinshasa », paiement à la livraison « à Kinshasa » |
+| Politique de livraison des produits (`apps/demo/seeder.py`) | « Livraison en 24 à 48 h à Kinshasa » (onglet Livraison de chaque fiche) |
+| Avis client de démo, personnes de démo (`apps/demo/people.py`, `e2e.py`) | quartiers de Kinshasa (Gombe, Limete…) |
+
+Aussi : `docs/business/*`, `README.md`, et 33 occurrences dans les tests.
+
+**Manque côté back-office** : aucune API d'écriture n'est branchée dans le front pour les réglages du site (adresse)
+et les zones de livraison (`/bo/shipping-zones/` existe côté API) ; les corrections passent aujourd'hui par le backend.
+
 ## Déploiement (`deploy/` du dépôt backend) · variables du conteneur front
 
 Le rendu serveur est en place côté front (fiches produit, catégories, accueil, sitemap). Le conteneur front doit recevoir

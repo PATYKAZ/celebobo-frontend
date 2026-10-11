@@ -45,7 +45,7 @@ const EMPTY_FORM: CheckoutForm = {
   recipient: "",
   address: "",
   quarter: "",
-  city: "Kinshasa",
+  city: "",
   country: "RD Congo",
   phone: "",
   paymentMethod: "OrangeMoney",

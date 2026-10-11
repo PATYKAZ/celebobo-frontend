@@ -10,7 +10,7 @@ import { toast } from "@/shared/ui/Toast";
 import { useSaveAddress } from "../hooks/useAddressBook";
 import { ADDRESS_LABELS, type SavedAddress, type SavedAddressInput } from "../types";
 
-const EMPTY: SavedAddressInput = { label: "Domicile", recipient: "", phone: "", line1: "", quarter: "", city: "Kinshasa", country: "RD Congo", isDefault: false };
+const EMPTY: SavedAddressInput = { label: "Domicile", recipient: "", phone: "", line1: "", quarter: "", city: "", country: "RD Congo", isDefault: false };
 
 interface Props {
   open: boolean;
@@ -76,7 +76,7 @@ export function AddressFormModal({ open, onClose, address, defaults, onSaved }: 
         <Input label="Adresse" required value={form.line1} onChange={(e) => set("line1", e.target.value)} error={errors.line1} leftIcon={<Location size={17} />} placeholder="N°, avenue, rue" />
         <div className="grid gap-4 sm:grid-cols-3">
           <Input label="Quartier / Commune" required value={form.quarter} onChange={(e) => set("quarter", e.target.value)} error={errors.quarter} leftIcon={<Map1 size={17} />} />
-          <Input label="Ville" value={form.city} onChange={(e) => set("city", e.target.value)} />
+          <Input label="Ville" value={form.city} onChange={(e) => set("city", e.target.value)} placeholder="Ex. Bukavu, Goma" />
           <Input label="Pays" value={form.country} onChange={(e) => set("country", e.target.value)} />
         </div>
         <Checkbox label="Définir comme adresse par défaut" checked={!!form.isDefault} onChange={(e) => set("isDefault", e.target.checked)} />

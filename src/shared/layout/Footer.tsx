@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowDown2, Call, Facebook, Instagram, Location, Music, Sms, Tenx, Whatsapp, Youtube } from "@/shared/ui/icons";
+import { Call, Facebook, Instagram, Location, Music, Sms, Tenx, Whatsapp, Youtube } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import { SITE } from "@/config/site";
 import { CircleButton } from "@/shared/ui/CircleButton";
@@ -94,10 +94,6 @@ export function Footer() {
 
         {/* Ligne 2 */}
         <div className="mt-12 flex flex-col gap-8 lg:flex-row lg:items-start">
-          <div className="flex gap-2">
-            <span className="flex h-[43px] items-center gap-2 rounded-[8px] border border-line-2/20 px-4 text-[14px]">$ USD <ArrowDown2 size={11} /></span>
-            <span className="flex h-[43px] items-center gap-2 rounded-[8px] border border-line-2/20 px-4 text-[14px]">Fr <ArrowDown2 size={11} /></span>
-          </div>
           <div className="w-full max-w-[857px] lg:ml-auto">
             <h2 className="text-section uppercase">Abonnez-vous et obtenez <span className="text-danger">{site.newsletterDiscount} % de remise</span> sur votre première commande</h2>
             <div className="mt-6"><NewsletterForm /></div>

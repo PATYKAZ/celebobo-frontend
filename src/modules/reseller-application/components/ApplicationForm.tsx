@@ -19,7 +19,7 @@ type Errors = Partial<Record<keyof ResellerApplicationInput, string>>;
 export function ApplicationForm() {
   const { user } = useAuth();
   const submit = useSubmitResellerApplication();
-  const [form, setForm] = useState<ResellerApplicationInput>({ firstName: "", lastName: "", phone: "", email: "", city: "Kinshasa", motivation: "" });
+  const [form, setForm] = useState<ResellerApplicationInput>({ firstName: "", lastName: "", phone: "", email: "", city: "", motivation: "" });
   const [errors, setErrors] = useState<Errors>({});
   const [prefilled, setPrefilled] = useState(false);
 
@@ -73,7 +73,7 @@ export function ApplicationForm() {
           <Input label="Nom" required value={form.lastName} onChange={(e) => set("lastName", e.target.value)} error={errors.lastName} leftIcon={<User size={17} />} autoComplete="family-name" />
           <Input label="Téléphone" required value={form.phone} onChange={(e) => set("phone", e.target.value)} error={errors.phone} leftIcon={<Call size={17} />} placeholder="+243 …" autoComplete="tel" inputMode="tel" enterKeyHint="next" />
           <Input label="E-mail" type="email" required value={form.email} onChange={(e) => set("email", e.target.value)} error={errors.email} leftIcon={<Sms size={17} />} autoComplete="email" inputMode="email" autoCapitalize="none" enterKeyHint="next" />
-          <Input label="Ville" required value={form.city} onChange={(e) => set("city", e.target.value)} error={errors.city} leftIcon={<Location size={17} />} wrapperClassName="sm:col-span-2" />
+          <Input label="Ville" required value={form.city} onChange={(e) => set("city", e.target.value)} placeholder="Ex. Bukavu, Goma" error={errors.city} leftIcon={<Location size={17} />} wrapperClassName="sm:col-span-2" />
           <Textarea label="Parlez-nous de votre projet" required value={form.motivation} onChange={(e) => set("motivation", e.target.value)} error={errors.motivation} placeholder="Votre expérience de la vente, votre réseau, vos objectifs…" wrapperClassName="sm:col-span-2" rows={5} maxLength={2000} />
           <div className="sticky bottom-[calc(var(--tabbar-h)+8px)] z-10 -mx-4 bg-white/90 px-4 py-2 backdrop-blur-md sm:static sm:col-span-2 sm:mx-0 sm:bg-transparent sm:p-0 sm:backdrop-blur-none">
             <Button type="submit" size="lg" loading={submit.isPending} fullWidth>Envoyer ma candidature</Button>

@@ -209,11 +209,8 @@ export function Header() {
         <div className="flex items-center text-[14px] leading-[21px]">
           <Link href={ROUTES.becomeReseller} className="px-5 transition-colors hover:text-primary">Devenir revendeur</Link>
           <Link href={ROUTES.track} className="px-5 transition-colors hover:text-primary">Suivre ma commande</Link>
-          <span className="flex items-center gap-1 border-r border-line-2/60 px-5">$ USD <ArrowDown2 size={11} className="opacity-80" /></span>
-          <span className="flex items-center gap-2 pl-5">
-            <span className="grid size-[15px] place-items-center overflow-hidden rounded-full bg-[linear-gradient(135deg,#007FFF_33%,#F7D618_33%,#F7D618_66%,#CE1021_66%)]" aria-hidden />
-            Fr <ArrowDown2 size={11} className="opacity-80" />
-          </span>
+          {/* une seule devise et une seule langue : information, pas de faux menu déroulant */}
+          <span className="border-l border-line-2/60 pl-5 text-ink-2">Prix en dollars (USD)</span>
         </div>
       </div>
 
