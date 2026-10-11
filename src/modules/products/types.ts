@@ -62,6 +62,9 @@ export interface Product {
   /** Nombre de ventes (tri « meilleures ventes »). */
   salesCount?: number;
   isFavorite?: boolean;
+  /** Titre / description pour les moteurs de recherche (vides → nom / description). */
+  seoTitle?: string | null;
+  seoDescription?: string | null;
 }
 
 export interface VariantOption {

@@ -19,8 +19,9 @@ export const loadCategory = cache(async (slug: string): Promise<{ category: Cate
 
 export function categoryMetadata(category: Category): Metadata {
   const path = `/categorie/${category.slug}`;
-  const title = `${category.name} — achat en ligne`;
+  const title = category.seoTitle || `${category.name} — achat en ligne`;
   const description =
+    category.seoDescription ||
     category.description?.trim() ||
     `${category.name} : ${category.productsCount} produits chez ${SITE.name}, livraison rapide et paiement Mobile Money.`;
   const images = category.image ? [category.image] : [];

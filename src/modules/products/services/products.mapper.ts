@@ -18,6 +18,7 @@ export interface ProductCardDto {
   inStock: boolean;
   freeShipping: boolean;
   isFavorite: boolean;
+  updatedAt?: string;
 }
 
 export interface VariantDto {
@@ -42,6 +43,9 @@ export interface ProductDetailDto extends ProductCardDto {
   lowStock: boolean;
   options: { name: string; values: string[] }[];
   variants: VariantDto[];
+  /** Vides = repli sur le nom / la description (cf. productMetadata). */
+  seoTitle?: string;
+  seoDescription?: string;
 }
 
 export interface ReviewDto {
@@ -115,6 +119,8 @@ export function toProduct(dto: ProductCardDto | ProductDetailDto): Product {
     freeShipping: dto.freeShipping,
     shippingFee: moneyOrNull(detail?.shippingFee),
     isFavorite: dto.isFavorite,
+    seoTitle: detail?.seoTitle || null,
+    seoDescription: detail?.seoDescription || null,
   };
 }
 

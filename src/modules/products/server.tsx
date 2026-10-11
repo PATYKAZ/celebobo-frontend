@@ -26,15 +26,17 @@ const excerpt = (text: string, max = 158) => (text.length > max ? `${text.slice(
 
 export function productMetadata(product: Product): Metadata {
   const path = `/produits/${product.slug}`;
-  const description = excerpt(product.description || product.longDescription || `${product.name} chez Celebobo.`);
+  // champs SEO saisis dans le back-office en priorité, sinon nom / description du produit
+  const title = product.seoTitle || product.name;
+  const description = excerpt(product.seoDescription || product.description || product.longDescription || `${product.name} chez ${SITE.name}.`);
   const images = (product.images.length ? product.images : product.image ? [product.image] : []).slice(0, 4);
   return {
-    title: product.name,
+    title,
     description,
     alternates: { canonical: path },
     // openGraph remplace celui du layout (pas de fusion) : siteName / locale répétés
-    openGraph: { type: "website", siteName: SITE.name, locale: "fr_CD", url: path, title: product.name, description, images },
-    twitter: { card: images.length ? "summary_large_image" : "summary", title: product.name, description, images },
+    openGraph: { type: "website", siteName: SITE.name, locale: "fr_CD", url: path, title, description, images },
+    twitter: { card: images.length ? "summary_large_image" : "summary", title, description, images },
   };
 }
 

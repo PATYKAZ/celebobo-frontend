@@ -9,6 +9,8 @@ export interface CategoryDto {
   image: string;
   icon: string;
   productsCount: number;
+  seoTitle?: string;
+  seoDescription?: string;
 }
 
 export function toCategory(dto: CategoryDto): Category {
@@ -20,5 +22,7 @@ export function toCategory(dto: CategoryDto): Category {
     image: dto.image || null,
     productsCount: dto.productsCount,
     icon: dto.icon,
+    seoTitle: dto.seoTitle || null,
+    seoDescription: dto.seoDescription || null,
   };
 }
