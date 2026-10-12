@@ -74,6 +74,7 @@ export const ENDPOINTS = {
   uploads: {
     sign: "/uploads/sign/",
     complete: "/uploads/complete/",
+    completeBatch: "/uploads/complete/batch/", // { uploads: [...] } (8 au maximum) → médias dans le même ordre
   },
 
   // ---- Échanges ---------------------------------------------------------
@@ -90,9 +91,6 @@ export const ENDPOINTS = {
     respondProposal: (proposalId: number | string) => `/price-proposals/${proposalId}/respond/`,
     clientOrder: (number: string) => `/me/orders/${encodeURIComponent(number)}/`,
     staffOrder: (orderId: number | string) => `/bo/orders/${orderId}/`,
-    /** Pièce jointe : signature Cloudinary (purpose message_attachment) puis enregistrement */
-    uploadSign: "/uploads/sign/",
-    uploadComplete: "/uploads/complete/",
   },
   notifications: {
     list: "/notifications/",
@@ -200,6 +198,7 @@ export const ENDPOINTS = {
     shippingZones: {
       list: "/bo/shipping-zones/", // GET / POST (responsable, admin)
       detail: (id: number) => `/bo/shipping-zones/${id}/`, // PATCH / DELETE
+      reorder: "/bo/shipping-zones/reorder/", // { ids } dans le nouvel ordre → zones triées
     },
     categories: {
       list: "/bo/categories/",

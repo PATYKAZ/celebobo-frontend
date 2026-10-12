@@ -55,17 +55,21 @@ export function usePatchZone() {
   });
 }
 
-/** Déplace une zone d'un cran ; les positions sont renumérotées 0, 1, 2… (seules celles qui changent sont envoyées). */
+/** Déplace une zone d'un cran : un seul `POST /bo/shipping-zones/reorder/`, la réponse remplace la liste. */
 export function useMoveZone() {
+  const qc = useQueryClient();
   const invalidate = useInvalidateZones();
   return useMutation({
-    mutationFn: async ({ zones, index, dir }: { zones: AdminShippingZone[]; index: number; dir: -1 | 1 }) => {
-      const order = [...zones];
+    mutationFn: ({ zones, index, dir }: { zones: AdminShippingZone[]; index: number; dir: -1 | 1 }) => {
+      const order = zones.map((z) => z.id);
       const [moved] = order.splice(index, 1);
       order.splice(index + dir, 0, moved);
-      await Promise.all(order.map((z, position) => (z.position === position ? null : adminSettingsService.patchZone(z.id, { position }))));
+      return adminSettingsService.reorderZones(order);
     },
-    onSuccess: invalidate,
+    onSuccess: (zones) => {
+      qc.setQueryData(adminSettingsKeys.zones, zones);
+      invalidate();
+    },
   });
 }
 

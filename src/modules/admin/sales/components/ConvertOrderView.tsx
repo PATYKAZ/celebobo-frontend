@@ -44,8 +44,8 @@ function ConvertPanel({ co, onDone }: { co: ConvertibleOrder; onDone: () => void
     convert.mutate(
       { orderId: o.id, input: { lines: o.items.map((i) => ({ itemId: i.id, unitPrice: Number(prices[i.id]) })), method, soldAt, venduA } },
       {
-        onSuccess: (res) => {
-          toast.success(`${res.sales.length} vente${res.sales.length > 1 ? "s" : ""} enregistrée${res.sales.length > 1 ? "s" : ""}`, `Commande #${o.id} convertie · ${formatPrice(total)}`);
+        onSuccess: (sales) => {
+          toast.success(`${sales.length} vente${sales.length > 1 ? "s" : ""} enregistrée${sales.length > 1 ? "s" : ""}`, `Commande #${o.id} convertie · ${formatPrice(total)}`);
           onDone();
         },
         onError: (er) => {

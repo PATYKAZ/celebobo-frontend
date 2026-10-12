@@ -2,7 +2,6 @@ import { ENDPOINTS } from "@/config/endpoints";
 import { api, downloadJob, idempotent, runJob, type Job, type PageEnvelope } from "@/shared/lib/api";
 import { formatDate } from "@/shared/lib/format";
 import { PAYMENT_TO_API, toOrder, type OrderDto } from "@/modules/orders/services/orders.mapper";
-import type { Order } from "@/modules/orders/types";
 import type { ConvertibleOrder, ConvertOrderInput, RefundInput, Sale, SaleInput, SaleListParams, SalePage } from "../types";
 import { STATUS_TO_API, toSale, toStats, type SaleDto, type SaleStatsDto } from "./sales.mapper";
 
@@ -116,15 +115,15 @@ export const salesService = {
     return { order, convertible: match?.convertible ?? false, blockedReason: match ? blockedLabel(match.blockedReason) : "Commande non convertible.", convertedAt: null };
   },
 
-  /** Convertit une commande en ventes : 1 vente par ligne (quantité conservée). */
-  async convertOrder(orderId: number, input: ConvertOrderInput): Promise<{ sales: Sale[]; order: Order }> {
+  /** Convertit une commande en ventes : 1 vente par ligne (quantité conservée). La commande est rechargée par invalidation. */
+  async convertOrder(orderId: number, input: ConvertOrderInput): Promise<Sale[]> {
     const created = await api.post<SaleDto[]>(orders.convertToSales(orderId), {
       paymentMethod: PAYMENT_TO_API[input.method],
       soldAt: input.soldAt,
       soldTo: input.venduA ?? "",
       lines: input.lines.map((l) => ({ itemId: l.itemId, unitPrice: l.unitPrice.toFixed(2) })),
     }, idempotent());
-    return { sales: created.map(toSale), order: toOrder(await api.get<OrderDto>(orders.detail(orderId))) };
+    return created.map(toSale);
   },
 
   /** Export des ventes filtrées (tâche asynchrone de l'API), téléchargé une fois prêt. */

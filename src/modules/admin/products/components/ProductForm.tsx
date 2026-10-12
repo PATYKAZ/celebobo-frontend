@@ -48,7 +48,7 @@ interface Props {
 export function ProductForm({ product }: Props) {
   const router = useAppRouter();
   const { data: categories } = useCategories();
-  const save = useSaveProduct(product?.id ?? null);
+  const save = useSaveProduct(product ?? null);
 
   const [v, setV] = useState<ProductFormValues>(() => (product ? productToForm(product) : EMPTY_FORM));
   const [images, setImages] = useState<ImageSlotValue[]>(() => Array.from({ length: 4 }, (_, i) => ({ url: product?.images[i] ?? null })));

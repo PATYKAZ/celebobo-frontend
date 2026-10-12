@@ -1,5 +1,5 @@
 import type { Product, ProductVariant, VariantOption } from "@/modules/products/types";
-import type { Paginated } from "@/shared/lib/api";
+import type { Paginated, SentUpload } from "@/shared/lib/api";
 
 export type ProductStatusFilter = "active" | "trash";
 
@@ -99,6 +99,8 @@ export interface ImageSlotValue {
   url: string | null;
   /** Nouveau fichier à envoyer */
   file?: File | null;
+  /** Envoi à Cloudinary lancé dès le choix du fichier ; l'enregistrement se fait au clic sur « Enregistrer » */
+  upload?: Promise<SentUpload>;
 }
 
 export const EMPTY_FORM: ProductFormValues = {

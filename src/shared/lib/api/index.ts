@@ -4,6 +4,6 @@ export { ApiError, getErrorMessage } from "./errors";
 export { camelizeKeys, snakeizeKeys } from "./case";
 export { downloadJob, jobDownloadUrl, runJob, waitForJob } from "./jobs";
 export type { Job, JobFormat, JobKind, JobStatus, WaitForJobOptions } from "./jobs";
-export { uploadMedia } from "./uploads";
-export type { UploadedMedia, UploadPurpose } from "./uploads";
+export { completeUploads, sendUpload, uploadMedia, uploadMediaMany } from "./uploads";
+export type { SentUpload, UploadedMedia, UploadPurpose } from "./uploads";
 export type { Paginated, PageEnvelope, PageParams, FieldErrors, Problem } from "./types";

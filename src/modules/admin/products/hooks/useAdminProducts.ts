@@ -1,6 +1,7 @@
 "use client";
 
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import type { Product } from "@/modules/products/types";
 import { adminProductsService } from "../services/admin-products.service";
 import type { AdminProductListParams, BulkAction, ImageSlotValue, ProductFormValues, StockAdjustInput } from "../types";
 
@@ -44,11 +45,16 @@ export function useStockMovements(id: number | undefined, enabled = true) {
   return useQuery({ queryKey: adminProductKeys.movements(id ?? 0), queryFn: () => adminProductsService.stockMovements(id as number), enabled: !!id && enabled });
 }
 
-export function useSaveProduct(id: number | null) {
+/** `product` : la fiche en cours de modification (`null` à la création) ; ses variantes indiquent lesquelles existent déjà. */
+export function useSaveProduct(product: Product | null) {
   const invalidate = useInvalidateCatalog();
+  const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ values, images }: { values: ProductFormValues; images: ImageSlotValue[] }) => adminProductsService.save(id, values, images),
-    onSuccess: invalidate,
+    mutationFn: ({ values, images }: { values: ProductFormValues; images: ImageSlotValue[] }) => adminProductsService.save(product, values, images),
+    onSuccess: (saved) => {
+      qc.setQueryData(adminProductKeys.detail(saved.id), saved);
+      invalidate();
+    },
   });
 }
 

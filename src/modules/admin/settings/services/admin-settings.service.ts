@@ -27,8 +27,13 @@ export const adminSettingsService = {
     return toAdminZone(await api.patch<ZoneDto>(shippingZones.detail(id), toZonePayload(values)));
   },
 
-  async patchZone(id: number, patch: Partial<Pick<AdminShippingZone, "isActive" | "isDefault" | "position">>): Promise<AdminShippingZone> {
+  async patchZone(id: number, patch: Partial<Pick<AdminShippingZone, "isActive" | "isDefault">>): Promise<AdminShippingZone> {
     return toAdminZone(await api.patch<ZoneDto>(shippingZones.detail(id), patch));
+  },
+
+  /** Nouvel ordre en un appel ; l'API renvoie les zones triées (positions 1, 2, 3…). */
+  async reorderZones(ids: number[]): Promise<AdminShippingZone[]> {
+    return (await api.post<ZoneDto[]>(shippingZones.reorder, { ids })).map(toAdminZone);
   },
 
   async deleteZone(id: number): Promise<void> {
