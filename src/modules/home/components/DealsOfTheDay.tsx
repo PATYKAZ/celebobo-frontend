@@ -4,7 +4,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, type MouseEvent } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { Add, RecordCircle } from "@/shared/ui/icons";
+import { Add, Gift, RecordCircle } from "@/shared/ui/icons";
+import { CountUp } from "@/shared/animations/CountUp";
+import { useCountdown } from "@/shared/hooks/useCountdown";
 import { useFormatPrice } from "@/shared/currency/CurrencyProvider";
 import { ROUTES } from "@/config/routes";
 import { Reveal } from "@/shared/animations/Reveal";
@@ -16,9 +18,8 @@ import { SectionHeader } from "@/shared/ui/SectionHeader";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { Stars } from "@/shared/ui/Stars";
 import { useCart } from "@/modules/cart/hooks/useCart";
-import type { Product } from "@/modules/products/types";
 import { getPricing } from "@/modules/products/utils";
-import type { HomeContent } from "../types";
+import type { HomeContent, HomeDeal } from "../types";
 import { PhotoBanner } from "./PhotoBanner";
 
 function ZoomImage({ src, alt }: { src: string; alt: string }) {
@@ -39,17 +40,62 @@ function ZoomImage({ src, alt }: { src: string; alt: string }) {
   );
 }
 
+/** Chiffre qui « tourne » quand sa valeur change. */
+function FlipNumber({ value }: { value: number }) {
+  const text = String(value).padStart(2, "0");
+  return (
+    <span className="relative inline-block h-[30px] overflow-hidden">
+      <AnimatePresence mode="popLayout" initial={false}>
+        <motion.span key={text} initial={{ y: "-100%", opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: "100%", opacity: 0 }} transition={{ duration: 0.3, ease: "easeOut" }} className="block tabular-nums">
+          {text}
+        </motion.span>
+      </AnimatePresence>
+    </span>
+  );
+}
+
+function Countdown({ endsAt }: { endsAt: string }) {
+  const c = useCountdown(endsAt);
+  if (c.done) return <p className="text-[14px] font-bold text-danger">Offre terminée</p>;
+  const cells = [
+    { v: c.days, u: "j", label: "jours" },
+    { v: c.hours, u: "h", label: "heures" },
+    { v: c.minutes, u: "m", label: "minutes" },
+    { v: c.seconds, u: "s", label: "secondes" },
+  ];
+  return (
+    <div role="timer" aria-label={`Fin de l'offre dans ${c.days} jours, ${c.hours} heures et ${c.minutes} minutes`} className="grid grid-cols-4 gap-2 sm:flex sm:gap-2.5">
+      {cells.map((x) => (
+        <div key={x.u} aria-hidden className="flex h-[74px] w-full flex-col items-center rounded-md bg-chip-2 pt-[7px] sm:w-[56px]">
+          <span className="text-[20px] font-bold leading-[30px]">
+            <FlipNumber value={x.v} />
+          </span>
+          <span className="text-[14px] font-bold leading-[21px] text-ink-2">{x.u}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+const endFmt = new Intl.DateTimeFormat("fr-FR", { weekday: "long", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" });
+
 /**
- * Offre du jour : la promotion la plus vendue du moment. Tout ce qui est affiché vient du produit (prix, économie,
- * livraison offerte, stock) ; pas de compte à rebours ni de « vendus x/y » tant que l'API ne gère pas de vraie
- * offre datée et limitée (cf. docs/BACKEND_CHANGES.md).
+ * Offre du jour. Programmée dans l'admin : prix de l'offre (appliqué jusqu'au paiement), compte à rebours jusqu'à sa
+ * fin, unités vendues sur la quantité prévue, cadeau. Sans offre programmée : la promotion la plus vendue, sans date.
  */
-function DealCard({ product }: { product: Product }) {
+function DealCard({ deal }: { deal: HomeDeal }) {
   const { add } = useCart();
   const formatPrice = useFormatPrice();
   const [active, setActive] = useState(0);
-  const pricing = getPricing(product);
-  const gallery = product.images.length ? product.images : product.image ? [product.image] : [];
+  const { product, variant } = deal;
+  const onSale = deal.regularPrice > deal.dealPrice;
+  const saving = onSale ? deal.regularPrice - deal.dealPrice : 0;
+  const percent = onSale ? Math.round((saving / deal.regularPrice) * 100) : 0;
+  const left = deal.quantity != null ? Math.max(0, deal.quantity - (deal.sold ?? 0)) : null;
+  const inStock = (variant ? variant.stock > 0 : product.inStock) && left !== 0;
+  const pct = deal.quantity ? Math.min(100, Math.round(((deal.sold ?? 0) / deal.quantity) * 100)) : 0;
+  const gallery = [...new Set([variant?.image, ...product.images].filter((x): x is string => !!x))];
+  const addToCart = () => add(product, 1, variant ? { variantId: variant.id, variantLabel: variant.label, priceDelta: deal.dealPrice - product.price } : undefined);
 
   return (
     <div className="grid grid-cols-[minmax(0,1fr)] gap-5 rounded-b-box bg-white p-4 sm:gap-6 sm:p-[30px] lg:grid-cols-[minmax(0,441px)_minmax(0,1fr)] lg:gap-[34px]">
@@ -64,8 +110,8 @@ function DealCard({ product }: { product: Product }) {
         </div>
         <div className="relative aspect-4/3 w-full min-w-0 sm:aspect-405/330 sm:flex-1">
           {gallery[active] && <ZoomImage src={gallery[active]} alt={product.name} />}
-          {pricing.onSale && <SaveBadge large amount={pricing.saving} className="absolute left-3 top-3 z-10" />}
-          <button onClick={() => add(product)} aria-label="Ajouter au panier" className="absolute right-3 top-3 z-10 grid size-11 place-items-center rounded-pill bg-chip-2 sm:size-[30px] transition-all hover:rotate-90 hover:bg-primary hover:text-white">
+          {onSale && <SaveBadge large amount={saving} className="absolute left-3 top-3 z-10" />}
+          <button onClick={addToCart} disabled={!inStock} aria-label="Ajouter au panier" className="absolute right-3 top-3 z-10 grid size-11 place-items-center rounded-pill bg-chip-2 transition-all hover:rotate-90 hover:bg-primary hover:text-white disabled:pointer-events-none disabled:opacity-40 sm:size-[30px]">
             <Add size={16} />
           </button>
         </div>
@@ -76,8 +122,9 @@ function DealCard({ product }: { product: Product }) {
         <Stars rating={product.rating ?? 5} count={product.reviewsCount} />
         <Link href={ROUTES.product(product.slug)} className="mt-2 block text-[16px] font-bold leading-[19.2px] transition-colors hover:text-primary">
           {product.name}
+          {variant && <span className="font-semibold text-ink-2"> · {variant.label}</span>}
         </Link>
-        <Price current={pricing.current} original={pricing.original} size="lg" className="mt-4" />
+        <Price current={deal.dealPrice} original={onSale ? deal.regularPrice : null} size="lg" className="mt-4" />
         <ul className="mt-4 space-y-1">
           {product.features.slice(0, 3).map((f) => (
             <li key={f} className="flex items-center gap-2 text-[12px] leading-[21.6px]">
@@ -86,22 +133,50 @@ function DealCard({ product }: { product: Product }) {
           ))}
         </ul>
         <div className="mt-4 flex flex-wrap gap-2">
-          {pricing.onSale && <Pill tone="red" className="h-7 px-[15px] text-[12px]">−{pricing.percent} %</Pill>}
+          {onSale && <Pill tone="red" className="h-7 px-[15px] text-[12px]">−{percent} %</Pill>}
+          {deal.giftLabel && (
+            <Pill tone="red" className="h-7 gap-1.5 px-[15px] text-[12px]">
+              <Gift size={14} variant="Bold" /> {deal.giftLabel}
+            </Pill>
+          )}
           {product.freeShipping && <Pill tone="green" className="h-7 px-[15px] text-[12px]">Livraison offerte</Pill>}
-          <Pill tone={product.inStock ? "green" : "red"} className="h-7 px-[15px] text-[12px]">{product.inStock ? "En stock" : "Épuisé"}</Pill>
+          <Pill tone={inStock ? "green" : "red"} className="h-7 px-[15px] text-[12px]">{inStock ? "En stock" : "Épuisé"}</Pill>
         </div>
 
-        <div className="mt-5 flex flex-col gap-3 border-t border-line-3 pt-5 sm:mt-6 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-[13px] leading-[22px] text-ink-2">
-            {pricing.onSale ? (
-              <>Vous économisez <strong className="text-ink">{formatPrice(pricing.saving)}</strong> sur le prix habituel.</>
-            ) : (
-              "Prix Celebobo, livraison suivie jusqu'à chez vous."
-            )}
-          </p>
-          <div className="flex gap-2">
-            <Button size="sm" variant="outline" href={ROUTES.product(product.slug)} className="max-sm:flex-1">Voir</Button>
-            <Button size="sm" onClick={() => add(product)} disabled={!product.inStock} className="max-sm:flex-1 max-sm:px-8">Ajouter</Button>
+        {deal.endsAt && (
+          <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-5">
+            <p className="text-[13px] font-medium uppercase leading-[19.5px] sm:max-w-[130px]" title={`Jusqu'au ${endFmt.format(new Date(deal.endsAt))}`}>
+              Dépêchez-vous ! L’offre se termine dans
+            </p>
+            <Countdown endsAt={deal.endsAt} />
+          </div>
+        )}
+
+        <div className="mt-5 border-t border-line-3 pt-5 sm:mt-6">
+          {deal.quantity != null && (
+            <div className="h-2 overflow-hidden rounded-full bg-page" role="progressbar" aria-label="Unités vendues" aria-valuemin={0} aria-valuemax={deal.quantity} aria-valuenow={deal.sold ?? 0}>
+              <motion.div initial={{ width: 0 }} whileInView={{ width: `${pct}%` }} viewport={{ once: true }} transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }} className="relative h-full rounded-full bg-primary">
+                <span className="absolute inset-y-0 right-0 w-8 animate-shimmer bg-linear-to-r from-transparent via-white/50 to-transparent bg-size-[200%_100%]" />
+              </motion.div>
+            </div>
+          )}
+          <div className={cn("flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between", deal.quantity != null && "mt-3")}>
+            <p className="text-[13px] leading-[22px] text-ink-2">
+              {deal.quantity != null ? (
+                <>
+                  Vendus : <strong className="text-ink"><CountUp to={deal.sold ?? 0} />/{deal.quantity}</strong>
+                  {left ? <> · plus que {left}</> : null}
+                </>
+              ) : onSale ? (
+                <>Vous économisez <strong className="text-ink">{formatPrice(saving)}</strong> sur le prix habituel.</>
+              ) : (
+                "Prix Celebobo, livraison suivie jusqu'à chez vous."
+              )}
+            </p>
+            <div className="flex gap-2">
+              <Button size="sm" variant="outline" href={ROUTES.product(product.slug)} className="max-sm:flex-1">Voir</Button>
+              <Button size="sm" onClick={addToCart} disabled={!inStock} className="max-sm:flex-1 max-sm:px-8">Ajouter</Button>
+            </div>
           </div>
         </div>
       </div>
@@ -122,7 +197,7 @@ export function DealsOfTheDay({ content }: { content?: HomeContent }) {
         {!picks ? (
           <Skeleton className="h-[420px] rounded-b-box rounded-t-none" />
         ) : picks.deal ? (
-          <DealCard product={picks.deal} />
+          <DealCard deal={picks.deal} />
         ) : (
           <div className="rounded-b-box bg-white p-6 text-center text-[14px] text-ink-2 sm:p-10">Pas de promotion en ce moment. Revenez bientôt !</div>
         )}

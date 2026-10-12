@@ -1,4 +1,4 @@
-import type { Product } from "@/modules/products/types";
+import type { Product, ProductVariant } from "@/modules/products/types";
 
 export interface HeroSlide {
   id: number;
@@ -48,10 +48,29 @@ export interface HomeCatalog {
   byCategory: Record<string, Product[]>;
 }
 
+/**
+ * Offre du jour. Programmée dans l'admin (`/bo/deals/`) : prix, fin, quantité et cadeau réels. Sans offre programmée,
+ * la promotion la plus vendue du moment prend la place, sans compte à rebours ni quantité.
+ */
+export interface HomeDeal {
+  /** null : simple promotion du catalogue, pas une offre programmée */
+  id: number | null;
+  product: Product;
+  /** variante concernée (offre sur une seule variante), sinon null */
+  variant: ProductVariant | null;
+  dealPrice: number;
+  regularPrice: number;
+  endsAt: string | null;
+  /** null = sans limite de quantité */
+  quantity: number | null;
+  sold: number | null;
+  giftLabel: string;
+}
+
 /** Produits réels répartis entre les emplacements de l'accueil, sans doublon. */
 export interface HomePicks {
-  /** offre du jour : promotion la plus vendue */
-  deal: Product | null;
+  /** offre du jour programmée, sinon promotion la plus vendue */
+  deal: HomeDeal | null;
   /** 2 mini-bannières sous le carrousel : promotions suivantes */
   minis: Product[];
   /** 2 cartes à droite du carrousel : meilleures ventes */
