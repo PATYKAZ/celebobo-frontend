@@ -12,10 +12,13 @@ const isPlainObject = (v: unknown): v is Record<string, unknown> =>
 const toCamel = (s: string) => s.replace(/_([a-z0-9])/g, (_, c: string) => c.toUpperCase());
 const toSnake = (s: string) => s.replace(/[A-Z]/g, (c) => `_${c.toLowerCase()}`);
 
+/** Objets dont les clés sont des données saisies (« Taille », « Couleur »…) : transmis tels quels. */
+const VERBATIM = new Set(["attributes"]);
+
 function convert(value: unknown, fn: (k: string) => string): unknown {
   if (Array.isArray(value)) return value.map((v) => convert(v, fn));
   if (isPlainObject(value)) {
-    return Object.fromEntries(Object.entries(value).map(([k, v]) => [fn(k), convert(v, fn)]));
+    return Object.fromEntries(Object.entries(value).map(([k, v]) => [fn(k), VERBATIM.has(k) ? v : convert(v, fn)]));
   }
   return value;
 }

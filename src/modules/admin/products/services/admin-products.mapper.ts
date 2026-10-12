@@ -115,7 +115,8 @@ export function toAdminProduct(dto: AdminProductRowDto | AdminProductDetailDto):
     lowStock: dto.lowStock,
     dateWish: detail?.sellBy ?? null,
     variantOptions: detail?.options ?? [],
-    variants: (detail?.variants ?? []).map((v) => ({ id: v.id, attributes: v.attributes, label: v.label, price: orNull(v.price), stock: v.stock, sku: v.sku, image: v.image || null })),
+    // une variante retirée qui a un historique de stock est seulement désactivée par l'API : on ne la montre plus
+    variants: (detail?.variants ?? []).filter((v) => v.isActive).map((v) => ({ id: v.id, attributes: v.attributes, label: v.label, price: orNull(v.price), stock: v.stock, sku: v.sku, image: v.image || null })),
     deletedAt: dto.status === "trash" ? dto.updatedAt : null,
     isActive: dto.status === "active",
     freeShipping: detail?.freeShipping ?? false,
