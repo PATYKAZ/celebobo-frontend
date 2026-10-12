@@ -14,7 +14,7 @@ export function FilterTrigger({ count, onClick, className }: { count: number; on
       type="button"
       onClick={onClick}
       aria-haspopup="dialog"
-      className={cn("relative inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-box border px-4 text-[14px] font-semibold transition-colors active:scale-[0.97]", count > 0 ? "border-primary bg-primary-50 text-primary-dark" : "border-line bg-white", className)}
+      className={cn("relative inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-box border px-4 text-[14px] font-semibold transition-colors active:scale-[0.97]", count > 0 ? "border-primary bg-primary-50 text-primary-dark" : "border-line bg-surface", className)}
     >
       <Filter size={18} variant={count > 0 ? "Bold" : "Linear"} />
       Filtrer
@@ -38,7 +38,7 @@ export function FilterSheet({ open, onClose, title = "Filtres", onReset, resetDi
   return (
     <BottomSheet open={open} onClose={onClose} title={title}>
       <div className="space-y-4 pb-4 pt-1">{children}</div>
-      <div className="sticky bottom-0 -mx-5 grid grid-cols-2 gap-3 border-t border-line-3 bg-white px-5 py-3 pb-safe">
+      <div className="sticky bottom-0 -mx-5 grid grid-cols-2 gap-3 border-t border-line-3 bg-surface px-5 py-3 pb-safe">
         <Button variant="chip" upper={false} disabled={resetDisabled} onClick={() => onReset?.()}>Réinitialiser</Button>
         <Button upper={false} onClick={onClose}>Voir les résultats</Button>
       </div>

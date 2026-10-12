@@ -73,7 +73,7 @@ export function StatusActionBar({ order, onAssign }: { order: Order; onAssign?: 
       {/* Mobile (< lg) : barre fixe au-dessus de la barre d'onglets */}
       {hasMobileBar && (
         <>
-          <div className="fixed inset-x-0 bottom-[max(var(--tabbar-h),env(safe-area-inset-bottom))] z-40 flex items-center gap-2 border-t border-line-3 bg-white/95 px-4 py-3 backdrop-blur-xl lg:hidden">
+          <div className="fixed inset-x-0 bottom-[max(var(--tabbar-h),env(safe-area-inset-bottom))] z-40 flex items-center gap-2 border-t border-line-3 bg-surface/95 px-4 py-3 backdrop-blur-xl lg:hidden">
             {secondary.map((s) => {
               const a = ACTIONS[s]!;
               return (

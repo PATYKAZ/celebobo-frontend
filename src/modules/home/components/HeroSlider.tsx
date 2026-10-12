@@ -26,7 +26,7 @@ const item: Variants = {
 const CTA = {
   primary: "bg-primary text-white hover:bg-primary-dark",
   dark: "bg-black text-white hover:bg-primary",
-  white: "bg-white text-ink hover:bg-primary hover:text-white",
+  white: "bg-surface text-ink hover:bg-primary hover:text-white",
 };
 
 /** Hauteur du héro : explicite (jamais 0) — 300 px mobile, 310 px dès sm (design). */
@@ -52,10 +52,10 @@ function Slide({ slide, active }: { slide: HeroSlide; active: boolean }) {
         variants={container}
         initial="hidden"
         animate={active ? "show" : "hidden"}
-        className={cn("relative z-10 flex h-full flex-col justify-end gap-0 px-5 pb-12 text-white sm:max-w-[62%] sm:justify-center sm:px-0 sm:pb-0 sm:pl-[60px]", !dark && "sm:text-ink")}
+        className={cn("relative z-10 flex h-full flex-col justify-end gap-0 px-5 pb-12 text-white sm:max-w-[62%] sm:justify-center sm:px-0 sm:pb-0 sm:pl-[60px]", !dark && "sm:text-on-light")}
       >
         {slide.eyebrow && (
-          <motion.p variants={item} className={cn("mb-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-white/80", !dark && "sm:text-ink-2")}>
+          <motion.p variants={item} className={cn("mb-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-white/80", !dark && "sm:text-on-light-2")}>
             {slide.eyebrow}
           </motion.p>
         )}
@@ -73,7 +73,7 @@ function Slide({ slide, active }: { slide: HeroSlide; active: boolean }) {
         )}
         {slide.product && (
           <motion.p variants={item} className="mt-3">
-            <BannerPrice product={slide.product} className={cn("text-[22px] leading-[26px] text-sun", !dark && "sm:text-danger")} strikeClassName={cn("text-white/70", !dark && "sm:text-ink-3")} />
+            <BannerPrice product={slide.product} className={cn("text-[22px] leading-[26px] text-sun", !dark && "sm:text-[#c4261d]")} strikeClassName={cn("text-white/70", !dark && "sm:text-on-light-2")} />
           </motion.p>
         )}
         {slide.bullets && (
@@ -124,13 +124,13 @@ export function HeroSlider({ slides, className }: { slides?: HeroSlide[]; classN
       <div className="absolute inset-x-0 bottom-3 z-20 flex justify-center gap-0.5 sm:hidden">
         {slides.map((s, i) => (
           <button key={s.id} aria-label={`Slide ${i + 1}`} aria-current={i === index} onClick={() => swiper?.slideToLoop(i)} className="touch-target relative grid h-6 w-6 place-items-center">
-            <span className={cn("h-2 rounded-full bg-white transition-all duration-300", i === index ? "w-6 opacity-100" : "w-2 opacity-50")} />
+            <span className={cn("h-2 rounded-full bg-surface transition-all duration-300", i === index ? "w-6 opacity-100" : "w-2 opacity-50")} />
           </button>
         ))}
       </div>
 
       {/* desktop : contrôle fraction */}
-      <div className="absolute bottom-5 right-5 z-20 hidden h-[29px] w-[107px] items-center justify-between rounded-pill bg-white px-3 text-[14px] leading-[21px] sm:flex">
+      <div className="absolute bottom-5 right-5 z-20 hidden h-[29px] w-[107px] items-center justify-between rounded-pill bg-surface px-3 text-[14px] leading-[21px] sm:flex">
         <button aria-label="Slide précédente" onClick={() => swiper?.slidePrev()} className="p-1 transition-colors hover:text-primary">
           <ArrowLeft2 size={12} variant="Bold" />
         </button>

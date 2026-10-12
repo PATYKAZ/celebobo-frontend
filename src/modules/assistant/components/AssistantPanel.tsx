@@ -64,7 +64,7 @@ export function AssistantPanel({ showHeader, onClose, onNavigate, className }: P
         </header>
       )}
 
-      <div className="min-h-0 flex-1 space-y-3.5 overflow-y-auto overscroll-contain bg-[linear-gradient(180deg,#fff,rgba(226,228,235,.35))] px-3.5 py-4">
+      <div className="min-h-0 flex-1 space-y-3.5 overflow-y-auto overscroll-contain bg-[linear-gradient(180deg,var(--color-surface),color-mix(in_srgb,var(--color-chip)_45%,transparent))] px-3.5 py-4">
         {messages.map((m) => {
           const mine = m.role === "user";
           return (
@@ -103,16 +103,16 @@ export function AssistantPanel({ showHeader, onClose, onNavigate, className }: P
       </div>
 
       {onlyWelcome && !loading && (
-        <div className="snap-row no-scrollbar border-t border-line-3 bg-white px-3 py-2.5">
+        <div className="snap-row no-scrollbar border-t border-line-3 bg-surface px-3 py-2.5">
           {SUGGESTIONS.map((s) => (
-            <button key={s} onClick={() => send(s)} className="min-h-10 whitespace-nowrap rounded-full border border-primary/40 bg-white px-4 text-[13px] font-semibold text-primary transition-colors active:bg-primary active:text-white">
+            <button key={s} onClick={() => send(s)} className="min-h-10 whitespace-nowrap rounded-full border border-primary/40 bg-surface px-4 text-[13px] font-semibold text-primary transition-colors active:bg-primary active:text-white">
               {s}
             </button>
           ))}
         </div>
       )}
 
-      <form onSubmit={submit} className="flex items-center gap-2 border-t border-line-3 bg-white p-3">
+      <form onSubmit={submit} className="flex items-center gap-2 border-t border-line-3 bg-surface p-3">
         <input value={text} onChange={(e) => setText(e.target.value)} placeholder="Posez votre question…" aria-label="Votre message" enterKeyHint="send" autoComplete="off" className="field flex-1" />
         <motion.button whileTap={{ scale: 0.92 }} disabled={!text.trim() || loading} aria-label="Envoyer" className="grid size-12 shrink-0 place-items-center rounded-box bg-primary text-white transition-colors hover:bg-primary-dark disabled:bg-line sm:size-[45px]">
           <Send2 size={20} variant="Bold" />

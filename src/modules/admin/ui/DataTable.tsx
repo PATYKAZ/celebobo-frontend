@@ -119,7 +119,7 @@ export function DataTable<T>({ columns, rows, rowKey, loading, empty, onRowClick
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: Math.min(i, 8) * 0.04, duration: 0.35 }}
                 onClick={onRowClick ? () => onRowClick(row) : undefined}
-                className={cn("rounded-box border border-line-3 bg-white p-4 transition-colors", onRowClick && "cursor-pointer active:bg-primary-50")}
+                className={cn("rounded-box border border-line-3 bg-surface p-4 transition-colors", onRowClick && "cursor-pointer active:bg-primary-50")}
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 flex-1 text-[14px]">{titleCol?.cell(row, i)}</div>

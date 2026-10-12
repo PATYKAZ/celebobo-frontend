@@ -136,7 +136,7 @@ function Content({ id }: { id: number }) {
                 ))}
               </dl>
               {p.dateWish && canManage && (
-                <p className={cn("mt-3 rounded-box px-4 py-3 text-[13px] leading-[20px]", dl.state === "overdue" ? "bg-danger-50 text-danger" : dl.state === "near" ? "bg-star/15 text-[#8a5a00]" : "bg-page/60 text-ink-2")}>
+                <p className={cn("mt-3 rounded-box px-4 py-3 text-[13px] leading-[20px]", dl.state === "overdue" ? "bg-danger-50 text-danger" : dl.state === "near" ? "bg-star/15 text-warn" : "bg-page/60 text-ink-2")}>
                   Produit ajouté depuis le {formatDate(p.dateAdded)}, il devrait être vendu avant le <strong>{formatDate(p.dateWish)}</strong>
                   {p.pricePrimary != null && <>. Il a été acheté à <strong>{formatPrice(p.pricePrimary)}</strong></>}.{" "}
                   <DeadlineBadge dateWish={p.dateWish} />

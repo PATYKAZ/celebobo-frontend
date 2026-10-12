@@ -18,7 +18,7 @@ const TONES = {
   chip3: "bg-chip-3 text-ink",
   social: "bg-chip-social text-ink",
   wish: "bg-page text-ink-3",
-  white: "bg-white text-ink",
+  white: "bg-surface text-ink",
   primary: "bg-primary text-white",
   dark: "bg-ink-dark text-white",
 };

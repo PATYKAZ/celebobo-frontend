@@ -106,7 +106,7 @@ export function AssignResellerModal({ order, onClose }: Props) {
       </ul>
 
       <Textarea label="Note (optionnel)" value={note} onChange={(e) => setNote(e.target.value)} className="mt-4 min-h-[70px]" placeholder="Consigne pour le revendeur…" />
-      <div className="sticky bottom-0 -mx-5 mt-4 grid grid-cols-[1fr_1.5fr] gap-3 border-t border-line-3 bg-white px-5 py-3 sm:static sm:mx-0 sm:mt-5 sm:grid-cols-2 sm:border-0 sm:p-0">
+      <div className="sticky bottom-0 -mx-5 mt-4 grid grid-cols-[1fr_1.5fr] gap-3 border-t border-line-3 bg-surface px-5 py-3 sm:static sm:mx-0 sm:mt-5 sm:grid-cols-2 sm:border-0 sm:p-0">
         <Button variant="chip" upper={false} onClick={onClose}>Annuler</Button>
         <Button upper={false} disabled={picked == null} loading={assign.isPending} onClick={submit}>{reassign ? "Réassigner" : "Assigner"}</Button>
       </div>

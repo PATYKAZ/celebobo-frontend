@@ -21,7 +21,7 @@ function ToggleRow({ label, checked, onChange, children }: { label: string; chec
     <button type="button" role="switch" aria-checked={checked} aria-label={label} onClick={() => onChange(!checked)} className="flex min-h-12 w-full items-center justify-between gap-3 rounded-md text-left active:bg-chip sm:min-h-0 sm:w-auto sm:justify-center sm:active:bg-transparent">
       <span className="text-[13px] font-medium text-ink-2 sm:hidden">{children}</span>
       <span className={`relative h-7 w-12 shrink-0 rounded-full transition-colors sm:h-6 sm:w-11 ${checked ? "bg-primary" : "bg-line"}`}>
-        <span className={`absolute top-0.5 size-6 rounded-full bg-white transition-all sm:size-5 ${checked ? "left-[22px] sm:left-[22px]" : "left-0.5"}`} />
+        <span className={`absolute top-0.5 size-6 rounded-full bg-surface transition-all sm:size-5 ${checked ? "left-[22px] sm:left-[22px]" : "left-0.5"}`} />
       </span>
     </button>
   );
@@ -29,9 +29,9 @@ function ToggleRow({ label, checked, onChange, children }: { label: string; chec
 
 const PUSH_COPY = {
   unsupported: { tone: "bg-chip text-ink-2", text: "Ce navigateur ne prend pas en charge les notifications push." },
-  default: { tone: "bg-star/10 text-[#8a5a00]", text: "Les notifications push ne sont pas encore activées sur cet appareil." },
+  default: { tone: "bg-star/10 text-warn", text: "Les notifications push ne sont pas encore activées sur cet appareil." },
   granted: { tone: "bg-primary-50 text-primary-dark", text: "Notifications push activées sur cet appareil." },
-  unsubscribed: { tone: "bg-star/10 text-[#8a5a00]", text: "Notifications autorisées, mais cet appareil n'est pas encore enregistré." },
+  unsubscribed: { tone: "bg-star/10 text-warn", text: "Notifications autorisées, mais cet appareil n'est pas encore enregistré." },
   denied: { tone: "bg-danger-50 text-danger", text: "Les notifications sont bloquées : autorisez-les dans les réglages de votre navigateur." },
 } as const;
 

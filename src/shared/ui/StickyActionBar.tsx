@@ -21,10 +21,10 @@ export function StickyActionBar({ children, className, mode = "mobile" }: Props)
   return (
     <div
       className={cn(
-        "z-40 flex items-center gap-3 border-t border-line-3 bg-white/95 px-4 py-3 backdrop-blur-xl",
+        "z-40 flex items-center gap-3 border-t border-line-3 bg-surface/95 px-4 py-3 backdrop-blur-xl",
         // posée au-dessus de la barre d'onglets ; si elle est masquée (--tabbar-h = 0) on respecte la zone sûre iOS
         mode === "mobile"
-          ? "fixed inset-x-0 bottom-[max(var(--tabbar-h),env(safe-area-inset-bottom))] lg:static lg:rounded-box lg:border lg:bg-white lg:px-5 lg:py-4"
+          ? "fixed inset-x-0 bottom-[max(var(--tabbar-h),env(safe-area-inset-bottom))] lg:static lg:rounded-box lg:border lg:bg-surface lg:px-5 lg:py-4"
           : "fixed inset-x-0 bottom-[max(var(--tabbar-h),env(safe-area-inset-bottom))]",
         className,
       )}

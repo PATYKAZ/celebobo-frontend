@@ -69,13 +69,13 @@ function ProductContent({ product }: { product: Product }) {
 
       {/* Barre d'achat collante (mobile) : au-dessus de la barre d'onglets */}
       <div className="h-[72px] max-[359px]:h-[120px] lg:hidden" />
-      <div className="fixed inset-x-0 bottom-tabbar z-40 border-t border-line-3 bg-white/95 backdrop-blur-md lg:hidden">
+      <div className="fixed inset-x-0 bottom-tabbar z-40 border-t border-line-3 bg-surface/95 backdrop-blur-md lg:hidden">
         <div className="mx-auto flex max-w-[640px] flex-wrap items-center gap-2.5 px-3 py-2.5">
           <div className="min-w-0 flex-1 max-[359px]:basis-full">
             <p className={`truncate text-[17px] font-bold leading-[22px] ${pricing.onSale ? "text-danger" : ""}`}>{formatPrice(current * qty)}</p>
             <p className="truncate text-[11px] leading-[14px] text-ink-3">{qty > 1 ? `${qty} × ${formatPrice(current)}` : selection.inStock ? "En stock" : "Rupture de stock"}</p>
           </div>
-          <div className="inline-flex shrink-0 items-center overflow-hidden rounded-box border border-line bg-white">
+          <div className="inline-flex shrink-0 items-center overflow-hidden rounded-box border border-line bg-surface">
             <button aria-label="Diminuer" disabled={qty <= 1} onClick={() => setQty(qty - 1)} className="grid size-11 place-items-center active:bg-chip disabled:opacity-40"><Minus size={16} /></button>
             <span aria-live="polite" className="min-w-7 text-center text-[14px] font-semibold tabular-nums">{qty}</span>
             <button aria-label="Augmenter" disabled={qty >= Math.max(1, selection.stock)} onClick={() => setQty(qty + 1)} className="grid size-11 place-items-center active:bg-chip disabled:opacity-40"><Add size={16} /></button>

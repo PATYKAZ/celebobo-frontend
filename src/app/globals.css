@@ -2,7 +2,7 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-/* Pas de thème sombre : les classes dark: des composants shadcn ne suivent pas le système. */
+/* Mode sombre : classe `dark` sur <html>, posée avant l'affichage (cf. ThemeScript) ; `dark:` des composants shadcn. */
 @custom-variant dark (&:is(.dark *));
 
 @utility container {
@@ -62,6 +62,26 @@
   --color-line: #cccccc;
 
   --color-info: #0d6efd;
+
+  /* surfaces (cartes, blocs, champs) : blanc en clair, sombre en mode sombre (cf. .dark plus bas) */
+  --color-surface: #ffffff;
+  /* texte ambre (stock faible, avertissements) */
+  --color-warn: #8a5a00;
+  /* texte foncé fixe, sur fond clair dans les deux modes (pastilles jaunes, bannières à image claire) */
+  --color-on-light: #000000;
+  --color-on-light-2: #4a4a4a;
+
+  /*
+    Le teal sert de fond (boutons, texte blanc) et de couleur de texte : en mode sombre aucune teinte ne tient les deux
+    contrastes. Ces clés propres au texte et aux bordures (prioritaires sur --color-*) prennent un teal clair en sombre.
+  */
+  --text-color-primary: #226d68;
+  --text-color-primary-dark: #18534f;
+  --text-color-danger: #c4261d;
+  --text-color-info: #0d6efd;
+  --border-color-primary: #226d68;
+  /* fonds sombres fixes (bandeaux, pastille Cash) : restent sombres en mode sombre */
+  --background-color-ink-dark: #222222;
 
   --font-sans: var(--font-alibaba), ui-sans-serif, system-ui, sans-serif;
 
@@ -298,7 +318,7 @@
 
 @utility field {
   /* 16px sur mobile : évite le zoom automatique d'iOS au focus */
-  @apply h-[48px] w-full rounded-md border border-line bg-white px-3 text-[16px] text-ink outline-hidden transition-colors placeholder:text-ink-3 focus:border-primary sm:h-[45px] sm:text-[14px];
+  @apply h-[48px] w-full rounded-md border border-line bg-surface px-3 text-[16px] text-ink outline-hidden transition-colors placeholder:text-ink-3 focus:border-primary sm:h-[45px] sm:text-[14px];
 }
 
 @utility snap-row {
@@ -331,7 +351,7 @@
 
 @utility skeleton {
   /* teintes de la palette (#ECF8F6) ; immobile si l'utilisateur réduit les animations */
-  background: linear-gradient(90deg, #e4f0ed 25%, #f3faf8 37%, #e4f0ed 63%);
+  background: linear-gradient(90deg, var(--skeleton-a) 25%, var(--skeleton-b) 37%, var(--skeleton-a) 63%);
   background-size: 200% 100%;
   @apply animate-shimmer rounded-md motion-reduce:animate-none;
 }
@@ -362,6 +382,8 @@
   :root {
     /* hauteur de la barre d'onglets mobile + zone sûre iOS ; 0 sur desktop */
     --tabbar-h: 0px;
+    --skeleton-a: #e4f0ed;
+    --skeleton-b: #f3faf8;
   }
   @media (max-width: 1023px) {
     :root {
@@ -447,7 +469,7 @@
   }
 }
 /*
-  Variables shadcn/ui, alignées sur le design Swoo (aucun thème sombre).
+  Variables shadcn/ui, alignées sur le design Swoo (mode sombre : mêmes alias, jetons redéfinis par .dark).
   Les jetons Swoo (@theme plus haut) restent la référence ; shadcn n'en est qu'un alias.
 */
 @theme inline {
@@ -473,11 +495,11 @@
 
 :root {
   --radius: 10px;
-  --background: #ffffff;
+  --background: var(--color-surface);
   --foreground: var(--color-ink);
-  --card: #ffffff;
+  --card: var(--color-surface);
   --card-foreground: var(--color-ink);
-  --popover: #ffffff;
+  --popover: var(--color-surface);
   --popover-foreground: var(--color-ink);
   --primary: var(--color-primary);
   --primary-foreground: #ffffff;
@@ -491,4 +513,49 @@
   --border: var(--color-line);
   --input: var(--color-line);
   --ring: var(--color-primary);
+}
+
+/*
+  Mode sombre : mêmes jetons, valeurs sombres teintées de la palette. Contrastes vérifiés (WCAG AA) :
+  texte 13,9:1, secondaire 8,8:1, tertiaire 6,7:1, teal 7,7:1, rouge 5,8:1 sur les surfaces ;
+  le teal des boutons garde 6:1 avec leur texte blanc.
+*/
+.dark {
+  color-scheme: dark;
+  --color-page: #0f1817;
+  --color-surface: #172321;
+  --color-chip: #1f2e2b;
+  --color-chip-2: #1c2a28;
+  --color-chip-3: #1f2e2b;
+  --color-chip-social: #22332f;
+  --color-mint: #1c2c29;
+
+  --color-ink: #e8f0ee;
+  --color-ink-2: #b3c2bf;
+  --color-ink-3: #9aaba7;
+  --color-ink-4: #90a19d;
+  --color-ink-dark: #f1f6f5;
+  --color-ink-dark2: #d8e2e0;
+
+  --color-line: #445753;
+  --color-line-2: #6d817d;
+  --color-line-3: #2a3a37;
+
+  --color-primary-50: rgba(95, 195, 185, 0.08);
+  --color-primary-100: rgba(95, 195, 185, 0.14);
+  --color-danger-50: rgba(242, 118, 108, 0.1);
+  --color-danger-100: rgba(242, 118, 108, 0.16);
+  --color-warn: #f0b75e;
+
+  --text-color-primary: #5fc3b9;
+  --text-color-primary-dark: #8fd8d0;
+  --text-color-danger: #f2766c;
+  --text-color-info: #7cb2ff;
+  --border-color-primary: #4fb3a9;
+
+  --skeleton-a: #1d2b29;
+  --skeleton-b: #263734;
+}
+.dark ::selection {
+  background: rgba(95, 195, 185, 0.3);
 }

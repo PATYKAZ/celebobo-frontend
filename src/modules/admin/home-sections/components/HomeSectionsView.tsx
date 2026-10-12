@@ -87,8 +87,8 @@ function Content() {
                     <div className="min-w-0 flex-1">
                       <p className="flex flex-wrap items-center gap-2">
                         <span className="text-[15px] font-bold leading-[19px]">{nameOf(s)}</span>
-                        <span className={cn("rounded-full px-2 py-0.5 text-[10px] font-bold uppercase", s.kind === "showcase" ? "bg-primary text-white" : "bg-sun text-ink")}>{s.kind === "showcase" ? "Grand bloc" : "Colonne"}</span>
-                        {!s.isActive && <span className="rounded-full bg-line-3 px-2 py-0.5 text-[10px] font-bold uppercase text-ink-2">Masqué</span>}
+                        <span className={cn("rounded-full px-2 py-0.5 text-[10px] font-bold uppercase", s.kind === "showcase" ? "bg-primary text-white" : "bg-sun text-on-light")}>{s.kind === "showcase" ? "Grand bloc" : "Colonne"}</span>
+                        {!s.isActive && <span className="rounded-full bg-line-3 px-2 py-0.5 text-[10px] font-bold uppercase text-ink">Masqué</span>}
                       </p>
                       <p className="mt-1 text-[12px] text-ink-3">
                         {category ? (

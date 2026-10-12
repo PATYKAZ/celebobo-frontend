@@ -14,6 +14,7 @@ import { useUnreadMessagesCount } from "@/modules/messaging/hooks/useConversatio
 import { useUnreadNotificationsCount } from "@/modules/messaging/hooks/useNotifications";
 import { supportHours, supportLabel, useSiteSettings } from "@/modules/site";
 import { CurrencySwitch } from "@/shared/currency/CurrencySwitch";
+import { ThemeSwitch } from "@/shared/theme/ThemeSwitch";
 
 /** Pages plein écran où la barre d'onglets est masquée (chat, assistant, paiement). */
 const HIDE = (p: string) => p.startsWith("/messages/") || p === "/assistant" || p === "/commande";
@@ -100,6 +101,10 @@ export function ShopTabBar() {
             <div className="flex items-center justify-between gap-3 rounded-box border border-line-3 p-3 pl-4">
               <span className="text-[13px] font-semibold">Afficher les prix en</span>
               <CurrencySwitch />
+            </div>
+            <div className="flex items-center justify-between gap-3 rounded-box border border-line-3 p-3 pl-4">
+              <span className="text-[13px] font-semibold">Thème</span>
+              <ThemeSwitch />
             </div>
             <a href={site.hotlineHref} className="flex items-center justify-between rounded-box bg-primary-50 p-4">
               <span>

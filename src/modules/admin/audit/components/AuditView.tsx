@@ -23,7 +23,7 @@ const PAGE_SIZE = 12;
 const APP_STYLE: Record<string, string> = {
   catalog: "bg-info/10 text-info",
   sales: "bg-primary-100 text-primary-dark",
-  orders: "bg-star/15 text-[#b87400]",
+  orders: "bg-star/15 text-warn",
   accounts: "bg-danger-100 text-danger",
   resellers: "bg-sun/30 text-ink",
 };
@@ -59,7 +59,7 @@ function Row({ e, open, onToggle }: { e: AuditEntry; open: boolean; onToggle: ()
                 <div className="grid gap-2 px-4 py-3.5">
                   {e.diff!.map((d) => (
                     <div key={d.field} className="flex flex-wrap items-center gap-2 text-[13px]">
-                      <code className="rounded-sm bg-white px-2 py-0.5 font-semibold">{d.field}</code>
+                      <code className="rounded-sm bg-surface px-2 py-0.5 font-semibold">{d.field}</code>
                       <span className="rounded-sm bg-danger-100 px-2 py-0.5 text-danger line-through">{String(d.from ?? "—")}</span>
                       <ArrowRight size={14} className="text-ink-3" />
                       <span className="rounded-sm bg-primary-100 px-2 py-0.5 font-semibold text-primary-dark">{String(d.to ?? "—")}</span>
@@ -80,7 +80,7 @@ function DiffList({ e }: { e: AuditEntry }) {
     <div className="grid gap-2">
       {e.diff!.map((d) => (
         <div key={d.field} className="flex flex-wrap items-center gap-2 text-[13px]">
-          <code className="rounded-sm bg-white px-2 py-0.5 font-semibold">{d.field}</code>
+          <code className="rounded-sm bg-surface px-2 py-0.5 font-semibold">{d.field}</code>
           <span className="rounded-sm bg-danger-100 px-2 py-0.5 text-danger line-through">{String(d.from ?? "—")}</span>
           <ArrowRight size={14} className="text-ink-3" />
           <span className="rounded-sm bg-primary-100 px-2 py-0.5 font-semibold text-primary-dark">{String(d.to ?? "—")}</span>
@@ -94,7 +94,7 @@ function DiffList({ e }: { e: AuditEntry }) {
 function AuditCard({ e, open, onToggle }: { e: AuditEntry; open: boolean; onToggle: () => void }) {
   const hasDiff = !!e.diff?.length;
   return (
-    <article className="rounded-box border border-line-3 bg-white">
+    <article className="rounded-box border border-line-3 bg-surface">
       <button onClick={hasDiff ? onToggle : undefined} disabled={!hasDiff} aria-expanded={hasDiff ? open : undefined} className="block w-full p-4 text-left disabled:cursor-default">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
@@ -152,7 +152,7 @@ function AuditContent() {
         {/* mobile : recherche + bouton « Filtres » (feuille) */}
         <div className="flex items-center gap-2 p-3 md:hidden">
           <Input wrapperClassName="flex-1" placeholder="Rechercher…" aria-label="Rechercher" leftIcon={<SearchNormal1 size={16} />} value={search} onChange={(e) => reg(setSearch)(e.target.value)} />
-          <button onClick={() => setSheet(true)} aria-label="Filtres" className="relative grid size-12 shrink-0 place-items-center rounded-md border border-line bg-white active:scale-95">
+          <button onClick={() => setSheet(true)} aria-label="Filtres" className="relative grid size-12 shrink-0 place-items-center rounded-md border border-line bg-surface active:scale-95">
             <Filter size={20} />
             {activeFilters > 0 && <span className="absolute -right-1 -top-1 grid size-[18px] place-items-center rounded-full bg-primary text-[10px] font-bold text-white">{activeFilters}</span>}
           </button>

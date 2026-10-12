@@ -86,7 +86,7 @@ export function VariantsEditor({ options, rows, basePrice, onChange, error }: Pr
                   onBlur={() => addValue(i)}
                   placeholder="Ajouter une valeur + Entrée"
                   aria-label="Nouvelle valeur"
-                  className="h-11 min-w-[150px] flex-1 rounded-full border border-dashed border-line bg-white px-4 text-[16px] outline-hidden focus:border-primary sm:h-9 sm:min-w-[180px] sm:px-3 sm:text-[13px]"
+                  className="h-11 min-w-[150px] flex-1 rounded-full border border-dashed border-line bg-surface px-4 text-[16px] outline-hidden focus:border-primary sm:h-9 sm:min-w-[180px] sm:px-3 sm:text-[13px]"
                 />
               </div>
             </motion.div>

@@ -170,7 +170,7 @@ export function Switch({ checked, onChange, label }: { checked: boolean; onChang
       onClick={() => onChange(!checked)}
       className={cn("relative h-7 w-12 rounded-full transition-colors sm:h-6 sm:w-11", checked ? "bg-primary" : "bg-line")}
     >
-      <span className={cn("absolute top-0.5 size-6 rounded-full bg-white transition-all sm:size-5", checked ? "left-[22px] max-sm:left-[22px]" : "left-0.5")} />
+      <span className={cn("absolute top-0.5 size-6 rounded-full bg-surface transition-all sm:size-5", checked ? "left-[22px] max-sm:left-[22px]" : "left-0.5")} />
     </button>
   );
 }

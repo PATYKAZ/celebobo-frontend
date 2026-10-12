@@ -123,7 +123,7 @@ export function BulkSaleForm() {
 
       {/* < lg : barre d'actions fixe au-dessus de la barre d'onglets */}
       <div className="h-20 lg:hidden" aria-hidden />
-      <div className="fixed inset-x-0 bottom-[max(var(--tabbar-h),env(safe-area-inset-bottom))] z-40 flex items-center gap-3 border-t border-line-3 bg-white/95 px-4 py-3 backdrop-blur-xl lg:hidden">
+      <div className="fixed inset-x-0 bottom-[max(var(--tabbar-h),env(safe-area-inset-bottom))] z-40 flex items-center gap-3 border-t border-line-3 bg-surface/95 px-4 py-3 backdrop-blur-xl lg:hidden">
         <div className="min-w-0 flex-1">
           <p className="text-[11px] font-semibold uppercase tracking-wide text-ink-3">{filled.length} ligne{filled.length > 1 ? "s" : ""} · Total</p>
           <p className="truncate text-[20px] font-bold leading-[24px] text-primary">{formatPrice(total)}</p>

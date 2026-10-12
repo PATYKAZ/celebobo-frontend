@@ -31,7 +31,7 @@ export function ProductSuggestion({ product, index }: { product: Product; index:
   const pr = getPricing(product);
   return (
     <motion.div initial={{ opacity: 0, y: 14, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ delay: 0.15 * index + 0.2 }}>
-      <Link href={ROUTES.product(product.slug)} className="group flex w-[200px] shrink-0 flex-col overflow-hidden rounded-box border border-line-3 bg-white transition-all hover:-translate-y-1 hover:border-primary">
+      <Link href={ROUTES.product(product.slug)} className="group flex w-[200px] shrink-0 flex-col overflow-hidden rounded-box border border-line-3 bg-surface transition-all hover:-translate-y-1 hover:border-primary">
         <span className="relative block aspect-4/3 overflow-hidden bg-page">
           {product.image && <Image src={product.image} alt={product.name} fill sizes="200px" className="object-cover transition-transform duration-500 group-hover:scale-110" />}
           {pr.onSale && <span className="absolute left-2 top-2 rounded-sm bg-danger px-1.5 py-0.5 text-[10px] font-bold text-white">-{pr.percent}%</span>}
@@ -125,7 +125,7 @@ export function AssistantView() {
             </button>
           </header>
 
-          <div className="min-h-0 flex-1 space-y-4 overflow-y-auto overscroll-contain bg-[linear-gradient(180deg,#fff,rgba(226,228,235,.35))] px-3 py-4 sm:px-8 sm:py-6">
+          <div className="min-h-0 flex-1 space-y-4 overflow-y-auto overscroll-contain bg-[linear-gradient(180deg,var(--color-surface),color-mix(in_srgb,var(--color-chip)_45%,transparent))] px-3 py-4 sm:px-8 sm:py-6">
             {messages.map((m) => {
               const mine = m.role === "user";
               return (
@@ -164,7 +164,7 @@ export function AssistantView() {
             {onlyWelcome && !loading && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} className="hidden flex-wrap gap-2 pl-12 sm:flex">
                 {SUGGESTIONS.map((s, i) => (
-                  <motion.button key={s} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.5 + i * 0.08 }} onClick={() => send(s)} className="rounded-full border border-primary/40 bg-white px-4 py-2 text-[13px] font-semibold text-primary transition-colors hover:bg-primary hover:text-white">
+                  <motion.button key={s} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.5 + i * 0.08 }} onClick={() => send(s)} className="rounded-full border border-primary/40 bg-surface px-4 py-2 text-[13px] font-semibold text-primary transition-colors hover:bg-primary hover:text-white">
                     {s}
                   </motion.button>
                 ))}
@@ -175,16 +175,16 @@ export function AssistantView() {
 
           {/* Mobile : suggestions en rangée défilante au-dessus du champ */}
           {onlyWelcome && !loading && (
-            <div className="snap-row no-scrollbar border-t border-line-3 bg-white px-3 py-2.5 sm:hidden">
+            <div className="snap-row no-scrollbar border-t border-line-3 bg-surface px-3 py-2.5 sm:hidden">
               {SUGGESTIONS.map((s) => (
-                <button key={s} onClick={() => send(s)} className="min-h-10 whitespace-nowrap rounded-full border border-primary/40 bg-white px-4 text-[13px] font-semibold text-primary active:bg-primary active:text-white">
+                <button key={s} onClick={() => send(s)} className="min-h-10 whitespace-nowrap rounded-full border border-primary/40 bg-surface px-4 text-[13px] font-semibold text-primary active:bg-primary active:text-white">
                   {s}
                 </button>
               ))}
             </div>
           )}
 
-          <form onSubmit={submit} className="flex items-center gap-2 border-t border-line-3 bg-white px-3 pt-3 pb-safe sm:p-4">
+          <form onSubmit={submit} className="flex items-center gap-2 border-t border-line-3 bg-surface px-3 pt-3 pb-safe sm:p-4">
             <input value={text} onChange={(e) => setText(e.target.value)} placeholder="Posez votre question…" aria-label="Votre message" enterKeyHint="send" autoComplete="off" className="field flex-1" />
             <motion.button whileTap={{ scale: 0.92 }} disabled={!text.trim() || loading} aria-label="Envoyer" className="grid size-12 shrink-0 place-items-center rounded-box bg-primary text-white transition-colors hover:bg-primary-dark disabled:bg-line sm:size-[45px]">
               <Send2 size={20} variant="Bold" />

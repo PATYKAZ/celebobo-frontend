@@ -11,7 +11,7 @@ interface Props extends HTMLAttributes<HTMLDivElement> {
 export function Block({ pad = "md", as: Tag = "div", className, ...rest }: Props) {
   return (
     <Tag
-      className={cn("rounded-box bg-white", pad === "md" && "p-5 sm:p-[30px]", pad === "sm" && "p-4 sm:p-5", className)}
+      className={cn("rounded-box bg-surface", pad === "md" && "p-5 sm:p-[30px]", pad === "sm" && "p-4 sm:p-5", className)}
       {...rest}
     />
   );

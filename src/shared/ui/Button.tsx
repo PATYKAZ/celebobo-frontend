@@ -10,7 +10,7 @@ const VARIANTS: Record<ButtonVariant, string> = {
   primary: "bg-primary text-white hover:bg-primary-dark",
   dark: "bg-ink-dark text-white hover:bg-black",
   outline: "border border-primary bg-transparent text-primary hover:bg-primary hover:text-white",
-  white: "bg-white text-ink hover:bg-ink hover:text-white",
+  white: "bg-surface text-ink hover:bg-ink hover:text-white",
   chip: "bg-chip text-ink hover:bg-primary hover:text-white",
   danger: "bg-danger text-white hover:bg-[#d62a21]",
   ghost: "bg-transparent text-ink hover:bg-chip",

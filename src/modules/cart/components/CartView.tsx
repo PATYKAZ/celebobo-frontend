@@ -81,7 +81,7 @@ export function CartView() {
       {!isEmpty && (
         <>
           <div aria-hidden className="h-20 lg:hidden" />
-          <div className="fixed inset-x-0 bottom-tabbar z-40 border-t border-line-3 bg-white/95 px-4 pb-3 pt-3 backdrop-blur-xl lg:hidden">
+          <div className="fixed inset-x-0 bottom-tabbar z-40 border-t border-line-3 bg-surface/95 px-4 pb-3 pt-3 backdrop-blur-xl lg:hidden">
             <div className="mx-auto flex max-w-[640px] items-center gap-3">
               <div className="min-w-0">
                 <p className="text-[11px] font-semibold uppercase leading-[14px] text-ink-3">Total · {count} article{count > 1 ? "s" : ""}</p>

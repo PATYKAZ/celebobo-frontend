@@ -30,7 +30,7 @@ export function AvailabilityToggle({ value }: { value: Availability }) {
             onClick={() => !active && set.mutate(o.value, { onSuccess: () => toast.success(`Vous êtes « ${o.label.toLowerCase()} »`, o.value === "online" ? "Les nouvelles commandes peuvent vous être assignées." : "Les responsables le voient avant d'assigner.") })}
             className={cn("relative flex min-h-11 flex-1 items-center justify-center gap-2 rounded-full px-2 text-[13px] font-semibold transition-colors active:scale-[0.97] sm:min-h-0 sm:flex-none sm:px-3.5 sm:py-1.5", active ? "text-ink" : "text-ink-2 hover:text-ink")}
           >
-            {active && <motion.span layoutId={`avail-${id}`} className="absolute inset-0 rounded-full bg-white shadow-[0_1px_4px_rgba(0,0,0,.12)]" transition={{ type: "spring", stiffness: 420, damping: 32 }} />}
+            {active && <motion.span layoutId={`avail-${id}`} className="absolute inset-0 rounded-full bg-surface shadow-[0_1px_4px_rgba(0,0,0,.12)]" transition={{ type: "spring", stiffness: 420, damping: 32 }} />}
             <span className="relative flex items-center gap-2">
               <span className={cn("size-2 rounded-full", o.dot, active && o.value === "online" && "animate-pulse")} />
               {o.label}

@@ -33,7 +33,7 @@ export function ReviewForm({ slug }: { slug: string }) {
   if (!eligibility.data?.canReview) {
     return (
       <div className="flex items-start gap-3 rounded-box bg-page/60 p-5">
-        <span className="grid size-10 shrink-0 place-items-center rounded-full bg-white text-primary"><TickCircle size={20} variant="Bold" /></span>
+        <span className="grid size-10 shrink-0 place-items-center rounded-full bg-surface text-primary"><TickCircle size={20} variant="Bold" /></span>
         <div>
           <h4 className="text-[15px]">Les avis sont réservés aux acheteurs</h4>
           <p className="mt-1 text-[13px] leading-[20px] text-ink-2">{eligibility.data?.reason || "Pour garantir des avis authentiques, vous pourrez noter ce produit une fois votre commande livrée. Les avis publiés portent le badge « Achat vérifié »."}</p>

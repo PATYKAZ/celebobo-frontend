@@ -51,7 +51,7 @@ export function OrderSuccess({ order, conversationId }: { order: Order; conversa
           <ul className="mt-3 space-y-3">
             {order.items.map((it) => (
               <li key={it.id} className="flex items-center gap-3">
-                <span className="relative size-12 shrink-0 overflow-hidden rounded-md bg-white">{it.productImage && <Image src={it.productImage} alt="" fill sizes="48px" className="object-cover" />}</span>
+                <span className="relative size-12 shrink-0 overflow-hidden rounded-md bg-surface">{it.productImage && <Image src={it.productImage} alt="" fill sizes="48px" className="object-cover" />}</span>
                 <p className="min-w-0 flex-1 text-[13px] font-semibold leading-[17px]">
                   <span className="line-clamp-2">{it.productName}</span>
                   <span className="font-normal text-ink-3">{it.variantLabel ? `${it.variantLabel} · ` : ""}× {it.quantity}</span>

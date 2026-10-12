@@ -6,9 +6,9 @@ import { cn } from "@/shared/lib/cn";
 import { PAYMENT_METHODS, type PaymentMethod } from "@/modules/orders/types";
 
 const BRAND: Record<PaymentMethod, { chip: string; hint: string; icon: "mobile" | "cash" }> = {
-  OrangeMoney: { chip: "bg-[#FF7900] text-white", hint: "Paiement mobile après confirmation du revendeur", icon: "mobile" },
+  OrangeMoney: { chip: "bg-[#FF7900] text-on-light", hint: "Paiement mobile après confirmation du revendeur", icon: "mobile" },
   AirtelMoney: { chip: "bg-[#E40000] text-white", hint: "Paiement mobile après confirmation du revendeur", icon: "mobile" },
-  "M-Pesa": { chip: "bg-[#2AAE4A] text-white", hint: "Paiement mobile après confirmation du revendeur", icon: "mobile" },
+  "M-Pesa": { chip: "bg-[#2AAE4A] text-on-light", hint: "Paiement mobile après confirmation du revendeur", icon: "mobile" },
   Cash: { chip: "bg-ink-dark text-white", hint: "Vous payez à la réception de la commande", icon: "cash" },
 };
 
@@ -32,7 +32,7 @@ export function PaymentMethodCards({ value, onChange, methods }: Props) {
             role="radio"
             aria-checked={selected}
             onClick={() => onChange(m.value)}
-            className={cn("relative flex min-h-[72px] items-center gap-3 rounded-box border-2 p-3.5 text-left transition-all duration-300 active:scale-[0.99] sm:p-4", selected ? "border-primary bg-primary-50" : "border-line-3 bg-white hover:border-primary/50")}
+            className={cn("relative flex min-h-[72px] items-center gap-3 rounded-box border-2 p-3.5 text-left transition-all duration-300 active:scale-[0.99] sm:p-4", selected ? "border-primary bg-primary-50" : "border-line-3 bg-surface hover:border-primary/50")}
           >
             <span className={cn("grid size-11 shrink-0 place-items-center rounded-full", b.chip)}>
               {b.icon === "mobile" ? <Mobile size={20} variant="Bold" /> : <Money size={20} variant="Bold" />}

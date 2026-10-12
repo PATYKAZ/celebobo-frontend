@@ -55,7 +55,7 @@ export function ConversationItem({ conversation: c, active, myId, onSelect, staf
           {c.concluded && <span className="rounded-sm bg-ink-dark/10 px-1.5 py-0.5 text-[10px] font-bold uppercase text-ink-dark">Clôturée</span>}
           {staff && unassigned && <span className="rounded-sm bg-danger-100 px-1.5 py-0.5 text-[10px] font-bold uppercase text-danger">Non assignée</span>}
           {staff && c.assignedRevendeur && <span className="truncate rounded-sm bg-primary-50 px-1.5 py-0.5 text-[10px] font-bold text-primary-dark">{c.assignedRevendeur.name}</span>}
-          {staff && c.awaitingReply && <span className="rounded-sm bg-star/15 px-1.5 py-0.5 text-[10px] font-bold uppercase text-[#b87400]">Réponse attendue</span>}
+          {staff && c.awaitingReply && <span className="rounded-sm bg-star/15 px-1.5 py-0.5 text-[10px] font-bold uppercase text-warn">Réponse attendue</span>}
         </div>
       </div>
       {unread && <span className="mt-1 grid min-w-6 shrink-0 place-items-center rounded-full bg-primary px-1.5 text-[12px] font-bold leading-6 text-white">{c.unreadCount}</span>}

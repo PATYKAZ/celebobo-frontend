@@ -77,7 +77,7 @@ export function PersonalInfoForm({ profile, avatarFile, onSaved }: Props) {
         hint={referralLocked ? "Déjà renseigné — non modifiable." : "Optionnel — il sera lié à vos futures commandes. Non modifiable ensuite."}
       />
       {general && <p role="alert" className="rounded-md bg-danger-50 px-3 py-2 text-[13px] text-danger">{general}</p>}
-      <div className="sticky bottom-[calc(var(--tabbar-h)+8px)] z-10 -mx-4 flex justify-end bg-white/90 px-4 py-2 backdrop-blur-md max-sm:[&>button]:w-full sm:static sm:mx-0 sm:bg-transparent sm:p-0 sm:backdrop-blur-none">
+      <div className="sticky bottom-[calc(var(--tabbar-h)+8px)] z-10 -mx-4 flex justify-end bg-surface/90 px-4 py-2 backdrop-blur-md max-sm:[&>button]:w-full sm:static sm:mx-0 sm:bg-transparent sm:p-0 sm:backdrop-blur-none">
         <Button type="submit" loading={mutation.isPending}>Enregistrer</Button>
       </div>
     </form>

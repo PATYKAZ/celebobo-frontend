@@ -83,7 +83,7 @@ export function ConversationList({ activeId, onSelect, inbox }: Props) {
       </div>
 
       {/* Recherche + filtres : collants sur mobile (toujours à portée de pouce) */}
-      <div className="sticky top-0 z-20 space-y-2.5 border-b border-line-3 bg-white/95 px-4 pb-3 pt-2 backdrop-blur-sm lg:static lg:bg-white lg:pt-0">
+      <div className="sticky top-0 z-20 space-y-2.5 border-b border-line-3 bg-surface/95 px-4 pb-3 pt-2 backdrop-blur-sm lg:static lg:bg-surface lg:pt-0">
         <div className="flex items-center gap-2">
           <div className="relative min-w-0 flex-1">
             <SearchNormal1 size={16} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-ink-3" />
@@ -112,7 +112,7 @@ export function ConversationList({ activeId, onSelect, inbox }: Props) {
                   className={cn("inline-flex min-h-11 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-4 text-[13px] font-semibold transition-colors active:scale-95 lg:min-h-0 lg:px-3 lg:py-1.5 lg:text-[12px]", filter === f.value ? "bg-primary text-white" : "bg-chip text-ink-2 hover:bg-primary-50 hover:text-primary")}
                 >
                   {f.label}
-                  <span className={cn("rounded-full px-1.5 text-[11px]", filter === f.value ? "bg-white/25" : "bg-white")}>{counts[f.value]}</span>
+                  <span className={cn("rounded-full px-1.5 text-[11px]", filter === f.value ? "bg-white/25" : "bg-surface")}>{counts[f.value]}</span>
                 </button>
               ))}
               {resellerName && (

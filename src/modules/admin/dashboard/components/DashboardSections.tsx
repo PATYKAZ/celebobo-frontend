@@ -118,7 +118,7 @@ export function PendingOrdersCard({ data }: { data?: DashboardData }) {
             {data.pendingOrders.map((o) => (
               <RevealItem key={o.id}>
                 <Link prefetch={false} href={ROUTES.admin.order(o.id)} className="group flex items-center gap-3 rounded-box border border-line-3 p-3 transition-colors hover:border-primary hover:bg-primary-50">
-                  <span className="grid size-10 shrink-0 place-items-center rounded-full bg-star/15 text-[#b87400]"><Messages2 size={18} variant="Bold" /></span>
+                  <span className="grid size-10 shrink-0 place-items-center rounded-full bg-star/15 text-warn"><Messages2 size={18} variant="Bold" /></span>
                   <span className="min-w-0 flex-1">
                     <span className="block truncate text-[13px] font-bold leading-[18px]">Commande {o.number} · {o.buyer}</span>
                     <span className="text-[12px] text-ink-3">{o.itemsCount} article{o.itemsCount > 1 ? "s" : ""} · {formatRelative(o.createdAt)} · {o.assignedTo ?? "non assignée"}</span>
@@ -145,7 +145,7 @@ export function TopResellerCard({ data }: { data?: DashboardData }) {
         <p className="py-8 text-center text-[14px] text-ink-3">Aucune vente de revendeur sur la période.</p>
       ) : (
         <div className="flex flex-col items-center gap-3 py-3 text-center">
-          <span className="grid size-16 place-items-center rounded-full bg-star/15 text-[#b87400]"><Crown size={32} variant="Bold" /></span>
+          <span className="grid size-16 place-items-center rounded-full bg-star/15 text-warn"><Crown size={32} variant="Bold" /></span>
           <p className="text-[18px] font-bold leading-[24px]">{t.name}</p>
           <p className="text-[28px] font-bold leading-[34px] text-primary">{formatPrice(t.revenue)}</p>
           <Link href={`${ROUTES.admin.resellers}?period=${data.periodKey}`} className="group inline-flex min-h-10 items-center gap-1 text-[13px] font-semibold text-primary">

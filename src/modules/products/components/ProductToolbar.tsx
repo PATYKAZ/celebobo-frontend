@@ -41,7 +41,7 @@ export function ProductToolbar({ total, loading, ordering, onOrderingChange, vie
     <div className="border-b border-line-3 pb-3 sm:pb-5">
       <p className="mb-2 text-[13px] text-ink-2 sm:hidden" aria-live="polite">{count}</p>
 
-      <div className="flex items-center gap-2 max-sm:sticky max-sm:top-[61px] max-sm:z-30 max-sm:-mx-3 max-sm:bg-white/95 max-sm:px-3 max-sm:py-2 max-sm:backdrop-blur-md sm:flex-wrap sm:gap-3 sm:max-lg:gap-3">
+      <div className="flex items-center gap-2 max-sm:sticky max-sm:top-[61px] max-sm:z-30 max-sm:-mx-3 max-sm:bg-surface/95 max-sm:px-3 max-sm:py-2 max-sm:backdrop-blur-md sm:flex-wrap sm:gap-3 sm:max-lg:gap-3">
         <p className="mr-auto hidden text-[14px] text-ink-2 sm:block" aria-live="polite">{count}</p>
 
         <button onClick={onOpenFilters} className="relative flex h-11 shrink-0 items-center gap-2 rounded-box bg-chip px-4 text-[13px] font-bold active:scale-[0.97] sm:h-[45px] lg:hidden">

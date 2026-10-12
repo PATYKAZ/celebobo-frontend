@@ -29,7 +29,7 @@ export function OrderCard({ order: summary, defaultOpen = false }: { order: Orde
   const thumbs = order.items.length ? order.items.map((it) => ({ id: it.id, image: it.productImage, name: it.productName })) : summary.previewImage ? [{ id: 0, image: summary.previewImage, name: summary.previewName ?? "" }] : [];
 
   return (
-    <article className="overflow-hidden rounded-box border border-line-3 bg-white transition-colors hover:border-primary/40">
+    <article className="overflow-hidden rounded-box border border-line-3 bg-surface transition-colors hover:border-primary/40">
       <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-3 p-4 sm:flex sm:flex-wrap sm:gap-x-8 sm:px-6">
         <div className="min-w-0 max-sm:col-start-1 max-sm:row-start-1 sm:min-w-[110px]">
           <p className="text-[12px] uppercase text-ink-3">Commande</p>

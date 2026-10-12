@@ -23,6 +23,7 @@ import { useUnreadNotificationsCount } from "@/modules/messaging/hooks/useNotifi
 import { supportHours, supportLabel, useSiteSettings } from "@/modules/site";
 import { Logo } from "./Logo";
 import { CurrencySwitch } from "@/shared/currency/CurrencySwitch";
+import { ThemeSwitch } from "@/shared/theme/ThemeSwitch";
 
 const NAV = [
   { label: "Accueil", href: ROUTES.home },
@@ -212,7 +213,7 @@ export function Header() {
   const notifCount = useUnreadNotificationsCount();
 
   return (
-    <header className="rounded-box bg-white max-lg:sticky max-lg:top-0 max-lg:z-40 max-lg:mx-[-15px] max-lg:rounded-none max-lg:border-b max-lg:border-line-3/70 max-lg:pt-safe-t max-lg:bg-white/95 max-lg:backdrop-blur-md">
+    <header className="rounded-box bg-surface max-lg:sticky max-lg:top-0 max-lg:z-40 max-lg:mx-[-15px] max-lg:rounded-none max-lg:border-b max-lg:border-line-3/70 max-lg:pt-safe-t max-lg:bg-surface/95 max-lg:backdrop-blur-md">
       {/* Ligne 1 */}
       <div className="hidden items-center justify-between px-[30px] pt-[15px] lg:flex">
         <div className="flex items-center gap-5">
@@ -227,6 +228,7 @@ export function Header() {
           <Link href={ROUTES.track} className="px-5 transition-colors hover:text-primary">Suivre ma commande</Link>
           {/* devise d'affichage (les paiements restent en USD) ; une seule langue : pas de sélecteur */}
           <span className="flex items-center gap-2 border-l border-line-2/60 pl-5 text-[13px] text-ink-2">Prix en <CurrencySwitch /></span>
+          <ThemeSwitch compact className="ml-3" />
         </div>
       </div>
 

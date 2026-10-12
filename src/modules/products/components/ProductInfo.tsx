@@ -125,7 +125,7 @@ export function ProductInfo({ product, selection, qty, onQtyChange }: { product:
       )}
 
       <div className="mt-5 flex flex-wrap items-center gap-2">
-        <span className={cn("flex items-center gap-1.5 text-[13px] font-semibold", inStock ? (stock <= product.stockThreshold ? "text-[#b87400]" : "text-primary") : "text-danger")}>
+        <span className={cn("flex items-center gap-1.5 text-[13px] font-semibold", inStock ? (stock <= product.stockThreshold ? "text-warn" : "text-primary") : "text-danger")}>
           {inStock ? <TickCircle size={16} variant="Bold" /> : <CloseCircle size={16} variant="Bold" />}
           {stockLabel(stock, product.stockThreshold)}
         </span>
@@ -163,7 +163,7 @@ export function ProductInfo({ product, selection, qty, onQtyChange }: { product:
       <div className={cn("mt-5 grid gap-2 sm:mt-6 sm:gap-3", trust.length === 3 ? "grid-cols-3" : "grid-cols-2")}>
         {trust.map(({ icon: Icon, title, text }) => (
           <div key={title} className="flex flex-col items-center gap-1.5 rounded-box bg-page/60 p-2.5 text-center sm:flex-row sm:gap-3 sm:p-3 sm:text-left">
-            <span className="grid size-10 shrink-0 place-items-center rounded-full bg-white text-primary"><Icon size={20} variant="Bold" /></span>
+            <span className="grid size-10 shrink-0 place-items-center rounded-full bg-surface text-primary"><Icon size={20} variant="Bold" /></span>
             <span className="leading-[16px] sm:leading-[18px]">
               <span className="block text-[12px] font-bold sm:text-[13px]">{title}</span>
               <span className="hidden text-[12px] text-ink-2 sm:inline">{text}</span>

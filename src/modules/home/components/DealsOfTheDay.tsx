@@ -99,7 +99,7 @@ function DealCard({ deal }: { deal: HomeDeal }) {
   const addToCart = () => add(product, 1, variant ? { variantId: variant.id, variantLabel: variant.label, priceDelta: deal.dealPrice - product.price } : undefined);
 
   return (
-    <div className="grid grid-cols-[minmax(0,1fr)] gap-5 rounded-b-box bg-white p-4 sm:gap-6 sm:p-[30px] lg:grid-cols-[minmax(0,441px)_minmax(0,1fr)] lg:gap-[34px]">
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-5 rounded-b-box bg-surface p-4 sm:gap-6 sm:p-[30px] lg:grid-cols-[minmax(0,441px)_minmax(0,1fr)] lg:gap-[34px]">
       {/* Galerie */}
       <div className="flex min-w-0 flex-col-reverse gap-3 sm:flex-row">
         <div className="no-scrollbar flex shrink-0 gap-2.5 overflow-x-auto sm:w-[35px] sm:flex-col sm:gap-4 sm:overflow-visible">
@@ -200,7 +200,7 @@ export function DealsOfTheDay({ content }: { content?: HomeContent }) {
         ) : picks.deal ? (
           <DealCard deal={picks.deal} />
         ) : (
-          <div className="rounded-b-box bg-white p-6 text-center text-[14px] text-ink-2 sm:p-10">Pas de promotion en ce moment. Revenez bientôt !</div>
+          <div className="rounded-b-box bg-surface p-6 text-center text-[14px] text-ink-2 sm:p-10">Pas de promotion en ce moment. Revenez bientôt !</div>
         )}
       </div>
 

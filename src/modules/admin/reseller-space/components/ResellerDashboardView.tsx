@@ -25,9 +25,9 @@ import { AvailabilityToggle } from "./AvailabilityToggle";
 import { InviteCard } from "./InviteCard";
 
 const METHOD_STYLE: Record<PaymentMethod, { label: string; cls: string }> = {
-  OrangeMoney: { label: "Orange Money", cls: "bg-[#FF7900] text-white" },
+  OrangeMoney: { label: "Orange Money", cls: "bg-[#FF7900] text-on-light" },
   AirtelMoney: { label: "Airtel Money", cls: "bg-[#E40000] text-white" },
-  "M-Pesa": { label: "M-Pesa", cls: "bg-[#2AAE4A] text-white" },
+  "M-Pesa": { label: "M-Pesa", cls: "bg-[#2AAE4A] text-on-light" },
   Cash: { label: "Cash", cls: "bg-ink-dark text-white" },
 };
 
@@ -129,7 +129,7 @@ export function ResellerDashboardView() {
                   {statuses.map((s) => (
                     <RevealItem key={s} className="shrink-0">
                       <span className="inline-flex items-center gap-2 whitespace-nowrap rounded-full bg-chip py-1.5 pl-1.5 pr-3 text-[13px] font-semibold">
-                        <span className="grid min-w-7 place-items-center rounded-full bg-white px-1.5 py-0.5 text-[13px] font-bold">{data.orders.byStatus[s]}</span>
+                        <span className="grid min-w-7 place-items-center rounded-full bg-surface px-1.5 py-0.5 text-[13px] font-bold">{data.orders.byStatus[s]}</span>
                         <StatusDot tone={ORDER_STATUS_TONE[s]}>{ORDER_STATUS_LABEL[s]}</StatusDot>
                       </span>
                     </RevealItem>

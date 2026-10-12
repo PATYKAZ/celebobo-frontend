@@ -44,7 +44,7 @@ function Toggle({ active, onClick, children }: { active: boolean; onClick: () =>
       type="button"
       aria-pressed={active}
       onClick={onClick}
-      className={cn("h-12 rounded-box border px-3 text-[13px] font-semibold transition-colors active:scale-[0.97] sm:h-[45px] sm:px-4", active ? "border-primary bg-primary text-white" : "border-line bg-white hover:border-primary hover:text-primary")}
+      className={cn("h-12 rounded-box border px-3 text-[13px] font-semibold transition-colors active:scale-[0.97] sm:h-[45px] sm:px-4", active ? "border-primary bg-primary text-white" : "border-line bg-surface hover:border-primary hover:text-primary")}
     >
       {children}
     </button>

@@ -187,14 +187,14 @@ export function AdminInboxSkeleton() {
 export function AdminShellSkeleton() {
   return (
     <div className="mx-auto flex min-h-screen max-w-[1760px] gap-4 p-3 sm:p-4">
-      <div aria-hidden className="sticky top-4 hidden h-[calc(100vh-32px)] w-[270px] shrink-0 flex-col gap-3 rounded-box bg-white p-5 lg:flex">
+      <div aria-hidden className="sticky top-4 hidden h-[calc(100vh-32px)] w-[270px] shrink-0 flex-col gap-3 rounded-box bg-surface p-5 lg:flex">
         <Skeleton className="h-10 w-40" />
         <div className="mt-4 flex flex-col gap-3">
           {Array.from({ length: 10 }, (_, i) => <Skeleton key={i} className="h-9 w-full rounded-box" />)}
         </div>
       </div>
       <div className="flex min-w-0 flex-1 flex-col gap-3 sm:gap-4">
-        <div aria-hidden className="flex items-center gap-3 rounded-box bg-white px-3 py-2.5 sm:px-6 sm:py-3">
+        <div aria-hidden className="flex items-center gap-3 rounded-box bg-surface px-3 py-2.5 sm:px-6 sm:py-3">
           <div className="flex flex-1 flex-col gap-1.5"><Skeleton className="h-3 w-20" /><Skeleton className="h-4 w-36" /></div>
           <Skeleton className="size-10 rounded-full" />
           <Skeleton className="size-10 rounded-full" />

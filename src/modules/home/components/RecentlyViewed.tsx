@@ -29,7 +29,7 @@ function MiniCard({ p }: { p: ViewedProduct }) {
     <button
       onClick={() => toggle(p.id, p.name)}
       aria-label={fav ? "Retirer des favoris" : "Ajouter aux favoris"}
-      className="grid size-8 place-items-center rounded-full bg-white/95 text-ink-3 shadow-[0_2px_8px_rgba(0,0,0,.12)] transition-colors hover:text-danger active:scale-90 sm:size-[30px] sm:bg-page sm:shadow-none"
+      className="grid size-8 place-items-center rounded-full bg-surface/95 text-ink-3 shadow-[0_2px_8px_rgba(0,0,0,.12)] transition-colors hover:text-danger active:scale-90 sm:size-[30px] sm:bg-page sm:shadow-none"
     >
       <Heart size={14} variant={fav ? "Bold" : "Linear"} color={fav ? "#C4261D" : "currentColor"} />
     </button>

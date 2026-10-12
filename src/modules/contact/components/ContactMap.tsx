@@ -21,7 +21,7 @@ export function ContactMap() {
 
   return (
     // mobile : carte puis encadré (la carte reste dégagée) ; desktop : encadré en haut à droite, hors des commandes Google
-    <div className="overflow-hidden rounded-box bg-white sm:relative">
+    <div className="overflow-hidden rounded-box bg-surface sm:relative">
       <div className="relative h-[300px] bg-mint sm:h-[420px]">
         {!loaded && <div className="skeleton absolute inset-0 rounded-none!" aria-hidden />}
         <iframe
@@ -34,7 +34,7 @@ export function ContactMap() {
           allowFullScreen
         />
       </div>
-      <div className="p-4 sm:absolute sm:right-4 sm:top-4 sm:max-w-[340px] sm:rounded-box sm:bg-white sm:shadow-[0_8px_30px_rgba(0,0,0,.12)]">
+      <div className="p-4 sm:absolute sm:right-4 sm:top-4 sm:max-w-[340px] sm:rounded-box sm:bg-surface sm:shadow-[0_8px_30px_rgba(0,0,0,.12)]">
         <p className="flex items-center gap-2 text-[14px] font-bold"><Location size={18} variant="Bold" className="text-primary" /> {SITE.name} Business</p>
         <p className="mt-1 text-[13px] leading-[19px] text-ink-2">{query}</p>
         <a href={`https://www.google.com/maps/dir/?api=1&destination=${encoded}`} target="_blank" rel="noreferrer" className="mt-1 inline-flex min-h-11 items-center gap-1.5 text-[13px] font-bold text-primary hover:underline">
@@ -48,7 +48,7 @@ export function ContactMap() {
 /** Carte décorative (SVG pur, sans service externe) quand aucune adresse n'est renseignée. */
 function DecorativeMap({ address }: { address: string[] }) {
   return (
-    <div className="relative h-[280px] overflow-hidden rounded-box bg-[#E8F2EA] sm:h-[400px]">
+    <div className="relative h-[280px] overflow-hidden rounded-box bg-chip sm:h-[400px]">
       <svg viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice" className="absolute inset-0 size-full" aria-hidden>
         <defs>
           <pattern id="blocks" width="80" height="80" patternUnits="userSpaceOnUse">
@@ -70,7 +70,7 @@ function DecorativeMap({ address }: { address: string[] }) {
           <span className="grid size-12 place-items-center rounded-full bg-primary text-white ring-4 ring-white"><Location size={24} variant="Bold" /></span>
         </motion.div>
       </div>
-      <div className="absolute bottom-4 left-4 right-4 rounded-box bg-white p-4 sm:right-auto sm:max-w-[320px]">
+      <div className="absolute bottom-4 left-4 right-4 rounded-box bg-surface p-4 sm:right-auto sm:max-w-[320px]">
         <p className="text-[14px] font-bold">{SITE.name} Business</p>
         <p className="mt-0.5 text-[13px] text-ink-2">{address.join(", ")}</p>
         <a href={`https://www.google.com/maps/search/${encodeURIComponent(address.join(", "))}`} target="_blank" rel="noreferrer" className="mt-1 inline-flex min-h-11 items-center text-[13px] font-bold text-primary hover:underline">Itinéraire →</a>

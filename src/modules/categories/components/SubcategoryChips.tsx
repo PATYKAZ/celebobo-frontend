@@ -19,7 +19,7 @@ export function SubcategoryChips({ category }: { category: Category }) {
   const chip = (active: boolean) =>
     cn(
       "inline-flex h-10 shrink-0 items-center gap-1.5 rounded-pill border px-4 text-[13px] font-semibold transition-colors sm:h-9",
-      active ? "border-primary bg-primary text-white" : "border-line bg-white text-ink hover:border-primary hover:text-primary",
+      active ? "border-primary bg-primary text-white" : "border-line bg-surface text-ink hover:border-primary hover:text-primary",
     );
   return (
     <nav aria-label={`Sous-catégories de ${parent.name}`} className="no-scrollbar -mx-[15px] flex gap-2 overflow-x-auto px-[15px] sm:mx-0 sm:flex-wrap sm:px-0">

@@ -62,7 +62,7 @@ export function SaleDetailDrawer({ sale, onClose, canEdit, canRefund, canDelete,
 
           {sale.refund && (
             <div className="rounded-box border border-star/40 bg-star/10 p-4 text-[13px]">
-              <p className="font-bold text-[#8a5a00]">{sale.status === "retournée" ? "Retour produit" : "Remboursement"} — {formatPrice(sale.refund.amount)}</p>
+              <p className="font-bold text-warn">{sale.status === "retournée" ? "Retour produit" : "Remboursement"} — {formatPrice(sale.refund.amount)}</p>
               <p className="mt-1 text-ink-2">« {sale.refund.reason} »</p>
               <p className="mt-1 text-[12px] text-ink-3">{formatDateTime(sale.refund.at)} · par {sale.refund.by}</p>
             </div>

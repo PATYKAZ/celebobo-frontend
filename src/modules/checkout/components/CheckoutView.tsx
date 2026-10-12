@@ -257,7 +257,7 @@ function Content() {
                       </li>
                     ))}
                   </ul>
-                  {cartItems.length > items.length && <p className="rounded-md bg-star/10 px-3 py-2 text-[13px] text-[#8a5a00]">Certains articles de votre panier ne sont plus disponibles : ils ne seront pas commandés.</p>}
+                  {cartItems.length > items.length && <p className="rounded-md bg-star/10 px-3 py-2 text-[13px] text-warn">Certains articles de votre panier ne sont plus disponibles : ils ne seront pas commandés.</p>}
                   {submitError && <p role="alert" className="rounded-md bg-danger-50 px-3 py-2 text-[13px] text-danger">{submitError}</p>}
                 </div>
               )}
@@ -266,7 +266,7 @@ function Content() {
 
           {/* spacer : réserve la place de la barre collante (mobile) */}
           <div aria-hidden className="h-24 lg:hidden" />
-          <div className="max-lg:fixed max-lg:inset-x-0 max-lg:bottom-tabbar max-lg:z-40 max-lg:border-t max-lg:border-line-3 max-lg:bg-white/95 max-lg:px-4 max-lg:pb-safe max-lg:pt-3 max-lg:backdrop-blur-xl lg:mt-8">
+          <div className="max-lg:fixed max-lg:inset-x-0 max-lg:bottom-tabbar max-lg:z-40 max-lg:border-t max-lg:border-line-3 max-lg:bg-surface/95 max-lg:px-4 max-lg:pb-safe max-lg:pt-3 max-lg:backdrop-blur-xl lg:mt-8">
             <div className="mx-auto flex max-w-[640px] items-center gap-3 lg:mx-0 lg:max-w-none lg:justify-between">
               {step > 0 ? (
                 <Button variant="chip" onClick={() => go(step - 1)} leftIcon={<ArrowLeft size={16} />} disabled={pending} className="max-lg:px-4">Retour</Button>

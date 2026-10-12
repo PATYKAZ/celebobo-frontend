@@ -68,7 +68,7 @@ export function ImageSlot({ label, value, onChange, main, error }: Props) {
             <img src={value.url} alt={label} className="absolute inset-0 size-full object-cover transition-transform duration-500 group-hover:scale-105" />
             <span className="absolute inset-0 bg-black/0 transition-colors group-hover:bg-black/25" />
             {sending && (
-              <span role="status" className="absolute inset-x-2 bottom-2 flex items-center justify-center gap-1.5 rounded-full bg-white/90 px-2 py-1 text-[11px] font-semibold text-ink-2 shadow-sm">
+              <span role="status" className="absolute inset-x-2 bottom-2 flex items-center justify-center gap-1.5 rounded-full bg-surface/90 px-2 py-1 text-[11px] font-semibold text-ink-2 shadow-sm">
                 <span className="size-3 animate-spin rounded-full border-2 border-primary border-t-transparent motion-reduce:animate-none" aria-hidden />
                 Envoi…
               </span>
@@ -81,7 +81,7 @@ export function ImageSlot({ label, value, onChange, main, error }: Props) {
                 setSending(null);
                 onChange({ url: null, file: null });
               }}
-              className="absolute right-2 top-2 grid size-10 place-items-center rounded-full bg-white text-danger shadow-sm transition-opacity hover:bg-danger hover:text-white active:scale-90 sm:size-8 sm:opacity-0 sm:group-hover:opacity-100"
+              className="absolute right-2 top-2 grid size-10 place-items-center rounded-full bg-surface text-danger shadow-sm transition-opacity hover:bg-danger hover:text-white active:scale-90 sm:size-8 sm:opacity-0 sm:group-hover:opacity-100"
             >
               <Trash size={16} />
             </button>

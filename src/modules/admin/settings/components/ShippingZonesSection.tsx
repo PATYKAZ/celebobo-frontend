@@ -54,7 +54,7 @@ export function ShippingZonesSection() {
                     <span className="grid size-6 place-items-center rounded-full bg-primary-100 text-[12px] text-primary-dark">{i + 1}</span>
                     {z.name}
                     {z.isDefault && <span className="rounded-full bg-primary px-2 py-0.5 text-[10px] font-bold uppercase text-white">Par défaut</span>}
-                    {!z.isActive && <span className="rounded-full bg-line-3 px-2 py-0.5 text-[10px] font-bold uppercase text-ink-2">Inactive</span>}
+                    {!z.isActive && <span className="rounded-full bg-line-3 px-2 py-0.5 text-[10px] font-bold uppercase text-ink">Inactive</span>}
                   </p>
                   <p className="mt-1 text-[13px] leading-[19px] text-ink-2">{z.cities.length ? z.cities.join(", ") : z.isDefault ? "Toutes les autres villes" : "Aucune ville"}</p>
                   <p className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1 text-[13px] tabular-nums">
