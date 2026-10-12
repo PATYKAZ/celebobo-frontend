@@ -49,7 +49,8 @@ export type Permission =
   | "price.adjust" // proposer un prix final dans la discussion
   | "shipping.manage" // zones de livraison (backend : responsable et admin)
   | "content.manage" // bannières de l'accueil (backend : responsable et admin)
-  | "settings.manage"; // réglages du site : taux USD → FC, coordonnées, horaires (backend : admin seul)
+  | "settings.manage" // réglages du site : taux USD → FC, coordonnées, horaires (backend : admin seul)
+  | "loyalty.manage"; // programmes de fidélité : Celebobo Plus, cagnotte, liens de l'app (backend : admin seul)
 
 const RESELLER: Permission[] = [
   "backoffice.access",
@@ -91,7 +92,7 @@ const MANAGER: Permission[] = [
   "content.manage",
 ];
 
-const ADMIN: Permission[] = [...MANAGER, "sales.delete", "products.delete", "commissions.pay", "users.manage", "audit.view", "settings.manage"];
+const ADMIN: Permission[] = [...MANAGER, "sales.delete", "products.delete", "commissions.pay", "users.manage", "audit.view", "settings.manage", "loyalty.manage"];
 
 export const PERMISSIONS: Record<UserRole, ReadonlySet<Permission>> = {
   client: new Set<Permission>(),
