@@ -37,6 +37,8 @@ export interface CartQuote {
   couponCode: string | null;
   /** Code promo enregistré mais devenu inapplicable (minimum non atteint, expiré…). */
   couponError: string | null;
+  /** Livraison offerte au titre de l'abonnement Celebobo Plus */
+  memberFreeShipping: boolean;
 }
 
 export interface Cart {
@@ -56,6 +58,7 @@ export const EMPTY_QUOTE: CartQuote = {
   deliveryEstimate: null,
   couponCode: null,
   couponError: null,
+  memberFreeShipping: false,
 };
 
 export const EMPTY_CART: Cart = { token: null, items: [], quote: EMPTY_QUOTE };

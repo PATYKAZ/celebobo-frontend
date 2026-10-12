@@ -24,6 +24,7 @@ export interface QuoteDto {
   deliveryEstimate: string;
   couponCode: string | null;
   couponError: string | null;
+  memberFreeShipping?: boolean;
 }
 
 export interface CartLineDto {
@@ -51,6 +52,7 @@ export function toQuote(dto: QuoteDto): CartQuote {
     deliveryEstimate: dto.deliveryEstimate || null,
     couponCode: dto.couponCode || null,
     couponError: dto.couponError || null,
+    memberFreeShipping: dto.memberFreeShipping ?? false,
   };
 }
 

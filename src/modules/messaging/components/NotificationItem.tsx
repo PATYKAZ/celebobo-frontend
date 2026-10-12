@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowRight2, Box, CloseCircle, MessageText1, Profile2User, TickCircle } from "@/shared/ui/icons";
+import { ArrowRight2, Box, CloseCircle, Crown1, MessageText1, Profile2User, TickCircle } from "@/shared/ui/icons";
 import { useState } from "react";
 import { ROUTES } from "@/config/routes";
 import { cn } from "@/shared/lib/cn";
@@ -35,7 +35,8 @@ export function NotificationItem({ notification: n, role, resellers }: Props) {
 
   const canAssign = (role === "mukubwa" || role === "admin") && !n.isRead && ((n.kind === "order_placed" && !!n.orderId) || (n.kind === "support_request" && !!n.conversationId));
   const canReply = role === "revendeur" && n.kind === "order_assigned" && !n.isRead && !!n.orderId;
-  const Icon = n.type === "order" ? Box : MessageText1;
+  const plus = n.kind.startsWith("membership_");
+  const Icon = plus ? Crown1 : n.type === "order" ? Box : MessageText1;
   const discussion = n.kind === "support_request";
 
   const confirmAssign = () => {
@@ -79,7 +80,7 @@ export function NotificationItem({ notification: n, role, resellers }: Props) {
             onClick={() => !n.isRead && markRead.mutate(n.id)}
             className="group inline-flex min-h-12 w-full items-center justify-center gap-1.5 rounded-box bg-surface text-[14px] font-bold text-primary ring-1 ring-primary/30 transition-all active:scale-[0.98] sm:min-h-0 sm:w-auto sm:bg-transparent sm:text-[13px] sm:ring-0"
           >
-            {n.conversationId ? "Ouvrir la discussion" : "Voir la commande"} <ArrowRight2 size={15} className="transition-transform group-hover:translate-x-1" />
+            {plus ? (n.kind === "membership_requested" ? "Voir les demandes" : "Voir mon abonnement") : n.conversationId ? "Ouvrir la discussion" : "Voir la commande"} <ArrowRight2 size={15} className="transition-transform group-hover:translate-x-1" />
           </Link>
           {!n.isRead && !canAssign && !canReply && (
             <button onClick={() => markRead.mutate(n.id)} className="min-h-11 w-full rounded-box text-[13px] font-semibold text-ink-3 active:bg-chip sm:ml-3 sm:min-h-0 sm:w-auto sm:rounded-none sm:text-[12px] sm:hover:text-ink">

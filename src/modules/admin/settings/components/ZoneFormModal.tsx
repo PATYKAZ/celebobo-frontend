@@ -81,6 +81,13 @@ export function ZoneFormModal({ zone, nextPosition, onClose }: { zone: AdminShip
           </label>
         </div>
         <p className="-mt-1 text-[12px] leading-[17px] text-ink-3">La zone par défaut s’applique aux villes qui ne figurent dans aucune zone (ex. « Reste du pays »).</p>
+        <label className="flex min-h-14 cursor-pointer items-center justify-between gap-3 rounded-box border border-line px-4 py-3 active:bg-chip">
+          <span>
+            <span className="block text-[14px] font-semibold">Livraison offerte aux membres Plus</span>
+            <span className="block text-[12px] leading-[17px] text-ink-3">Sans minimum d’achat pour les abonnés Celebobo Plus ; les autres clients gardent les frais ci-dessus.</span>
+          </span>
+          <Switch label="Livraison offerte aux membres Plus" checked={v.memberFreeShipping} onChange={(x) => set("memberFreeShipping", x)} />
+        </label>
         <div className="mt-1 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
           <Button type="button" variant="chip" upper={false} onClick={onClose}>Annuler</Button>
           <Button type="submit" loading={save.isPending} upper={false}>{zone ? "Enregistrer" : "Créer la zone"}</Button>

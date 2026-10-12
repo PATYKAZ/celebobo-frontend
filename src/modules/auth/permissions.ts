@@ -50,6 +50,7 @@ export type Permission =
   | "shipping.manage" // zones de livraison (backend : responsable et admin)
   | "content.manage" // bannières de l'accueil (backend : responsable et admin)
   | "settings.manage" // réglages du site : taux USD → FC, coordonnées, horaires (backend : admin seul)
+  | "membership.manage" // abonnements Celebobo Plus : confirmer / refuser les demandes, liste des membres
   | "loyalty.manage"; // programmes de fidélité : Celebobo Plus, cagnotte, liens de l'app (backend : admin seul)
 
 const RESELLER: Permission[] = [
@@ -90,6 +91,7 @@ const MANAGER: Permission[] = [
   "inbox.view.all",
   "shipping.manage",
   "content.manage",
+  "membership.manage",
 ];
 
 const ADMIN: Permission[] = [...MANAGER, "sales.delete", "products.delete", "commissions.pay", "users.manage", "audit.view", "settings.manage", "loyalty.manage"];
