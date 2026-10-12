@@ -6,7 +6,8 @@ import { formatCompact, formatPrice } from "@/shared/lib/format";
 import { Select } from "@/shared/ui/Form";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { Tabs } from "@/shared/ui/Tabs";
-import { useCategories } from "@/modules/categories/hooks/useCategories";
+import { useFlatCategories } from "@/modules/categories/hooks/useCategories";
+import { categoryOptionLabel } from "@/modules/categories/services/categories.mapper";
 import { PermissionGuard, useCan } from "@/modules/auth/hooks/useCan";
 import type { PaymentMethod } from "@/modules/orders/types";
 import { AreaLineChart, BarChart, ChartCard, DonutChart, LegendDot } from "../../charts";
@@ -34,7 +35,7 @@ function AnalyticsContent() {
   const { data } = useAnalytics(filters);
   const canPerf = useCan("analytics.resellers");
   const { data: perf } = useResellerPerformance(filters.range, canPerf);
-  const { data: categories } = useCategories();
+  const { data: categories } = useFlatCategories();
   const s = data?.summary;
   const rangeLabel = RANGES.find((r) => r.value === filters.range)?.label.toLowerCase() ?? "";
   const set = (patch: Partial<AnalyticsFilters>) => setFilters((f) => ({ ...f, ...patch }));
@@ -50,7 +51,7 @@ function AnalyticsContent() {
             wrapperClassName="sm:w-[200px]"
             value={String(filters.category)}
             onChange={(e) => set({ category: e.target.value === "all" ? "all" : Number(e.target.value) })}
-            options={[{ value: "all", label: "Toutes" }, ...(categories ?? []).map((c) => ({ value: c.id, label: c.name }))]}
+            options={[{ value: "all", label: "Toutes" }, ...(categories ?? []).map((c) => ({ value: c.id, label: categoryOptionLabel(c) }))]}
           />
           <Select
             label="Paiement"

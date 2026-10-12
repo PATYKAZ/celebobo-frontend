@@ -9,7 +9,7 @@ import { Button } from "@/shared/ui/Button";
 import { EmptyState } from "@/shared/ui/EmptyState";
 import { BottomSheet } from "@/shared/ui/BottomSheet";
 import { Pagination } from "@/shared/ui/Pagination";
-import { useCategories } from "@/modules/categories/hooks/useCategories";
+import { useFlatCategories } from "@/modules/categories/hooks/useCategories";
 import { PAGE_SIZE, useProductFilters, type LockedFilters } from "../hooks/useProductFilters";
 import { useProducts } from "../hooks/useProducts";
 import { ProductFilters } from "./ProductFilters";
@@ -26,7 +26,7 @@ interface Props {
 /** Liste filtrable (sidebar + barre d'outils + grille/liste + pagination), partagée par produits / catégorie / recherche. */
 export function ProductListView({ locked, emptyExtra }: Props) {
   const { state, params, set, reset, activeCount } = useProductFilters(locked);
-  const { data: categories } = useCategories();
+  const { data: categories } = useFlatCategories();
   const { data, isLoading, isFetching } = useProducts(params);
   const [view, setView] = useState<ViewMode>("grid");
   const [drawer, setDrawer] = useState(false);

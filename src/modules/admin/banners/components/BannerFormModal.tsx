@@ -9,7 +9,8 @@ import { Input, Select, Switch, Textarea } from "@/shared/ui/Form";
 import { Modal } from "@/shared/ui/Overlay";
 import { SegmentedControl } from "@/shared/ui/SegmentedControl";
 import { toast } from "@/shared/ui/Toast";
-import { useCategories } from "@/modules/categories/hooks/useCategories";
+import { useFlatCategories } from "@/modules/categories/hooks/useCategories";
+import { categoryOptionLabel } from "@/modules/categories/services/categories.mapper";
 import { ProductCombobox } from "../../sales/components/ProductCombobox";
 import { useSaveBanner } from "../hooks/useAdminBanners";
 import { BANNER_PAGES, bannerToForm, buildLink } from "../services/admin-banners.service";
@@ -92,7 +93,7 @@ export function BannerFormModal({ banner, placement, slots, nextPosition, onClos
   const [v, setV] = useState<BannerFormValues>(() => (banner ? bannerToForm(banner) : emptyBanner(placement)));
   const [image, setImage] = useState<BannerImageValue>({ url: banner?.image ?? null });
   const [errors, setErrors] = useState<Errors>({});
-  const { data: categories } = useCategories();
+  const { data: categories } = useFlatCategories();
   const save = useSaveBanner(banner, nextPosition);
   const set = <K extends keyof BannerFormValues>(k: K, value: BannerFormValues[K]) => {
     setV((x) => ({ ...x, [k]: value }));
@@ -158,7 +159,7 @@ export function BannerFormModal({ banner, placement, slots, nextPosition, onClos
           <p className="text-[13px] font-semibold">Le bouton mène vers<span className="ml-0.5 text-danger">*</span></p>
           <SegmentedControl aria-label="Type de destination" value={v.linkKind} onChange={setKind} options={LINK_KINDS} fullWidth size="sm" />
           {v.linkKind === "category" && (
-            <Select aria-label="Catégorie" value={v.linkTarget} onChange={(e) => set("linkTarget", e.target.value)} error={errors.linkTarget} options={[{ value: "", label: "Choisir une catégorie…" }, ...(categories ?? []).map((c) => ({ value: c.slug, label: c.name }))]} />
+            <Select aria-label="Catégorie" value={v.linkTarget} onChange={(e) => set("linkTarget", e.target.value)} error={errors.linkTarget} options={[{ value: "", label: "Choisir une catégorie…" }, ...(categories ?? []).map((c) => ({ value: c.slug, label: categoryOptionLabel(c) }))]} />
           )}
           {v.linkKind === "product" && (
             <>

@@ -16,4 +16,14 @@ export interface Category {
   /** Titre / description pour les moteurs de recherche (vides → nom / description). */
   seoTitle?: string | null;
   seoDescription?: string | null;
+  /** catégorie parente (sous-catégorie), null pour une catégorie principale */
+  parent: CategoryRef | null;
+  /** sous-catégories (catégorie principale) ; le nombre d'articles du parent les inclut */
+  children: Category[];
+}
+
+export interface CategoryRef {
+  id: number;
+  slug: string;
+  name: string;
 }

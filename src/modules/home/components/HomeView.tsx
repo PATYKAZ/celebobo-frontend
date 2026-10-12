@@ -26,10 +26,14 @@ export function HomeView() {
       <MemberBanner />
       <ProductTabs catalog={content?.catalog ?? null} />
       <BrandNew products={content?.catalog?.newArrivals} />
-      {content?.showcases.map((s) => (
-        <CategoryShowcase key={s.title} config={s} catalog={content.catalog} banner={content.placements?.[`showcase:${s.categorySlug}`]?.[0]} />
-      ))}
-      {content && <CategoryColumns columns={content.columns} catalog={content.catalog} placements={content.placements} />}
+      {/* blocs catégorie dans l'ordre du back-office (sinon blocs par défaut) */}
+      {content?.blocks.map((b) =>
+        b.kind === "showcase" ? (
+          <CategoryShowcase key={b.key} config={b.showcase} catalog={content.catalog} banner={content.placements?.[`showcase:${b.showcase.categorySlug}`]?.[0]} />
+        ) : (
+          <CategoryColumns key={b.key} columns={b.columns} catalog={content.catalog} placements={content.placements} />
+        ),
+      )}
       <RecentlyViewed fallback={content?.catalog?.bestSellers} />
       {content && <SeoText title={content.seo.title} paragraphs={content.seo.paragraphs} />}
     </>

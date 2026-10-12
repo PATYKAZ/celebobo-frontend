@@ -10,6 +10,7 @@ import { toast } from "@/shared/ui/Toast";
 import { ConfirmDialog } from "../../ui/ConfirmDialog";
 import { useDeleteCategory } from "../hooks/useAdminCategories";
 import type { AdminCategory } from "../types";
+import { categoryOptionLabel } from "@/modules/categories/services/categories.mapper";
 
 interface Props {
   category: AdminCategory | null;
@@ -30,6 +31,7 @@ export function DeleteCategoryDialog({ category, all, onClose }: Props) {
   const fail = (e: unknown) => toast.error("Suppression impossible", getErrorMessage(e));
 
   if (!category) return null;
+  const subs = all.filter((c) => c.parentId === category.id).length;
   if (category.productsCount === 0) {
     return (
       <ConfirmDialog
@@ -37,7 +39,7 @@ export function DeleteCategoryDialog({ category, all, onClose }: Props) {
         onClose={onClose}
         loading={del.isPending}
         title="Supprimer cette catégorie ?"
-        message={`« ${category.name} » ne contient aucun produit. Elle sera supprimée.`}
+        message={`« ${category.name} » ne contient aucun produit. Elle sera supprimée.${subs ? ` Ses ${subs} sous-catégorie${subs > 1 ? "s deviendront des catégories principales" : " deviendra une catégorie principale"}.` : ""}`}
         confirmLabel="Supprimer"
         onConfirm={() => del.mutate({ id: category.id }, { onSuccess: () => done(category.name), onError: fail })}
       />
@@ -51,9 +53,10 @@ export function DeleteCategoryDialog({ category, all, onClose }: Props) {
         <h3 className="mt-3 text-[18px] leading-[26px] sm:mt-4 sm:text-[20px] sm:leading-[28px]">Cette catégorie n&apos;est pas vide</h3>
         <p className="mt-2 text-[14px] leading-[22px] text-ink-2">
           « {category.name} » contient <strong>{category.productsCount} produit{category.productsCount > 1 ? "s" : ""}</strong>. Pour la supprimer, réaffectez-les à une autre catégorie — ou désactivez-la pour la masquer simplement de la boutique.
+          {subs > 0 && <> Ses sous-catégories deviendront des catégories principales.</>}
         </p>
         <div className="mt-5 w-full text-left">
-          <Select label="Réaffecter les produits vers" value={moveTo} onChange={(e) => setMoveTo(e.target.value)} options={[{ value: "", label: "Choisir une catégorie…" }, ...others.map((c) => ({ value: c.id, label: c.name }))]} />
+          <Select label="Réaffecter les produits vers" value={moveTo} onChange={(e) => setMoveTo(e.target.value)} options={[{ value: "", label: "Choisir une catégorie…" }, ...others.map((c) => ({ value: c.id, label: categoryOptionLabel(c) }))]} />
         </div>
         <div className="mt-6 flex w-full flex-col-reverse gap-2.5 sm:grid sm:grid-cols-2 sm:gap-3">
           <Button variant="chip" upper={false} onClick={onClose}>Annuler</Button>

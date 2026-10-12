@@ -33,7 +33,11 @@ function Content() {
 
   const list = data ?? [];
   const actives = list.filter((c) => c.active).length;
+  // admin : produits classés directement dans chaque catégorie (sous-catégories comptées à part)
   const products = list.reduce((n, c) => n + c.productsCount, 0);
+  const siblings = (c: AdminCategory) => list.filter((x) => x.parentId === c.parentId);
+  const isFirst = (c: AdminCategory) => siblings(c)[0]?.id === c.id;
+  const isLast = (c: AdminCategory) => siblings(c).at(-1)?.id === c.id;
 
   const toggle = (c: AdminCategory, active: boolean) =>
     setActive.mutate({ id: c.id, active }, { onSuccess: () => toast.info(active ? "Catégorie visible" : "Catégorie masquée", c.name), onError: (e) => toast.error("Action impossible", getErrorMessage(e)) });
@@ -42,7 +46,7 @@ function Content() {
     <>
       <PageHeader
         title="Catégories"
-        description="Organisez le catalogue : nom, image, ordre d'affichage et visibilité en boutique."
+        description="Organisez le catalogue : catégories principales et sous-catégories, image, ordre d'affichage et visibilité en boutique."
         actions={canManage && <Button onClick={() => setCreating(true)} leftIcon={<Add size={18} />}>Nouvelle catégorie</Button>}
       />
 
@@ -60,7 +64,7 @@ function Content() {
         ) : (
           <ul>
             <AnimatePresence initial={false}>
-              {list.map((c, i) => (
+              {list.map((c) => (
                 <motion.li
                   key={c.id}
                   layout
@@ -68,28 +72,30 @@ function Content() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, x: -30 }}
-                  className={cn("flex flex-col gap-3 border-b border-line-3/70 p-4 last:border-0 sm:flex-row sm:items-center sm:gap-4 sm:px-5", !c.active && "bg-page/40")}
+                  className={cn("flex flex-col gap-3 border-b border-line-3/70 p-4 last:border-0 sm:flex-row sm:items-center sm:gap-4 sm:px-5", !c.active && "bg-page/40", c.parent && "pl-8 sm:pl-14")}
                 >
                   {/* Identité */}
                   <div className="flex min-w-0 flex-1 items-center gap-3 sm:gap-4">
                     {canManage && (
                       <div className="hidden flex-col sm:flex">
-                        <button aria-label="Monter" disabled={i === 0 || move.isPending} onClick={() => move.mutate({ id: c.id, dir: "up" })} className="grid size-7 place-items-center rounded-md text-ink-3 transition-colors hover:bg-chip hover:text-primary disabled:opacity-30"><ArrowUp2 size={16} variant="Bold" /></button>
-                        <button aria-label="Descendre" disabled={i === list.length - 1 || move.isPending} onClick={() => move.mutate({ id: c.id, dir: "down" })} className="grid size-7 place-items-center rounded-md text-ink-3 transition-colors hover:bg-chip hover:text-primary disabled:opacity-30"><ArrowDown2 size={16} variant="Bold" /></button>
+                        <button aria-label="Monter" disabled={isFirst(c) || move.isPending} onClick={() => move.mutate({ id: c.id, dir: "up" })} className="grid size-7 place-items-center rounded-md text-ink-3 transition-colors hover:bg-chip hover:text-primary disabled:opacity-30"><ArrowUp2 size={16} variant="Bold" /></button>
+                        <button aria-label="Descendre" disabled={isLast(c) || move.isPending} onClick={() => move.mutate({ id: c.id, dir: "down" })} className="grid size-7 place-items-center rounded-md text-ink-3 transition-colors hover:bg-chip hover:text-primary disabled:opacity-30"><ArrowDown2 size={16} variant="Bold" /></button>
                       </div>
                     )}
-                    <span className="hidden w-6 text-center text-[13px] font-bold tabular-nums text-ink-3 sm:block">{c.order}</span>
+
                     <span className={cn("relative size-14 shrink-0 overflow-hidden rounded-box bg-page transition-opacity sm:size-16", !c.active && "opacity-50 grayscale")}>
                       {c.image && <Image src={c.image} alt="" fill sizes="64px" className="object-cover" />}
                     </span>
                     <div className="min-w-0 flex-1">
                       <p className="flex items-center gap-2 text-[15px] font-bold">
                         <CategoryIcon name={c.icon} size={17} className="shrink-0 text-primary" />
+                        {c.parent && <span aria-hidden className="text-ink-3">↳</span>}
                         <span className="truncate">{c.name}</span>
                         {!c.active && <EyeSlash size={15} className="shrink-0 text-ink-3" />}
                       </p>
+                      {c.parent && <p className="text-[12px] font-semibold text-ink-3">Sous-catégorie de {c.parent.name}</p>}
                       <p className="line-clamp-1 text-[13px] text-ink-2">{c.description || "—"}</p>
-                      <p className="mt-0.5 text-[12px] font-semibold text-ink-3 sm:hidden">{c.productsCount} produit{c.productsCount > 1 ? "s" : ""} · n°{c.order}</p>
+                      <p className="mt-0.5 text-[12px] font-semibold text-ink-3 sm:hidden">{c.productsCount} produit{c.productsCount > 1 ? "s" : ""}</p>
                     </div>
                   </div>
                   <Pill tone={c.productsCount ? "green" : "gray"} className="hidden sm:inline-flex">{c.productsCount} produit{c.productsCount > 1 ? "s" : ""}</Pill>
@@ -97,8 +103,8 @@ function Content() {
                   {canManage ? (
                     <div className="flex items-center justify-between gap-2 border-t border-line-3/70 pt-3 sm:justify-end sm:gap-3 sm:border-0 sm:pt-0">
                       <div className="flex gap-1.5 sm:hidden">
-                        <button aria-label="Monter" disabled={i === 0 || move.isPending} onClick={() => move.mutate({ id: c.id, dir: "up" })} className="grid size-11 place-items-center rounded-full bg-chip transition-colors active:scale-90 disabled:opacity-30"><ArrowUp2 size={18} variant="Bold" /></button>
-                        <button aria-label="Descendre" disabled={i === list.length - 1 || move.isPending} onClick={() => move.mutate({ id: c.id, dir: "down" })} className="grid size-11 place-items-center rounded-full bg-chip transition-colors active:scale-90 disabled:opacity-30"><ArrowDown2 size={18} variant="Bold" /></button>
+                        <button aria-label="Monter" disabled={isFirst(c) || move.isPending} onClick={() => move.mutate({ id: c.id, dir: "up" })} className="grid size-11 place-items-center rounded-full bg-chip transition-colors active:scale-90 disabled:opacity-30"><ArrowUp2 size={18} variant="Bold" /></button>
+                        <button aria-label="Descendre" disabled={isLast(c) || move.isPending} onClick={() => move.mutate({ id: c.id, dir: "down" })} className="grid size-11 place-items-center rounded-full bg-chip transition-colors active:scale-90 disabled:opacity-30"><ArrowDown2 size={18} variant="Bold" /></button>
                       </div>
                       <label className="flex min-h-11 items-center gap-2 text-[13px] font-semibold sm:min-h-0">
                         <span className="sm:hidden">Visible</span>
@@ -119,7 +125,7 @@ function Content() {
         )}
       </Block>
 
-      <CategoryFormModal open={creating || !!editing} category={editing} existingNames={list.map((c) => c.name)} onClose={() => { setCreating(false); setEditing(null); }} />
+      <CategoryFormModal open={creating || !!editing} category={editing} all={list} onClose={() => { setCreating(false); setEditing(null); }} />
       <DeleteCategoryDialog category={deleting} all={list} onClose={() => setDeleting(null)} />
     </>
   );
