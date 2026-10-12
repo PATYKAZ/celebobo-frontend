@@ -13,6 +13,8 @@ export interface AdminSettingsDto {
   socialLinks: Record<string, string>;
   newsletterCode: string;
   newsletterDiscount: number;
+  returnDays?: number;
+  supportAlwaysOpen?: boolean;
 }
 
 export interface ZoneDto {
@@ -38,6 +40,8 @@ export const toAdminSettings = (dto: AdminSettingsDto): AdminSiteSettings => ({
   social: (dto.socialLinks ?? {}) as Partial<Record<SocialNetwork, string>>,
   newsletterCode: dto.newsletterCode,
   newsletterDiscount: dto.newsletterDiscount,
+  returnDays: dto.returnDays ?? 7,
+  supportAlwaysOpen: dto.supportAlwaysOpen ?? true,
 });
 
 export const settingsToForm = (s: AdminSiteSettings): SettingsFormValues => ({
@@ -45,6 +49,7 @@ export const settingsToForm = (s: AdminSiteSettings): SettingsFormValues => ({
   usdToCdf: s.usdToCdf.toFixed(2),
   openingHours: s.openingHours.map((h) => ({ ...h })),
   newsletterDiscount: String(s.newsletterDiscount),
+  returnDays: String(s.returnDays),
 });
 
 /** Corps du PATCH : liens sociaux vides retirés, horaires incomplets ignorés. */
@@ -59,6 +64,8 @@ export const toSettingsPayload = (v: SettingsFormValues) => ({
   socialLinks: Object.fromEntries(Object.entries(v.social).filter(([, url]) => url?.trim()).map(([k, url]) => [k, url!.trim()])),
   newsletterCode: v.newsletterCode.trim(),
   newsletterDiscount: Number(v.newsletterDiscount),
+  returnDays: Number(v.returnDays),
+  supportAlwaysOpen: v.supportAlwaysOpen,
 });
 
 export const toAdminZone = (dto: ZoneDto): AdminShippingZone => ({

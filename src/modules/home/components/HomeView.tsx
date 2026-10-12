@@ -1,5 +1,6 @@
 "use client";
 
+import { returnPeriod, useSiteSettings } from "@/modules/site";
 import { useHomeContent } from "../hooks/useHomeContent";
 import { BrandNew } from "./BrandNew";
 import { BrandsAndCategories } from "./BrandsAndCategories";
@@ -15,6 +16,8 @@ import { SeoText } from "./SeoText";
 /** Page d'accueil : toutes les sections, dans l'ordre du design (Home 1). */
 export function HomeView() {
   const { data: content } = useHomeContent();
+  const { returnDays } = useSiteSettings();
+  const returnSentence = returnDays > 0 ? ` Vous disposez de ${returnPeriod(returnDays)} après la livraison pour retourner un produit non utilisé.` : "";
 
   return (
     <>
@@ -35,7 +38,7 @@ export function HomeView() {
         ),
       )}
       <RecentlyViewed fallback={content?.catalog?.bestSellers} />
-      {content && <SeoText title={content.seo.title} paragraphs={content.seo.paragraphs} />}
+      {content && <SeoText title={content.seo.title} paragraphs={content.seo.paragraphs.map((p) => p.replace("{retour}", returnSentence))} />}
     </>
   );
 }

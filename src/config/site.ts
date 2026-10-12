@@ -9,6 +9,8 @@ export const SITE = {
   // repli seulement (API injoignable) : l’adresse réelle vient de GET /settings/public/
   address: ["Bukavu · Goma", "RD Congo"],
   copyright: "Celebobo Business",
+  /** délai de retour par défaut (jours), remplacé par les réglages du site */
+  returnDays: 7,
   openingHours: [
     { days: "Lundi – Vendredi", hours: "08h00 – 19h00" },
     { days: "Samedi", hours: "09h00 – 17h00" },

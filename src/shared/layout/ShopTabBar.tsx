@@ -12,7 +12,7 @@ import { CategoryIcon } from "@/modules/categories/components/CategoryIcon";
 import { useCategories } from "@/modules/categories/hooks/useCategories";
 import { useUnreadMessagesCount } from "@/modules/messaging/hooks/useConversations";
 import { useUnreadNotificationsCount } from "@/modules/messaging/hooks/useNotifications";
-import { useSiteSettings } from "@/modules/site";
+import { supportHours, supportLabel, useSiteSettings } from "@/modules/site";
 import { CurrencySwitch } from "@/shared/currency/CurrencySwitch";
 
 /** Pages plein écran où la barre d'onglets est masquée (chat, assistant, paiement). */
@@ -103,8 +103,9 @@ export function ShopTabBar() {
             </div>
             <a href={site.hotlineHref} className="flex items-center justify-between rounded-box bg-primary-50 p-4">
               <span>
-                <span className="block text-[11px] font-bold uppercase tracking-wider text-ink-2">Hotline 24/7</span>
+                <span className="block text-[11px] font-bold uppercase tracking-wider text-ink-2">{supportLabel(site)}</span>
                 <span className="text-[20px] font-bold text-primary">{site.hotline}</span>
+                {supportHours(site) && <span className="block text-[12px] text-ink-2">{supportHours(site)}</span>}
               </span>
               <span className="grid size-11 place-items-center rounded-full bg-primary text-white"><Call size={20} variant="Bold" /></span>
             </a>

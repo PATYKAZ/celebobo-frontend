@@ -12,6 +12,8 @@ export interface AdminSiteSettings {
   social: Partial<Record<SocialNetwork, string>>;
   newsletterCode: string;
   newsletterDiscount: number;
+  returnDays: number;
+  supportAlwaysOpen: boolean;
 }
 
 /** Valeurs du formulaire (chaînes pour les champs). */
@@ -26,6 +28,8 @@ export interface SettingsFormValues {
   social: Partial<Record<SocialNetwork, string>>;
   newsletterCode: string;
   newsletterDiscount: string;
+  returnDays: string;
+  supportAlwaysOpen: boolean;
 }
 
 /** Zone de livraison (`/bo/shipping-zones/`). */

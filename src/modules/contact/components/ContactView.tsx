@@ -9,7 +9,7 @@ import { Button } from "@/shared/ui/Button";
 import { Input, Select, Textarea } from "@/shared/ui/Form";
 import { useContactForm } from "../hooks/useContactForm";
 import { formatDateTime } from "@/shared/lib/format";
-import { useSiteSettings } from "@/modules/site";
+import { supportLabel, useSiteSettings } from "@/modules/site";
 import { CONTACT_SUBJECTS } from "../types";
 import { ContactMap } from "./ContactMap";
 
@@ -17,7 +17,7 @@ export function ContactView() {
   const { values, errors, sent, receipt, loading, onChange, onSubmit, reset } = useContactForm();
   const site = useSiteSettings();
   const cards = [
-    { icon: Call, title: "Hotline 24/7", value: site.hotline, href: site.hotlineHref },
+    { icon: Call, title: supportLabel(site), value: site.hotline, href: site.hotlineHref },
     { icon: Sms, title: "E-mail", value: site.email, href: `mailto:${site.email}` },
     { icon: Whatsapp, title: "WhatsApp", value: "Discuter maintenant", href: site.whatsappUrl },
     { icon: Location, title: "Adresse", value: site.address.join(", "), href: "#plan" },

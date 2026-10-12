@@ -5,7 +5,7 @@ import { Add, Trash } from "@/shared/ui/icons";
 import { ApiError, getErrorMessage } from "@/shared/lib/api";
 import { Block } from "@/shared/ui/Block";
 import { Button } from "@/shared/ui/Button";
-import { Checkbox, Input, Textarea } from "@/shared/ui/Form";
+import { Checkbox, Input, Switch, Textarea } from "@/shared/ui/Form";
 import { toast } from "@/shared/ui/Toast";
 import { PAYMENT_METHODS } from "@/modules/site/types";
 import { useSaveSettings } from "../hooks/useAdminSettings";
@@ -37,6 +37,8 @@ function validate(v: SettingsFormValues): Errors {
   if (!v.usdToCdf.trim() || !Number.isFinite(rate) || rate < 1) e.usdToCdf = "Taux invalide (au moins 1).";
   const discount = Number(v.newsletterDiscount);
   if (!Number.isInteger(discount) || discount < 0 || discount > 90) e.newsletterDiscount = "Entre 0 et 90 %.";
+  const days = Number(v.returnDays);
+  if (!v.returnDays.trim() || !Number.isInteger(days) || days < 0 || days > 365) e.returnDays = "Entre 0 et 365 jours.";
   if (v.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.email.trim())) e.email = "Adresse e-mail invalide.";
   for (const { key } of SOCIAL_NETWORKS) {
     const url = v.social[key]?.trim();
@@ -142,6 +144,30 @@ export function SettingsForm({ settings }: { settings: AdminSiteSettings }) {
             </button>
           </div>
         ))}
+      </SettingsSection>
+
+      <SettingsSection title="Engagements affichés en boutique" hint="Repris dans la barre verte, la fiche produit, le pied de page, la page Contact et le texte de l'accueil.">
+        <Input
+          label="Délai de retour (jours)"
+          type="number"
+          inputMode="numeric"
+          min="0"
+          max="365"
+          wrapperClassName="sm:max-w-[260px]"
+          value={v.returnDays}
+          onChange={(e) => set("returnDays", e.target.value)}
+          hint={Number(v.returnDays) === 0 ? "0 : aucun délai de retour annoncé." : `Affiché : « Retour sous ${v.returnDays || "…"} jour${Number(v.returnDays) > 1 ? "s" : ""} ».`}
+          error={errors.returnDays}
+        />
+        <label className="flex min-h-14 cursor-pointer items-center justify-between gap-3 rounded-box border border-line px-4 py-3 active:bg-chip">
+          <span>
+            <span className="block text-[14px] font-semibold">Service client joignable 24 h/24, 7 j/7</span>
+            <span className="block text-[12px] leading-[17px] text-ink-3">
+              {v.supportAlwaysOpen ? "La boutique affiche « Service client 24/7 »." : "La boutique affiche vos horaires d'ouverture à la place."}
+            </span>
+          </span>
+          <Switch label="Service client joignable 24 h/24, 7 j/7" checked={v.supportAlwaysOpen} onChange={(x) => set("supportAlwaysOpen", x)} />
+        </label>
       </SettingsSection>
 
       <SettingsSection title="Moyens de paiement" hint="Proposés au client et présentés dans le guide d'achat.">
