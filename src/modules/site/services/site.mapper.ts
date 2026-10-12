@@ -1,5 +1,5 @@
 import { SITE } from "@/config/site";
-import type { SiteSettings, SocialNetwork } from "../types";
+import { NO_PROGRAMMES, type Programmes, type SiteSettings, type SocialNetwork } from "../types";
 
 /** Réponse de `GET /settings/public/` (après camelCase). */
 export interface SiteSettingsDto {
@@ -16,7 +16,24 @@ export interface SiteSettingsDto {
   shipping: { freeThreshold: string | null; flatFee: string };
   returnDays?: number;
   supportAlwaysOpen?: boolean;
+  programmes?: ProgrammesDto;
 }
+
+/** `programmes` (après camelCase), aussi renvoyé par `/bo/loyalty/settings/`. */
+export interface ProgrammesDto {
+  membership: { enabled: boolean; monthlyPrice: string; yearlyPrice: string; trialDays: number; reminderDays: number };
+  cashback: { enabled: boolean; percent: string; maxShare: number; minBalance: string; validityMonths: number };
+  appLinks: { appStore: string; playStore: string };
+}
+
+export const toProgrammes = (dto: ProgrammesDto | undefined): Programmes =>
+  dto
+    ? {
+        membership: { ...dto.membership, monthlyPrice: Number(dto.membership.monthlyPrice), yearlyPrice: Number(dto.membership.yearlyPrice) },
+        cashback: { ...dto.cashback, percent: Number(dto.cashback.percent), minBalance: Number(dto.cashback.minBalance) },
+        appLinks: { appStore: dto.appLinks.appStore ?? "", playStore: dto.appLinks.playStore ?? "" },
+      }
+    : NO_PROGRAMMES;
 
 const NETWORKS: Record<string, SocialNetwork> = { facebook: "facebook", instagram: "instagram", tiktok: "tiktok", twitter: "x", x: "x", youtube: "youtube", linkedin: "linkedin" };
 
@@ -53,6 +70,7 @@ export function toSiteSettings(dto: SiteSettingsDto): SiteSettings {
     returnDays: dto.returnDays ?? SITE.returnDays,
     // sans l'information, pas de promesse « 24/7 »
     supportAlwaysOpen: dto.supportAlwaysOpen ?? false,
+    programmes: toProgrammes(dto.programmes),
   };
 }
 
@@ -72,4 +90,5 @@ export const FALLBACK_SETTINGS: SiteSettings = {
   shipping: { ...SITE.shipping },
   returnDays: SITE.returnDays,
   supportAlwaysOpen: false,
+  programmes: NO_PROGRAMMES,
 };

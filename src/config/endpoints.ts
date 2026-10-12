@@ -195,6 +195,7 @@ export const ENDPOINTS = {
       convertToSales: (id: number) => `/bo/orders/${id}/convert-to-sales/`,
     },
     settings: "/bo/settings/", // GET / PATCH (admin)
+    loyalty: "/bo/loyalty/settings/", // GET / PATCH (admin : loyalty.manage)
     deals: {
       list: "/bo/deals/", // GET ?status=live|scheduled|ended (liste simple) / POST (products.manage)
       detail: (id: number) => `/bo/deals/${id}/`, // PATCH / DELETE

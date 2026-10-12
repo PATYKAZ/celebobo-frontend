@@ -10,6 +10,7 @@ import { DealsOfTheDay } from "./DealsOfTheDay";
 import { HeroSection } from "./HeroSection";
 import { MemberBanner } from "./MemberBanner";
 import { ProductTabs } from "./ProductTabs";
+import { ProgrammesRow } from "./ProgrammesRow";
 import { RecentlyViewed } from "./RecentlyViewed";
 import { SeoText } from "./SeoText";
 
@@ -29,6 +30,7 @@ export function HomeView() {
       <MemberBanner />
       <ProductTabs catalog={content?.catalog ?? null} />
       <BrandNew products={content?.catalog?.newArrivals} />
+      <ProgrammesRow />
       {/* blocs catégorie dans l'ordre du back-office (sinon blocs par défaut) */}
       {content?.blocks.map((b) =>
         b.kind === "showcase" ? (

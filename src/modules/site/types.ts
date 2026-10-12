@@ -26,7 +26,24 @@ export interface SiteSettings {
   returnDays: number;
   /** service client joignable jour et nuit ; sinon la boutique affiche les horaires */
   supportAlwaysOpen: boolean;
+  /** programmes de fidélité : chacun ne s'affiche que s'il est activé (ou, pour l'app, si un lien existe) */
+  programmes: Programmes;
 }
+
+export interface Programmes {
+  /** Celebobo Plus : livraison offerte sans minimum dans les zones membres */
+  membership: { enabled: boolean; monthlyPrice: number; yearlyPrice: number; trialDays: number; reminderDays: number };
+  /** Cagnotte : `percent` du montant des produits, utilisable jusqu'à `maxShare` % d'une commande dès `minBalance` */
+  cashback: { enabled: boolean; percent: number; maxShare: number; minBalance: number; validityMonths: number };
+  /** liens des applications (vides = pas de bloc) */
+  appLinks: { appStore: string; playStore: string };
+}
+
+export const NO_PROGRAMMES: Programmes = {
+  membership: { enabled: false, monthlyPrice: 0, yearlyPrice: 0, trialDays: 0, reminderDays: 0 },
+  cashback: { enabled: false, percent: 0, maxShare: 0, minBalance: 0, validityMonths: 0 },
+  appLinks: { appStore: "", playStore: "" },
+};
 
 /** « 7 jours », « 1 jour ». */
 export const returnPeriod = (days: number) => `${days} jour${days > 1 ? "s" : ""}`;
