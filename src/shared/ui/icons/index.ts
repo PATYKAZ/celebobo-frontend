@@ -1,4 +1,4 @@
-// Généré par scripts/generate-icons.mjs — ne pas modifier. 116 icônes, variantes Linear / Bold / Bulk.
+// Généré par scripts/generate-icons.mjs — ne pas modifier. 115 icônes, variantes Linear / Bold / Bulk.
 export type { Icon, IconProps, IconVariant } from "./icon";
 export { Add } from "./svg/Add";
 export { ArrowDown } from "./svg/ArrowDown";
@@ -12,6 +12,7 @@ export { ArrowUp } from "./svg/ArrowUp";
 export { ArrowUp2 } from "./svg/ArrowUp2";
 export { Award } from "./svg/Award";
 export { Bag2 } from "./svg/Bag2";
+export { BagHappy } from "./svg/BagHappy";
 export { Box } from "./svg/Box";
 export { Box1 } from "./svg/Box1";
 export { BoxTick } from "./svg/BoxTick";
@@ -26,7 +27,6 @@ export { CloseCircle } from "./svg/CloseCircle";
 export { Coin1 } from "./svg/Coin1";
 export { Convert } from "./svg/Convert";
 export { Copy } from "./svg/Copy";
-export { Cpu } from "./svg/Cpu";
 export { Crown } from "./svg/Crown";
 export { Danger } from "./svg/Danger";
 export { Devices } from "./svg/Devices";
@@ -56,7 +56,6 @@ export { Location } from "./svg/Location";
 export { Lock } from "./svg/Lock";
 export { Login } from "./svg/Login";
 export { Logout } from "./svg/Logout";
-export { MagicStar } from "./svg/MagicStar";
 export { Map1 } from "./svg/Map1";
 export { Maximize4 } from "./svg/Maximize4";
 export { MessageText1 } from "./svg/MessageText1";

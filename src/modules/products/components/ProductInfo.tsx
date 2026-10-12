@@ -21,7 +21,7 @@ import { useAppRouter } from "@/shared/hooks/useAppRouter";
 
 const TRUST = [
   { icon: Truck, title: "Livraison rapide", text: "Bukavu, Goma et environs" },
-  { icon: Refresh2, title: "Retour 30 jours", text: "Satisfait ou remboursé" },
+  { icon: Refresh2, title: "Retour 7 jours", text: "Produit non utilisé, après livraison" },
   { icon: ShieldTick, title: "Paiement mobile", text: "Orange, Airtel, M-Pesa" },
 ];
 
