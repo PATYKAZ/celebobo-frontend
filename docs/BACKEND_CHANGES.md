@@ -311,6 +311,53 @@ le front garde son repli actuel. Format :
 - Filtres de la liste : `?status=live|scheduled|ended`.
 - Chaque offre de la liste renvoie aussi `sold`.
 
+#### 4.1 bis · Correctif : offre sur une variante, prix faux sur la fiche produit (livré le 12/10, branche `feat/deals`)
+
+Le front est branché :
+- l'accueil affiche le compte à rebours, la barre « vendus », le cadeau et la variante ;
+- l'écran `/admin/offres` gère la création, la modification, l'activation, la suppression et le filtre par statut.
+
+Testé de bout en bout. Une offre sur un **produit simple** est juste partout.
+
+**Bug quand l'offre porte sur une variante.** Exemple : Galaxy A55 5G, prix 449 $, promotion 419 $. La variante
+« 128 Go » n'a pas de prix propre ; la variante « 256 Go » est à 489 $. Offre à 399 $ sur « 128 Go ».
+
+L'API renvoie :
+
+```
+price = 419, sale_price = current_price = 399
+variants: 128 Go → 399, 256 Go → 489
+```
+
+Le niveau produit a pris les prix de l'offre, alors qu'elle ne concerne qu'une variante. Or le front calcule le prix
+d'une variante ainsi : `prix courant du produit + (prix de la variante − price du produit)`.
+
+| Variante | Fiche produit aujourd'hui | Prix attendu |
+|---|---|---|
+| 128 Go | 379 $ barré 399 $ | 399 $ barré 419 $ |
+| 256 Go | 469 $ barré 489 $ | 489 $, sans barré, hors offre |
+
+Le panier facture le bon prix, puisqu'il est calculé par le serveur. Le client voit donc un prix sur la fiche et un
+autre dans le panier.
+
+**Demande**
+1. **Offre sur une variante** : ne pas toucher aux champs du produit (`price`, `sale_price`, `current_price`,
+   `discount_percent`), qui gardent leurs valeurs hors offre. Seule la variante concernée, dans `variants[]`, porte
+   `price = deal_price`.
+   - Une offre sur un produit simple reste comme aujourd'hui.
+2. **Fiche produit** : ajouter `deal` à `GET /products/{slug}/`, et à la carte produit si possible. Il vaut `null`
+   hors offre. Format :
+
+   ```json
+   "deal": { "id": 1, "variant_id": 1, "deal_price": "399.00", "regular_price": "419.00",
+             "ends_at": "…", "quantity": 20, "sold": 0, "gift_label": "Coque offerte" }
+   ```
+
+   La fiche pourra alors afficher le prix barré juste de la variante, le compte à rebours et le cadeau. Le front
+   pourra aussi présélectionner la variante en offre.
+3. **`deal` de `GET /home/`** : ajouter `variant_id`. Le front retrouve aujourd'hui la variante en cherchant celle
+   dont le prix vaut `deal_price`, ce qui est fragile.
+
 ### 4.2 · Marques (« Marques à la une »)
 
 **Modèle `Brand`**
