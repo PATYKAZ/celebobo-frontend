@@ -110,6 +110,12 @@ function Content({ id }: { id: number }) {
                   <span className="text-[13px] text-ink-2">Total de la commande</span>
                   <span className="text-[18px] font-bold text-primary">{formatPrice(order.totalPrice)}</span>
                 </li>
+                {(!!order.cashback || !!order.cashbackEarned) && (
+                  <li className="px-4 pb-3.5 text-right text-[12px] text-ink-2">
+                    {!!order.cashback && <span className="block">dont cagnotte utilisée : <b className="text-danger">-{formatPrice(order.cashback)}</b></span>}
+                    {!!order.cashbackEarned && <span className="block font-semibold text-primary">+{formatPrice(order.cashbackEarned)} de cagnotte gagnés</span>}
+                  </li>
+                )}
               </ul>
               <div className="hidden overflow-x-auto sm:block">
                 <table className="w-full min-w-[520px] text-[14px]">
@@ -140,10 +146,21 @@ function Content({ id }: { id: number }) {
                     ))}
                   </tbody>
                   <tfoot>
+                    {!!order.cashback && (
+                      <tr>
+                        <td colSpan={3} className="px-5 pt-4 text-right text-[13px] text-ink-2 sm:px-6">Cagnotte utilisée</td>
+                        <td className="px-5 pt-4 text-right font-semibold text-danger sm:px-6">-{formatPrice(order.cashback)}</td>
+                      </tr>
+                    )}
                     <tr>
                       <td colSpan={3} className="px-5 py-4 text-right text-[13px] text-ink-2 sm:px-6">Total de la commande</td>
                       <td className="px-5 py-4 text-right text-[18px] font-bold text-primary sm:px-6">{formatPrice(order.totalPrice)}</td>
                     </tr>
+                    {!!order.cashbackEarned && (
+                      <tr>
+                        <td colSpan={4} className="px-5 pb-4 text-right text-[13px] font-semibold text-primary sm:px-6">+{formatPrice(order.cashbackEarned)} de cagnotte gagnés à la livraison</td>
+                      </tr>
+                    )}
                   </tfoot>
                 </table>
               </div>

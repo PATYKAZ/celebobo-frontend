@@ -149,11 +149,13 @@ export function OrderDetailView({ number }: { number: string }) {
             <dl className="mt-2 space-y-2 border-t border-line-3 pt-4 text-[14px]">
               {order.subtotal != null && <div className="flex justify-between"><dt className="text-ink-2">Sous-total</dt><dd className="font-semibold">{formatPrice(order.subtotal)}</dd></div>}
               {!!order.discount && <div className="flex justify-between"><dt className="text-ink-2">Code promo{order.couponCode ? ` (${order.couponCode})` : ""}</dt><dd className="font-semibold text-danger">-{formatPrice(order.discount)}</dd></div>}
+              {!!order.cashback && <div className="flex justify-between"><dt className="text-ink-2">Cagnotte</dt><dd className="font-semibold text-danger">-{formatPrice(order.cashback)}</dd></div>}
               {order.shippingFee != null && <div className="flex justify-between"><dt className="text-ink-2">Livraison{order.shippingZone ? ` · ${order.shippingZone}` : ""}</dt><dd className="font-semibold">{order.shippingFee > 0 ? formatPrice(order.shippingFee) : "Offerte"}</dd></div>}
               <div className="flex items-center justify-between pt-1">
                 <dt className="text-[14px] font-semibold text-ink-2">Total</dt>
                 <dd className="text-[22px] font-bold text-primary sm:text-[24px]">{formatPrice(order.totalPrice)}</dd>
               </div>
+              {!!order.cashbackEarned && <p className="text-right text-[13px] font-semibold text-primary">+{formatPrice(order.cashbackEarned)} de cagnotte</p>}
             </dl>
           </Block>
         </Reveal>

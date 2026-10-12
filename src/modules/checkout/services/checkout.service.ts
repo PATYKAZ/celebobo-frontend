@@ -27,11 +27,12 @@ export interface QuoteLineInput {
 
 export const checkoutService = {
   /** Devis : sous-total, remise du code promo et frais de la zone de livraison de `city`. */
-  async quote(lines: QuoteLineInput[], city?: string, couponCode?: string | null): Promise<CartQuote> {
+  async quote(lines: QuoteLineInput[], city?: string, couponCode?: string | null, useCashback = false): Promise<CartQuote> {
     const dto = await api.post<QuoteDto>(ENDPOINTS.checkout.quote, {
       lines: lines.map((l) => ({ productId: l.productId, variantId: l.variantId ?? null, quantity: l.quantity })),
       city: city?.trim() || undefined,
       couponCode: couponCode || undefined,
+      useCashback,
     });
     return toQuote(dto);
   },

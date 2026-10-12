@@ -59,6 +59,8 @@ export interface OrderDto extends OrderSummaryDto {
   subtotal: string;
   discount: string;
   couponCode: string;
+  cashback?: string;
+  cashbackEarned?: string | null;
   shippingZone: string;
   shippingFee: string;
   cancelReason: string;
@@ -147,6 +149,8 @@ export function toOrder(dto: OrderSummaryDto | OrderDto): Order {
     subtotal: detail ? money(detail.subtotal) : undefined,
     discount: detail ? money(detail.discount) : undefined,
     couponCode: detail?.couponCode || null,
+    cashback: detail ? money(detail.cashback) : undefined,
+    cashbackEarned: detail?.cashbackEarned == null ? null : money(detail.cashbackEarned),
     shippingFee: detail ? money(detail.shippingFee) : undefined,
     shippingZone: detail?.shippingZone || null,
     allowedTransitions: detail?.allowedTransitions.map(toStatus) ?? [],

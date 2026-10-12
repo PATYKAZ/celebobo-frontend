@@ -24,9 +24,9 @@ function CashbackBanner({ cashback }: { cashback: Programmes["cashback"] }) {
               <WalletMoney size={34} variant="Bold" aria-hidden /> {pct(cashback.percent)}
             </p>
           </Float>
-          <p className="mt-1 text-[15px] font-semibold text-white">remboursés dans votre cagnotte</p>
+          <p className="mt-1 text-[15px] font-semibold text-white">remboursés dans votre cagnotte{cashback.membersOnly ? " Plus" : ""}</p>
           <p className="mt-2 text-[13px] leading-[19px] text-white/85">
-            Sur chaque commande livrée. À utiliser dès {formatPrice(cashback.minBalance)} sur vos prochains achats, jusqu’à {cashback.maxShare} % d’une commande. Valable {cashback.validityMonths} mois.
+            {cashback.membersOnly ? "Pour les membres Celebobo Plus, sur" : "Sur"} chaque commande livrée. À utiliser dès {formatPrice(cashback.minBalance)} sur vos prochains achats, jusqu’à {cashback.maxShare} % d’une commande. Valable {cashback.validityMonths} mois.
           </p>
         </div>
       </div>
