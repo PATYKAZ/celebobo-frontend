@@ -30,6 +30,11 @@ export class ApiError extends Error {
     return this.problem?.code;
   }
 
+  /** Précisions de l'erreur métier (ex. `reason` de `trial_unavailable`). */
+  get meta(): Record<string, unknown> {
+    return this.problem?.meta ?? {};
+  }
+
   /** Erreurs par champ (400 de validation). */
   get fieldErrors(): FieldErrors {
     return this.problem?.errors ?? {};

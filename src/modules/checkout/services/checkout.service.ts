@@ -16,6 +16,7 @@ interface ZoneDto {
   deliveryEstimate: string;
   isDefault: boolean;
   isActive: boolean;
+  memberFreeShipping?: boolean;
 }
 
 export interface QuoteLineInput {
@@ -39,7 +40,7 @@ export const checkoutService = {
     const zones = await api.get<ZoneDto[]>(ENDPOINTS.checkout.shippingZones);
     return zones
       .filter((z) => z.isActive)
-      .map((z) => ({ id: z.id, name: z.name, cities: z.cities, fee: money(z.fee), freeThreshold: z.freeThreshold == null ? null : money(z.freeThreshold), deliveryEstimate: z.deliveryEstimate, isDefault: z.isDefault }));
+      .map((z) => ({ id: z.id, name: z.name, cities: z.cities, fee: money(z.fee), freeThreshold: z.freeThreshold == null ? null : money(z.freeThreshold), deliveryEstimate: z.deliveryEstimate, isDefault: z.isDefault, memberFreeShipping: z.memberFreeShipping ?? false }));
   },
 
   /** Modes de paiement activés (réglages publics de la boutique). */

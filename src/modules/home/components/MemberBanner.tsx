@@ -10,6 +10,7 @@ import { useFormatPrice } from "@/shared/currency/CurrencyProvider";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
 import { useShippingZones } from "@/modules/checkout/hooks/useCheckout";
 import { useSiteSettings } from "@/modules/site";
+import { useMyMembership } from "@/modules/membership/hooks/useMembership";
 
 const list = (names: string[]) => (names.length > 1 ? `${names.slice(0, -1).join(", ")} et ${names.at(-1)}` : names[0]);
 
@@ -39,8 +40,14 @@ function Band({ children }: { children: ReactNode }) {
 /** Celebobo Plus : livraison offerte sans minimum dans les zones membres, au prix et à l'essai réglés dans l'admin. */
 function PlusBanner() {
   const { membership } = useSiteSettings().programmes;
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const formatPrice = useFormatPrice();
+  const client = user?.role === "client";
+  const { data: mine } = useMyMembership(client);
+  const member = mine?.status === "trial" || mine?.status === "active";
+  // zones réellement marquées pour les membres (Bukavu, Goma…)
+  const { data: zones } = useShippingZones();
+  const memberZones = (zones ?? []).filter((z) => z.memberFreeShipping).map((z) => z.name);
   return (
     <Band>
       <Float>
@@ -49,11 +56,21 @@ function PlusBanner() {
       <span>Celebobo Plus :</span>
       <span className="font-semibold uppercase text-sun">livraison offerte*</span>
       <span>sans minimum, dès {formatPrice(membership.monthlyPrice)} par mois.</span>
-      <span className="basis-full text-[12px] leading-[18px] text-white/75 sm:text-[13px]">*Dans les zones membres. Ou {formatPrice(membership.yearlyPrice)} par an.</span>
-      {!isAuthenticated && membership.trialDays > 0 && (
-        <Link href={ROUTES.register} className="link-underline basis-full py-1 text-[14px] font-semibold leading-[25px]">
-          Créez votre compte : {membership.trialDays} jours d’essai gratuit
-        </Link>
+      <span className="basis-full text-[12px] leading-[18px] text-white/75 sm:text-[13px]">
+        *{memberZones.length ? `À ${list(memberZones)}` : "Dans les zones membres"}. Ou {formatPrice(membership.yearlyPrice)} par an.
+      </span>
+      {!isAuthenticated ? (
+        membership.trialDays > 0 && (
+          <Link href={ROUTES.register} className="link-underline basis-full py-1 text-[14px] font-semibold leading-[25px]">
+            Créez votre compte : {membership.trialDays} jours d’essai gratuit
+          </Link>
+        )
+      ) : (
+        client && (
+          <Link href={ROUTES.membership} className="link-underline basis-full py-1 text-[14px] font-semibold leading-[25px]">
+            {member ? "Vous êtes membre Plus : voir mon abonnement" : mine?.trialAvailable && membership.trialDays > 0 ? `Essayer ${membership.trialDays} jours gratuitement` : "Je m’abonne"}
+          </Link>
+        )
       )}
     </Band>
   );

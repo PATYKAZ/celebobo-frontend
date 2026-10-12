@@ -71,6 +71,13 @@ export const ENDPOINTS = {
     device: (id: number | string) => `/me/devices/${id}/`,
     pushPublicKey: "/push/public-key/",
   },
+  /** Celebobo Plus côté client */
+  membership: {
+    me: "/me/membership/", // GET : statut, formule, échéance, essai disponible, demande en attente
+    trial: "/me/membership/trial/", // POST : démarre l'essai (422 trial_unavailable, meta.reason)
+    requests: "/me/membership/requests/", // POST { plan, payment_method } : demande en attente de paiement
+    cancel: (id: number) => `/me/membership/requests/${id}/cancel/`,
+  },
   uploads: {
     sign: "/uploads/sign/",
     complete: "/uploads/complete/",
@@ -196,6 +203,12 @@ export const ENDPOINTS = {
     },
     settings: "/bo/settings/", // GET / PATCH (admin)
     loyalty: "/bo/loyalty/settings/", // GET / PATCH (admin : loyalty.manage)
+    membership: {
+      requests: "/bo/membership/requests/", // GET ?status=pending|confirmed|rejected|cancelled (membership.manage)
+      confirm: (id: number) => `/bo/membership/requests/${id}/confirm/`,
+      reject: (id: number) => `/bo/membership/requests/${id}/reject/`, // { note }
+      members: "/bo/memberships/", // GET ?status=trial|active|expired
+    },
     deals: {
       list: "/bo/deals/", // GET ?status=live|scheduled|ended (liste simple) / POST (products.manage)
       detail: (id: number) => `/bo/deals/${id}/`, // PATCH / DELETE

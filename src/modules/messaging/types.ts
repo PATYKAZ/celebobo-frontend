@@ -114,7 +114,11 @@ export type NotificationKind =
   | "support_request"
   | "conversation_assigned"
   | "price_proposed"
-  | "price_answered";
+  | "price_answered"
+  | "membership_requested"
+  | "membership_started"
+  | "membership_rejected"
+  | "membership_ending";
 
 export interface Notification {
   id: number;

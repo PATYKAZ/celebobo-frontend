@@ -43,6 +43,8 @@ export interface AdminShippingZone {
   isDefault: boolean;
   isActive: boolean;
   position: number;
+  /** livraison offerte aux membres Celebobo Plus, sans minimum */
+  memberFreeShipping: boolean;
 }
 
 export interface ZoneFormValues {
@@ -54,9 +56,10 @@ export interface ZoneFormValues {
   deliveryEstimate: string;
   isDefault: boolean;
   isActive: boolean;
+  memberFreeShipping: boolean;
 }
 
-export const EMPTY_ZONE: ZoneFormValues = { name: "", cities: "", fee: "", freeThreshold: "", deliveryEstimate: "", isDefault: false, isActive: true };
+export const EMPTY_ZONE: ZoneFormValues = { name: "", cities: "", fee: "", freeThreshold: "", deliveryEstimate: "", isDefault: false, isActive: true, memberFreeShipping: false };
 
 export const SOCIAL_NETWORKS: { key: SocialNetwork; label: string }[] = [
   { key: "facebook", label: "Facebook" },
