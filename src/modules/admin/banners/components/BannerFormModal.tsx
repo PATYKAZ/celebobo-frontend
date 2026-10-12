@@ -13,13 +13,18 @@ import { useCategories } from "@/modules/categories/hooks/useCategories";
 import { ProductCombobox } from "../../sales/components/ProductCombobox";
 import { useSaveBanner } from "../hooks/useAdminBanners";
 import { BANNER_PAGES, bannerToForm, buildLink } from "../services/admin-banners.service";
-import { EMPTY_BANNER, type AdminBanner, type BannerFormValues, type BannerImageValue, type BannerLinkKind } from "../types";
+import { emptyBanner, type AdminBanner, type BannerFormValues, type BannerImageValue, type BannerLinkKind, type BannerSlot, type BannerTone } from "../types";
 
 type Errors = Partial<Record<keyof BannerFormValues | "image", string>>;
 
+const TONES: { value: BannerTone; label: string }[] = [
+  { value: "dark", label: "Sombre · texte blanc" },
+  { value: "light", label: "Claire · texte foncé" },
+];
+
 const LINK_KINDS: { value: BannerLinkKind; label: string }[] = [
-  { value: "category", label: "Catégorie" },
   { value: "product", label: "Produit" },
+  { value: "category", label: "Catégorie" },
   { value: "page", label: "Page" },
   { value: "url", label: "Lien" },
 ];
@@ -28,19 +33,21 @@ function validate(v: BannerFormValues, image: BannerImageValue): Errors {
   const e: Errors = {};
   if (!v.title.trim()) e.title = "Le titre est requis.";
   if (!image.url) e.image = "Ajoutez une image.";
-  if (!v.linkTarget.trim()) e.linkTarget = "Choisissez où mène le bouton.";
+  if (v.linkKind === "product") {
+    if (!v.productId) e.linkTarget = "Choisissez un produit.";
+  } else if (!v.linkTarget.trim()) e.linkTarget = "Choisissez où mène le bouton.";
   else if (v.linkKind === "url" && !/^(\/|https?:\/\/)\S+$/.test(v.linkTarget.trim())) e.linkTarget = "Adresse commençant par / ou https://";
   if (v.startsAt && v.endsAt && v.endsAt <= v.startsAt) e.endsAt = "La fin doit suivre le début.";
   return e;
 }
 
 /** Image de la bannière : aperçu au format du carrousel, envoi à Cloudinary dès le choix. */
-function BannerImage({ value, onChange, error }: { value: BannerImageValue; onChange: (v: BannerImageValue) => void; error?: string }) {
+function BannerImage({ value, onChange, error, slot }: { value: BannerImageValue; onChange: (v: BannerImageValue) => void; error?: string; slot?: BannerSlot }) {
   const input = useRef<HTMLInputElement>(null);
   const take = (file?: File | null) => {
     if (!file || !file.type.startsWith("image/")) return;
     if (value.url?.startsWith("blob:")) URL.revokeObjectURL(value.url);
-    const upload = sendUpload(file, "product_image");
+    const upload = sendUpload(file, "banner");
     upload.catch(() => undefined); // retenté à l'enregistrement
     onChange({ file, url: URL.createObjectURL(file), upload });
   };
@@ -56,7 +63,7 @@ function BannerImage({ value, onChange, error }: { value: BannerImageValue; onCh
           take(e.dataTransfer.files?.[0]);
         }}
         aria-label="Choisir l'image de la bannière"
-        className={cn("group relative grid aspect-45/16 w-full place-items-center overflow-hidden rounded-box border-2 border-dashed transition-colors", error ? "border-danger bg-danger-50" : "border-line bg-page/40 hover:border-primary")}
+        className={cn("group relative grid w-full place-items-center", slot?.aspect ?? "aspect-45/16", " overflow-hidden rounded-box border-2 border-dashed transition-colors", error ? "border-danger bg-danger-50" : "border-line bg-page/40 hover:border-primary")}
       >
         {value.url ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -64,7 +71,7 @@ function BannerImage({ value, onChange, error }: { value: BannerImageValue; onCh
         ) : (
           <span className="flex flex-col items-center gap-1.5 px-3 text-center text-[12px] text-ink-3 group-hover:text-primary">
             <Gallery size={30} variant="Bulk" />
-            Photo sans texte incrusté, 1800 × 640 px conseillé
+            Photo sans texte incrusté, {slot?.size ?? "1800 × 640 px"} conseillé
           </span>
         )}
       </button>
@@ -81,8 +88,8 @@ function BannerImage({ value, onChange, error }: { value: BannerImageValue; onCh
 }
 
 /** Création / modification d'une bannière. Monté seulement quand il est ouvert (`key` du parent). */
-export function BannerFormModal({ banner, nextPosition, onClose }: { banner: AdminBanner | null; nextPosition: number; onClose: () => void }) {
-  const [v, setV] = useState<BannerFormValues>(() => (banner ? bannerToForm(banner) : EMPTY_BANNER));
+export function BannerFormModal({ banner, placement, slots, nextPosition, onClose }: { banner: AdminBanner | null; placement: string; slots: BannerSlot[]; nextPosition: (placement: string) => number; onClose: () => void }) {
+  const [v, setV] = useState<BannerFormValues>(() => (banner ? bannerToForm(banner) : emptyBanner(placement)));
   const [image, setImage] = useState<BannerImageValue>({ url: banner?.image ?? null });
   const [errors, setErrors] = useState<Errors>({});
   const { data: categories } = useCategories();
@@ -92,7 +99,7 @@ export function BannerFormModal({ banner, nextPosition, onClose }: { banner: Adm
     setErrors((e) => ({ ...e, [k]: undefined }));
   };
   const setKind = (kind: BannerLinkKind) => {
-    setV((x) => ({ ...x, linkKind: kind, linkTarget: "", linkProductName: "" }));
+    setV((x) => ({ ...x, linkKind: kind, linkTarget: "", productId: null, productName: "" }));
     setErrors((e) => ({ ...e, linkTarget: undefined }));
   };
 
@@ -112,7 +119,7 @@ export function BannerFormModal({ banner, nextPosition, onClose }: { banner: Adm
           if (err instanceof ApiError && err.status === 400) {
             const next: Errors = {};
             for (const [k, msg] of Object.entries(err.fieldErrors)) {
-              const key = (k === "linkUrl" ? "linkTarget" : k) as keyof Errors;
+              const key = (k === "linkUrl" || k === "productId" ? "linkTarget" : k) as keyof Errors;
               next[key] = Array.isArray(msg) ? String(msg[0]) : String(msg);
             }
             setErrors(next);
@@ -124,13 +131,28 @@ export function BannerFormModal({ banner, nextPosition, onClose }: { banner: Adm
   };
 
   const link = buildLink(v.linkKind, v.linkTarget);
+  const slot = slots.find((x) => x.value === v.placement);
 
   return (
     <Modal open onClose={onClose} title={banner ? "Modifier la bannière" : "Nouvelle bannière"} className="max-w-[640px]">
       <form onSubmit={submit} noValidate className="grid gap-4">
-        <BannerImage value={image} onChange={(x) => { setImage(x); setErrors((e) => ({ ...e, image: undefined })); }} error={errors.image} />
+        <Select
+          label="Emplacement"
+          required
+          value={v.placement}
+          onChange={(e) => set("placement", e.target.value)}
+          hint={slot ? `${slot.where}${slot.shown ? ` ${slot.shown === 1 ? "Seule la première bannière en ligne s'affiche." : `Les ${slot.shown} premières en ligne s'affichent.`}` : ""}` : undefined}
+          error={errors.placement}
+          options={slots.map((x) => ({ value: x.value, label: x.label }))}
+        />
+        <BannerImage value={image} onChange={(x) => { setImage(x); setErrors((e) => ({ ...e, image: undefined })); }} error={errors.image} slot={slot} />
+        <div className="grid gap-2">
+          <p className="text-[13px] font-semibold">L’image est plutôt</p>
+          <SegmentedControl aria-label="Ton de l'image" value={v.tone} onChange={(x) => set("tone", x)} options={TONES} fullWidth size="sm" />
+        </div>
+        <Input label="Sur-titre" value={v.eyebrow} onChange={(e) => set("eyebrow", e.target.value)} maxLength={40} placeholder="Ex. Audio, Nouveau, Exclusivité" hint="Petit texte au-dessus du titre. Facultatif." error={errors.eyebrow} />
         <Textarea label="Titre" required className="min-h-[70px]" value={v.title} onChange={(e) => set("title", e.target.value)} maxLength={120} placeholder={"Galaxy A55\nà prix choc"} hint="Un retour à la ligne = une ligne du titre." error={errors.title} />
-        <Input label="Sous-titre" value={v.subtitle} onChange={(e) => set("subtitle", e.target.value)} maxLength={255} placeholder="Ex. Livraison en 24 h à Bukavu et Goma" error={errors.subtitle} />
+        <Input label="Sous-titre" value={v.subtitle} onChange={(e) => set("subtitle", e.target.value)} maxLength={255} placeholder="Ex. Livraison en 24 h à Bukavu et Goma" hint={v.linkKind === "product" ? "Avec un produit, son prix s'affiche à la place du sous-titre sur les petites bannières." : undefined} error={errors.subtitle} />
 
         <div className="grid gap-2">
           <p className="text-[13px] font-semibold">Le bouton mène vers<span className="ml-0.5 text-danger">*</span></p>
@@ -143,12 +165,14 @@ export function BannerFormModal({ banner, nextPosition, onClose }: { banner: Adm
               <ProductCombobox
                 value={null}
                 onChange={(p) => {
-                  setV((x) => ({ ...x, linkTarget: p.slug, linkProductName: p.name }));
-                  setErrors((e) => ({ ...e, linkTarget: undefined }));
+                  setV((x) => ({ ...x, productId: p.id, productName: p.name, title: x.title.trim() ? x.title : p.name }));
+                  setErrors((e) => ({ ...e, linkTarget: undefined, title: undefined }));
                 }}
                 error={errors.linkTarget}
               />
-              {v.linkTarget && <p className="text-[12px] text-ink-2">Produit choisi : <b>{v.linkProductName || v.linkTarget}</b></p>}
+              {v.productId ? (
+                <p className="text-[12px] text-ink-2">Produit choisi : <b>{v.productName}</b>. Son prix réel s’affiche et le bouton mène à sa fiche.</p>
+              ) : null}
             </>
           )}
           {v.linkKind === "page" && (
@@ -158,7 +182,7 @@ export function BannerFormModal({ banner, nextPosition, onClose }: { banner: Adm
           {link && <p className="break-all text-[12px] text-ink-3">Adresse : {link}</p>}
         </div>
 
-        <Input label="Texte du bouton" value={v.linkLabel} onChange={(e) => set("linkLabel", e.target.value)} maxLength={60} placeholder="Découvrir" error={errors.linkLabel} />
+        <Input label="Texte du bouton" value={v.linkLabel} onChange={(e) => set("linkLabel", e.target.value)} maxLength={60} placeholder={v.linkKind === "product" ? "Acheter" : "Découvrir"} hint="Vide : texte par défaut." error={errors.linkLabel} />
 
         <div className="grid gap-4 sm:grid-cols-2">
           <Input label="Affichée à partir du" type="datetime-local" value={v.startsAt} onChange={(e) => set("startsAt", e.target.value)} hint="Vide : tout de suite." error={errors.startsAt} />

@@ -200,8 +200,9 @@ export const ENDPOINTS = {
       detail: (id: number) => `/bo/deals/${id}/`, // PATCH / DELETE
     },
     banners: {
-      list: "/bo/banners/", // GET / POST (responsable, admin : content.manage)
+      list: "/bo/banners/", // GET ?placement= / POST (responsable, admin : content.manage)
       detail: (id: number) => `/bo/banners/${id}/`, // PATCH / DELETE
+      reorder: "/bo/banners/reorder/", // { placement, ids } dans le nouvel ordre
     },
     shippingZones: {
       list: "/bo/shipping-zones/", // GET / POST (responsable, admin)

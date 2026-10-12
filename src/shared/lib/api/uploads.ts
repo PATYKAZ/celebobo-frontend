@@ -2,7 +2,7 @@ import { ENDPOINTS } from "@/config/endpoints";
 import { api } from "./client";
 import { ApiError } from "./errors";
 
-export type UploadPurpose = "product_image" | "category_image" | "avatar" | "message_attachment";
+export type UploadPurpose = "product_image" | "category_image" | "banner" | "avatar" | "message_attachment";
 
 /** Média enregistré par l'API : son `id` est ensuite référencé (`image_ids`, `image_id`…). */
 export interface UploadedMedia {
@@ -52,7 +52,7 @@ interface CloudinaryResult {
 }
 
 /** Plus grand côté envoyé : celui que Cloudinary garderait de toute façon (avatar : marge pour le recadrage visage). */
-const MAX_SIDE: Record<UploadPurpose, number> = { product_image: 1600, category_image: 1200, avatar: 800, message_attachment: 1600 };
+const MAX_SIDE: Record<UploadPurpose, number> = { product_image: 1600, category_image: 1200, banner: 1800, avatar: 800, message_attachment: 1600 };
 const QUALITY = 0.8;
 /** Une signature vaut une heure côté Cloudinary ; on la renouvelle avant. */
 const SIGNATURE_TTL_MS = 50 * 60_000;

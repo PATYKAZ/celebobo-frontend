@@ -32,6 +32,7 @@ export function buildHomeContent(): HomeContent {
   return {
     catalog: null,
     picks: null,
+    placements: null,
     slides: [
       {
         id: 1,

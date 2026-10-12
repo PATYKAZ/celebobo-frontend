@@ -27,9 +27,9 @@ export function HomeView() {
       <ProductTabs catalog={content?.catalog ?? null} />
       <BrandNew products={content?.catalog?.newArrivals} />
       {content?.showcases.map((s) => (
-        <CategoryShowcase key={s.title} config={s} catalog={content.catalog} />
+        <CategoryShowcase key={s.title} config={s} catalog={content.catalog} banner={content.placements?.[`showcase:${s.categorySlug}`]?.[0]} />
       ))}
-      {content && <CategoryColumns columns={content.columns} catalog={content.catalog} />}
+      {content && <CategoryColumns columns={content.columns} catalog={content.catalog} placements={content.placements} />}
       <RecentlyViewed fallback={content?.catalog?.bestSellers} />
       {content && <SeoText title={content.seo.title} paragraphs={content.seo.paragraphs} />}
     </>
