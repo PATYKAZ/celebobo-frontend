@@ -6,7 +6,7 @@ import { ROUTES } from "@/config/routes";
 import { SITE } from "@/config/site";
 import { CircleButton } from "@/shared/ui/CircleButton";
 import { useCategories } from "@/modules/categories/hooks/useCategories";
-import { paymentMethod, useSiteSettings, type SocialNetwork } from "@/modules/site";
+import { paymentMethod, supportLabel, useSiteSettings, type SocialNetwork } from "@/modules/site";
 import { FooterColumn } from "./FooterColumn";
 import { NewsletterForm } from "./NewsletterForm";
 import { CurrencySwitch } from "@/shared/currency/CurrencySwitch";
@@ -67,8 +67,15 @@ export function Footer() {
           {/* Colonne 1 */}
           <div>
             <h2 className="text-section uppercase">Celebobo — la tech en confiance</h2>
-            <p className="mt-[34px] text-[14px] uppercase leading-[23.8px]">Hotline 24/7</p>
+            <p className="mt-[34px] text-[14px] uppercase leading-[23.8px]">{supportLabel(site)}</p>
             <a href={site.hotlineHref} className="mt-1 flex min-h-11 items-center text-[30px] font-bold leading-[36px] text-primary">{site.hotline}</a>
+            {!site.supportAlwaysOpen && site.openingHours.length > 0 && (
+              <ul className="mt-1 text-[13px] leading-[20px] text-ink-2">
+                {site.openingHours.map((h) => (
+                  <li key={h.days}>{h.days} : {h.hours}</li>
+                ))}
+              </ul>
+            )}
             <p className="mt-6 flex items-start gap-2 text-[14px] leading-[23.8px]">
               <Location size={18} className="mt-1 shrink-0" />
               <span>{site.address.map((line, i) => <span key={i}>{i > 0 && <>,<br /></>}{line}</span>)}</span>

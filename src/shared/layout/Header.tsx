@@ -20,7 +20,7 @@ import { CategoryIcon } from "@/modules/categories/components/CategoryIcon";
 import { useCategories } from "@/modules/categories/hooks/useCategories";
 import { useFavoritesStore } from "@/modules/favorites/store/favorites.store";
 import { useUnreadNotificationsCount } from "@/modules/messaging/hooks/useNotifications";
-import { useSiteSettings } from "@/modules/site";
+import { supportHours, supportLabel, useSiteSettings } from "@/modules/site";
 import { Logo } from "./Logo";
 import { CurrencySwitch } from "@/shared/currency/CurrencySwitch";
 
@@ -217,9 +217,10 @@ export function Header() {
       <div className="hidden items-center justify-between px-[30px] pt-[15px] lg:flex">
         <div className="flex items-center gap-5">
           <a href={site.hotlineHref} className="flex h-7 items-center gap-1.5 rounded-md bg-chip px-2.5 text-[12px] leading-[18px]">
-            <Call size={12} variant="Bold" /> Hotline 24/7
+            <Call size={12} variant="Bold" /> {supportLabel(site)}
           </a>
           <a href={site.hotlineHref} className="text-[12px] font-bold leading-[18px] hover:text-primary">{site.hotline}</a>
+          {supportHours(site) && <span className="text-[12px] leading-[18px] text-ink-2">{supportHours(site)}</span>}
         </div>
         <div className="flex items-center text-[14px] leading-[21px]">
           <Link href={ROUTES.becomeReseller} className="px-5 transition-colors hover:text-primary">Devenir revendeur</Link>

@@ -22,7 +22,21 @@ export interface SiteSettings {
   /** Remise offerte à l'inscription newsletter (%) */
   newsletterDiscount: number;
   shipping: { freeThreshold: number | null; flatFee: number };
+  /** délai de retour après livraison, en jours (0 = pas de retour) */
+  returnDays: number;
+  /** service client joignable jour et nuit ; sinon la boutique affiche les horaires */
+  supportAlwaysOpen: boolean;
 }
+
+/** « 7 jours », « 1 jour ». */
+export const returnPeriod = (days: number) => `${days} jour${days > 1 ? "s" : ""}`;
+
+/** « Service client 24/7 » seulement si le service répond jour et nuit. */
+export const supportLabel = (s: Pick<SiteSettings, "supportAlwaysOpen">) => (s.supportAlwaysOpen ? "Service client 24/7" : "Service client");
+
+/** Première ligne d'horaires (« Lundi – Vendredi · 08h00 – 19h00 »), sauf service 24/7. */
+export const supportHours = (s: Pick<SiteSettings, "supportAlwaysOpen" | "openingHours">) =>
+  s.supportAlwaysOpen || !s.openingHours[0] ? null : `${s.openingHours[0].days} · ${s.openingHours[0].hours}`;
 
 /** Libellé et pastille de chaque moyen de paiement (codes de l'API). */
 export const PAYMENT_METHODS: Record<string, { label: string; cls: string }> = {

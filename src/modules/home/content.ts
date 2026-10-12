@@ -85,7 +85,8 @@ export function buildHomeContent(): HomeContent {
       title: "Celebobo – la boutique high-tech de confiance en RD Congo",
       paragraphs: [
         "Celebobo vous propose une sélection de smartphones, ordinateurs, tablettes, casques, montres connectées et accessoires choisis pour leur fiabilité. Chaque commande est suivie par un revendeur dédié avec lequel vous échangez directement dans l'application, de la confirmation à la livraison.",
-        "Payez comme vous le souhaitez : Orange Money, Airtel Money, M-Pesa ou cash à la livraison. Vous disposez de 7 jours après la livraison pour retourner un produit non utilisé, et notre service client vous accompagne avant et après votre achat.",
+        // {retour} : phrase sur le délai de retour, complétée avec les réglages du site (cf. HomeView)
+        "Payez comme vous le souhaitez : Orange Money, Airtel Money, M-Pesa ou cash à la livraison.{retour} Notre service client vous accompagne avant et après votre achat.",
         "Devenez revendeur Celebobo, invitez vos proches avec votre code personnel et développez votre activité avec un catalogue complet, des prix compétitifs et des outils de suivi de vos ventes.",
       ],
     },

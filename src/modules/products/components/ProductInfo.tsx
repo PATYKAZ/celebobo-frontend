@@ -13,15 +13,17 @@ import { QuantityStepper } from "@/shared/ui/QuantityStepper";
 import { Stars } from "@/shared/ui/Stars";
 import { useCart } from "@/modules/cart/hooks/useCart";
 import { useFavoriteToggle } from "@/modules/favorites/hooks/useFavorites";
+import { returnPeriod, useSiteSettings } from "@/modules/site";
 import type { VariantSelection } from "../hooks/useVariantSelection";
 import type { Product } from "../types";
 import { getPricing } from "../utils";
 import { ProductShareMenu } from "./ProductShareMenu";
 import { useAppRouter } from "@/shared/hooks/useAppRouter";
 
-const TRUST = [
+/** Engagements de la boutique ; le délai de retour vient des réglages du site. */
+const trustItems = (returnDays: number) => [
   { icon: Truck, title: "Livraison rapide", text: "Bukavu, Goma et environs" },
-  { icon: Refresh2, title: "Retour 7 jours", text: "Produit non utilisé, après livraison" },
+  ...(returnDays > 0 ? [{ icon: Refresh2, title: `Retour ${returnPeriod(returnDays)}`, text: "Produit non utilisé, après livraison" }] : []),
   { icon: ShieldTick, title: "Paiement mobile", text: "Orange, Airtel, M-Pesa" },
 ];
 
@@ -34,6 +36,7 @@ function stockLabel(stock: number, threshold: number) {
 }
 
 export function ProductInfo({ product, selection, qty, onQtyChange }: { product: Product; selection: VariantSelection; qty: number; onQtyChange: (n: number) => void }) {
+  const trust = trustItems(useSiteSettings().returnDays);
   // prix affichés dans la devise choisie par le visiteur (USD ou FC)
   const formatPrice = useFormatPrice();
   const router = useAppRouter();
@@ -157,8 +160,8 @@ export function ProductInfo({ product, selection, qty, onQtyChange }: { product:
         <ProductShareMenu name={product.name} />
       </div>
 
-      <div className="mt-5 grid grid-cols-3 gap-2 sm:mt-6 sm:gap-3">
-        {TRUST.map(({ icon: Icon, title, text }) => (
+      <div className={cn("mt-5 grid gap-2 sm:mt-6 sm:gap-3", trust.length === 3 ? "grid-cols-3" : "grid-cols-2")}>
+        {trust.map(({ icon: Icon, title, text }) => (
           <div key={title} className="flex flex-col items-center gap-1.5 rounded-box bg-page/60 p-2.5 text-center sm:flex-row sm:gap-3 sm:p-3 sm:text-left">
             <span className="grid size-10 shrink-0 place-items-center rounded-full bg-white text-primary"><Icon size={20} variant="Bold" /></span>
             <span className="leading-[16px] sm:leading-[18px]">

@@ -14,6 +14,8 @@ export interface SiteSettingsDto {
   socialLinks: Record<string, string>;
   newsletterDiscount: number;
   shipping: { freeThreshold: string | null; flatFee: string };
+  returnDays?: number;
+  supportAlwaysOpen?: boolean;
 }
 
 const NETWORKS: Record<string, SocialNetwork> = { facebook: "facebook", instagram: "instagram", tiktok: "tiktok", twitter: "x", x: "x", youtube: "youtube", linkedin: "linkedin" };
@@ -48,6 +50,9 @@ export function toSiteSettings(dto: SiteSettingsDto): SiteSettings {
       freeThreshold: dto.shipping.freeThreshold === null ? null : Number(dto.shipping.freeThreshold),
       flatFee: Number(dto.shipping.flatFee),
     },
+    returnDays: dto.returnDays ?? SITE.returnDays,
+    // sans l'information, pas de promesse « 24/7 »
+    supportAlwaysOpen: dto.supportAlwaysOpen ?? false,
   };
 }
 
@@ -65,4 +70,6 @@ export const FALLBACK_SETTINGS: SiteSettings = {
   usdToCdf: SITE.usdToCdf,
   newsletterDiscount: SITE.newsletterDiscount,
   shipping: { ...SITE.shipping },
+  returnDays: SITE.returnDays,
+  supportAlwaysOpen: false,
 };
