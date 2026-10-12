@@ -52,6 +52,7 @@ export const ROUTES = {
     users: "/admin/utilisateurs",
     audit: "/admin/audit",
     settings: "/admin/reglages",
+    banners: "/admin/bannieres",
     invites: "/admin/invites",
   },
 } as const;

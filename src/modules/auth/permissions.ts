@@ -48,6 +48,7 @@ export type Permission =
   | "inbox.view.all"
   | "price.adjust" // proposer un prix final dans la discussion
   | "shipping.manage" // zones de livraison (backend : responsable et admin)
+  | "content.manage" // bannières de l'accueil (backend : responsable et admin)
   | "settings.manage"; // réglages du site : taux USD → FC, coordonnées, horaires (backend : admin seul)
 
 const RESELLER: Permission[] = [
@@ -87,6 +88,7 @@ const MANAGER: Permission[] = [
   "analytics.resellers",
   "inbox.view.all",
   "shipping.manage",
+  "content.manage",
 ];
 
 const ADMIN: Permission[] = [...MANAGER, "sales.delete", "products.delete", "commissions.pay", "users.manage", "audit.view", "settings.manage"];

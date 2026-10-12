@@ -1,4 +1,4 @@
-import { Box, Category2, Chart2, DocumentText, Element3, Messages2, MoneyRecive, Notification, People, Profile2User, Setting2, Share, Wallet3, type Icon } from "@/shared/ui/icons";
+import { Box, Category2, Chart2, DocumentText, Element3, Gallery, Messages2, MoneyRecive, Notification, People, Profile2User, Setting2, Share, Wallet3, type Icon } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import type { Permission } from "@/modules/auth/permissions";
 import type { UserRole } from "@/modules/auth/types";
@@ -25,6 +25,7 @@ export const ADMIN_NAV: AdminNavItem[] = [
   { section: "Pilotage", label: "Analytique", href: ROUTES.admin.analytics, icon: Chart2, permission: "analytics.view" },
   { section: "Catalogue", label: "Produits", resellerLabel: "Catalogue", href: ROUTES.admin.products, icon: Box, permission: "products.view" },
   { section: "Catalogue", label: "Catégories", href: ROUTES.admin.categories, icon: Category2, permission: "categories.manage" },
+  { section: "Catalogue", label: "Bannières de l'accueil", href: ROUTES.admin.banners, icon: Gallery, permission: "content.manage" },
   { section: "Activité", label: "Commandes", resellerLabel: "Mes commandes", href: ROUTES.admin.orders, icon: Messages2, permission: "orders.view.own" },
   { section: "Activité", label: "Ventes", resellerLabel: "Mes ventes", href: ROUTES.admin.sales, icon: MoneyRecive, permission: "sales.view.own" },
   { section: "Activité", label: "Messages", resellerLabel: "Mes discussions", href: ROUTES.admin.inbox, icon: Messages2, permission: "inbox.view.own", badge: "messages" },

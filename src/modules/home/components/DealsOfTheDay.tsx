@@ -2,13 +2,12 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useState, type MouseEvent } from "react";
+import { useState, type MouseEvent } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Add, RecordCircle } from "@/shared/ui/icons";
+import { useFormatPrice } from "@/shared/currency/CurrencyProvider";
 import { ROUTES } from "@/config/routes";
-import { CountUp } from "@/shared/animations/CountUp";
 import { Reveal } from "@/shared/animations/Reveal";
-import { useCountdown } from "@/shared/hooks/useCountdown";
 import { cn } from "@/shared/lib/cn";
 import { SaveBadge, Pill } from "@/shared/ui/Badges";
 import { Button } from "@/shared/ui/Button";
@@ -21,49 +20,6 @@ import type { Product } from "@/modules/products/types";
 import { getPricing } from "@/modules/products/utils";
 import type { HomeContent } from "../types";
 import { PhotoBanner } from "./PhotoBanner";
-
-/** Chiffre qui « tourne » quand sa valeur change. */
-function FlipNumber({ value }: { value: number }) {
-  const text = String(value).padStart(2, "0");
-  return (
-    <span className="relative inline-block h-[30px] overflow-hidden">
-      <AnimatePresence mode="popLayout" initial={false}>
-        <motion.span
-          key={text}
-          initial={{ y: "-100%", opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: "100%", opacity: 0 }}
-          transition={{ duration: 0.3, ease: "easeOut" }}
-          className="block tabular-nums"
-        >
-          {text}
-        </motion.span>
-      </AnimatePresence>
-    </span>
-  );
-}
-
-function Countdown({ endsAt }: { endsAt: string }) {
-  const c = useCountdown(endsAt);
-  const cells = [
-    { v: c.days, u: "j" },
-    { v: c.hours, u: "h" },
-    { v: c.minutes, u: "m" },
-    { v: c.seconds, u: "s" },
-  ];
-  return (
-    <div className="grid grid-cols-4 gap-2 sm:flex sm:gap-2.5">
-      {cells.map((x) => (
-        <div key={x.u} className="flex h-[74px] w-full flex-col items-center rounded-md bg-chip-2 pt-[7px] sm:w-[56px]">
-          <span className="text-[20px] font-bold leading-[30px]">
-            <FlipNumber value={x.v} />
-          </span>
-          <span className="text-[14px] font-bold leading-[21px] text-ink-2">{x.u}</span>
-        </div>
-      ))}
-    </div>
-  );
-}
 
 function ZoomImage({ src, alt }: { src: string; alt: string }) {
   const [origin, setOrigin] = useState("50% 50%");
@@ -83,12 +39,17 @@ function ZoomImage({ src, alt }: { src: string; alt: string }) {
   );
 }
 
-function DealCard({ product, content }: { product: Product; content: HomeContent }) {
+/**
+ * Offre du jour : la promotion la plus vendue du moment. Tout ce qui est affiché vient du produit (prix, économie,
+ * livraison offerte, stock) ; pas de compte à rebours ni de « vendus x/y » tant que l'API ne gère pas de vraie
+ * offre datée et limitée (cf. docs/BACKEND_CHANGES.md).
+ */
+function DealCard({ product }: { product: Product }) {
   const { add } = useCart();
+  const formatPrice = useFormatPrice();
   const [active, setActive] = useState(0);
   const pricing = getPricing(product);
   const gallery = product.images.length ? product.images : product.image ? [product.image] : [];
-  const pct = Math.round((content.dealSold.sold / content.dealSold.total) * 100);
 
   return (
     <div className="grid grid-cols-[minmax(0,1fr)] gap-5 rounded-b-box bg-white p-4 sm:gap-6 sm:p-[30px] lg:grid-cols-[minmax(0,441px)_minmax(0,1fr)] lg:gap-[34px]">
@@ -125,26 +86,22 @@ function DealCard({ product, content }: { product: Product; content: HomeContent
           ))}
         </ul>
         <div className="mt-4 flex flex-wrap gap-2">
-          <Pill tone="green" className="h-7 px-[15px] text-[12px]">Livraison offerte</Pill>
-          <Pill tone="red" className="h-7 px-[15px] text-[12px]">Cadeau offert</Pill>
+          {pricing.onSale && <Pill tone="red" className="h-7 px-[15px] text-[12px]">−{pricing.percent} %</Pill>}
+          {product.freeShipping && <Pill tone="green" className="h-7 px-[15px] text-[12px]">Livraison offerte</Pill>}
+          <Pill tone={product.inStock ? "green" : "red"} className="h-7 px-[15px] text-[12px]">{product.inStock ? "En stock" : "Épuisé"}</Pill>
         </div>
 
-        <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-5">
-          <p className="text-[13px] sm:max-w-[130px] font-medium uppercase leading-[19.5px]">Dépêchez-vous ! La promo expire dans</p>
-          <Countdown endsAt={content.dealEndsAt} />
-        </div>
-
-        <div className="mt-5 border-t border-line-3 pt-5 sm:mt-6">
-          <div className="h-2 overflow-hidden rounded-full bg-page">
-            <motion.div initial={{ width: 0 }} whileInView={{ width: `${pct}%` }} viewport={{ once: true }} transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }} className="relative h-full rounded-full bg-primary">
-              <span className="absolute inset-y-0 right-0 w-8 animate-shimmer bg-linear-to-r from-transparent via-white/50 to-transparent bg-size-[200%_100%]" />
-            </motion.div>
-          </div>
-          <div className="mt-3 flex items-center justify-between">
-            <p className="text-[13px] leading-[22px] text-ink-2">
-              Vendus : <strong className="text-ink"><CountUp to={content.dealSold.sold} />/{content.dealSold.total}</strong>
-            </p>
-            <Button size="sm" onClick={() => add(product)} disabled={!product.inStock} className="max-sm:px-8">Ajouter</Button>
+        <div className="mt-5 flex flex-col gap-3 border-t border-line-3 pt-5 sm:mt-6 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-[13px] leading-[22px] text-ink-2">
+            {pricing.onSale ? (
+              <>Vous économisez <strong className="text-ink">{formatPrice(pricing.saving)}</strong> sur le prix habituel.</>
+            ) : (
+              "Prix Celebobo, livraison suivie jusqu'à chez vous."
+            )}
+          </p>
+          <div className="flex gap-2">
+            <Button size="sm" variant="outline" href={ROUTES.product(product.slug)} className="max-sm:flex-1">Voir</Button>
+            <Button size="sm" onClick={() => add(product)} disabled={!product.inStock} className="max-sm:flex-1 max-sm:px-8">Ajouter</Button>
           </div>
         </div>
       </div>
@@ -153,8 +110,8 @@ function DealCard({ product, content }: { product: Product; content: HomeContent
 }
 
 export function DealsOfTheDay({ content }: { content?: HomeContent }) {
-  const deals = content?.catalog?.deals;
-  const deal = useMemo(() => deals?.find((p) => p.images.length >= 2) ?? deals?.[0], [deals]);
+  const picks = content?.picks;
+  const formatPrice = useFormatPrice();
 
   return (
     <section className="grid grid-cols-[minmax(0,1fr)] gap-3 sm:gap-4 xl:grid-cols-[minmax(0,971px)_minmax(0,1fr)]">
@@ -162,16 +119,23 @@ export function DealsOfTheDay({ content }: { content?: HomeContent }) {
         <div className="flex h-14 items-center rounded-t-box bg-primary px-4 sm:h-[62px] sm:px-[30px]">
           <SectionHeader title="Offres du jour" viewAllHref={`${ROUTES.products}?onSale=1`} onPrimary className="w-full" />
         </div>
-        {content && deal ? <DealCard product={deal} content={content} /> : <Skeleton className="h-[420px] rounded-b-box rounded-t-none" />}
+        {!picks ? (
+          <Skeleton className="h-[420px] rounded-b-box rounded-t-none" />
+        ) : picks.deal ? (
+          <DealCard product={picks.deal} />
+        ) : (
+          <div className="rounded-b-box bg-white p-6 text-center text-[14px] text-ink-2 sm:p-10">Pas de promotion en ce moment. Revenez bientôt !</div>
+        )}
       </div>
 
       <div className="max-sm:snap-row max-sm:mx-[-15px] max-sm:scroll-px-[15px] max-sm:px-[15px] sm:grid sm:grid-cols-3 sm:gap-4 xl:grid-cols-1 xl:grid-rows-3">
-        {content
-          ? content.sideBanners.map((b, i) => (
-              <Reveal key={b.id} delay={i * 0.1} className="h-full min-h-[150px] max-sm:w-[78%] sm:min-h-[170px]">
-                <PhotoBanner image={b.image} href={b.href} label={b.title} overlay="from-black/75 via-black/35 to-transparent" className="h-full rounded-[12px]" sizes="296px" contentClassName="flex flex-col justify-end p-5">
-                  <p className="text-[10px] uppercase tracking-[0.2em] text-white/80">{b.eyebrow}</p>
-                  <p className="mt-1 whitespace-pre-line text-[17px] font-semibold leading-[21px] text-white">{b.title}</p>
+        {picks
+          ? picks.side.map((p, i) => (
+              <Reveal key={p.id} delay={i * 0.1} className="h-full min-h-[150px] max-sm:w-[78%] sm:min-h-[170px]">
+                <PhotoBanner image={p.image as string} href={ROUTES.product(p.slug)} label={p.name} overlay="from-black/80 via-black/40 to-transparent" direction="t" className="h-full rounded-[12px]" sizes="296px" contentClassName="flex flex-col justify-end p-5">
+                  <p className="text-[10px] uppercase tracking-[0.2em] text-white/80">{p.category}</p>
+                  <p className="mt-1 line-clamp-2 text-[17px] font-semibold leading-[21px] text-white">{p.name}</p>
+                  <p className="mt-0.5 text-[15px] font-bold text-sun">{formatPrice(getPricing(p).current)}</p>
                 </PhotoBanner>
               </Reveal>
             ))

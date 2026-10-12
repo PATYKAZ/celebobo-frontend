@@ -195,6 +195,10 @@ export const ENDPOINTS = {
       convertToSales: (id: number) => `/bo/orders/${id}/convert-to-sales/`,
     },
     settings: "/bo/settings/", // GET / PATCH (admin)
+    banners: {
+      list: "/bo/banners/", // GET / POST (responsable, admin : content.manage)
+      detail: (id: number) => `/bo/banners/${id}/`, // PATCH / DELETE
+    },
     shippingZones: {
       list: "/bo/shipping-zones/", // GET / POST (responsable, admin)
       detail: (id: number) => `/bo/shipping-zones/${id}/`, // PATCH / DELETE

@@ -5,6 +5,7 @@ import { Call, Facebook, Instagram, Location, Music, Sms, Tenx, Whatsapp, Youtub
 import { ROUTES } from "@/config/routes";
 import { SITE } from "@/config/site";
 import { CircleButton } from "@/shared/ui/CircleButton";
+import { useCategories } from "@/modules/categories/hooks/useCategories";
 import { paymentMethod, useSiteSettings, type SocialNetwork } from "@/modules/site";
 import { FooterColumn } from "./FooterColumn";
 import { NewsletterForm } from "./NewsletterForm";
@@ -13,16 +14,7 @@ import { CurrencySwitch } from "@/shared/currency/CurrencySwitch";
 const COLUMNS = [
   {
     title: "Top catégories",
-    links: [
-      ["Smartphones", ROUTES.category("smartphones")],
-      ["Ordinateurs", ROUTES.category("ordinateurs-portables")],
-      ["Tablettes", ROUTES.category("tablettes")],
-      ["Audio", ROUTES.category("audio")],
-      ["Montres connectées", ROUTES.category("montres-connectees")],
-      ["Gaming", ROUTES.category("gaming")],
-      ["Accessoires", ROUTES.category("accessoires")],
-      ["Photo & vidéo", ROUTES.search("photo")],
-    ],
+    links: [], // catégories réelles de l'API (cf. Footer)
   },
   {
     title: "Entreprise",
@@ -66,6 +58,8 @@ const SOCIALS: { key: SocialNetwork; label: string; icon: typeof Facebook }[] = 
 
 export function Footer() {
   const site = useSiteSettings();
+  const { data: categories } = useCategories();
+  const categoryLinks: [string, string][] = (categories ?? []).filter((c) => c.productsCount > 0).map((c) => [c.name, ROUTES.category(c.slug)]);
   return (
     <footer className="mt-6 bg-white lg:mt-[40px]">
       <div className="container pt-8 lg:pt-[79px]">
@@ -89,7 +83,7 @@ export function Footer() {
           </div>
 
           {COLUMNS.map((col) => (
-            <FooterColumn key={col.title} title={col.title} links={col.links} />
+            <FooterColumn key={col.title} title={col.title} links={col.title === "Top catégories" ? categoryLinks : col.links} />
           ))}
         </div>
 
