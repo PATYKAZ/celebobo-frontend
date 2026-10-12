@@ -237,6 +237,205 @@ réglages et catégories `settings`/`categories` **et** `home` (cache 5 min en s
 considérés à jour 60 s. Vérifié : taux 2300 → 2400 → 2300 visible sur la boutique en 6 s.
 Si Django ajoute un jour une étiquette dédiée (`settings`), le front la gère déjà.
 
+## A-4 · Accueil entièrement piloté par le back-office (12/10/2026)
+
+**Objectif** : chaque bloc de la maquette d'accueil doit fonctionner avec de vraies données saisies dans le
+back-office, sans rien d'écrit en dur dans le front. Aujourd'hui, seul le carrousel (bannières) vient de l'API ;
+le reste était en dur dans le front, avec des produits et des prix qui n'existent pas.
+
+**Déjà fait côté front (commit `b056472`)**
+- Écran **« Bannières de l'accueil »** (`/admin/bannieres`, `content.manage`) branché sur `/bo/banners/`.
+- Tant que les fonctions ci-dessous n'existent pas, chaque bloc prend de **vrais produits** de `GET /home/` :
+  offre du jour = promotion la plus vendue ; mini-bannières, cartes promo et cartes latérales = promotions et
+  meilleures ventes ; « Nouveau pour vous » = nouveautés ; blocs et colonnes catégories = produit le plus vendu et
+  vraies catégories avec `products_count` ; marques = celles trouvées dans les noms des produits.
+- **Retiré** en attendant le backend :
+  - le faux compte à rebours et le faux « vendus 26/75 » ;
+  - « Cadeau offert » ;
+  - la bannière « 10 % cashback » ;
+  - « Téléchargez notre app » (envoi par SMS simulé) ;
+  - l'offre « Membres : livraison gratuite, essai 30 jours ».
+
+  Les composants reviennent dès que l'API fournit les données.
+
+Ordre conseillé : 4.1 → 4.2 → 4.3 → 4.4 (données), puis 4.5 et 4.6 si validés côté métier.
+
+### 4.1 · Offre du jour (bloc « Offres du jour », compte à rebours, « vendus x / y »)
+
+**Modèle `Deal`**
+
+| Champ | Type | Règle |
+|---|---|---|
+| `product` | FK Product | Obligatoire. |
+| `variant` | FK ProductVariant, nullable | Si le produit a des variantes. |
+| `deal_price` | Decimal | Strictement inférieur au prix normal. |
+| `starts_at` | datetime | Obligatoire. |
+| `ends_at` | datetime | Strictement après `starts_at`. |
+| `quantity` | int, nullable | Nombre d'unités vendues à ce prix ; vide = sans limite. |
+| `gift_label` | str ≤ 80, vide possible | Pastille « Cadeau offert : … ». |
+| `is_active` | bool | |
+
+Deux offres actives d'un même produit ne doivent pas se chevaucher dans le temps.
+
+**Règles métier**
+- **Prix appliqué** : pendant la période, le prix du produit ou de la variante est `deal_price`, partout :
+  - les cartes produit (`current_price`, `sale_price`) ;
+  - la fiche produit ;
+  - le panier ;
+  - le devis de commande ;
+  - la commande.
+- **Fin de l'offre** : au-delà de `ends_at`, ou quand les unités vendues atteignent `quantity`, le prix normal
+  revient automatiquement.
+- **Unités vendues** : `sold` = quantité des lignes de commandes non annulées passées au prix de l'offre pendant
+  la période. Une commande annulée rend son unité.
+- **Cache des pages** : revalider l'étiquette `home` au début et à la fin de chaque offre (tâche planifiée).
+
+**API publique** : `GET /home/` ajoute `deal`. Il vaut `null` quand aucune offre n'est en cours ; dans ce cas,
+le front garde son repli actuel. Format :
+
+```json
+"deal": {
+  "id": 3,
+  "product": { /* même format que GET /products/{slug}/ : images[], features[], variants… */ },
+  "deal_price": "399.00", "regular_price": "449.00",
+  "starts_at": "…", "ends_at": "2026-10-14T21:00:00+02:00",
+  "quantity": 20, "sold": 7,
+  "gift_label": "Coque offerte"
+}
+```
+
+`quantity` et `sold` valent `null` quand l'offre est sans limite ; le front masque alors la barre « vendus ».
+
+**Back-office** (permission `content.manage` ou `products.manage`)
+- `GET` et `POST /bo/deals/`, `PATCH` et `DELETE /bo/deals/{id}/`.
+- Filtres de la liste : `?status=live|scheduled|ended`.
+- Chaque offre de la liste renvoie aussi `sold`.
+
+### 4.2 · Marques (« Marques à la une »)
+
+**Modèle `Brand`**
+
+| Champ | Type |
+|---|---|
+| `name` | str |
+| `slug` | slug unique |
+| `logo` | image, URL Cloudinary, facultatif |
+| `is_featured` | bool |
+| `position` | int |
+| `is_active` | bool |
+
+Le produit reçoit un champ `brand` (FK nullable).
+
+**Autour du produit**
+- **Import CSV** : nouvelle colonne `brand`, renseignée par le slug ou le nom.
+- **Reprise des données** : remplir `brand` à partir des noms existants (Samsung, Apple, Xiaomi, Tecno, Infinix,
+  Lenovo, JBL, Sony, HP, Dell, Anker…).
+- **Formulaire produit** : `brand_id` dans le POST et le PATCH de `/bo/products/`.
+- **Réponses** : la fiche et la carte produit renvoient `brand: {slug, name}`.
+
+**Liste des produits**
+- Filtre `?brand=<slug>` (on peut en passer plusieurs).
+- Le filtre doit aussi être disponible dans la recherche.
+
+**API publique**
+- `GET /brands/` : marques actives, avec `products_count` (produits visibles uniquement).
+- `GET /home/` ajoute `brands` : les marques `is_featured`, avec au moins un produit visible, triées par
+  `position`.
+
+**Back-office**
+- `GET` et `POST /bo/brands/`, `PATCH` et `DELETE /bo/brands/{id}/`.
+- `POST /bo/brands/reorder/` avec `{ids}`.
+- Nouveau `purpose` d'envoi `brand_logo` : PNG, SVG ou WebP, 600 px maximum.
+
+### 4.3 · Emplacements de l'accueil (bannières au-delà du carrousel)
+
+La maquette a d'autres visuels que le carrousel :
+
+| Emplacement | Nombre | Bloc de la maquette |
+|---|---|---|
+| `hero` | n | Carrousel actuel |
+| `hero_mini` | 2 | Sous le carrousel |
+| `hero_side` | 2 | Grandes cartes à droite du carrousel |
+| `deal_side` | 3 | Cartes à côté de l'offre du jour |
+| `showcase:<slug>` | 1 par bloc | Bannière des blocs « Top smartphones », « Meilleurs ordinateurs » |
+| `column:<slug>` | 1 par colonne | Bannière des colonnes catégories |
+
+**Nouveaux champs du modèle `Banner`**
+
+| Champ | Rôle |
+|---|---|
+| `placement` | Énumération des emplacements ci-dessus. Défaut `hero` : les bannières actuelles ne changent pas. |
+| `product` | FK nullable. Si renseigné, la réponse inclut la carte produit, et le front affiche **son prix réel** (USD ou FC) et son lien ; sinon, `link_url`. |
+| `eyebrow` | str ≤ 40 : petit sur-titre (« Audio », « Nouveau »). |
+| `tone` | `light` ou `dark` : texte sombre ou clair sur l'image. |
+
+**API publique** : `GET /home/` renvoie `banners` groupées par emplacement. Un emplacement vide utilise le
+repli automatique du front.
+
+```json
+"banners": { "hero": [ … ], "hero_mini": [ … ], "deal_side": [ … ], "showcase:smartphones": [ … ] }
+```
+
+**Back-office**
+- `/bo/banners/?placement=` pour filtrer la liste.
+- `POST /bo/banners/reorder/` avec `{placement, ids}`, sur le modèle des zones et des catégories.
+- Nouveau `purpose` d'envoi `banner` (1800 px, `content.manage`). Le front utilise aujourd'hui `product_image`,
+  qui demande `products.manage`.
+
+### 4.4 · Blocs et colonnes catégories
+
+La maquette montre des **sous-catégories** avec leur nombre d'articles (« iPhone (iOS) », « Android »,
+« Support 5G », « MacBook », « Ultrabooks »…). Deux options :
+
+- **(a) Recommandée** : `Category.parent`, sur deux niveaux.
+  - `GET /categories/` renvoie `children[]`.
+  - `products_count` d'une catégorie inclut ses sous-catégories.
+  - `?category=<slug parent>` inclut les produits des sous-catégories.
+  - Le formulaire catégorie de l'admin aura un choix « Catégorie parente ».
+- **(b)** Des étiquettes libres sur les produits (`tags`), avec un comptage.
+
+**Disposition de l'accueil** : quelles catégories en blocs, lesquelles en colonnes, dans quel ordre.
+- Modèle `HomeSection` : `kind` (`showcase` ou `column`), `category`, `title` (facultatif), `position`,
+  `is_active`.
+- `GET /home/` renvoie `sections[]`, chacune avec ses produits (comme `categories[]` aujourd'hui) et ses
+  sous-catégories.
+- `/bo/home-sections/` en CRUD, plus un `reorder`.
+
+Aujourd'hui, le front fixe ces blocs à smartphones et ordinateurs, et les colonnes à audio, gaming et montres.
+
+### 4.5 · Programmes commerciaux de la maquette (décision métier requise)
+
+Ces blocs promettent des avantages au client. Ils ne s'afficheront qu'une fois la règle réellement appliquée
+par l'API.
+
+| Bloc | Ce qu'il faut côté backend |
+|---|---|
+| « Membres : livraison gratuite sans minimum, essai 30 jours » | Abonnement membre : statut et date de fin sur le compte, essai gratuit unique, livraison à 0 dans le devis de commande pour les membres. `GET /me/` renvoie `membership`. Les réglages portent le texte et la durée de l'essai. |
+| « 10 % cashback » | Solde de cagnotte par client : crédit de x % à la livraison, débit à la commande (ligne « Cagnotte » dans le devis), historique dans `/me/wallet/`. Le taux et l'activation sont dans les réglages. |
+| « Téléchargez notre app » | Ne s'affiche que si une application existe : réglages `app_store_url`, `play_store_url`. Pour l'envoi du lien par SMS : `POST /app-link/ {phone}`, avec fournisseur SMS et limitation de débit. Sinon, le front affiche les deux liens des stores. |
+
+En attendant, il suffit d'ajouter des **drapeaux dans les réglages publics** (`membership_enabled`,
+`cashback_percent`, `app_links`) : le front n'affichera un bloc que si son drapeau est actif.
+
+### 4.6 · Réglages publics : promesses affichées partout
+
+- **Délai de retour** :
+  - aujourd'hui : écrit en dur dans le front (corrigé à 7 jours, comme les CGV de démo) ;
+  - à ajouter : `return_days` dans `/settings/public/`.
+- **Service client** :
+  - aujourd'hui : « Hotline 24/7 » dans l'en-tête, alors que les horaires des réglages couvrent les jours
+    ouvrables ;
+  - à ajouter : `support_always_open` (bool), ou se baser sur les horaires.
+
+### 4.7 · Données de démo à corriger
+
+- **Images des bannières de démo** (`apps/demo/images.py`, `banner_image`) : le titre et le sous-titre sont
+  **dessinés dans l'image**, donc affichés deux fois (une fois en net, une fois flou derrière). L'image de la
+  bannière 3 contient encore « **À Kinshasa**, en 24 à 48 h ». Il faut générer des images sans texte.
+- **Lien de la bannière 2** : `/categories/ordinateurs` donne une 404. La bonne adresse est
+  `/categorie/ordinateurs-portables`. La correction peut aussi se faire depuis le nouvel écran admin.
+- **Description de « Radio JBL Original »** : en anglais.
+
 ## Déploiement (`deploy/` du dépôt backend) · variables du conteneur front
 
 Le rendu serveur est en place côté front (fiches produit, catégories, accueil, sitemap). Le conteneur front doit recevoir
