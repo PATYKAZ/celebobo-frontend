@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { DocumentDownload, DocumentUpload, TickCircle, CloseCircle } from "iconsax-reactjs";
+import { DocumentDownload, DocumentUpload, TickCircle, CloseCircle } from "@/shared/ui/icons";
 import { cn } from "@/shared/lib/cn";
 import { getErrorMessage } from "@/shared/lib/api";
 import { Button } from "@/shared/ui/Button";

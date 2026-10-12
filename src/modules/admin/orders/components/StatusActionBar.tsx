@@ -1,6 +1,6 @@
 "use client";
 
-import { CloseCircle, Refresh2, TickCircle, Truck, Wallet3 } from "iconsax-reactjs";
+import { CloseCircle, Refresh2, TickCircle, Truck, Wallet3 } from "@/shared/ui/icons";
 import { useState, type ReactNode } from "react";
 import { getErrorMessage } from "@/shared/lib/api";
 import { Button, type ButtonVariant } from "@/shared/ui/Button";

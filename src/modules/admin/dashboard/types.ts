@@ -13,7 +13,7 @@ export const PERIODS: { value: DashboardPeriod; label: string }[] = [
 export const PAYMENT_COLORS: Record<PaymentMethod, string> = {
   OrangeMoney: "#FF7900",
   AirtelMoney: "#E40000",
-  "M-Pesa": "#1ABA1A",
+  "M-Pesa": "#226D68",
   Cash: "#222222",
 };
 

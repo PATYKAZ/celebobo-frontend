@@ -2,12 +2,13 @@
 
 import { MotionConfig } from "motion/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useState, type ReactNode } from "react";
+import { Suspense, useState, type ReactNode } from "react";
 import { useAuth, useSessionSync } from "@/modules/auth/hooks/useAuth";
 import { useRealtimeSession } from "@/shared/hooks/useRealtime";
 import { ApiError } from "@/shared/lib/api";
 import { Toaster } from "@/shared/ui/Toast";
 import { CartOwnerSync } from "@/modules/cart/components/CartOwnerSync";
+import { NavigationProgress } from "@/shared/layout/NavigationProgress";
 
 /**
  * Une seule nouvelle tentative, et seulement si le service se dit momentanément indisponible (503) :
@@ -34,6 +35,10 @@ export function Providers({ children }: { children: ReactNode }) {
   return (
     <QueryClientProvider client={client}>
       <MotionConfig reducedMotion="user">
+        {/* useSearchParams : Suspense pour ne pas forcer le rendu client des pages statiques */}
+        <Suspense fallback={null}>
+          <NavigationProgress />
+        </Suspense>
         <SessionSync />
         <CartOwnerSync />
         {children}

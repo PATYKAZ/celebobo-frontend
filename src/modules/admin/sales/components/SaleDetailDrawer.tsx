@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { Edit2, Refresh2, Trash } from "iconsax-reactjs";
+import { Edit2, Refresh2, Trash } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import { cn } from "@/shared/lib/cn";
 import { formatDateTime, formatPrice } from "@/shared/lib/format";

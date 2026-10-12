@@ -1,4 +1,4 @@
-import { Star1 } from "iconsax-reactjs";
+import { Star1 } from "@/shared/ui/icons";
 import { cn } from "@/shared/lib/cn";
 
 interface Props {
@@ -10,7 +10,7 @@ interface Props {
   hideCount?: boolean;
 }
 
-/** 5 étoiles #FFA500 (vide #999) avec remplissage fractionnaire + « (152) ». */
+/** 5 étoiles #D6955B (vide #999) avec remplissage fractionnaire + « (152) ». */
 export function Stars({ rating, size = 13, count, className, hideCount }: Props) {
   const value = Math.max(0, Math.min(5, rating ?? 0));
   return (
@@ -23,7 +23,7 @@ export function Stars({ rating, size = 13, count, className, hideCount }: Props)
               <Star1 size={size} variant="Bold" color="#C9CBD3" className="absolute inset-0" />
               {fill > 0 && (
                 <span className="absolute inset-0 overflow-hidden" style={{ width: `${fill * 100}%` }}>
-                  <Star1 size={size} variant="Bold" color="#FFA500" />
+                  <Star1 size={size} variant="Bold" color="#D6955B" />
                 </span>
               )}
             </span>

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight2 } from "iconsax-reactjs";
+import { ArrowRight2 } from "@/shared/ui/icons";
 import type { ReactNode } from "react";
 import { cn } from "@/shared/lib/cn";
 
@@ -23,7 +23,7 @@ export function SectionHeader({ title, viewAllHref, viewAllLabel = "Voir tout", 
         {viewAllHref && (
           <Link
             href={viewAllHref}
-            className={cn("group inline-flex shrink-0 items-center gap-0.5 text-link capitalize", onPrimary ? "text-white" : "text-ink-2 hover:text-primary")}
+            className={cn("group touch-target relative inline-flex shrink-0 items-center gap-0.5 text-link capitalize", onPrimary ? "text-white" : "text-ink-2 hover:text-primary")}
           >
             {viewAllLabel}
             <ArrowRight2 size={13} variant="Bold" className="transition-transform group-hover:translate-x-1" />

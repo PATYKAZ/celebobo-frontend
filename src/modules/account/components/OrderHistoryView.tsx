@@ -1,6 +1,6 @@
 "use client";
 
-import { Bag2 } from "iconsax-reactjs";
+import { Bag2 } from "@/shared/ui/icons";
 import { useState } from "react";
 import { ROUTES } from "@/config/routes";
 import { Breadcrumb } from "@/shared/layout/Breadcrumb";
@@ -15,6 +15,7 @@ import { AuthGuard } from "@/modules/auth/components/AuthGuard";
 import { OrderCard } from "@/modules/orders/components/OrderCard";
 import { useOrders } from "@/modules/orders/hooks/useOrders";
 import type { OrderStatus } from "@/modules/orders/types";
+import { ListPageSkeleton } from "@/shared/ui/PageSkeletons";
 
 type Filter = "all" | "attente" | "cours" | "livree" | "fermee";
 const PAGE_SIZE = 5;
@@ -92,7 +93,7 @@ export function OrderHistoryView() {
   return (
     <>
       <Breadcrumb items={[{ label: "Mon compte" }, { label: "Commandes" }]} />
-      <AuthGuard>
+      <AuthGuard fallback={<ListPageSkeleton label="Chargement de vos commandes" breadcrumb={false} />}>
         <Content />
       </AuthGuard>
     </>

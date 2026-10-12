@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight2, Box, Messages2, MoneyRecive, TickCircle, Wallet3 } from "iconsax-reactjs";
+import { ArrowRight2, Box, Messages2, MoneyRecive, TickCircle, Wallet3 } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import { Reveal, RevealGroup, RevealItem } from "@/shared/animations/Reveal";
 import { cn } from "@/shared/lib/cn";

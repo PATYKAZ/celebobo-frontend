@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowRight, Sms, TickCircle } from "iconsax-reactjs";
+import { ArrowRight, Sms, TickCircle } from "@/shared/ui/icons";
 import { useState, type FormEvent } from "react";
 import { getErrorMessage } from "@/shared/lib/api";
 import { useNewsletterSubscribe } from "@/modules/newsletter";
@@ -34,7 +34,7 @@ export function NewsletterForm() {
         </motion.div>
       ) : (
         <motion.form key="form" onSubmit={submit} noValidate initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-          <div className="flex h-[41px] items-center gap-2 border-b border-line">
+          <div className="flex h-12 items-center gap-2 border-b border-line sm:h-[41px]">
             <Sms size={20} variant="Bold" />
             <input
               type="email"
@@ -46,9 +46,9 @@ export function NewsletterForm() {
               placeholder="Votre adresse e-mail"
               aria-label="Adresse e-mail"
               aria-invalid={!!error}
-              className="min-w-0 flex-1 bg-transparent text-[16px] outline-hidden placeholder:text-ink-4 sm:text-[14px]"
+              className="h-full min-w-0 flex-1 bg-transparent text-[16px] outline-hidden placeholder:text-ink-4 sm:text-[14px]"
             />
-            <button disabled={subscribe.isPending} className="group flex items-center gap-2 text-[14px] font-bold uppercase text-primary disabled:opacity-50">
+            <button disabled={subscribe.isPending} className="group flex h-full items-center gap-2 text-[14px] font-bold uppercase text-primary disabled:opacity-50">
               {subscribe.isPending ? "…" : "S'abonner"}
               <ArrowRight size={18} className="hidden transition-transform group-hover:translate-x-1 sm:block" />
             </button>

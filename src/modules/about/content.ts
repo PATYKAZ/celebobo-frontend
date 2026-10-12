@@ -1,4 +1,4 @@
-import { Award, Box, Headphone, People, ShieldTick, TruckFast } from "iconsax-reactjs";
+import { Award, Box, Headphone, People, ShieldTick, TruckFast } from "@/shared/ui/icons";
 
 /** Textes de mise en page de « À propos » (l'histoire et les engagements viennent de la page `a-propos` du back-office). */
 export const STATS = [
@@ -11,7 +11,7 @@ export const STATS = [
 export const VALUES = [
   { icon: ShieldTick, title: "Confiance", text: "Produits testés, garantie 12 mois et paiement uniquement après confirmation de disponibilité." },
   { icon: Headphone, title: "Proximité", text: "Chaque commande ouvre une discussion directe avec un revendeur qui vous accompagne jusqu'à la livraison." },
-  { icon: TruckFast, title: "Rapidité", text: "Livraison sous 24 à 48 h à Kinshasa et suivi de votre commande en temps réel." },
+  { icon: TruckFast, title: "Rapidité", text: "Livraison rapide à Bukavu, à Goma et dans leurs environs, et suivi de votre commande en temps réel." },
   { icon: Award, title: "Qualité", text: "Nous sélectionnons les meilleures marques et vérifions chaque produit avant expédition." },
 ];
 

@@ -1,7 +1,8 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { Gallery, Trash } from "iconsax-reactjs";
+import { Gallery, Trash } from "@/shared/ui/icons";
+import { sendUpload } from "@/shared/lib/api";
 import { cn } from "@/shared/lib/cn";
 import type { ImageSlotValue } from "../types";
 
@@ -13,15 +14,27 @@ interface Props {
   error?: string;
 }
 
-/** Emplacement d'image : clic ou glisser-déposer, aperçu immédiat, suppression. */
+/**
+ * Emplacement d'image : clic ou glisser-déposer, aperçu immédiat, suppression. Le fichier est réduit et
+ * envoyé à Cloudinary dès son choix : « Enregistrer » n'attend plus les images.
+ */
 export function ImageSlot({ label, value, onChange, main, error }: Props) {
   const input = useRef<HTMLInputElement>(null);
   const [drag, setDrag] = useState(false);
+  const [sending, setSending] = useState<Promise<unknown> | null>(null);
 
   const take = (file?: File | null) => {
     if (!file || !file.type.startsWith("image/")) return;
     if (value.url?.startsWith("blob:")) URL.revokeObjectURL(value.url);
-    onChange({ file, url: URL.createObjectURL(file) });
+    const upload = sendUpload(file, "product_image");
+    // un échec ici est retenté à l'enregistrement : pas d'erreur non gérée
+    const settled = upload.then(
+      () => undefined,
+      () => undefined,
+    );
+    setSending(settled);
+    settled.then(() => setSending((p) => (p === settled ? null : p)));
+    onChange({ file, url: URL.createObjectURL(file), upload });
   };
 
   return (
@@ -54,11 +67,18 @@ export function ImageSlot({ label, value, onChange, main, error }: Props) {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={value.url} alt={label} className="absolute inset-0 size-full object-cover transition-transform duration-500 group-hover:scale-105" />
             <span className="absolute inset-0 bg-black/0 transition-colors group-hover:bg-black/25" />
+            {sending && (
+              <span role="status" className="absolute inset-x-2 bottom-2 flex items-center justify-center gap-1.5 rounded-full bg-white/90 px-2 py-1 text-[11px] font-semibold text-ink-2 shadow-sm">
+                <span className="size-3 animate-spin rounded-full border-2 border-primary border-t-transparent motion-reduce:animate-none" aria-hidden />
+                Envoi…
+              </span>
+            )}
             <button
               type="button"
               aria-label="Retirer l'image"
               onClick={(e) => {
                 e.stopPropagation();
+                setSending(null);
                 onChange({ url: null, file: null });
               }}
               className="absolute right-2 top-2 grid size-10 place-items-center rounded-full bg-white text-danger shadow-sm transition-opacity hover:bg-danger hover:text-white active:scale-90 sm:size-8 sm:opacity-0 sm:group-hover:opacity-100"

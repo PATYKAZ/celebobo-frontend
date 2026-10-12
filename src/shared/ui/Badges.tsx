@@ -1,9 +1,11 @@
 import type { ReactNode } from "react";
 import { cn } from "@/shared/lib/cn";
-import { formatPrice } from "@/shared/lib/format";
+import { useFormatPrice } from "@/shared/currency/CurrencyProvider";
 
 /** Badge « REMISE $199.00 » (dis-card du design : vert, rad 7). */
 export function SaveBadge({ amount, className, large }: { amount: number; className?: string; large?: boolean }) {
+  // prix affichés dans la devise choisie par le visiteur (USD ou FC)
+  const formatPrice = useFormatPrice();
   return (
     <div
       className={cn(

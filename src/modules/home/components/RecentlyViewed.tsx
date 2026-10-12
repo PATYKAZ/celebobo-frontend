@@ -4,12 +4,12 @@ import "swiper/css";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { Heart } from "iconsax-reactjs";
+import { Heart } from "@/shared/ui/icons";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { Swiper as SwiperType } from "swiper";
 import { ROUTES } from "@/config/routes";
 import { Reveal } from "@/shared/animations/Reveal";
-import { formatPrice } from "@/shared/lib/format";
+import { useFormatPrice } from "@/shared/currency/CurrencyProvider";
 import { NewBadge } from "@/shared/ui/Badges";
 import { Block } from "@/shared/ui/Block";
 import { SectionHeader } from "@/shared/ui/SectionHeader";
@@ -20,6 +20,8 @@ import type { Product } from "@/modules/products/types";
 import { useRecentlyViewedStore, type ViewedProduct } from "@/modules/products/store/recently-viewed.store";
 
 function MiniCard({ p }: { p: ViewedProduct }) {
+  // prix affichés dans la devise choisie par le visiteur (USD ou FC)
+  const formatPrice = useFormatPrice();
   const { isFavorite, toggle } = useFavoriteToggle();
   const fav = isFavorite(p.id);
   const sale = p.priceSolde != null && p.priceSolde < p.price;
@@ -29,7 +31,7 @@ function MiniCard({ p }: { p: ViewedProduct }) {
       aria-label={fav ? "Retirer des favoris" : "Ajouter aux favoris"}
       className="grid size-8 place-items-center rounded-full bg-white/95 text-ink-3 shadow-[0_2px_8px_rgba(0,0,0,.12)] transition-colors hover:text-danger active:scale-90 sm:size-[30px] sm:bg-page sm:shadow-none"
     >
-      <Heart size={14} variant={fav ? "Bold" : "Linear"} color={fav ? "#F1352B" : "currentColor"} />
+      <Heart size={14} variant={fav ? "Bold" : "Linear"} color={fav ? "#C4261D" : "currentColor"} />
     </button>
   );
   return (

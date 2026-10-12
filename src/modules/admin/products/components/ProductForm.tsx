@@ -1,8 +1,8 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+
 import { useMemo, useState, type KeyboardEvent, type ReactNode } from "react";
-import { Add, CloseCircle } from "iconsax-reactjs";
+import { Add, CloseCircle } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import { ApiError, getErrorMessage } from "@/shared/lib/api";
 import { cn } from "@/shared/lib/cn";
@@ -16,11 +16,12 @@ import { useCategories } from "@/modules/categories/hooks/useCategories";
 import type { Product } from "@/modules/products/types";
 import { useSaveProduct } from "../hooks/useAdminProducts";
 import {
-  BADGE_OPTIONS, countSentences, DESCRIPTION_MAX, DESCRIPTION_MIN, EMPTY_FORM, parseCare, productToForm, validateProductForm,
+  BADGE_OPTIONS, countSentences, DESCRIPTION_MAX, DESCRIPTION_MIN, EMPTY_FORM, parseCare, productToForm, SEO_LIMITS, validateProductForm,
   type FormErrors, type ImageSlotValue, type ProductBadgeCode, type ProductFormValues,
 } from "../types";
 import { ImageSlot } from "./ImageSlot";
 import { VariantsEditor } from "./VariantsEditor";
+import { useAppRouter } from "@/shared/hooks/useAppRouter";
 
 function Section({ title, hint, children, delay = 0 }: { title: string; hint?: string; children: ReactNode; delay?: number }) {
   return (
@@ -45,9 +46,9 @@ interface Props {
 }
 
 export function ProductForm({ product }: Props) {
-  const router = useRouter();
+  const router = useAppRouter();
   const { data: categories } = useCategories();
-  const save = useSaveProduct(product?.id ?? null);
+  const save = useSaveProduct(product ?? null);
 
   const [v, setV] = useState<ProductFormValues>(() => (product ? productToForm(product) : EMPTY_FORM));
   const [images, setImages] = useState<ImageSlotValue[]>(() => Array.from({ length: 4 }, (_, i) => ({ url: product?.images[i] ?? null })));
@@ -179,7 +180,7 @@ export function ProductForm({ product }: Props) {
             {v.features.map((f) => (
               <li key={f} className="inline-flex min-h-9 items-center gap-1 rounded-full bg-primary-50 py-0.5 pl-3.5 pr-1 text-[13px] font-medium text-primary-dark">
                 {f}
-                <button type="button" aria-label={`Retirer ${f}`} onClick={() => set("features", v.features.filter((x) => x !== f))} className="grid size-8 place-items-center rounded-full text-primary-dark/60 hover:text-danger active:scale-90"><CloseCircle size={17} variant="Bold" /></button>
+                <button type="button" aria-label={`Retirer ${f}`} onClick={() => set("features", v.features.filter((x) => x !== f))} className="touch-target relative grid size-8 place-items-center rounded-full text-primary-dark/60 hover:text-danger active:scale-90"><CloseCircle size={17} variant="Bold" /></button>
               </li>
             ))}
           </ul>
@@ -201,6 +202,17 @@ export function ProductForm({ product }: Props) {
         <div className="grid gap-5 sm:grid-cols-2">
           <Input label="Frais de livraison ($)" type="number" inputMode="decimal" min="0" step="0.01" value={v.shippingFee} onChange={(e) => set("shippingFee", e.target.value)} disabled={v.freeShipping} />
           <label className="flex min-h-12 cursor-pointer items-center justify-between gap-3 rounded-box border border-line px-4 active:bg-chip"><span className="text-[14px] font-semibold">Livraison offerte</span><Switch label="Livraison offerte" checked={v.freeShipping} onChange={(x) => set("freeShipping", x)} /></label>
+        </div>
+      </Section>
+
+      <Section title="Référencement" hint="Titre et description affichés par Google et sur les réseaux sociaux. Laissés vides, le nom et la description courte sont utilisés." delay={0.03}>
+        <div>
+          <Input label="Titre SEO" value={v.seoTitle} onChange={(e) => set("seoTitle", e.target.value)} error={errors.seoTitle} placeholder={v.name || "Nom du produit"} />
+          <div className="mt-1 text-right"><Counter n={v.seoTitle.trim().length} max={SEO_LIMITS.title} /></div>
+        </div>
+        <div>
+          <Textarea label="Description SEO" className="min-h-[84px]" value={v.seoDescription} onChange={(e) => set("seoDescription", e.target.value)} error={errors.seoDescription} placeholder={v.description || "Description courte"} />
+          <div className="mt-1 text-right"><Counter n={v.seoDescription.trim().length} max={SEO_LIMITS.description} /></div>
         </div>
       </Section>
 

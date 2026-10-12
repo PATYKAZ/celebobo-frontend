@@ -1,10 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { InfoCircle, Lock, SearchNormal1, TickCircle } from "iconsax-reactjs";
+import { InfoCircle, Lock, SearchNormal1, TickCircle } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import { cn } from "@/shared/lib/cn";
 import { formatDate, formatPrice } from "@/shared/lib/format";
@@ -22,6 +22,7 @@ import { PageHeader } from "../../ui/PageHeader";
 import { useConvertibleOrder, useConvertOrder, useOrderSearch } from "../hooks/useSales";
 import type { ConvertibleOrder } from "../types";
 import { todayStr } from "../utils";
+import { useAppRouter } from "@/shared/hooks/useAppRouter";
 
 /** Panneau de conversion : une vente par ligne de commande, prix final modifiable. Remonté (key) à chaque commande choisie. */
 function ConvertPanel({ co, onDone }: { co: ConvertibleOrder; onDone: () => void }) {
@@ -43,8 +44,8 @@ function ConvertPanel({ co, onDone }: { co: ConvertibleOrder; onDone: () => void
     convert.mutate(
       { orderId: o.id, input: { lines: o.items.map((i) => ({ itemId: i.id, unitPrice: Number(prices[i.id]) })), method, soldAt, venduA } },
       {
-        onSuccess: (res) => {
-          toast.success(`${res.sales.length} vente${res.sales.length > 1 ? "s" : ""} enregistrée${res.sales.length > 1 ? "s" : ""}`, `Commande #${o.id} convertie · ${formatPrice(total)}`);
+        onSuccess: (sales) => {
+          toast.success(`${sales.length} vente${sales.length > 1 ? "s" : ""} enregistrée${sales.length > 1 ? "s" : ""}`, `Commande #${o.id} convertie · ${formatPrice(total)}`);
           onDone();
         },
         onError: (er) => {
@@ -143,7 +144,7 @@ function ResultCard({ co, active, onSelect }: { co: ConvertibleOrder; active: bo
 }
 
 function ConvertOrderContent() {
-  const router = useRouter();
+  const router = useAppRouter();
   const params = useSearchParams();
   const initial = Number(params.get("order")) || undefined;
   const [q, setQ] = useState("");

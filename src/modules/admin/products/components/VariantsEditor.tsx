@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "motion/react";
 import { useState, type KeyboardEvent } from "react";
-import { Add, CloseCircle, Trash } from "iconsax-reactjs";
+import { Add, CloseCircle, Trash } from "@/shared/ui/icons";
 import { formatPrice } from "@/shared/lib/format";
 import { Button } from "@/shared/ui/Button";
 import type { VariantOption } from "@/modules/products/types";

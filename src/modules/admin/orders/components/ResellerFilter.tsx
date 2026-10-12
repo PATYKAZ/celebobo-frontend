@@ -15,6 +15,7 @@ export function ResellerFilter({ value, onChange }: { value?: number; onChange: 
 
   return (
     <Combobox
+      ariaLabel="Filtrer par revendeur"
       items={list}
       getKey={(r) => String(r.id)}
       selectedKey={value != null ? String(value) : null}

@@ -1,4 +1,4 @@
-import { Receipt2 } from "iconsax-reactjs";
+import { Receipt2 } from "@/shared/ui/icons";
 
 interface Line {
   name: string;

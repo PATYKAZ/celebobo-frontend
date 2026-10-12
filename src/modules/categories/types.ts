@@ -13,4 +13,7 @@ export interface Category {
   order?: number;
   /** Visible en boutique */
   active?: boolean;
+  /** Titre / description pour les moteurs de recherche (vides → nom / description). */
+  seoTitle?: string | null;
+  seoDescription?: string | null;
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import { Notification as BellIcon, TickSquare } from "iconsax-reactjs";
+import { Notification as BellIcon, TickSquare } from "@/shared/ui/icons";
 import { useState } from "react";
 import { Breadcrumb } from "@/shared/layout/Breadcrumb";
 import { Block } from "@/shared/ui/Block";
@@ -13,6 +13,7 @@ import { AuthGuard } from "@/modules/auth/components/AuthGuard";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
 import { useMarkAllRead, useNotifications, useResellerOptions } from "../hooks/useNotifications";
 import { NotificationItem } from "./NotificationItem";
+import { ListPageSkeleton } from "@/shared/ui/PageSkeletons";
 
 const PAGE_SIZE = 6;
 
@@ -77,7 +78,7 @@ function Inner({ embedded }: { embedded?: boolean }) {
             exit={{ opacity: 0, y: 24 }}
             className="fixed inset-x-4 bottom-[calc(var(--tabbar-h)+12px)] z-40 lg:hidden"
           >
-            <Button fullWidth upper={false} size="md" leftIcon={<TickSquare size={18} variant="Bold" />} loading={markAll.isPending} onClick={readAll} className="shadow-[0_10px_28px_rgba(26,186,26,.4)]">
+            <Button fullWidth upper={false} size="md" leftIcon={<TickSquare size={18} variant="Bold" />} loading={markAll.isPending} onClick={readAll} className="shadow-[0_10px_28px_rgba(34,109,104,.4)]">
               Tout marquer comme lu ({unread})
             </Button>
           </motion.div>
@@ -90,7 +91,7 @@ function Inner({ embedded }: { embedded?: boolean }) {
 /** `embedded` : rendu dans le back-office (sans fil d'Ariane). Chacun ne voit que ses propres notifications. */
 export function NotificationsView({ embedded }: { embedded?: boolean }) {
   return (
-    <AuthGuard>
+    <AuthGuard fallback={<ListPageSkeleton label="Chargement des notifications" rows={6} breadcrumb={!embedded} />}>
       <Inner embedded={embedded} />
     </AuthGuard>
   );

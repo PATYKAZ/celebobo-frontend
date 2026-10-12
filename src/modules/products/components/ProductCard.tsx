@@ -3,10 +3,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "motion/react";
-import { Bag2, CloseCircle, Heart, TickCircle } from "iconsax-reactjs";
+import { Bag2, CloseCircle, Heart, TickCircle } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import { cn } from "@/shared/lib/cn";
-import { formatPrice } from "@/shared/lib/format";
+import { useFormatPrice } from "@/shared/currency/CurrencyProvider";
 import { NewBadge, Pill, SaveBadge } from "@/shared/ui/Badges";
 import { Price } from "@/shared/ui/Price";
 import { Stars } from "@/shared/ui/Stars";
@@ -27,6 +27,8 @@ interface Props {
  * Animations : zoom/échange d'image au survol, bouton « Ajouter » qui glisse, cœur qui « pop ».
  */
 export function ProductCard({ product, className, priority }: Props) {
+  // prix affichés dans la devise choisie par le visiteur (USD ou FC)
+  const formatPrice = useFormatPrice();
   const { add } = useCart();
   const { isFavorite, toggle } = useFavoriteToggle();
   const pricing = getPricing(product);
@@ -71,10 +73,10 @@ export function ProductCard({ product, className, priority }: Props) {
           aria-label={fav ? "Retirer des favoris" : "Ajouter aux favoris"}
           aria-pressed={fav}
           onClick={() => toggle(product.id, product.name)}
-          className="absolute right-1 top-1 grid size-9 place-items-center rounded-full bg-white/90 text-ink-3 backdrop-blur-sm transition-colors hover:bg-danger-100 hover:text-danger active:scale-90 sm:right-0 sm:top-0 sm:size-[30px] sm:bg-page"
+          className="touch-target absolute right-1 top-1 grid size-9 place-items-center rounded-full bg-white/90 text-ink-3 backdrop-blur-sm transition-colors hover:bg-danger-100 hover:text-danger active:scale-90 sm:right-0 sm:top-0 sm:size-[30px] sm:bg-page"
         >
           <motion.span key={String(fav)} initial={{ scale: 0.4 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 500, damping: 12 }} className="grid">
-            <Heart size={15} variant={fav ? "Bold" : "Linear"} color={fav ? "#F1352B" : "currentColor"} />
+            <Heart size={15} variant={fav ? "Bold" : "Linear"} color={fav ? "#C4261D" : "currentColor"} />
           </motion.span>
         </button>
 
@@ -91,7 +93,7 @@ export function ProductCard({ product, className, priority }: Props) {
           onClick={() => add(product)}
           disabled={!product.inStock}
           aria-label="Ajouter au panier"
-          className="absolute bottom-1.5 right-1.5 grid size-10 place-items-center rounded-full bg-primary text-white shadow-[0_4px_14px_rgba(26,186,26,.45)] transition-transform active:scale-90 disabled:bg-ink-3 disabled:shadow-none sm:hidden"
+          className="touch-target absolute bottom-1.5 right-1.5 grid size-10 place-items-center rounded-full bg-primary text-white shadow-[0_4px_14px_rgba(34,109,104,.45)] transition-transform active:scale-90 disabled:bg-ink-3 disabled:shadow-none sm:hidden"
         >
           <Bag2 size={18} variant="Bold" />
         </button>
@@ -117,11 +119,11 @@ export function ProductCard({ product, className, priority }: Props) {
         <p className={cn("mt-auto items-center gap-1.5 pt-2 text-[12px] leading-[20.4px] sm:flex sm:pt-3", product.inStock ? "hidden" : "flex")}>
           {product.inStock ? (
             <>
-              <TickCircle size={13} variant="Bold" color="#1ABA1A" /> En stock
+              <TickCircle size={13} variant="Bold" color="#226D68" /> En stock
             </>
           ) : (
             <>
-              <CloseCircle size={13} variant="Bold" color="#F1352B" /> Rupture de stock
+              <CloseCircle size={13} variant="Bold" color="#C4261D" /> Rupture de stock
             </>
           )}
         </p>

@@ -71,7 +71,7 @@ export function DataTable<T>({ columns, rows, rowKey, loading, empty, onRowClick
           <thead>
             <tr className="border-b border-line-3 bg-page/50">
               {columns.map((c) => (
-                <th key={c.key} className={th(c)}>{c.header}</th>
+                <th key={c.key} className={th(c)}>{c.header || (isAction(c) && <span className="sr-only">Actions</span>)}</th>
               ))}
             </tr>
           </thead>

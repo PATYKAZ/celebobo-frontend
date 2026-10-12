@@ -1,6 +1,6 @@
 "use client";
 
-import { InfoCircle, People, ShoppingBag } from "iconsax-reactjs";
+import { InfoCircle, People, ShoppingBag } from "@/shared/ui/icons";
 import { useMemo, useState } from "react";
 import { Reveal } from "@/shared/animations/Reveal";
 import { formatDate, formatPrice } from "@/shared/lib/format";

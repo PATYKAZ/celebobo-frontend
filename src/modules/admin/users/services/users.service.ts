@@ -25,9 +25,9 @@ export const usersService = {
     return { ...page, counts: toRoleCounts(page.meta?.counts as Record<string, number> | undefined) };
   },
 
-  async setRole(id: number, role: UserRole): Promise<UserRow> {
+  /** La liste est rafraîchie par invalidation (la réponse est le profil, pas une ligne de la liste). */
+  async setRole(id: number, role: UserRole): Promise<void> {
     await api.post(users.role(id), { role: ROLE_TO_API[role] });
-    return toUserRow(await api.get<UserRowDto>(users.detail(id)));
   },
 
   async setActive(id: number, active: boolean): Promise<UserRow> {

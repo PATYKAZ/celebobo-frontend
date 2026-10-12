@@ -1,6 +1,6 @@
 "use client";
 
-import { Devices, Monitor, Mobile, Notification, NotificationBing, Sms, Trash } from "iconsax-reactjs";
+import { Devices, Monitor, Mobile, Notification, NotificationBing, Sms, Trash } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import { Reveal } from "@/shared/animations/Reveal";
 import { Breadcrumb } from "@/shared/layout/Breadcrumb";
@@ -13,6 +13,7 @@ import { toast } from "@/shared/ui/Toast";
 import { AuthGuard } from "@/modules/auth/components/AuthGuard";
 import { useNotificationPreferences, usePushDevices, usePushPermission, useRemoveDevice, useSavePreferences } from "../hooks/usePreferences";
 import { NOTIFICATION_EVENTS, type NotificationChannel, type NotificationEvent } from "../types";
+import { AccountSkeleton } from "@/shared/ui/PageSkeletons";
 
 /** Ligne à interrupteur : toute la ligne est cliquable (≥ 48px de haut). */
 function ToggleRow({ label, checked, onChange, children }: { label: string; checked: boolean; onChange: (v: boolean) => void; children: React.ReactNode }) {
@@ -135,7 +136,7 @@ export function NotificationSettingsView() {
   return (
     <>
       <Breadcrumb items={[{ label: "Mon compte", href: ROUTES.profile }, { label: "Notifications" }]} />
-      <AuthGuard>
+      <AuthGuard fallback={<AccountSkeleton breadcrumb={false} />}>
         <Content />
       </AuthGuard>
     </>

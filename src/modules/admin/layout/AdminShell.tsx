@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowDown2, ArrowLeft2, Logout, Messages2, Notification } from "iconsax-reactjs";
+import { ArrowDown2, ArrowLeft2, Logout, Messages2, Notification } from "@/shared/ui/icons";
 import { useMemo, useState, type ReactNode } from "react";
 import { ROUTES } from "@/config/routes";
 import { cn } from "@/shared/lib/cn";

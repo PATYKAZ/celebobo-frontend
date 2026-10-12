@@ -1,6 +1,6 @@
 "use client";
 
-import { CloseCircle, SmsNotification, TickCircle } from "iconsax-reactjs";
+import { CloseCircle, SmsNotification, TickCircle } from "@/shared/ui/icons";
 import { useSearchParams } from "next/navigation";
 import { ROUTES } from "@/config/routes";
 import { Breadcrumb } from "@/shared/layout/Breadcrumb";

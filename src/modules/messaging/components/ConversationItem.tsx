@@ -1,6 +1,6 @@
 "use client";
 
-import { Gallery, Receipt2 } from "iconsax-reactjs";
+import { Gallery, Receipt2 } from "@/shared/ui/icons";
 import { cn } from "@/shared/lib/cn";
 import { formatRelative } from "@/shared/lib/format";
 import { Avatar } from "@/shared/ui/Avatar";

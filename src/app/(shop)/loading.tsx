@@ -1,5 +1,5 @@
-import { PageSkeleton } from "@/modules/errors";
+import { ContentPageSkeleton } from "@/shared/ui/PageSkeletons";
 
 export default function Loading() {
-  return <PageSkeleton />;
+  return <ContentPageSkeleton />;
 }

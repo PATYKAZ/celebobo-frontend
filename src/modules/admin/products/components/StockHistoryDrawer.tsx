@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowDown, ArrowUp } from "iconsax-reactjs";
+import { ArrowDown, ArrowUp } from "@/shared/ui/icons";
 import { cn } from "@/shared/lib/cn";
 import { formatDateTime } from "@/shared/lib/format";
 import { Drawer } from "@/shared/ui/Overlay";

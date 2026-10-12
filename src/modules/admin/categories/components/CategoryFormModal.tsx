@@ -28,7 +28,7 @@ export function CategoryFormModal({ open, category, existingNames, onClose }: Pr
 
   useEffect(() => {
     if (!open) return;
-    setV(category ? { name: category.name, description: category.description ?? "", icon: category.icon?.toLowerCase() ?? "mobile", active: category.active } : EMPTY_CATEGORY_FORM);
+    setV(category ? { name: category.name, description: category.description ?? "", icon: category.icon?.toLowerCase() ?? "mobile", active: category.active, seoTitle: category.seoTitle ?? "", seoDescription: category.seoDescription ?? "" } : EMPTY_CATEGORY_FORM);
     setImage({ url: category?.image ?? null });
     setErrors({});
   }, [open, category]);
@@ -38,7 +38,8 @@ export function CategoryFormModal({ open, category, existingNames, onClose }: Pr
     const e: typeof errors = {};
     if (!name) e.name = "Le nom est requis.";
     else if (existingNames.some((n) => n.trim().toLowerCase() === name.toLowerCase() && n !== category?.name)) e.name = "Une catégorie porte déjà ce nom.";
-    if (!image.url) e.image = "Ajoutez une image.";
+    // image exigée à la création ; une catégorie existante sans image reste modifiable
+    if (!image.url && !category) e.image = "Ajoutez une image.";
     setErrors(e);
     if (Object.keys(e).length) return;
     save.mutate(
@@ -61,6 +62,9 @@ export function CategoryFormModal({ open, category, existingNames, onClose }: Pr
       <div className="grid gap-4">
         <Input label="Nom" required value={v.name} onChange={(e) => { setV({ ...v, name: e.target.value }); setErrors((x) => ({ ...x, name: undefined })); }} error={errors.name} placeholder="Ex : Smartphones" />
         <Textarea label="Description" className="min-h-[80px]" value={v.description} onChange={(e) => setV({ ...v, description: e.target.value })} />
+        {/* limites du modèle Django ; vides → nom et description (cf. categoryMetadata) */}
+        <Input label="Titre SEO" maxLength={70} value={v.seoTitle} onChange={(e) => setV({ ...v, seoTitle: e.target.value })} placeholder={v.name ? `${v.name} — achat en ligne` : "Facultatif"} hint={`Affiché par Google · ${v.seoTitle.length}/70`} />
+        <Textarea label="Description SEO" maxLength={160} className="min-h-[64px]" value={v.seoDescription} onChange={(e) => setV({ ...v, seoDescription: e.target.value })} placeholder={v.description || "Facultatif"} hint={`${v.seoDescription.length}/160 caractères`} />
         <div className="grid items-start gap-4 sm:grid-cols-[170px_1fr]">
           <div className="w-40 sm:w-auto"><ImageSlot label="Image" main value={image} error={errors.image} onChange={(x) => { setImage(x); setErrors((e) => ({ ...e, image: undefined })); }} /></div>
           <div>

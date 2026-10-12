@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
-import { InfoCircle, TickCircle } from "iconsax-reactjs";
+import { InfoCircle, TickCircle } from "@/shared/ui/icons";
 import { cn } from "@/shared/lib/cn";
 import { formatTime } from "@/shared/lib/format";
 import { Avatar } from "@/shared/ui/Avatar";

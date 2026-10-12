@@ -8,7 +8,7 @@ const { categories } = ENDPOINTS.admin;
 /** Corps commun création / modification ; l'image n'est envoyée que si un nouveau fichier a été choisi. */
 async function toPayload(v: CategoryFormValues, image: CategoryImageValue) {
   const imageId = image.file ? (await uploadMedia(image.file, "category_image")).id : undefined;
-  return { name: v.name.trim(), description: v.description.trim(), icon: v.icon, isActive: v.active, imageId };
+  return { name: v.name.trim(), description: v.description.trim(), icon: v.icon, isActive: v.active, seoTitle: v.seoTitle.trim(), seoDescription: v.seoDescription.trim(), imageId };
 }
 
 export const adminCategoriesService = {

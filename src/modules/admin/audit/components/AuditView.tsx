@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowDown2, ArrowRight, Filter, SearchNormal1 } from "iconsax-reactjs";
+import { ArrowDown2, ArrowRight, Filter, SearchNormal1 } from "@/shared/ui/icons";
 import { Fragment, useState } from "react";
 import { useDebounce } from "@/shared/hooks/useDebounce";
 import { cn } from "@/shared/lib/cn";

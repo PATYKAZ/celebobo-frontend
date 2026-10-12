@@ -1,5 +1,5 @@
 import { ENDPOINTS } from "@/config/endpoints";
-import { api, ApiError, downloadJob, runJob, uploadMedia, type Job, type PageEnvelope } from "@/shared/lib/api";
+import { api, ApiError, completeUploads, downloadJob, runJob, sendUpload, type Job, type PageEnvelope } from "@/shared/lib/api";
 import { money, toReview, type ReviewDto } from "@/modules/products/services/products.mapper";
 import type { Product, Review } from "@/modules/products/types";
 import type { AdminProductListParams, AdminProductPage, BulkAction, ImageSlotValue, ProductFormValues, ProductStats, StockAdjustInput, StockMovement, VariantRow } from "../types";
@@ -14,7 +14,7 @@ import {
   type StockMovementDto,
 } from "./admin-products.mapper";
 
-const { products, variants, sales, reviews } = ENDPOINTS.admin;
+const { products, sales, reviews } = ENDPOINTS.admin;
 
 /** Résumé d'un import (simulation ou réel), produit par la tâche asynchrone. */
 export interface ImportSummary {
@@ -38,40 +38,35 @@ const BULK_ACTION: Record<BulkAction["type"], string> = {
 /**
  * Images à envoyer : `undefined` si la galerie n'a pas changé. L'API remplace toute la galerie (`image_ids`)
  * et ne renvoie pas les ids des images existantes : on ne peut donc pas en conserver une partie.
+ * Les fichiers partent vers Cloudinary dès leur choix (`upload`) ; ici on les attend puis on les enregistre en un appel.
  */
 async function imageIds(images: ImageSlotValue[], current: string[]): Promise<number[] | undefined> {
   const kept = images.filter((s) => s.url && !s.file).map((s) => s.url as string);
-  const files = images.flatMap((s) => (s.file ? [s.file] : []));
-  const unchanged = !files.length && kept.length === current.length && kept.every((url, i) => url === current[i]);
+  const slots = images.filter((s) => s.file);
+  const unchanged = !slots.length && kept.length === current.length && kept.every((url, i) => url === current[i]);
   if (current.length && unchanged) return undefined;
   if (kept.length) {
     throw new ApiError(400, "Pour modifier les photos, remplacez toutes les images du produit.", { errors: { image: ["Remplacez toutes les images (les images existantes ne peuvent pas être conservées partiellement)."] } });
   }
-  const uploaded = [];
-  for (const file of files) uploaded.push(await uploadMedia(file, "product_image"));
-  return uploaded.map((m) => m.id);
+  // un envoi anticipé qui a échoué (réseau coupé…) est retenté une fois
+  const send = (s: ImageSlotValue) => sendUpload(s.file as File, "product_image");
+  const sent = await Promise.all(slots.map((s) => (s.upload ?? send(s)).catch(() => send(s))));
+  return (await completeUploads(sent)).map((m) => m.id);
 }
 
-const rowChanged = (row: VariantRow, before: Product["variants"][number]) =>
-  JSON.stringify(row.attributes) !== JSON.stringify(before.attributes) || (row.sku || "") !== (before.sku ?? "") || (row.price === "" ? null : Number(row.price)) !== before.price;
-
-/** Aligne les variantes du serveur sur celles du formulaire (création, modification, stock, suppression). */
-async function syncVariants(productId: number, rows: VariantRow[], before: Product["variants"]) {
-  const known = new Map(before.map((v) => [v.id, v]));
-  for (const row of rows) {
-    const old = known.get(row.id);
-    const price = row.price === "" ? null : row.price;
-    if (!old) {
-      await api.post(products.variants(productId), { attributes: row.attributes, sku: row.sku || null, price, stock: Number(row.stock) });
-      continue;
-    }
-    if (rowChanged(row, old)) await api.patch(variants.detail(row.id), { attributes: row.attributes, sku: row.sku, price });
-    if (Number(row.stock) !== old.stock) {
-      await api.post(products.stockAdjustments(productId), { mode: "set", value: Number(row.stock), reason: "correction", variantId: row.id });
-    }
-  }
-  const remaining = new Set(rows.map((r) => r.id));
-  for (const v of before) if (!remaining.has(v.id)) await api.delete(variants.detail(v.id));
+/**
+ * Variantes telles que l'API les attend : la liste complète (les absentes sont supprimées), `id` pour une
+ * variante existante, sans `id` pour une nouvelle (le formulaire leur donne un id provisoire).
+ */
+function variantPayload(rows: VariantRow[], before: Product["variants"]) {
+  const known = new Set(before.map((v) => v.id));
+  return rows.map((r) => ({
+    ...(known.has(r.id) ? { id: r.id } : {}),
+    attributes: r.attributes,
+    sku: r.sku.trim() || null,
+    price: r.price === "" ? null : r.price,
+    stock: Number(r.stock),
+  }));
 }
 
 export const adminProductsService = {
@@ -90,19 +85,18 @@ export const adminProductsService = {
     return toAdminProduct(await api.get<AdminProductDetailDto>(products.detail(id)));
   },
 
-  async save(id: number | null, values: ProductFormValues, images: ImageSlotValue[]): Promise<Product> {
-    const before = id ? await adminProductsService.detail(id) : null;
+  /**
+   * Création / modification en un seul appel : champs, galerie, variantes et stock. Un produit à variantes
+   * n'envoie pas de stock global (l'API refuse : `variants_manage_stock`) ; la réponse est la fiche complète.
+   */
+  async save(before: Product | null, values: ProductFormValues, images: ImageSlotValue[]): Promise<Product> {
     const ids = await imageIds(images, before?.images ?? []);
-    const body = { ...toProductPayload(values), ...(ids ? { imageIds: ids } : {}) };
-    const simple = !values.variants.length;
-    const saved = before
-      ? await api.patch<AdminProductDetailDto>(products.detail(before.id), body)
-      : await api.post<AdminProductDetailDto>(products.list, { ...body, stock: simple ? Number(values.stock) : 0 });
-    if (before && simple && !before.variants.length && Number(values.stock) !== before.stock) {
-      await api.post(products.stockAdjustments(saved.id), { mode: "set", value: Number(values.stock), reason: "correction", note: "Modification depuis la fiche produit" });
-    }
-    if (values.variants.length || before?.variants.length) await syncVariants(saved.id, values.variants, before?.variants ?? []);
-    return adminProductsService.detail(saved.id);
+    const variants = variantPayload(values.variants, before?.variants ?? []);
+    const stock = variants.length ? {} : { stock: Number(values.stock) };
+    const body = { ...toProductPayload(values), ...(ids ? { imageIds: ids } : {}), ...stock };
+    if (!before) return toAdminProduct(await api.post<AdminProductDetailDto>(products.list, variants.length ? { ...body, variants } : body));
+    const sync = variants.length || before.variants.length ? { variants } : {};
+    return toAdminProduct(await api.patch<AdminProductDetailDto>(products.detail(before.id), { ...body, ...sync }));
   },
 
   async duplicate(id: number): Promise<Product> {

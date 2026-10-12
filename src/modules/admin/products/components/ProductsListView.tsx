@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
 import { Suspense, useEffect, useState } from "react";
-import { Add, ArrowSwapVertical, Box, DocumentDownload, DocumentUpload, Edit2, Eye, EyeSlash, Filter, Refresh2, Star1, Tag, Trash, Warning2, Wallet3, Clock } from "iconsax-reactjs";
+import { Add, ArrowSwapVertical, Box, DocumentDownload, DocumentUpload, Edit2, Eye, EyeSlash, Filter, Refresh2, Star1, Tag, Trash, Warning2, Wallet3, Clock } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import { cn } from "@/shared/lib/cn";
 import { formatDate, formatPrice } from "@/shared/lib/format";
@@ -195,7 +195,7 @@ function Content() {
       header: "Note",
       hideBelow: "xl",
       mobile: "hide",
-      cell: (p) => (p.rating ? <span className="inline-flex items-center gap-1 font-semibold"><Star1 size={14} variant="Bold" color="#FFA500" />{p.rating.toFixed(1)} <span className="font-normal text-ink-3">({p.reviewsCount})</span></span> : <span className="text-ink-3">—</span>),
+      cell: (p) => (p.rating ? <span className="inline-flex items-center gap-1 font-semibold"><Star1 size={14} variant="Bold" color="#D6955B" />{p.rating.toFixed(1)} <span className="font-normal text-ink-3">({p.reviewsCount})</span></span> : <span className="text-ink-3">—</span>),
     },
     {
       key: "actions",

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
-import { Money, Mobile, TickCircle } from "iconsax-reactjs";
+import { Money, Mobile, TickCircle } from "@/shared/ui/icons";
 import { cn } from "@/shared/lib/cn";
 import { PAYMENT_METHODS, type PaymentMethod } from "@/modules/orders/types";
 

@@ -1,13 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowDown2, Call, Facebook, Instagram, Location, Music, Sms, Tenx, Whatsapp, Youtube } from "iconsax-reactjs";
+import { Call, Facebook, Instagram, Location, Music, Sms, Tenx, Whatsapp, Youtube } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import { SITE } from "@/config/site";
 import { CircleButton } from "@/shared/ui/CircleButton";
 import { paymentMethod, useSiteSettings, type SocialNetwork } from "@/modules/site";
 import { FooterColumn } from "./FooterColumn";
 import { NewsletterForm } from "./NewsletterForm";
+import { CurrencySwitch } from "@/shared/currency/CurrencySwitch";
 
 const COLUMNS = [
   {
@@ -71,19 +72,19 @@ export function Footer() {
         <div className="grid gap-8 lg:grid-cols-[293px_repeat(4,1fr)] lg:gap-8">
           {/* Colonne 1 */}
           <div>
-            <h3 className="text-section uppercase">Celebobo — la tech en confiance</h3>
+            <h2 className="text-section uppercase">Celebobo — la tech en confiance</h2>
             <p className="mt-[34px] text-[14px] uppercase leading-[23.8px]">Hotline 24/7</p>
-            <a href={site.hotlineHref} className="mt-1 block text-[30px] font-bold leading-[36px] text-primary">{site.hotline}</a>
+            <a href={site.hotlineHref} className="mt-1 flex min-h-11 items-center text-[30px] font-bold leading-[36px] text-primary">{site.hotline}</a>
             <p className="mt-6 flex items-start gap-2 text-[14px] leading-[23.8px]">
               <Location size={18} className="mt-1 shrink-0" />
               <span>{site.address.map((line, i) => <span key={i}>{i > 0 && <>,<br /></>}{line}</span>)}</span>
             </p>
-            <a href={`mailto:${site.email}`} className="mt-3 flex items-center gap-2 text-[14px] hover:text-primary"><Sms size={18} /> {site.email}</a>
+            <a href={`mailto:${site.email}`} className="mt-1 flex min-h-11 items-center gap-2 text-[14px] hover:text-primary"><Sms size={18} /> {site.email}</a>
             <div className="mt-8 flex gap-[14px]">
               {SOCIALS.filter((n) => site.social[n.key]).map(({ key, label, icon: Icon }) => (
-                <CircleButton key={key} size={35} tone="social" label={label} href={site.social[key]}><Icon size={15} variant="Bold" /></CircleButton>
+                <CircleButton key={key} size={44} tone="social" label={label} href={site.social[key]}><Icon size={17} variant="Bold" /></CircleButton>
               ))}
-              <CircleButton size={35} tone="social" label="WhatsApp" href={site.whatsappUrl}><Whatsapp size={15} variant="Bold" /></CircleButton>
+              <CircleButton size={44} tone="social" label="WhatsApp" href={site.whatsappUrl}><Whatsapp size={17} variant="Bold" /></CircleButton>
             </div>
           </div>
 
@@ -94,12 +95,13 @@ export function Footer() {
 
         {/* Ligne 2 */}
         <div className="mt-12 flex flex-col gap-8 lg:flex-row lg:items-start">
-          <div className="flex gap-2">
-            <span className="flex h-[43px] items-center gap-2 rounded-[8px] border border-line-2/20 px-4 text-[14px]">$ USD <ArrowDown2 size={11} /></span>
-            <span className="flex h-[43px] items-center gap-2 rounded-[8px] border border-line-2/20 px-4 text-[14px]">Fr <ArrowDown2 size={11} /></span>
+          <div>
+            <p className="mb-2 text-[13px] font-semibold text-ink-2">Afficher les prix en</p>
+            <CurrencySwitch size="md" />
+            <p className="mt-2 max-w-[260px] text-[12px] leading-[17px] text-ink-3">Paiement toujours calculé en dollars, au taux du jour.</p>
           </div>
           <div className="w-full max-w-[857px] lg:ml-auto">
-            <h3 className="text-section uppercase">Abonnez-vous et obtenez <span className="text-danger">{site.newsletterDiscount} % de remise</span> sur votre première commande</h3>
+            <h2 className="text-section uppercase">Abonnez-vous et obtenez <span className="text-danger">{site.newsletterDiscount} % de remise</span> sur votre première commande</h2>
             <div className="mt-6"><NewsletterForm /></div>
             <p className="mt-3 text-[13px] italic leading-[22px] text-ink-2">
               En vous abonnant, vous acceptez notre <Link href={ROUTES.contact} className="text-ink underline">politique de confidentialité</Link>
@@ -117,7 +119,7 @@ export function Footer() {
               ))}
             </div>
           </div>
-          <a href={site.whatsappUrl} className="flex items-center gap-2 text-[14px] text-info hover:underline"><Call size={16} variant="Bold" /> Assistance WhatsApp</a>
+          <a href={site.whatsappUrl} className="flex min-h-11 items-center gap-2 text-[14px] text-info hover:underline"><Call size={16} variant="Bold" /> Assistance WhatsApp</a>
         </div>
       </div>
     </footer>

@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
-import { ArrowRight2, Call, Location, Notification, Receipt2, User } from "iconsax-reactjs";
+import { ArrowRight2, Call, Location, Notification, Receipt2, User } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import { createElement, useEffect, useState } from "react";
 import { Breadcrumb } from "@/shared/layout/Breadcrumb";
@@ -18,6 +18,7 @@ import { addressIcon } from "./AddressBookView";
 import { PersonalInfoForm } from "./PersonalInfoForm";
 import { ProfileSummaryCard } from "./ProfileSummaryCard";
 import { SecuritySettings } from "./SecuritySettings";
+import { AccountSkeleton } from "@/shared/ui/PageSkeletons";
 
 type Tab = "info" | "addresses" | "security";
 
@@ -126,7 +127,7 @@ export function ProfileView() {
   return (
     <>
       <Breadcrumb items={[{ label: "Mon compte" }, { label: "Profil" }]} />
-      <AuthGuard>
+      <AuthGuard fallback={<AccountSkeleton breadcrumb={false} />}>
         <Content />
       </AuthGuard>
     </>

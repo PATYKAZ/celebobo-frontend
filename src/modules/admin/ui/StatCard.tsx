@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowDown, ArrowUp } from "iconsax-reactjs";
+import { ArrowDown, ArrowUp } from "@/shared/ui/icons";
 import type { ReactNode } from "react";
 import { CountUp } from "@/shared/animations/CountUp";
 import { Reveal } from "@/shared/animations/Reveal";

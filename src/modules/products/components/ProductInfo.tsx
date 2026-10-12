@@ -1,11 +1,11 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { Bag2, CloseCircle, Heart, Refresh2, ShieldTick, TickCircle, Truck } from "iconsax-reactjs";
+
+import { Bag2, CloseCircle, Heart, Refresh2, ShieldTick, TickCircle, Truck } from "@/shared/ui/icons";
 import { useEffect } from "react";
 import { ROUTES } from "@/config/routes";
 import { cn } from "@/shared/lib/cn";
-import { formatPrice } from "@/shared/lib/format";
+import { useFormatPrice } from "@/shared/currency/CurrencyProvider";
 import { Pill } from "@/shared/ui/Badges";
 import { Button } from "@/shared/ui/Button";
 import { Price } from "@/shared/ui/Price";
@@ -17,14 +17,15 @@ import type { VariantSelection } from "../hooks/useVariantSelection";
 import type { Product } from "../types";
 import { getPricing } from "../utils";
 import { ProductShareMenu } from "./ProductShareMenu";
+import { useAppRouter } from "@/shared/hooks/useAppRouter";
 
 const TRUST = [
-  { icon: Truck, title: "Livraison rapide", text: "24–48 h à Kinshasa" },
+  { icon: Truck, title: "Livraison rapide", text: "Bukavu, Goma et environs" },
   { icon: Refresh2, title: "Retour 30 jours", text: "Satisfait ou remboursé" },
   { icon: ShieldTick, title: "Paiement mobile", text: "Orange, Airtel, M-Pesa" },
 ];
 
-const SWATCH: Record<string, string> = { Noir: "#111827", Blanc: "#FFFFFF", Argent: "#C7CCD4", Gris: "#6B7280", Bleu: "#3B82F6", Jaune: "#FFD400", Rouge: "#F1352B", Vert: "#1ABA1A", Or: "#D4AF37" };
+const SWATCH: Record<string, string> = { Noir: "#111827", Blanc: "#FFFFFF", Argent: "#C7CCD4", Gris: "#6B7280", Bleu: "#3B82F6", Jaune: "#FFD400", Rouge: "#F1352B", Vert: "#16A34A", Or: "#D4AF37" };
 
 /** Libellé de stock : « Plus que 3 en stock » sous le seuil d'alerte. */
 function stockLabel(stock: number, threshold: number) {
@@ -33,7 +34,9 @@ function stockLabel(stock: number, threshold: number) {
 }
 
 export function ProductInfo({ product, selection, qty, onQtyChange }: { product: Product; selection: VariantSelection; qty: number; onQtyChange: (n: number) => void }) {
-  const router = useRouter();
+  // prix affichés dans la devise choisie par le visiteur (USD ou FC)
+  const formatPrice = useFormatPrice();
+  const router = useAppRouter();
   const { add } = useCart();
   const { isFavorite, toggle } = useFavoriteToggle();
   const base = getPricing(product);
@@ -59,7 +62,7 @@ export function ProductInfo({ product, selection, qty, onQtyChange }: { product:
 
       <div className="mt-3 flex flex-wrap items-center gap-3">
         <Stars rating={product.rating} count={product.reviewsCount} size={15} />
-        <a href="#avis" className="text-[13px] text-ink-2 underline-offset-2 hover:text-primary hover:underline">Voir les avis</a>
+        <a href="#avis" className="touch-target relative text-[13px] text-ink-2 underline-offset-2 hover:text-primary hover:underline">Voir les avis</a>
       </div>
 
       <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 border-y border-line-3 py-4 sm:mt-5 sm:py-5">
@@ -149,7 +152,7 @@ export function ProductInfo({ product, selection, qty, onQtyChange }: { product:
           onClick={() => toggle(product.id, product.name)}
           className={cn("grid size-12 place-items-center rounded-box bg-chip transition-colors hover:bg-danger-100 active:scale-90 sm:size-[45px]", fav && "bg-danger-100")}
         >
-          <Heart size={20} variant={fav ? "Bold" : "Linear"} color={fav ? "#F1352B" : "currentColor"} />
+          <Heart size={20} variant={fav ? "Bold" : "Linear"} color={fav ? "#C4261D" : "currentColor"} />
         </button>
         <ProductShareMenu name={product.name} />
       </div>

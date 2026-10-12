@@ -31,10 +31,14 @@ export function Tabs<T extends string>({ tabs, value, onChange, variant = "title
   const id = useId();
   const row = useRef<HTMLDivElement>(null);
 
-  // recentre l'onglet actif dans la rangée défilante
+  // recentre l'onglet actif dans la rangée défilante — horizontalement seulement : scrollIntoView ferait
+  // aussi défiler la page jusqu'aux onglets dès l'ouverture (fiche produit sur mobile)
   useEffect(() => {
-    const el = row.current?.querySelector<HTMLElement>('[data-state="on"]');
-    el?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+    const strip = row.current;
+    const el = strip?.querySelector<HTMLElement>('[data-state="on"]');
+    if (!strip || !el || strip.scrollWidth <= strip.clientWidth) return;
+    const offset = el.getBoundingClientRect().left - strip.getBoundingClientRect().left;
+    strip.scrollTo({ left: strip.scrollLeft + offset - (strip.clientWidth - el.offsetWidth) / 2, behavior: "smooth" });
   }, [value]);
 
   // fondu à droite uniquement (indique qu'on peut défiler) : un fondu à gauche rognerait le 1er onglet au repos
@@ -71,7 +75,7 @@ export function Tabs<T extends string>({ tabs, value, onChange, variant = "title
           <ToggleGroup.Item
             key={t.value}
             value={t.value}
-            className={cn("relative shrink-0 snap-center whitespace-nowrap py-2 text-[15px] uppercase leading-[22px] transition-all sm:py-0 sm:pb-1 sm:text-tab", t.value === value ? "font-semibold" : "opacity-60 hover:opacity-100")}
+            className={cn("relative min-h-11 shrink-0 snap-center whitespace-nowrap text-[15px] uppercase leading-[22px] transition-all sm:min-h-0 sm:py-0 sm:pb-1 sm:text-tab", t.value === value ? "font-semibold" : "opacity-60 hover:opacity-100")}
           >
             {t.label}
             {t.value === value && <motion.span layoutId={`tab-${id}`} className="absolute inset-x-0 -bottom-0.5 h-[3px] rounded-full bg-primary" transition={{ type: "spring", stiffness: 400, damping: 32 }} />}

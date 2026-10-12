@@ -1,6 +1,6 @@
 "use client";
 
-import { Bag2, Heart } from "iconsax-reactjs";
+import { Bag2, Heart } from "@/shared/ui/icons";
 import { AnimatePresence, motion } from "motion/react";
 import { ROUTES } from "@/config/routes";
 import { Breadcrumb } from "@/shared/layout/Breadcrumb";
@@ -17,11 +17,11 @@ import { useFavoriteProducts } from "../hooks/useFavorites";
 import { useFavoritesStore } from "../store/favorites.store";
 
 export function FavoritesView() {
-  const { data, isLoading } = useFavoriteProducts();
+  const { data, isLoading, hasNextPage, fetchNextPage, isFetchingNextPage } = useFavoriteProducts();
   const ids = useFavoritesStore((s) => s.ids);
   const { add } = useCart();
   // retrait immédiat côté UI (le store est mis à jour de façon optimiste)
-  const products = data?.filter((p) => ids.includes(p.id));
+  const products = data?.pages.flatMap((page) => page.results).filter((p) => ids.includes(p.id));
 
   const addAll = () => {
     const available = products?.filter((p) => p.inStock) ?? [];
@@ -38,7 +38,7 @@ export function FavoritesView() {
             <span className="grid size-11 shrink-0 place-items-center rounded-full bg-danger-100 text-danger sm:size-12"><Heart size={24} variant="Bold" /></span>
             <div>
               <h1 className="text-[22px] leading-[28px] sm:text-h-page">Mes favoris</h1>
-              <p className="text-[13px] text-ink-2 sm:text-[14px]">{pluralize(products?.length ?? ids.length, "produit")} enregistré{(products?.length ?? ids.length) > 1 ? "s" : ""}</p>
+              <p className="text-[13px] text-ink-2 sm:text-[14px]">{pluralize(ids.length, "produit")} enregistré{ids.length > 1 ? "s" : ""}</p>
             </div>
           </div>
           {!!products?.length && (
@@ -59,6 +59,11 @@ export function FavoritesView() {
                 </motion.div>
               ))}
             </AnimatePresence>
+            {hasNextPage && (
+              <div className="col-span-full flex justify-center pt-4">
+                <Button variant="outline" upper={false} loading={isFetchingNextPage} onClick={() => fetchNextPage()}>Afficher plus de favoris</Button>
+              </div>
+            )}
           </div>
         ) : (
           <EmptyState

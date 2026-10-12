@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
-import { Category2, CloseCircle, Eye, EyeSlash, Refresh2, Tag, Trash } from "iconsax-reactjs";
+import { Category2, CloseCircle, Eye, EyeSlash, Refresh2, Tag, Trash } from "@/shared/ui/icons";
 import { Button } from "@/shared/ui/Button";
 import { Select } from "@/shared/ui/Form";
 import { Modal } from "@/shared/ui/Overlay";

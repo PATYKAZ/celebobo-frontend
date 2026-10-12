@@ -19,6 +19,8 @@ export function HomeView() {
 
   return (
     <>
+      {/* titre principal de la page (lecteurs d'écran, moteurs de recherche) ; le visuel commence par le carrousel */}
+      <h1 className="sr-only">Celebobo — boutique high-tech : smartphones, ordinateurs, audio et gaming</h1>
       <HeroSection content={content} />
       <BrandsAndCategories brands={content?.brands} />
       <DealsOfTheDay content={content} />

@@ -1,17 +1,17 @@
 "use client";
 
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowDown2, Category2, Clock, CloseCircle, SearchNormal1, Trash } from "iconsax-reactjs";
+import { ArrowDown2, Category2, Clock, CloseCircle, SearchNormal1, Trash } from "@/shared/ui/icons";
 import { Fragment, useEffect, useId, useMemo, useRef, useState, type FormEvent, type KeyboardEvent, type ReactNode } from "react";
 import { ROUTES } from "@/config/routes";
 import { cn } from "@/shared/lib/cn";
-import { formatPrice } from "@/shared/lib/format";
+import { useFormatPrice } from "@/shared/currency/CurrencyProvider";
 import { useDebounce } from "@/shared/hooks/useDebounce";
 import { useCategories } from "@/modules/categories/hooks/useCategories";
 import { useProductSuggestions } from "@/modules/products/hooks/useProducts";
 import { useRecentSearches } from "@/modules/search/hooks/useRecentSearches";
+import { useAppRouter } from "@/shared/hooks/useAppRouter";
 
 /** Surligne les occurrences de `q` dans `text` (insensible à la casse / aux accents simples). */
 function Highlight({ text, q }: { text: string; q: string }): ReactNode {
@@ -40,7 +40,9 @@ type Option =
  * catégories correspondantes, produits suggérés et recherches récentes (effaçables).
  */
 export function SearchBar({ className, compact }: { className?: string; compact?: boolean }) {
-  const router = useRouter();
+  // prix affichés dans la devise choisie par le visiteur (USD ou FC)
+  const formatPrice = useFormatPrice();
+  const router = useAppRouter();
   const uid = useId();
   const { data: categories } = useCategories();
   const recent = useRecentSearches();

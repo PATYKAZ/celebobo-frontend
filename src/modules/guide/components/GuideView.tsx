@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useScroll, useSpring } from "motion/react";
-import { Box, Messages2, ShoppingCart, TruckFast, Wallet3 } from "iconsax-reactjs";
+import { Box, Messages2, ShoppingCart, TruckFast, Wallet3 } from "@/shared/ui/icons";
 import { useRef } from "react";
 import { ROUTES } from "@/config/routes";
 import { Reveal, RevealGroup, RevealItem } from "@/shared/animations/Reveal";
@@ -12,7 +12,8 @@ import { Button } from "@/shared/ui/Button";
 import { formatPrice } from "@/shared/lib/format";
 import { parseMarkdown, plainText, usePage } from "@/modules/pages";
 import { paymentMethod, useSiteSettings } from "@/modules/site";
-import { DELIVERY, PAYMENT_TEXT, STEPS } from "../content";
+import { useShippingZones } from "@/modules/checkout/hooks/useCheckout";
+import { PAYMENT_TEXT, STEPS } from "../content";
 import { Faq } from "./Faq";
 
 const ICONS = [Box, ShoppingCart, Messages2, Wallet3, TruckFast];
@@ -55,9 +56,13 @@ function Stepper({ steps }: { steps: Step[] }) {
 export function GuideView() {
   const { data: page } = usePage("guide");
   const settings = useSiteSettings();
-  const { freeThreshold, flatFee } = settings.shipping;
-  const kinshasaFee = freeThreshold !== null ? `Offerte dès ${formatPrice(freeThreshold)} (sinon ${formatPrice(flatFee)})` : formatPrice(flatFee);
-  const delivery = DELIVERY.map((d) => ({ ...d, fee: d.fee ?? kinshasaFee }));
+  // zones, délais et frais du back-office (ordre défini par l'équipe : Bukavu et Goma d'abord) — rien d'écrit en dur
+  const { data: zones } = useShippingZones();
+  const delivery = (zones ?? []).map((z) => ({
+    zone: z.isDefault || !z.cities.length ? z.name : `${z.name} (${z.cities.join(", ")})`,
+    delay: z.deliveryEstimate || "Selon destination",
+    fee: z.freeThreshold !== null ? `Offerte dès ${formatPrice(z.freeThreshold)} (sinon ${formatPrice(z.fee)})` : formatPrice(z.fee),
+  }));
 
   return (
     <>
@@ -90,6 +95,11 @@ export function GuideView() {
 
       <Block pad="none" className="p-4 sm:p-[30px]">
         <Reveal><h2 className="text-[16px] uppercase sm:text-section">Politique de livraison</h2></Reveal>
+        {!delivery.length && (
+          <p className="mt-4 text-[14px] leading-[22px] text-ink-2">
+            Nous livrons à Bukavu, à Goma et dans leurs environs, puis partout en RD Congo. Le délai et les frais dépendent de votre ville ; ils vous sont indiqués avant la validation de la commande.
+          </p>
+        )}
         {/* Mobile : cartes empilées */}
         <ul className="mt-4 space-y-2.5 sm:hidden">
           {delivery.map((d) => (
@@ -102,7 +112,7 @@ export function GuideView() {
             </li>
           ))}
         </ul>
-        <Reveal delay={0.1} className="mt-6 hidden overflow-x-auto sm:block">
+        <Reveal delay={0.1} className={delivery.length ? "mt-6 hidden overflow-x-auto sm:block" : "hidden"}>
           <table className="w-full min-w-[520px] text-left text-[14px]">
             <thead>
               <tr className="border-b border-line-3 text-[12px] uppercase tracking-wide text-ink-3">

@@ -1,6 +1,6 @@
 "use client";
 
-import { Category2 } from "iconsax-reactjs";
+import { Category2 } from "@/shared/ui/icons";
 import { Suspense } from "react";
 import { ROUTES } from "@/config/routes";
 import { Breadcrumb } from "@/shared/layout/Breadcrumb";

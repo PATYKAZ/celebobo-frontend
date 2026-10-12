@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { Bag2, Call, DocumentText, Heart, Home2, InfoCircle, Location, Login, Logout, MagicStar, Messages2, Notification, People, Profile, Receipt2, Setting2, Shop, TruckFast, UserAdd } from "iconsax-reactjs";
+import { Bag2, Call, DocumentText, Heart, Home2, InfoCircle, Location, Login, Logout, MagicStar, Messages2, Notification, People, Profile, Receipt2, Setting2, Shop, TruckFast, UserAdd } from "@/shared/ui/icons";
 import { useMemo, useState } from "react";
 import { ROUTES } from "@/config/routes";
 import { MoreSheet, type MoreSection } from "@/shared/ui/MoreSheet";
@@ -13,6 +13,7 @@ import { useCategories } from "@/modules/categories/hooks/useCategories";
 import { useUnreadMessagesCount } from "@/modules/messaging/hooks/useConversations";
 import { useUnreadNotificationsCount } from "@/modules/messaging/hooks/useNotifications";
 import { useSiteSettings } from "@/modules/site";
+import { CurrencySwitch } from "@/shared/currency/CurrencySwitch";
 
 /** Pages plein écran où la barre d'onglets est masquée (chat, assistant, paiement). */
 const HIDE = (p: string) => p.startsWith("/messages/") || p === "/assistant" || p === "/commande";
@@ -96,6 +97,10 @@ export function ShopTabBar() {
         sections={sections}
         footer={
           <div className="space-y-2.5">
+            <div className="flex items-center justify-between gap-3 rounded-box border border-line-3 p-3 pl-4">
+              <span className="text-[13px] font-semibold">Afficher les prix en</span>
+              <CurrencySwitch />
+            </div>
             <a href={site.hotlineHref} className="flex items-center justify-between rounded-box bg-primary-50 p-4">
               <span>
                 <span className="block text-[11px] font-bold uppercase tracking-wider text-ink-2">Hotline 24/7</span>

@@ -4,7 +4,7 @@ import { motion } from "motion/react";
 import { useId } from "react";
 
 /** Mini courbe sans axes (cartes KPI, lignes de tableau). */
-export function Sparkline({ data, color = "#1ABA1A", width = 96, height = 32, title = "Tendance" }: { data: number[]; color?: string; width?: number; height?: number; title?: string }) {
+export function Sparkline({ data, color = "#226D68", width = 96, height = 32, title = "Tendance" }: { data: number[]; color?: string; width?: number; height?: number; title?: string }) {
   const gid = useId().replace(/:/g, "");
   if (data.length < 2) return null;
   const min = Math.min(...data);

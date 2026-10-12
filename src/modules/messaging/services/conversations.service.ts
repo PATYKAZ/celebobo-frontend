@@ -1,5 +1,5 @@
 import { ENDPOINTS } from "@/config/endpoints";
-import { api, ApiError } from "@/shared/lib/api";
+import { api, uploadMedia } from "@/shared/lib/api";
 import { channels, realtime, type ConversationEvent } from "@/shared/lib/realtime";
 import type { Conversation, ConversationOrder, Message, NewSupportInput, PriceProposalInput, SendMessageInput } from "../types";
 import { toConversation, toConversationOrder, toMessage, type ConversationDto, type MessageDto, type MessagePageDto, type OrderDto } from "./messaging.mapper";
@@ -7,43 +7,9 @@ import { toConversation, toConversationOrder, toMessage, type ConversationDto, t
 /** Messages chargés à l'ouverture d'une discussion (les plus récents). */
 const HISTORY_LIMIT = 100;
 
-interface UploadSignature {
-  uploadUrl: string;
-  apiKey: string;
-  timestamp: number;
-  signature: string;
-  folder: string;
-  allowedFormats: string;
-  transformation: string;
-  maxBytes: number;
-}
-
-/** Envoi direct vers Cloudinary (signature serveur) puis enregistrement côté API → URL publique de l'image. */
+/** Pièce jointe : réduite, envoyée à Cloudinary puis enregistrée → URL publique de l'image. */
 async function uploadAttachment(file: File): Promise<string> {
-  const sig = await api.post<UploadSignature>(ENDPOINTS.conversations.uploadSign, { purpose: "message_attachment" });
-  if (file.size > sig.maxBytes) throw new ApiError(400, "Image trop lourde (5 Mo maximum).");
-  const form = new FormData();
-  form.append("file", file);
-  form.append("api_key", sig.apiKey);
-  form.append("timestamp", String(sig.timestamp));
-  form.append("signature", sig.signature);
-  form.append("folder", sig.folder);
-  form.append("allowed_formats", sig.allowedFormats);
-  form.append("transformation", sig.transformation);
-  const res = await fetch(sig.uploadUrl, { method: "POST", body: form }).catch(() => null);
-  if (!res?.ok) throw new ApiError(res?.status ?? 0, "Envoi de l'image impossible.");
-  const up = (await res.json()) as { public_id: string; version: number; signature: string; format: string; bytes: number; width?: number; height?: number };
-  const media = await api.post<{ url: string }>(ENDPOINTS.conversations.uploadComplete, {
-    purpose: "message_attachment",
-    publicId: up.public_id,
-    version: up.version,
-    signature: up.signature,
-    format: up.format,
-    bytes: up.bytes,
-    width: up.width ?? null,
-    height: up.height ?? null,
-  });
-  return media.url;
+  return (await uploadMedia(file, "message_attachment")).url;
 }
 
 export const conversationsService = {

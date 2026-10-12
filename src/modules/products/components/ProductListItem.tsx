@@ -3,10 +3,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "motion/react";
-import { Bag2, Heart } from "iconsax-reactjs";
+import { Bag2, Heart } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import { cn } from "@/shared/lib/cn";
-import { formatPrice } from "@/shared/lib/format";
+import { useFormatPrice } from "@/shared/currency/CurrencyProvider";
 import { NewBadge, Pill, SaveBadge } from "@/shared/ui/Badges";
 import { Button } from "@/shared/ui/Button";
 import { Price } from "@/shared/ui/Price";
@@ -18,6 +18,8 @@ import { getPricing, isNew } from "../utils";
 
 /** Carte produit horizontale (vue « liste »). */
 export function ProductListItem({ product }: { product: Product }) {
+  // prix affichés dans la devise choisie par le visiteur (USD ou FC)
+  const formatPrice = useFormatPrice();
   const { add } = useCart();
   const { isFavorite, toggle } = useFavoriteToggle();
   const pricing = getPricing(product);

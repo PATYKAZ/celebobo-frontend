@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { motion } from "motion/react";
-import { Clock } from "iconsax-reactjs";
+import { Clock } from "@/shared/ui/icons";
 import { formatCompact, formatPrice } from "@/shared/lib/format";
 import { Avatar } from "@/shared/ui/Avatar";
 import { Pill } from "@/shared/ui/Badges";
@@ -74,7 +74,7 @@ export function ResellerPerformanceCard({ perf }: { perf?: ResellerPerformance }
       ),
     },
     { key: "s", header: "Ventes", align: "center", hideBelow: "sm", cell: (r) => <span><strong>{r.salesCount}</strong><span className="text-ink-3"> · {r.units} u.</span></span> },
-    { key: "p", header: "Part du CA", hideBelow: "md", cell: (r) => <DataBar value={r.share} max={100} color="#1ABA1A" label={`${r.share.toFixed(0)}%`} /> },
+    { key: "p", header: "Part du CA", hideBelow: "md", cell: (r) => <DataBar value={r.share} max={100} color="#226D68" label={`${r.share.toFixed(0)}%`} /> },
     { key: "b", header: "Bénéfice", align: "right", hideBelow: "lg", cell: (r) => <strong>{money(r.profit)}</strong> },
     { key: "r", header: "Chiffre d'affaires", align: "right", cell: (r) => <div className="min-w-[150px]"><DataBar value={r.revenue} max={maxRev} color="#0D6EFD" label={money(r.revenue)} /></div> },
   ];

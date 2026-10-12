@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight2, DocumentText } from "iconsax-reactjs";
+import { ArrowRight2, DocumentText } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import { Reveal } from "@/shared/animations/Reveal";
 import { Breadcrumb } from "@/shared/layout/Breadcrumb";

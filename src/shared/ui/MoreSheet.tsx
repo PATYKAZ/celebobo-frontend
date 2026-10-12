@@ -4,7 +4,7 @@ import Link from "next/link";
 import { RevealGroup, RevealItem } from "@/shared/animations/Reveal";
 import { BottomSheet } from "@/shared/ui/BottomSheet";
 import type { ReactNode } from "react";
-import type { Icon } from "iconsax-reactjs";
+import type { Icon } from "@/shared/ui/icons";
 
 export interface MoreItem {
   label: string;

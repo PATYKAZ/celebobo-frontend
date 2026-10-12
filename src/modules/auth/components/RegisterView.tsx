@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Call, Lock, Profile, Sms, SmsTracking, UserTick } from "iconsax-reactjs";
+import { Call, Lock, Profile, Sms, SmsTracking, UserTick } from "@/shared/ui/icons";
 import { useState, type FormEvent } from "react";
 import { ROUTES } from "@/config/routes";
 import { Breadcrumb } from "@/shared/layout/Breadcrumb";

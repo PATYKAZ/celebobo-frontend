@@ -51,6 +51,7 @@ export const ROUTES = {
     commissions: "/admin/commissions",
     users: "/admin/utilisateurs",
     audit: "/admin/audit",
+    settings: "/admin/reglages",
     invites: "/admin/invites",
   },
 } as const;

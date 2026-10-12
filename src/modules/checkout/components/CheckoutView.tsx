@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowDown2, ArrowLeft, ArrowRight, Bag2, Send2 } from "iconsax-reactjs";
+import { ArrowDown2, ArrowLeft, ArrowRight, Bag2, Send2 } from "@/shared/ui/icons";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { ROUTES } from "@/config/routes";
@@ -14,7 +14,6 @@ import { Block } from "@/shared/ui/Block";
 import { BottomSheet } from "@/shared/ui/BottomSheet";
 import { Button } from "@/shared/ui/Button";
 import { EmptyState } from "@/shared/ui/EmptyState";
-import { Skeleton } from "@/shared/ui/Skeleton";
 import { Textarea } from "@/shared/ui/Form";
 import { toast } from "@/shared/ui/Toast";
 import { useAddresses, useSaveAddress } from "@/modules/account/hooks/useAddressBook";
@@ -35,6 +34,7 @@ import { AddressPicker } from "./AddressPicker";
 import { CheckoutStepper } from "./CheckoutStepper";
 import { OrderSuccess } from "./OrderSuccess";
 import { PaymentMethodCards } from "./PaymentMethodCards";
+import { CartLayoutSkeleton } from "@/shared/ui/PageSkeletons";
 
 type Errors = Partial<Record<keyof CheckoutForm, string>>;
 
@@ -45,7 +45,7 @@ const EMPTY_FORM: CheckoutForm = {
   recipient: "",
   address: "",
   quarter: "",
-  city: "Kinshasa",
+  city: "",
   country: "RD Congo",
   phone: "",
   paymentMethod: "OrangeMoney",
@@ -176,17 +176,13 @@ function Content() {
   if (done) return <OrderSuccess order={done.order} conversationId={done.conversationId} />;
 
   if (isEmpty && cartLoading) {
-    return (
-      <Block>
-        <Skeleton className="h-8 w-60" />
-        <Skeleton className="mt-6 h-40 w-full" />
-      </Block>
-    );
+    return <CartLayoutSkeleton label="Chargement de la commande" lines={2} breadcrumb={false} />;
   }
 
   if (isEmpty) {
     return (
       <Block>
+        <h1 className="sr-only">Finaliser la commande</h1>
         <EmptyState icon={<Bag2 size={46} variant="Bulk" />} title="Rien à commander" description="Votre panier est vide." action={<Button href={ROUTES.products}>Voir les produits</Button>} />
       </Block>
     );
@@ -304,7 +300,7 @@ export function CheckoutView() {
   return (
     <>
       <Breadcrumb items={[{ label: "Panier", href: ROUTES.cart }, { label: "Commande" }]} />
-      <AuthGuard>
+      <AuthGuard fallback={<CartLayoutSkeleton label="Chargement de la commande" lines={2} breadcrumb={false} />}>
         <Content />
       </AuthGuard>
     </>

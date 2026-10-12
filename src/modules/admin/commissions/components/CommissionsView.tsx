@@ -1,6 +1,6 @@
 "use client";
 
-import { Calendar, Coin1, MoneyRecive, Wallet3 } from "iconsax-reactjs";
+import { Calendar, Coin1, MoneyRecive, Wallet3 } from "@/shared/ui/icons";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { cn } from "@/shared/lib/cn";

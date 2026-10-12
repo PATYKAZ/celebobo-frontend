@@ -7,6 +7,21 @@ Ces deux évolutions exigent les changements ci-dessous. Chaque point indique *p
 
 Priorités : **P0** = bloquant pour la mise en production du rendu serveur · **P1** = nécessaire au bout-en-bout · **P2** = amélioration.
 
+> **État au 11/10/2026 : tout est livré** (branche backend `feat/ssr-support`, fusionnée) **et branché côté front**,
+> vérifié sur le stack Docker local :
+>
+> | Point | Côté front |
+> |---|---|
+> | P0-1 / P0-2 | Rendu serveur actif avec `API_INTERNAL_URL` + `X-SSR-Token` |
+> | P0-3 | `src/proxy.ts` : redirections avant rendu, testées pour les 4 rôles et après déconnexion |
+> | P1-1 | Titre / description SEO prioritaires dans les métadonnées, éditables dans les formulaires produit et catégorie ; devise du JSON-LD lue dans `/settings/public/` |
+> | P1-2 | `sitemap.xml` construit depuis `GET /sitemap/` (avec `lastmod`) |
+> | P1-3 | Modification back-office → webhook → `POST /revalidate` → page régénérée en ~5 s |
+> | P2 | Cœurs des cartes via `GET /me/favorites/ids/` ; page Favoris passée à la liste paginée (corrige un bug : l'enveloppe paginée était traitée comme un tableau) |
+>
+> En local, `REVALIDATE_SECRET` et `SSR_SHARED_SECRET` de `.env.local` doivent valoir `FRONTEND_REVALIDATE_SECRET` et
+> `SSR_SHARED_SECRET` du conteneur API, sinon le webhook reçoit 401.
+
 ---
 
 ## P0-1 · Limitation de débit : le rendu serveur ne doit pas épuiser le quota anonyme
@@ -127,6 +142,101 @@ secret, 400 si le corps est invalide, 200 `{ "revalidated": [...] }` sinon. Éti
   commission, avec un test « deux envois de la même clé → une seule commande ».
 - **Erreurs** : garder `problem+json` partout (y compris 429 avec `Retry-After`), le front s'appuie sur `fieldErrors`.
 
+## A-1 · Assistant : réponses hors sujet (diagnostic du 11/10/2026)
+
+**Symptôme.** À « un smartphone Samsung à moins de 400 $ », l'assistant propose un Galaxy S24 à 899 $, des
+écouteurs et une Nintendo Switch ; à « quels sont les délais de livraison ? », la même liste de produits, toujours
+avec la phrase fixe « Voici ce que je vous propose : … ».
+
+**Cause : configuration backend.** Le conteneur API tourne avec `ASSISTANT_PROVIDER=offline` et une
+`GEMINI_API_KEY` vide. L'adaptateur `offline` (`apps/assistant/adapters/offline.py`) est un bouchon de test :
+recherche par empreinte de mots (hachage), sans compréhension du sens, qui transmet la question brute à l'outil de
+recherche (ni catégorie ni prix maximum) et répond par un gabarit. Le vrai modèle (`gemini`) appelle la même
+recherche avec `category` et `max_price` : le problème disparaît dès qu'il est activé.
+
+**À faire (backend / déploiement)**
+1. Renseigner `GEMINI_API_KEY` et `ASSISTANT_PROVIDER=gemini` (production et, pour tester, `deploy/.env.local`).
+2. Réindexer le catalogue après le changement de fournisseur : `POST /api/v1/bo/embeddings/reindex/` (les vecteurs
+   actuels viennent de l'empreinte hors ligne et ne sont pas comparables à ceux de Gemini ; l'empreinte de contenu
+   inclut le nom du moteur, la réindexation les recalcule tous).
+3. Échouer au démarrage si `ASSISTANT_PROVIDER=gemini` sans clé : aujourd'hui chaque message lèverait une erreur
+   (500) et l'utilisateur ne verrait que « problème technique ».
+4. Recommandé : que le bouchon `offline` réponde « assistant indisponible » plutôt que des produits au hasard, s'il
+   peut être actif ailleurs qu'en test.
+
+**Critères d'acceptation** : la question « Samsung à moins de 400 $ » ne renvoie que des produits Samsung ≤ 400 $
+(ou dit qu'il n'y en a pas) ; une question sur la livraison obtient une réponse sur la livraison, sans cartes produits.
+
+**Côté front (corrigé)** : historique effacé à l'ouverture en plein écran ou au rechargement ; délai de 25 s qui
+aurait coupé les réponses longues du vrai modèle (porté à 90 s ; nginx en accorde 120).
+
+### Suivi après passage à Gemini (11/10/2026)
+
+Fait : `ASSISTANT_PROVIDER=gemini`, clé renseignée, catalogue réindexé (26 produits en `gemini-embedding-001`,
+4 s). Les réponses sont désormais pertinentes : « Samsung à moins de 400 $ » → « pas de Samsung sous 400 $ » et
+des alternatives dans le budget ; « livraison à Kinshasa » → « 24 à 48 h », sans cartes produits ; « cadeau audio,
+150 $ » → recherche `category=audio, max_price=150`, trois produits ≤ 150 $.
+
+**Nouveau problème bloquant : quota Google.** La clé est sur le palier gratuit : `GenerateRequestsPerMinutePerProjectPerModel-FreeTier`,
+**5 requêtes par minute pour tout le projet**. Chaque question coûte 2 requêtes (recherche puis rédaction) : le site
+entier traite 2 à 3 questions par minute ; au-delà Google répond 429 et l'utilisateur voit « assistant
+indisponible ». La limite applicative (12 messages/min par utilisateur) ne protège donc rien.
+
+À faire :
+1. Activer la facturation du projet Google (palier payant) ou changer de modèle/plan avant la mise en ligne.
+2. Journaliser la cause des `AssistantUnavailable` (`apps/assistant/adapters/gemini.py` lève sans trace : il a fallu
+   rejouer la question dans un shell pour voir le 429).
+3. Distinguer le 429 (`assistant_busy` + délai `Retry-After` / `retryDelay` de Google) d'une vraie panne ; le front
+   affichera alors « très sollicité, réessayez dans N s ».
+4. Aligner la limite applicative sur le quota réel (globale, pas seulement par utilisateur).
+
+Côté front (fait) : message du serveur affiché + bouton « Réessayer » ; réponses en Markdown mises en forme
+(gras, italique, listes) au lieu des astérisques.
+
+Relevé du 11/10/2026 au soir : le palier gratuit a aussi un **quota journalier** —
+`GenerateRequestsPerDayPerProjectPerModel-FreeTier`, **20 requêtes par jour** (≈ 10 questions pour tout le site).
+Une fois atteint, l'assistant reste indisponible jusqu'au lendemain. Facturation Google indispensable avant la mise
+en ligne. Le commit de journalisation (`03fad8f`) n'était pas encore dans l'image du conteneur API : reconstruire
+l'image pour voir le statut Gemini dans les logs.
+
+## A-2 · Zone de service : Bukavu et Goma d'abord, pas Kinshasa (11/10/2026)
+
+La boutique sert d'abord **Bukavu et Goma**, puis leurs environs, puis le reste du pays. Le front ne contient plus
+aucune mention de Kinshasa ; tout ce qui reste vient du backend.
+
+**Logique et configuration (à corriger en priorité)**
+| Où | Aujourd'hui | Impact |
+|---|---|---|
+| `config/settings/base.py` `TIME_ZONE`, `.env.example`, `deploy/.env.*.example` | `Africa/Kinshasa` (UTC+1) | Bukavu et Goma sont en **`Africa/Lubumbashi` (UTC+2)** : heures des commandes, « aujourd'hui », rapports et quotas décalés d'une heure |
+| `apps/orders/migrations/0003_seed_shipping_zones.py` | zones « Kinshasa » (2,98 $, offerte dès 199 $, 24–48 h) et « Autres villes » (7,50 $, 3–7 j) | un client de Bukavu ou Goma paie le tarif « autres villes » ; prévoir Bukavu, Goma, leurs environs, puis le reste du pays |
+| Base locale (après le jeu E2E) | `GET /shipping/zones/` renvoie `[]` | aucune zone : tarif tiré des réglages du site |
+| `apps/assistant/domain/prompts.py` | « boutique… à Kinshasa », « livraison à Kinshasa 24 à 48 h » | l'assistant répond Kinshasa à tous les clients |
+| `apps/documents/conf.py`, `DOCUMENTS_COMPANY_ADDRESS` | « Kinshasa, RD Congo » | adresse imprimée sur les factures et documents |
+
+**Données affichées sur le site (seeder de démo et base actuelle)**
+| Où | Texte |
+|---|---|
+| Réglages du site (`GET /settings/public/` `address`, `apps/demo/seeder.py`) | « Avenue du Commerce 12, Gombe, Kinshasa » (pied de page, contact) |
+| Bannière d'accueil (`apps/demo/content.py`) | « Livraison offerte dès 199 $ — À Kinshasa, en 24 à 48 h » |
+| Pages « À propos » et « Guide », FAQ (`apps/demo/content.py`) | « née à Kinshasa », « livraison rapide à Kinshasa », « 2,98 $ à Kinshasa », paiement à la livraison « à Kinshasa » |
+| Politique de livraison des produits (`apps/demo/seeder.py`) | « Livraison en 24 à 48 h à Kinshasa » (onglet Livraison de chaque fiche) |
+| Avis client de démo, personnes de démo (`apps/demo/people.py`, `e2e.py`) | quartiers de Kinshasa (Gombe, Limete…) |
+
+Aussi : `docs/business/*`, `README.md`, et 33 occurrences dans les tests.
+
+**Back-office (fait côté front)** : écran « Réglages du site » (`/admin/reglages`) — zones de livraison
+(responsable et admin, `/bo/shipping-zones/`) ; taux USD → FC, coordonnées dont l'adresse, horaires, moyens de
+paiement, réseaux, newsletter (admin seul, `/bo/settings/`). L'adresse et les zones se corrigent donc sans
+développeur ; il reste à les saisir (adresse réelle, zones Bukavu / Goma / environs / reste du pays).
+
+## A-3 · Étiquettes de revalidation des réglages (corrigé côté front, 11/10/2026)
+
+Quand les réglages du site changent, Django revalide l'étiquette `home` ; le front mettait les réglages en cache
+sous `settings` (30 min) : un nouveau taux du franc n'apparaissait qu'à l'expiration. Le front étiquette désormais
+réglages et catégories `settings`/`categories` **et** `home` (cache 5 min en secours) ; côté navigateur, réglages
+considérés à jour 60 s. Vérifié : taux 2300 → 2400 → 2300 visible sur la boutique en 6 s.
+Si Django ajoute un jour une étiquette dédiée (`settings`), le front la gère déjà.
+
 ## Déploiement (`deploy/` du dépôt backend) · variables du conteneur front
 
 Le rendu serveur est en place côté front (fiches produit, catégories, accueil, sitemap). Le conteneur front doit recevoir
@@ -140,8 +250,8 @@ ces variables **à l'exécution** (pas au build) :
 | `REVALIDATE_SECRET` | secret aléatoire | Protège `POST /revalidate` ; même valeur que `FRONTEND_REVALIDATE_SECRET` de Django (P1-3). |
 
 nginx doit envoyer `/revalidate`, `/sitemap.xml` et `/robots.txt` vers Next (c'est déjà le cas : tout ce qui n'est ni
-`/api` ni `/ws` va au front). **Tant que P0-1 n'est pas en place, ne pas renseigner `API_INTERNAL_URL` en production** :
-le rendu serveur passerait par la limite anonyme (60/min) et dégraderait les pages au-delà.
+`/api` ni `/ws` va au front). P0-1 étant livré, `API_INTERNAL_URL` peut être renseignée en production, **avec**
+`SSR_SHARED_SECRET` : sans le jeton, le rendu serveur retomberait sous la limite anonyme (60/min).
 
 ## Déjà vérifié (aucun changement)
 

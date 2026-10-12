@@ -6,7 +6,8 @@ export const SITE = {
   hotline: "+243 970 000 000",
   hotlineHref: "tel:+243970000000",
   email: "contact@celebobo.com",
-  address: ["Avenue du Commerce 24, Gombe", "Kinshasa, RD Congo"],
+  // repli seulement (API injoignable) : l’adresse réelle vient de GET /settings/public/
+  address: ["Bukavu · Goma", "RD Congo"],
   copyright: "Celebobo Business",
   openingHours: [
     { days: "Lundi – Vendredi", hours: "08h00 – 19h00" },

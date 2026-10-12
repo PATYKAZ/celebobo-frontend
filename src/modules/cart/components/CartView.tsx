@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence } from "motion/react";
-import { ArrowLeft, ArrowRight, Bag2, Trash } from "iconsax-reactjs";
+import { ArrowLeft, ArrowRight, Bag2, Trash } from "@/shared/ui/icons";
 import { useState } from "react";
 import { ROUTES } from "@/config/routes";
 import { Breadcrumb } from "@/shared/layout/Breadcrumb";
@@ -10,7 +10,6 @@ import { Reveal } from "@/shared/animations/Reveal";
 import { Block } from "@/shared/ui/Block";
 import { Button } from "@/shared/ui/Button";
 import { EmptyState } from "@/shared/ui/EmptyState";
-import { Skeleton } from "@/shared/ui/Skeleton";
 import { useHydrated } from "@/shared/hooks/useHydrated";
 import { ConfirmDialog } from "@/modules/admin/ui/ConfirmDialog";
 import { useCart } from "../hooks/useCart";
@@ -18,6 +17,7 @@ import { CartLine } from "./CartLine";
 import { CartSummary } from "./CartSummary";
 import { CouponForm } from "./CouponForm";
 import { RecommendedProducts } from "./RecommendedProducts";
+import { CartLayoutSkeleton } from "@/shared/ui/PageSkeletons";
 
 export function CartView() {
   const hydrated = useHydrated();
@@ -30,9 +30,10 @@ export function CartView() {
       <Breadcrumb items={[{ label: "Panier" }]} />
 
       {!hydrated || (isEmpty && isLoading) ? (
-        <Block><Skeleton className="h-8 w-48" /><Skeleton className="mt-6 h-[110px] w-full" /><Skeleton className="mt-4 h-[110px] w-full" /></Block>
+        <CartLayoutSkeleton breadcrumb={false} />
       ) : isEmpty ? (
         <Block>
+          <h1 className="sr-only">Mon panier</h1>
           <EmptyState
             icon={<Bag2 size={46} variant="Bulk" />}
             title="Votre panier est vide"

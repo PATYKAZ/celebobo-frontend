@@ -1,6 +1,6 @@
 "use client";
 
-import { CloseCircle, InfoCircle, TickCircle } from "iconsax-reactjs";
+import { CloseCircle, InfoCircle, TickCircle } from "@/shared/ui/icons";
 import { toast as sonner, Toaster as SonnerToaster } from "sonner";
 
 /**

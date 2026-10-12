@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { AnimatePresence, animate, motion, useMotionValue } from "motion/react";
-import { ArrowDown2, MagicStar } from "iconsax-reactjs";
+import { ArrowDown2, MagicStar } from "@/shared/ui/icons";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "@/shared/lib/cn";
 import { BottomSheet } from "@/shared/ui/BottomSheet";
@@ -178,7 +178,7 @@ export function AssistantLauncher() {
             animate={{ scale: dragging ? 1.12 : 1 }}
             transition={{ type: "spring", stiffness: 400, damping: 22 }}
             className={cn(
-              "relative grid size-full place-items-center rounded-full bg-[linear-gradient(145deg,#27d427,#139713)] text-white shadow-[0_8px_26px_rgba(26,186,26,.5)] outline-hidden",
+              "relative grid size-full place-items-center rounded-full bg-[linear-gradient(145deg,#2E8A84,#18534F)] text-white shadow-[0_8px_26px_rgba(34,109,104,.5)] outline-hidden",
               dragging ? "cursor-grabbing" : "cursor-grab",
             )}
           >

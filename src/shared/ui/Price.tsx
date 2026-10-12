@@ -1,18 +1,23 @@
 import { cn } from "@/shared/lib/cn";
-import { formatPrice } from "@/shared/lib/format";
+import { formatPrice as formatUsd } from "@/shared/lib/format";
+import { useFormatPrice } from "@/shared/currency/CurrencyProvider";
 
 interface Props {
   current: number;
   original?: number | null;
   size?: "sm" | "md" | "lg" | "xl";
   className?: string;
+  /** Toujours en USD (panier, commande : ce qui est réellement payé), quelle que soit la devise d'affichage. */
+  usd?: boolean;
 }
 
 const CUR = { sm: "text-[16px] leading-[19px]", md: "text-[18px] leading-[21.6px]", lg: "text-[22px] leading-[26.4px]", xl: "text-[30px] leading-[36px]" };
 const OLD = { sm: "text-[13px]", md: "text-[14px] leading-[16.8px]", lg: "text-[16px] leading-[19.2px]", xl: "text-[18px]" };
 
 /** Prix du design : rouge si promo + ancien prix barré. */
-export function Price({ current, original, size = "md", className }: Props) {
+export function Price({ current, original, size = "md", className, usd }: Props) {
+  const display = useFormatPrice();
+  const formatPrice = usd ? formatUsd : display;
   const sale = original != null && original > current;
   return (
     <div className={cn("flex flex-wrap items-baseline gap-x-[6px]", className)}>

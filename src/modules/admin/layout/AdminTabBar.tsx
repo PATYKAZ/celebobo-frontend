@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { ArrowLeft2, Logout } from "iconsax-reactjs";
+import { ArrowLeft2, Logout } from "@/shared/ui/icons";
 import { useMemo, useState } from "react";
 import { ROUTES } from "@/config/routes";
 import { MoreSheet, type MoreSection } from "@/shared/ui/MoreSheet";

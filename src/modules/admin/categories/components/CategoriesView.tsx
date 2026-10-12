@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
-import { Add, ArrowDown2, ArrowUp2, Category2, Edit2, EyeSlash, Trash } from "iconsax-reactjs";
+import { Add, ArrowDown2, ArrowUp2, Category2, Edit2, EyeSlash, Trash } from "@/shared/ui/icons";
 import { cn } from "@/shared/lib/cn";
 import { getErrorMessage } from "@/shared/lib/api";
 import { Block } from "@/shared/ui/Block";

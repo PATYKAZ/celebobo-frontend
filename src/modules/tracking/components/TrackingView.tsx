@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowRight2, Box1, Call, SearchNormal1 } from "iconsax-reactjs";
+import { ArrowRight2, Box1, Call, SearchNormal1 } from "@/shared/ui/icons";
 import { useSearchParams } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { ROUTES } from "@/config/routes";

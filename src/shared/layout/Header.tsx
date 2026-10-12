@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
 import {
   ArrowDown2, Bag2, Call, Heart, Logout, Messages2, Notification, Profile, Receipt2, Setting2, User,
-} from "iconsax-reactjs";
+} from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import { cn } from "@/shared/lib/cn";
 import { formatPrice } from "@/shared/lib/format";
@@ -22,6 +22,7 @@ import { useFavoritesStore } from "@/modules/favorites/store/favorites.store";
 import { useUnreadNotificationsCount } from "@/modules/messaging/hooks/useNotifications";
 import { useSiteSettings } from "@/modules/site";
 import { Logo } from "./Logo";
+import { CurrencySwitch } from "@/shared/currency/CurrencySwitch";
 
 const NAV = [
   { label: "Accueil", href: ROUTES.home },
@@ -209,11 +210,8 @@ export function Header() {
         <div className="flex items-center text-[14px] leading-[21px]">
           <Link href={ROUTES.becomeReseller} className="px-5 transition-colors hover:text-primary">Devenir revendeur</Link>
           <Link href={ROUTES.track} className="px-5 transition-colors hover:text-primary">Suivre ma commande</Link>
-          <span className="flex items-center gap-1 border-r border-line-2/60 px-5">$ USD <ArrowDown2 size={11} className="opacity-80" /></span>
-          <span className="flex items-center gap-2 pl-5">
-            <span className="grid size-[15px] place-items-center overflow-hidden rounded-full bg-[linear-gradient(135deg,#007FFF_33%,#F7D618_33%,#F7D618_66%,#CE1021_66%)]" aria-hidden />
-            Fr <ArrowDown2 size={11} className="opacity-80" />
-          </span>
+          {/* devise d'affichage (les paiements restent en USD) ; une seule langue : pas de sélecteur */}
+          <span className="flex items-center gap-2 border-l border-line-2/60 pl-5 text-[13px] text-ink-2">Prix en <CurrencySwitch /></span>
         </div>
       </div>
 

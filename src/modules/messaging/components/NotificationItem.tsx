@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowRight2, Box, CloseCircle, MessageText1, Profile2User, TickCircle } from "iconsax-reactjs";
+import { ArrowRight2, Box, CloseCircle, MessageText1, Profile2User, TickCircle } from "@/shared/ui/icons";
 import { useState } from "react";
 import { ROUTES } from "@/config/routes";
 import { cn } from "@/shared/lib/cn";

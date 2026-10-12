@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Danger } from "iconsax-reactjs";
+import { Danger } from "@/shared/ui/icons";
 import { getErrorMessage } from "@/shared/lib/api";
 import { Button } from "@/shared/ui/Button";
 import { Select } from "@/shared/ui/Form";

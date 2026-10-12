@@ -39,7 +39,8 @@ export const ENDPOINTS = {
   },
   home: "/home/",
   favorites: {
-    list: "/me/favorites/",
+    list: "/me/favorites/", // paginé (page_size max 48)
+    ids: "/me/favorites/ids/", // { ids } : état des cœurs sans charger les cartes
     remove: (productId: number) => `/me/favorites/${productId}/`,
   },
   /** Panier serveur ; invité identifié par l'en-tête `X-Cart-Token` (jeton renvoyé dans `token`). */
@@ -73,6 +74,7 @@ export const ENDPOINTS = {
   uploads: {
     sign: "/uploads/sign/",
     complete: "/uploads/complete/",
+    completeBatch: "/uploads/complete/batch/", // { uploads: [...] } (8 au maximum) → médias dans le même ordre
   },
 
   // ---- Échanges ---------------------------------------------------------
@@ -89,9 +91,6 @@ export const ENDPOINTS = {
     respondProposal: (proposalId: number | string) => `/price-proposals/${proposalId}/respond/`,
     clientOrder: (number: string) => `/me/orders/${encodeURIComponent(number)}/`,
     staffOrder: (orderId: number | string) => `/bo/orders/${orderId}/`,
-    /** Pièce jointe : signature Cloudinary (purpose message_attachment) puis enregistrement */
-    uploadSign: "/uploads/sign/",
-    uploadComplete: "/uploads/complete/",
   },
   notifications: {
     list: "/notifications/",
@@ -117,6 +116,8 @@ export const ENDPOINTS = {
   resellerApplication: {
     submit: "/reseller-applications/", // « Devenir revendeur »
   },
+  /** Sitemap SEO (serveur Next uniquement) : produits, catégories, pages visibles + updated_at. */
+  sitemap: "/sitemap/",
   site: {
     settings: "/settings/public/",
     pages: "/pages/",
@@ -192,6 +193,12 @@ export const ENDPOINTS = {
       invoice: (id: number) => `/bo/orders/${id}/invoice/`,
       convertible: "/bo/orders/convertible/",
       convertToSales: (id: number) => `/bo/orders/${id}/convert-to-sales/`,
+    },
+    settings: "/bo/settings/", // GET / PATCH (admin)
+    shippingZones: {
+      list: "/bo/shipping-zones/", // GET / POST (responsable, admin)
+      detail: (id: number) => `/bo/shipping-zones/${id}/`, // PATCH / DELETE
+      reorder: "/bo/shipping-zones/reorder/", // { ids } dans le nouvel ordre → zones triées
     },
     categories: {
       list: "/bo/categories/",

@@ -1,8 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useSyncExternalStore } from "react";
 import { ApiError, getErrorMessage } from "@/shared/lib/api";
-import { assistantService } from "../services/assistant.service";
+import { AssistantError, assistantService } from "../services/assistant.service";
 import type { AssistantMessage } from "../types";
 
 const KEY = "celebobo-assistant";
@@ -48,36 +48,63 @@ function ensureSession(): Promise<string> {
   return opening;
 }
 
+/**
+ * Conversation partagée par la bulle et la page /assistant (un seul état, persisté dans sessionStorage).
+ * Lue via useSyncExternalStore : rendu serveur et hydratation sur le message d'accueil, puis l'historique
+ * du navigateur — sans écraser celui-ci au montage (l'ancien effet d'écriture enregistrait l'accueil
+ * par-dessus l'historique ; ouvrir le plein écran ou recharger effaçait la conversation).
+ */
+interface ConversationState {
+  messages: AssistantMessage[];
+  loading: boolean;
+}
+
+const SERVER_STATE: ConversationState = { messages: [WELCOME], loading: false };
+let state: ConversationState | null = null;
+const listeners = new Set<() => void>();
+
+function load(): ConversationState {
+  if (state) return state;
+  let messages: AssistantMessage[] = [WELCOME];
+  try {
+    const raw = sessionStorage.getItem(KEY);
+    if (raw) messages = JSON.parse(raw) as AssistantMessage[];
+  } catch {
+    /* stockage indisponible : conversation en mémoire seulement */
+  }
+  state = { messages, loading: false };
+  return state;
+}
+
+function update(patch: (s: ConversationState) => Partial<ConversationState>) {
+  const current = load();
+  state = { ...current, ...patch(current) };
+  if (state.messages !== current.messages) {
+    try {
+      sessionStorage.setItem(KEY, JSON.stringify(state.messages.map((m) => ({ ...m, animate: false }))));
+    } catch {
+      /* ignore */
+    }
+  }
+  listeners.forEach((l) => l());
+}
+
+const subscribe = (listener: () => void) => {
+  listeners.add(listener);
+  return () => listeners.delete(listener);
+};
+
+const push = (message: AssistantMessage) => update((s) => ({ messages: [...s.messages, message] }));
+
 /** Conversation avec l'assistant (API `/assistant/sessions/`) : session et historique conservés dans sessionStorage. */
 export function useAssistant() {
-  const [messages, setMessages] = useState<AssistantMessage[]>([WELCOME]);
-  const [loading, setLoading] = useState(false);
-  const hydrated = useRef(false);
-
-  useEffect(() => {
-    try {
-      const raw = sessionStorage.getItem(KEY);
-      if (raw) setMessages(JSON.parse(raw) as AssistantMessage[]);
-    } catch {
-      /* ignore */
-    }
-    hydrated.current = true;
-  }, []);
-
-  useEffect(() => {
-    if (!hydrated.current) return;
-    try {
-      sessionStorage.setItem(KEY, JSON.stringify(messages.map((m) => ({ ...m, animate: false }))));
-    } catch {
-      /* ignore */
-    }
-  }, [messages]);
+  const { messages, loading } = useSyncExternalStore(subscribe, load, () => SERVER_STATE);
 
   const send = useCallback(async (text: string) => {
     const content = text.trim();
-    if (!content) return;
-    setMessages((m) => [...m, { id: `u${Date.now()}`, role: "user", content, createdAt: Date.now() }]);
-    setLoading(true);
+    if (!content || load().loading) return;
+    push({ id: `u${Date.now()}`, role: "user", content, createdAt: Date.now() });
+    update(() => ({ loading: true }));
     try {
       let session = await ensureSession();
       const res = await assistantService.ask(session, content).catch(async (e) => {
@@ -87,12 +114,19 @@ export function useAssistant() {
         session = await ensureSession();
         return assistantService.ask(session, content);
       });
-      setMessages((m) => [...m, { id: `a${Date.now()}`, role: "assistant", content: res.reply, products: res.products, createdAt: Date.now(), animate: true }]);
+      push({ id: `a${Date.now()}`, role: "assistant", content: res.reply, products: res.products, createdAt: Date.now(), animate: true });
     } catch (e) {
-      const detail = e instanceof ApiError && e.status !== 0 && e.status < 500 ? getErrorMessage(e) : "Désolé, je rencontre un problème technique. Réessayez dans un instant.";
-      setMessages((m) => [...m, { id: `a${Date.now()}`, role: "assistant", content: detail, createdAt: Date.now(), animate: true }]);
+      const detail =
+        e instanceof AssistantError
+          ? `${e.message} Réessayez dans une minute.`
+          : e instanceof ApiError && e.status !== 0 && e.status < 500
+            ? getErrorMessage(e)
+            : e instanceof ApiError && e.status === 0
+              ? getErrorMessage(e)
+              : "Désolé, je rencontre un problème technique. Réessayez dans un instant.";
+      push({ id: `a${Date.now()}`, role: "assistant", content: detail, createdAt: Date.now(), animate: true, retry: content });
     } finally {
-      setLoading(false);
+      update(() => ({ loading: false }));
     }
   }, []);
 
@@ -100,8 +134,24 @@ export function useAssistant() {
     const session = readSession();
     writeSession(null);
     if (session) assistantService.close(session).catch(() => {});
-    setMessages([{ ...WELCOME, createdAt: Date.now() }]);
+    update(() => ({ messages: [{ ...WELCOME, createdAt: Date.now() }] }));
   }, []);
 
-  return { messages, loading, send, reset };
+  /** Relance la question d'un message d'erreur (le message d'erreur est retiré). */
+  const retry = useCallback(
+    (message: AssistantMessage) => {
+      if (!message.retry || load().loading) return;
+      const question = message.retry;
+      update((s) => {
+        const i = s.messages.findIndex((m) => m.id === message.id);
+        // retire l'erreur et la question qui la précède : send() la remet
+        const from = i > 0 && s.messages[i - 1].role === "user" ? i - 1 : i;
+        return { messages: [...s.messages.slice(0, from), ...s.messages.slice(i + 1)] };
+      });
+      void send(question);
+    },
+    [send],
+  );
+
+  return { messages, loading, send, reset, retry };
 }

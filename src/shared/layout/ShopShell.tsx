@@ -17,7 +17,8 @@ export function ShopShell({ children }: { children: ReactNode }) {
       <div className="container pt-0">
         <Header />
         <GreenBar />
-        <main id="contenu" className="mt-3 flex min-w-0 flex-col gap-3 sm:mt-4 sm:gap-4 *:min-w-0">
+        {/* hauteur d’un écran : le pied de page démarre hors de la vue et ne saute pas quand le contenu arrive (CLS) */}
+        <main id="contenu" className="mt-3 flex min-h-dvh min-w-0 flex-col gap-3 sm:mt-4 sm:gap-4 *:min-w-0">
           {children}
         </main>
       </div>

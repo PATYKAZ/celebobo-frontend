@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
-import { Camera, Copy, People, TickCircle } from "iconsax-reactjs";
+import { Camera, Copy, People, TickCircle } from "@/shared/ui/icons";
 import { useRef, useState } from "react";
 import { useMediaQuery } from "@/shared/hooks/useMediaQuery";
 import { cn } from "@/shared/lib/cn";

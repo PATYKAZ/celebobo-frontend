@@ -1,6 +1,6 @@
 import {
   Camera, Flash, Game, Headphone, Keyboard, Mobile, Monitor, Printer, Devices, Watch, Category2, type Icon,
-} from "iconsax-reactjs";
+} from "@/shared/ui/icons";
 
 /** Noms d'icônes (champ Category.icon, insensible à la casse) -> composant Iconsax. */
 const MAP: Record<string, Icon> = {

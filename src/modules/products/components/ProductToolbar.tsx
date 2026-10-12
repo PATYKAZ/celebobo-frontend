@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowDown2, Element3, Filter, HamburgerMenu, Sort } from "iconsax-reactjs";
+import { ArrowDown2, Element3, Filter, HamburgerMenu, Sort } from "@/shared/ui/icons";
 import { cn } from "@/shared/lib/cn";
 import { pluralize } from "@/shared/lib/format";
 import { Select } from "@/shared/ui/Form";

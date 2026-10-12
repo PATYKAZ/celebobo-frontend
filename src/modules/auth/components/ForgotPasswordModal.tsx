@@ -1,6 +1,6 @@
 "use client";
 
-import { Sms, TickCircle } from "iconsax-reactjs";
+import { Sms, TickCircle } from "@/shared/ui/icons";
 import { useState, type FormEvent } from "react";
 import { getErrorMessage } from "@/shared/lib/api";
 import { Button } from "@/shared/ui/Button";

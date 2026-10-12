@@ -1,12 +1,13 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useMemo } from "react";
+import { startTransition, useCallback, useMemo, useOptimistic } from "react";
 import type { ProductListParams, ProductOrdering } from "../types";
 
 export const PAGE_SIZE = 12;
 export const PRICE_MAX = 2500;
 
+const FILTER_KEYS = ["page", "q", "category", "ordering", "minPrice", "maxPrice", "onSale", "inStock"];
 const ORDERINGS: ProductOrdering[] = ["-created_at", "created_at", "price", "-price", "-sales", "-rating", "name"];
 
 export interface ProductFilterState {
@@ -35,7 +36,7 @@ export function useProductFilters(locked: LockedFilters = {}) {
   const pathname = usePathname();
   const sp = useSearchParams();
 
-  const state = useMemo<ProductFilterState>(() => {
+  const urlState = useMemo<ProductFilterState>(() => {
     const num = (k: string) => {
       const v = sp.get(k);
       return v != null && v !== "" && !Number.isNaN(Number(v)) ? Number(v) : null;
@@ -52,6 +53,9 @@ export function useProductFilters(locked: LockedFilters = {}) {
       inStock: sp.get("inStock") === "1",
     };
   }, [sp, locked.category, locked.q]);
+
+  // l'interface (cases, curseur, catégorie) reflète le choix tout de suite, sans attendre la navigation
+  const [state, applyOptimistic] = useOptimistic(urlState, (current, patch: Partial<ProductFilterState>) => ({ ...current, ...patch }));
 
   const params = useMemo<ProductListParams>(
     () => ({
@@ -70,34 +74,42 @@ export function useProductFilters(locked: LockedFilters = {}) {
 
   const set = useCallback(
     (patch: Partial<ProductFilterState>) => {
-      const next = new URLSearchParams(sp.toString());
-      const apply = (k: string, v: string | number | boolean | null | undefined) => {
-        if (v === null || v === undefined || v === "" || v === false) next.delete(k);
-        else next.set(k, v === true ? "1" : String(v));
-      };
-      const merged = { ...patch };
       // tout changement de filtre (hors page) revient à la page 1
-      if (!("page" in patch)) merged.page = 1;
-      if ("page" in merged) apply("page", merged.page && merged.page > 1 ? merged.page : null);
-      if ("q" in merged && locked.q === undefined) apply("q", merged.q);
-      if ("category" in merged && locked.category === undefined) apply("category", merged.category);
-      if ("ordering" in merged) apply("ordering", merged.ordering === "-created_at" ? null : merged.ordering);
-      if ("minPrice" in merged) apply("minPrice", merged.minPrice);
-      if ("maxPrice" in merged) apply("maxPrice", merged.maxPrice);
-      if ("onSale" in merged) apply("onSale", merged.onSale);
-      if ("inStock" in merged) apply("inStock", merged.inStock);
+      const merged: Partial<ProductFilterState> = "page" in patch ? patch : { ...patch, page: 1 };
+      // construit depuis l'état optimiste (et non l'URL) : deux clics rapides ne s'écrasent plus
+      const target = { ...state, ...merged };
+      // paramètres étrangers aux filtres (utm_…) conservés
+      const next = new URLSearchParams(sp.toString());
+      for (const k of FILTER_KEYS) next.delete(k);
+      const put = (k: string, v: string | number | boolean | null | undefined) => {
+        if (v !== null && v !== undefined && v !== "" && v !== false) next.set(k, v === true ? "1" : String(v));
+      };
+      put("page", target.page > 1 ? target.page : null);
+      if (locked.q === undefined) put("q", target.q);
+      if (locked.category === undefined) put("category", target.category);
+      put("ordering", target.ordering === "-created_at" ? null : target.ordering);
+      put("minPrice", target.minPrice);
+      put("maxPrice", target.maxPrice);
+      put("onSale", target.onSale);
+      put("inStock", target.inStock);
       const qs = next.toString();
-      router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
+      startTransition(() => {
+        applyOptimistic(merged);
+        router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
+      });
     },
-    [router, pathname, sp, locked.q, locked.category],
+    [router, pathname, sp, state, locked.q, locked.category, applyOptimistic],
   );
 
   const reset = useCallback(() => {
     const next = new URLSearchParams();
     if (locked.q === undefined && sp.get("q")) next.set("q", sp.get("q") as string);
     const qs = next.toString();
-    router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
-  }, [router, pathname, sp, locked.q]);
+    startTransition(() => {
+      applyOptimistic({ page: 1, category: locked.category ?? null, ordering: "-created_at", minPrice: null, maxPrice: null, onSale: false, inStock: false });
+      router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
+    });
+  }, [router, pathname, sp, locked.q, locked.category, applyOptimistic]);
 
   const activeCount =
     (state.minPrice != null ? 1 : 0) +

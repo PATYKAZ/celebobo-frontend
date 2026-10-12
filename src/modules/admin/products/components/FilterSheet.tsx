@@ -1,6 +1,6 @@
 "use client";
 
-import { CloseCircle, Filter } from "iconsax-reactjs";
+import { CloseCircle, Filter } from "@/shared/ui/icons";
 import type { ReactNode } from "react";
 import { cn } from "@/shared/lib/cn";
 import { BottomSheet } from "@/shared/ui/BottomSheet";

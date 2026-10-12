@@ -1,4 +1,4 @@
-import { Box, Category2, Chart2, DocumentText, Element3, Messages2, MoneyRecive, Notification, People, Profile2User, Share, Wallet3, type Icon } from "iconsax-reactjs";
+import { Box, Category2, Chart2, DocumentText, Element3, Messages2, MoneyRecive, Notification, People, Profile2User, Setting2, Share, Wallet3, type Icon } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import type { Permission } from "@/modules/auth/permissions";
 import type { UserRole } from "@/modules/auth/types";
@@ -34,4 +34,6 @@ export const ADMIN_NAV: AdminNavItem[] = [
   { section: "Équipe", label: "Mes invités", href: ROUTES.admin.invites, icon: Share, permission: "commissions.view.own", onlyRoles: ["revendeur"] },
   { section: "Système", label: "Utilisateurs & rôles", href: ROUTES.admin.users, icon: Profile2User, permission: "users.manage" },
   { section: "Système", label: "Journal d'audit", href: ROUTES.admin.audit, icon: DocumentText, permission: "audit.view" },
+  // zones de livraison : responsable et admin ; taux, coordonnées et horaires : admin seul (dans la page)
+  { section: "Système", label: "Réglages du site", href: ROUTES.admin.settings, icon: Setting2, permission: "shipping.manage" },
 ];

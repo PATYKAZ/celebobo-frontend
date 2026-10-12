@@ -1,9 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Eye, Messages2, SearchNormal1, UserAdd, UserTick } from "iconsax-reactjs";
+import { Eye, Messages2, SearchNormal1, UserAdd, UserTick } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import { formatDate, formatPrice } from "@/shared/lib/format";
 import { useDebounce } from "@/shared/hooks/useDebounce";
@@ -24,6 +23,7 @@ import { AssignResellerModal } from "./AssignResellerModal";
 import { AvailabilityDot, OrderStatusDot, PAYMENT_LABEL, Thumbs } from "./parts";
 import { ResellerFilter } from "./ResellerFilter";
 import { useResellerOptions } from "../hooks/useAdminOrders";
+import { useAppRouter } from "@/shared/hooks/useAppRouter";
 
 const PAGE_SIZE = 10;
 const STATUS_TABS: OrderTab[] = ["attente", "assignee", "confirmee", "payee", "en_livraison", "livree", "annulee", "retournee"];
@@ -37,7 +37,7 @@ export function OrdersView() {
 }
 
 function OrdersContent() {
-  const router = useRouter();
+  const router = useAppRouter();
   const canAll = useCan("orders.view.all");
   const canAssign = useCan("orders.assign");
   const [tab, setTab] = useState<OrderTab>("all");

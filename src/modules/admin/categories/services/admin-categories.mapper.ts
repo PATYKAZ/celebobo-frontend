@@ -11,6 +11,8 @@ export interface AdminCategoryDto {
   isActive: boolean;
   position: number;
   productsCount: number;
+  seoTitle?: string;
+  seoDescription?: string;
 }
 
 export const toAdminCategory = (dto: AdminCategoryDto): AdminCategory => ({
@@ -23,4 +25,6 @@ export const toAdminCategory = (dto: AdminCategoryDto): AdminCategory => ({
   icon: dto.icon,
   active: dto.isActive,
   order: dto.position,
+  seoTitle: dto.seoTitle || null,
+  seoDescription: dto.seoDescription || null,
 });

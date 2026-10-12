@@ -3,8 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowLeft2, Cpu, MagicStar, Refresh2, Send2 } from "iconsax-reactjs";
-import { useRouter } from "next/navigation";
+import { ArrowLeft2, Cpu, MagicStar, Refresh2, Send2 } from "@/shared/ui/icons";
 import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 import { ROUTES } from "@/config/routes";
 import { Breadcrumb } from "@/shared/layout/Breadcrumb";
@@ -17,6 +16,7 @@ import type { Product } from "@/modules/products/types";
 import { useAssistant } from "../hooks/useAssistant";
 import { SUGGESTIONS } from "../types";
 import { StreamedText } from "./StreamedText";
+import { useAppRouter } from "@/shared/hooks/useAppRouter";
 
 export function BotAvatar() {
   return (
@@ -65,10 +65,10 @@ function useVisualViewport(enabled: boolean) {
 }
 
 export function AssistantView() {
-  const router = useRouter();
+  const router = useAppRouter();
   const mobile = useMediaQuery("(max-width: 1023px)");
   const vv = useVisualViewport(mobile);
-  const { messages, loading, send, reset } = useAssistant();
+  const { messages, loading, send, reset, retry } = useAssistant();
   const [text, setText] = useState("");
   const end = useRef<HTMLDivElement>(null);
   const scroll = useCallback(() => {
@@ -135,6 +135,11 @@ export function AssistantView() {
                     <div className={cn("rounded-2xl px-4 py-3 text-[14px] leading-[22px]", mine ? "rounded-br-md bg-primary text-white" : "rounded-bl-md bg-chip")}>
                       {mine ? m.content : <StreamedText text={m.content} animate={m.animate} onTick={scroll} />}
                     </div>
+                    {m.retry && (
+                      <button type="button" onClick={() => retry(m)} disabled={loading} className="inline-flex min-h-11 items-center gap-1.5 self-start rounded-full px-3 text-[13px] font-semibold text-primary hover:bg-primary-50 disabled:opacity-50">
+                        <Refresh2 size={15} /> Réessayer
+                      </button>
+                    )}
                     {m.products && m.products.length > 0 && (
                       <div className="no-scrollbar -mx-1 flex max-w-full snap-x snap-mandatory gap-3 overflow-x-auto px-1 pb-1 *:snap-start">
                         {m.products.map((p, i) => <ProductSuggestion key={p.id} product={p} index={i} />)}

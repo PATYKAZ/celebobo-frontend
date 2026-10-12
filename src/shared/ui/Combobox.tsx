@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowDown2 } from "iconsax-reactjs";
+import { ArrowDown2 } from "@/shared/ui/icons";
 import { useId, useState, type ReactNode } from "react";
 import { useMediaQuery } from "@/shared/hooks/useMediaQuery";
 import { cn } from "@/shared/lib/cn";
@@ -18,6 +18,8 @@ interface Props<T> {
   /** Contenu du déclencheur : valeur choisie ou invite. */
   trigger: ReactNode;
   label?: ReactNode;
+  /** Nom accessible quand aucun libellé n'est affiché (un combobox ne tire pas son nom de son contenu). */
+  ariaLabel?: string;
   required?: boolean;
   error?: string;
   search: string;
@@ -41,7 +43,7 @@ interface Props<T> {
  * (focus rendu au déclencheur). Panneau sous le champ sur desktop, feuille basse sur mobile (< sm).
  */
 export function Combobox<T>({
-  items, getKey, selectedKey, onSelect, renderItem, trigger, label, required, error, search, onSearchChange,
+  items, getKey, selectedKey, onSelect, renderItem, trigger, label, ariaLabel, required, error, search, onSearchChange,
   searchLabel, searchPlaceholder = "Rechercher…", emptyText = "Aucun résultat", loading, sheetTitle, leading,
   onOpenChange, className, triggerClassName, panelClassName,
 }: Props<T>) {
@@ -94,6 +96,7 @@ export function Combobox<T>({
     "aria-expanded": open,
     "aria-invalid": !!error,
     "aria-labelledby": label ? `${labelId} ${triggerId}` : undefined,
+    "aria-label": label ? undefined : ariaLabel,
     className: cn("field flex items-center gap-2 text-left", error && "field-error", triggerClassName),
   };
   const triggerContent = (

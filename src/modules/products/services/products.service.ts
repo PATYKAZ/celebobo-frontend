@@ -22,8 +22,9 @@ export const productsService = {
   },
 
   async related(slug: string): Promise<Product[]> {
-    const page = await api.get<PageEnvelope<ProductCardDto>>(ENDPOINTS.products.related(slug));
-    return page.results.map(toProduct);
+    // l'API renvoie un tableau simple (pas d'enveloppe paginée) ; les deux formes sont acceptées
+    const res = await api.get<ProductCardDto[] | PageEnvelope<ProductCardDto>>(ENDPOINTS.products.related(slug));
+    return (Array.isArray(res) ? res : res.results).map(toProduct);
   },
 
   /** Autocomplétion de la barre de recherche. */

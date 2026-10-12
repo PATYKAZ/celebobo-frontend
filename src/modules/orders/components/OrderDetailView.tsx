@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft2, CloseCircle, DocumentDownload, Location, Messages2, Note1, Profile, Wallet3 } from "iconsax-reactjs";
+import { ArrowLeft2, CloseCircle, DocumentDownload, Location, Messages2, Note1, Profile, Wallet3 } from "@/shared/ui/icons";
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { ROUTES } from "@/config/routes";

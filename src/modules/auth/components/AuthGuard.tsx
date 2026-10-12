@@ -4,7 +4,7 @@ import { useEffect, type ReactNode } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { ROUTES } from "@/config/routes";
 import { useHydrated } from "@/shared/hooks/useHydrated";
-import { Spinner } from "@/shared/ui/Spinner";
+import { ContentPageSkeleton } from "@/shared/ui/PageSkeletons";
 import { useAuth } from "../hooks/useAuth";
 import type { UserRole } from "../types";
 
@@ -12,6 +12,7 @@ interface Props {
   children: ReactNode;
   /** Rôles autorisés ; vide = tout utilisateur connecté. */
   roles?: UserRole[];
+  /** Affiché pendant le contrôle de session : squelette de la page protégée. */
   fallback?: ReactNode;
 }
 
@@ -33,13 +34,8 @@ export function AuthGuard({ children, roles, fallback }: Props) {
   }, [ready, user, allowed, router, pathname]);
 
   if (!hydrated || !ready || !allowed) {
-    return (
-      fallback ?? (
-        <div className="grid min-h-[320px] place-items-center">
-          <Spinner size={28} />
-        </div>
-      )
-    );
+    // squelette de la page plutôt qu'un spinner : la mise en page est déjà en place pendant le contrôle
+    return fallback ?? <ContentPageSkeleton breadcrumb={false} />;
   }
   return <>{children}</>;
 }

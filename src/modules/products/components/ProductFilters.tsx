@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { cn } from "@/shared/lib/cn";
-import { formatPrice } from "@/shared/lib/format";
+import { useFormatPrice } from "@/shared/currency/CurrencyProvider";
 import { Checkbox } from "@/shared/ui/Form";
 import { Button } from "@/shared/ui/Button";
 import type { Category } from "@/modules/categories/types";
@@ -21,7 +21,7 @@ interface Props {
 function Group({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="border-b border-line-3 py-5 first:pt-0 last:border-0">
-      <h3 className="mb-3 text-[14px] font-bold uppercase leading-[21px]">{title}</h3>
+      <h2 className="mb-3 text-[14px] font-bold uppercase leading-[21px]">{title}</h2>
       {children}
     </section>
   );
@@ -29,10 +29,18 @@ function Group({ title, children }: { title: string; children: React.ReactNode }
 
 /** Curseur double (prix min / max), validé après 400 ms d'inactivité. */
 function PriceRange({ min, max, onCommit }: { min: number | null; max: number | null; onCommit: (min: number | null, max: number | null) => void }) {
+  // prix affichés dans la devise choisie par le visiteur (USD ou FC)
+  const formatPrice = useFormatPrice();
   const [lo, setLo] = useState(min ?? 0);
   const [hi, setHi] = useState(max ?? PRICE_MAX);
+  // dernière valeur envoyée : son retour par l'URL ne doit pas écraser un glissement en cours
+  const sent = useRef<{ min: number | null; max: number | null } | null>(null);
 
   useEffect(() => {
+    if (sent.current && sent.current.min === min && sent.current.max === max) {
+      sent.current = null;
+      return;
+    }
     setLo(min ?? 0);
     setHi(max ?? PRICE_MAX);
   }, [min, max]);
@@ -41,7 +49,10 @@ function PriceRange({ min, max, onCommit }: { min: number | null; max: number | 
     const id = setTimeout(() => {
       const nMin = lo > 0 ? lo : null;
       const nMax = hi < PRICE_MAX ? hi : null;
-      if (nMin !== min || nMax !== max) onCommit(nMin, nMax);
+      if (nMin !== min || nMax !== max) {
+        sent.current = { min: nMin, max: nMax };
+        onCommit(nMin, nMax);
+      }
     }, 400);
     return () => clearTimeout(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -1,27 +1,31 @@
 "use client";
 
 import { useCallback, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ROUTES } from "@/config/routes";
 import { toast } from "@/shared/ui/Toast";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
 import { favoritesService } from "../services/favorites.service";
 import { useFavoritesStore } from "../store/favorites.store";
+import { useAppRouter } from "@/shared/hooks/useAppRouter";
 
-const favoritesKey = (userId?: number) => ["favorites", userId] as const;
+const favoritesKeys = {
+  all: (userId?: number) => ["favorites", userId] as const,
+  ids: (userId?: number) => ["favorites", userId, "ids"] as const,
+  list: (userId?: number) => ["favorites", userId, "list"] as const,
+};
 
-/** Favoris du compte connecté ; aligne les cœurs (store) sur la liste serveur. */
-export function useFavoriteProducts() {
+/** Identifiants des favoris du compte connecté ; aligne les cœurs (store) sur le serveur. */
+function useFavoriteIds() {
   const { user, ready } = useAuth();
   const query = useQuery({
-    queryKey: favoritesKey(user?.id),
-    queryFn: favoritesService.list,
+    queryKey: favoritesKeys.ids(user?.id),
+    queryFn: favoritesService.ids,
     enabled: !!user,
   });
 
   useEffect(() => {
-    if (query.data) useFavoritesStore.getState().replaceAll(query.data.map((p) => p.id));
+    if (query.data) useFavoritesStore.getState().replaceAll(query.data);
   }, [query.data]);
 
   useEffect(() => {
@@ -33,11 +37,11 @@ export function useFavoriteProducts() {
 
 /** Bascule optimiste d'un favori ; redirige vers la connexion si l'utilisateur est anonyme. */
 export function useFavoriteToggle() {
-  const router = useRouter();
+  const router = useAppRouter();
   const qc = useQueryClient();
   const { user } = useAuth();
   const ids = useFavoritesStore((s) => s.ids);
-  useFavoriteProducts();
+  useFavoriteIds();
 
   const toggle = useCallback(
     async (productId: number, name?: string) => {
@@ -52,7 +56,7 @@ export function useFavoriteToggle() {
       toast[next ? "success" : "info"](next ? "Ajouté aux favoris" : "Retiré des favoris", name);
       try {
         await (next ? favoritesService.add(productId) : favoritesService.remove(productId));
-        qc.invalidateQueries({ queryKey: favoritesKey(user.id) });
+        qc.invalidateQueries({ queryKey: favoritesKeys.all(user.id) });
       } catch {
         useFavoritesStore.getState().set(productId, !next); // rollback
         toast.error("Impossible de mettre à jour vos favoris");
@@ -62,4 +66,17 @@ export function useFavoriteToggle() {
   );
 
   return { ids, isFavorite: (id: number) => ids.includes(id), toggle };
+}
+
+/** Cartes des favoris (page « Mes favoris »), par pages de 48. */
+export function useFavoriteProducts() {
+  const { user } = useAuth();
+  useFavoriteIds();
+  return useInfiniteQuery({
+    queryKey: favoritesKeys.list(user?.id),
+    queryFn: ({ pageParam }) => favoritesService.list(pageParam),
+    initialPageParam: 1,
+    getNextPageParam: (last, _all, page) => (last.next ? page + 1 : undefined),
+    enabled: !!user,
+  });
 }

@@ -44,6 +44,8 @@ export interface AdminProductDetailDto extends AdminProductRowDto {
   deliveryPolicySecondary: string;
   freeShipping: boolean;
   shippingFee: string | null;
+  seoTitle?: string;
+  seoDescription?: string;
   sellBy: string | null;
   features: string[];
   options: { name: string; values: string[] }[];
@@ -113,11 +115,14 @@ export function toAdminProduct(dto: AdminProductRowDto | AdminProductDetailDto):
     lowStock: dto.lowStock,
     dateWish: detail?.sellBy ?? null,
     variantOptions: detail?.options ?? [],
-    variants: (detail?.variants ?? []).map((v) => ({ id: v.id, attributes: v.attributes, label: v.label, price: orNull(v.price), stock: v.stock, sku: v.sku, image: v.image || null })),
+    // une variante retirée qui a un historique de stock est seulement désactivée par l'API : on ne la montre plus
+    variants: (detail?.variants ?? []).filter((v) => v.isActive).map((v) => ({ id: v.id, attributes: v.attributes, label: v.label, price: orNull(v.price), stock: v.stock, sku: v.sku, image: v.image || null })),
     deletedAt: dto.status === "trash" ? dto.updatedAt : null,
     isActive: dto.status === "active",
     freeShipping: detail?.freeShipping ?? false,
     shippingFee: orNull(detail?.shippingFee),
+    seoTitle: detail?.seoTitle || null,
+    seoDescription: detail?.seoDescription || null,
     salesCount: dto.salesCount,
   };
 }
@@ -160,6 +165,8 @@ export function toProductPayload(v: ProductFormValues) {
     deliveryPolicySecondary: v.deliveryPolicyPhase2.trim(),
     freeShipping: v.freeShipping,
     shippingFee: v.freeShipping ? null : orEmpty(v.shippingFee),
+    seoTitle: v.seoTitle.trim(),
+    seoDescription: v.seoDescription.trim(),
     stockThreshold: Number(v.stockThreshold),
     sellBy: v.dateWish || null,
     isActive: v.isActive,

@@ -1,0 +1,5 @@
+import { AdminDetailSkeleton } from "@/modules/admin/ui/AdminSkeletons";
+
+export default function Loading() {
+  return <AdminDetailSkeleton />;
+}

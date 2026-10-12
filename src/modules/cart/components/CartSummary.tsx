@@ -1,9 +1,10 @@
 "use client";
 
-import { Gift, InfoCircle, Messages2, ShieldTick } from "iconsax-reactjs";
+import { Gift, InfoCircle, Messages2, ShieldTick } from "@/shared/ui/icons";
 import type { ReactNode } from "react";
 import { CountUp } from "@/shared/animations/CountUp";
 import { formatPrice } from "@/shared/lib/format";
+import { useCurrency } from "@/shared/currency/CurrencyProvider";
 import { Block } from "@/shared/ui/Block";
 import type { CartQuote } from "../types";
 
@@ -22,6 +23,7 @@ interface Props {
 
 /** Récapitulatif de commande (panier & checkout). */
 export function CartSummary({ subtotal, savings, count, quote, coupon, actions, title = "Récapitulatif" }: Props) {
+  const { currency, rate } = useCurrency();
   const discount = quote?.discount ?? 0;
   const shipping = quote?.shippingFee ?? 0;
   const total = quote ? Math.max(0, subtotal - discount) + shipping : subtotal;
@@ -61,6 +63,12 @@ export function CartSummary({ subtotal, savings, count, quote, coupon, actions, 
           <dt className="text-[16px] font-bold uppercase">Total</dt>
           <dd className="text-[24px] font-extrabold leading-[30px] text-primary sm:text-[28px] sm:leading-[32px]"><CountUp to={total} duration={0.8} format={formatPrice} /></dd>
         </div>
+        {/* le panier reste en USD (montant payé) ; en FC, équivalent à titre indicatif */}
+        {currency === "CDF" && rate > 0 && (
+          <p className="-mt-1 text-right text-[12px] leading-[17px] text-ink-2">
+            ≈ <span className="font-semibold tabular-nums">{formatPrice(total, { currency: "CDF", rate })}</span> · paiement calculé en USD au taux du jour
+          </p>
+        )}
       </dl>
 
       {actions && <div className="mt-6 space-y-3">{actions}</div>}

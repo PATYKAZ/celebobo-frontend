@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowDown, ArrowLeft2, ArrowRight2, CloseCircle, Gallery, Lock, Money3, More, Profile, Profile2User, Receipt2, Send2, Unlock, User } from "iconsax-reactjs";
+import { ArrowDown, ArrowLeft2, ArrowRight2, CloseCircle, Gallery, Lock, Money3, More, Profile, Profile2User, Receipt2, Send2, Unlock, User } from "@/shared/ui/icons";
 import { Fragment, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { ROUTES } from "@/config/routes";
 import { cn } from "@/shared/lib/cn";
