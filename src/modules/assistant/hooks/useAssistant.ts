@@ -11,7 +11,7 @@ const SESSION_KEY = "celebobo-assistant-session";
 export const WELCOME: AssistantMessage = {
   id: "welcome",
   role: "assistant",
-  content: "Bonjour ! Je suis l'assistant Celebobo 🤖. Posez-moi vos questions sur les produits, la commande ou la livraison.",
+  content: "Bonjour ! Je suis l'assistant Celebobo. Posez-moi vos questions sur les produits, la commande ou la livraison.",
   createdAt: 0,
 };
 

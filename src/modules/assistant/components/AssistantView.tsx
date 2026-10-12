@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowLeft2, Cpu, MagicStar, Refresh2, Send2 } from "@/shared/ui/icons";
+import { ArrowLeft2, BagHappy, Refresh2, Send2 } from "@/shared/ui/icons";
 import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 import { ROUTES } from "@/config/routes";
 import { Breadcrumb } from "@/shared/layout/Breadcrumb";
@@ -21,7 +21,7 @@ import { useAppRouter } from "@/shared/hooks/useAppRouter";
 export function BotAvatar() {
   return (
     <span className="relative grid size-9 shrink-0 place-items-center rounded-full bg-primary text-white">
-      <Cpu size={18} variant="Bold" />
+      <BagHappy size={18} variant="Bold" />
       <span className="absolute -bottom-0.5 -right-0.5 size-2.5 rounded-full bg-sun ring-2 ring-white" />
     </span>
   );
@@ -113,7 +113,7 @@ export function AssistantView() {
               <ArrowLeft2 size={20} />
             </button>
             <span className="relative grid size-11 place-items-center rounded-full bg-white/20">
-              <MagicStar size={22} variant="Bold" />
+              <BagHappy size={22} variant="Bold" />
               <span className="absolute inset-0 animate-pulse-ring rounded-full bg-white/30" />
             </span>
             <div className="min-w-0 flex-1">

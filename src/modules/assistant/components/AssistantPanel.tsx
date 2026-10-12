@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
-import { Maximize4, MagicStar, Refresh2, Send2 } from "@/shared/ui/icons";
+import { BagHappy, Maximize4, Refresh2, Send2 } from "@/shared/ui/icons";
 import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 import { ROUTES } from "@/config/routes";
 import { cn } from "@/shared/lib/cn";
@@ -43,7 +43,7 @@ export function AssistantPanel({ showHeader, onClose, onNavigate, className }: P
       {showHeader && (
         <header className="flex items-center gap-3 bg-primary px-4 py-3.5 text-white">
           <span className="relative grid size-10 place-items-center rounded-full bg-white/20">
-            <MagicStar size={20} variant="Bold" />
+            <BagHappy size={20} variant="Bold" />
             <span className="absolute inset-0 animate-pulse-ring rounded-full bg-white/30" />
           </span>
           <div className="min-w-0 flex-1">

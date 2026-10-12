@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { Bag2, Call, DocumentText, Heart, Home2, InfoCircle, Location, Login, Logout, MagicStar, Messages2, Notification, People, Profile, Receipt2, Setting2, Shop, TruckFast, UserAdd } from "@/shared/ui/icons";
+import { Bag2, BagHappy, Call, DocumentText, Heart, Home2, InfoCircle, Location, Login, Logout, Messages2, Notification, People, Profile, Receipt2, Setting2, Shop, TruckFast, UserAdd } from "@/shared/ui/icons";
 import { useMemo, useState } from "react";
 import { ROUTES } from "@/config/routes";
 import { MoreSheet, type MoreSection } from "@/shared/ui/MoreSheet";
@@ -78,7 +78,7 @@ export function ShopTabBar() {
         items: [
           { label: "À propos", href: ROUTES.about, icon: InfoCircle },
           { label: "Guide d'achat", href: ROUTES.guide, icon: DocumentText },
-          { label: "Assistant", href: ROUTES.assistant, icon: MagicStar },
+          { label: "Assistant", href: ROUTES.assistant, icon: BagHappy },
           { label: "Contact", href: ROUTES.contact, icon: Call },
           { label: "Devenir revendeur", href: ROUTES.becomeReseller, icon: People },
           ...(!isAuthenticated ? [{ label: "Inscription", href: ROUTES.register, icon: UserAdd }] : []),

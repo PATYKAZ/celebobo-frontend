@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { AnimatePresence, animate, motion, useMotionValue } from "motion/react";
-import { ArrowDown2, MagicStar } from "@/shared/ui/icons";
+import { ArrowDown2, BagHappy } from "@/shared/ui/icons";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "@/shared/lib/cn";
 import { BottomSheet } from "@/shared/ui/BottomSheet";
@@ -190,7 +190,7 @@ export function AssistantLauncher() {
                 </motion.span>
               ) : (
                 <motion.span key="i" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.18 }} className="animate-float-slow">
-                  <MagicStar size={28} variant="Bold" />
+                  <BagHappy size={28} variant="Bold" />
                 </motion.span>
               )}
             </AnimatePresence>
