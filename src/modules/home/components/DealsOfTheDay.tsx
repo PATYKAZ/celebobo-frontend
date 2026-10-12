@@ -20,6 +20,7 @@ import { Stars } from "@/shared/ui/Stars";
 import { useCart } from "@/modules/cart/hooks/useCart";
 import { getPricing } from "@/modules/products/utils";
 import type { HomeContent, HomeDeal } from "../types";
+import { BannerPrice, bannerTone } from "./BannerBits";
 import { PhotoBanner } from "./PhotoBanner";
 
 function ZoomImage({ src, alt }: { src: string; alt: string }) {
@@ -205,15 +206,22 @@ export function DealsOfTheDay({ content }: { content?: HomeContent }) {
 
       <div className="max-sm:snap-row max-sm:mx-[-15px] max-sm:scroll-px-[15px] max-sm:px-[15px] sm:grid sm:grid-cols-3 sm:gap-4 xl:grid-cols-1 xl:grid-rows-3">
         {picks
-          ? picks.side.map((p, i) => (
-              <Reveal key={p.id} delay={i * 0.1} className="h-full min-h-[150px] max-sm:w-[78%] sm:min-h-[170px]">
-                <PhotoBanner image={p.image as string} href={ROUTES.product(p.slug)} label={p.name} overlay="from-black/80 via-black/40 to-transparent" direction="t" className="h-full rounded-[12px]" sizes="296px" contentClassName="flex flex-col justify-end p-5">
-                  <p className="text-[10px] uppercase tracking-[0.2em] text-white/80">{p.category}</p>
-                  <p className="mt-1 line-clamp-2 text-[17px] font-semibold leading-[21px] text-white">{p.name}</p>
-                  <p className="mt-0.5 text-[15px] font-bold text-sun">{formatPrice(getPricing(p).current)}</p>
-                </PhotoBanner>
-              </Reveal>
-            ))
+          ? picks.side.map((b, i) => {
+              const t = bannerTone(b, "from-black/80 via-black/40 to-transparent");
+              return (
+                <Reveal key={b.key} delay={i * 0.1} className="h-full min-h-[150px] max-sm:w-[78%] sm:min-h-[170px]">
+                  <PhotoBanner image={b.image} href={b.href} label={b.title} overlay={t.overlay} direction="t" className="h-full rounded-[12px]" sizes="296px" contentClassName="flex flex-col justify-end p-5">
+                    {b.eyebrow && <p className={cn("text-[10px] uppercase tracking-[0.2em]", t.muted)}>{b.eyebrow}</p>}
+                    <p className={cn("mt-1 line-clamp-2 whitespace-pre-line text-[17px] font-semibold leading-[21px]", t.text)}>{b.title}</p>
+                    {b.product ? (
+                      <p className="mt-0.5"><BannerPrice product={b.product} className={cn("text-[15px]", t.price)} strikeClassName={t.strike} /></p>
+                    ) : (
+                      b.subtitle && <p className={cn("mt-0.5 line-clamp-1 text-[12px]", t.muted)}>{b.subtitle}</p>
+                    )}
+                  </PhotoBanner>
+                </Reveal>
+              );
+            })
           : [0, 1, 2].map((i) => <Skeleton key={i} className="min-h-[150px] rounded-[12px] max-sm:w-[78%] sm:min-h-[170px]" />)}
       </div>
     </section>

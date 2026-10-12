@@ -12,6 +12,7 @@ import { ArrowLeft2, ArrowRight2, RecordCircle } from "@/shared/ui/icons";
 import { cn } from "@/shared/lib/cn";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import type { HeroSlide } from "../types";
+import { BannerPrice } from "./BannerBits";
 
 const container: Variants = {
   hidden: {},
@@ -68,6 +69,11 @@ function Slide({ slide, active }: { slide: HeroSlide; active: boolean }) {
         {slide.text && (
           <motion.p variants={item} className="mt-3 hidden text-[12px] leading-[20.4px] opacity-90 sm:block">
             {slide.text}
+          </motion.p>
+        )}
+        {slide.product && (
+          <motion.p variants={item} className="mt-3">
+            <BannerPrice product={slide.product} className={cn("text-[22px] leading-[26px] text-sun", !dark && "sm:text-danger")} strikeClassName={cn("text-white/70", !dark && "sm:text-ink-3")} />
           </motion.p>
         )}
         {slide.bullets && (

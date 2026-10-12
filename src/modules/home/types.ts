@@ -11,6 +11,27 @@ export interface HeroSlide {
   bullets?: string[];
   cta: { label: string; href: string; variant: "primary" | "dark" | "white" };
   overlay: string;
+  /** bannière rattachée à un produit : son vrai prix s'affiche */
+  product?: Product | null;
+}
+
+/**
+ * Visuel d'un emplacement de l'accueil : bannière du back-office (`GET /home/` banners, par emplacement) ou, à défaut,
+ * carte d'un vrai produit. Avec un produit, le prix affiché et le lien sont ceux du produit.
+ */
+export interface HomeBanner {
+  key: string;
+  image: string;
+  /** retour à la ligne = ligne du titre */
+  title: string;
+  subtitle: string;
+  /** petit sur-titre (« Audio », « Nouveau ») */
+  eyebrow: string;
+  /** light : image claire, texte sombre ; dark : image sombre, texte clair */
+  tone: "light" | "dark";
+  href: string;
+  cta: string;
+  product: Product | null;
 }
 
 export interface Brand {
@@ -71,12 +92,12 @@ export interface HomeDeal {
 export interface HomePicks {
   /** offre du jour programmée, sinon promotion la plus vendue */
   deal: HomeDeal | null;
-  /** 2 mini-bannières sous le carrousel : promotions suivantes */
-  minis: Product[];
-  /** 2 cartes à droite du carrousel : meilleures ventes */
-  promos: Product[];
-  /** 3 cartes à côté de l'offre du jour */
-  side: Product[];
+  /** 2 mini-bannières sous le carrousel (`hero_mini`, sinon promotions suivantes) */
+  minis: HomeBanner[];
+  /** 2 cartes à droite du carrousel (`hero_side`, sinon meilleures ventes) */
+  promos: HomeBanner[];
+  /** 3 cartes à côté de l'offre du jour (`deal_side`, sinon promotions et meilleures ventes) */
+  side: HomeBanner[];
 }
 
 export interface HomeContent {
@@ -85,6 +106,8 @@ export interface HomeContent {
   slides: HeroSlide[];
   /** Produits mis en avant (offre, mini-bannières, cartes promo, cartes latérales) ; null tant que l'API n'a pas répondu */
   picks: HomePicks | null;
+  /** Bannières par emplacement (`showcase:<catégorie>`, `column:<catégorie>`…) ; null tant que l'API n'a pas répondu */
+  placements: Record<string, HomeBanner[]> | null;
   /** Marques présentes dans le catalogue ; null tant que l'API n'a pas répondu */
   brands: Brand[] | null;
   showcases: ShowcaseConfig[];
