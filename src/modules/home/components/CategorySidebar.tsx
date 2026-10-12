@@ -13,7 +13,7 @@ export function CategorySidebar() {
   const { data: categories, isLoading } = useCategories();
 
   return (
-    <aside className="hidden h-[446px] flex-col rounded-box bg-white px-[30px] py-5 lg:flex">
+    <aside className="hidden h-[446px] flex-col rounded-box bg-surface px-[30px] py-5 lg:flex">
       <Link href={`${ROUTES.products}?onSale=1`} className="group flex items-center gap-2 text-[14px] font-bold uppercase leading-[21px] text-danger">
         <span className="relative grid size-5 place-items-center">
           <span className="absolute inset-0 animate-pulse-ring rounded-full bg-danger/30" />
@@ -39,7 +39,7 @@ export function CategorySidebar() {
                 {/* sous-catégories : panneau à droite au survol ou au clavier */}
                 {c.children.some((x) => x.productsCount > 0) && (
                   <div className="invisible absolute left-full top-1/2 z-30 -translate-y-1/2 pl-9 opacity-0 transition-all duration-200 group-focus-within/cat:visible group-focus-within/cat:opacity-100 group-hover/cat:visible group-hover/cat:opacity-100">
-                    <div className="w-[230px] rounded-box bg-white p-2 shadow-[0_12px_40px_rgba(0,0,0,0.14)]">
+                    <div className="w-[230px] rounded-box bg-surface p-2 shadow-[0_12px_40px_rgba(0,0,0,0.14)]">
                       <Link href={ROUTES.category(c.slug)} className="block rounded-md px-3 py-2 text-[13px] font-bold text-primary hover:bg-primary-50">
                         Tout {c.name} <span className="font-semibold text-ink-3">({c.productsCount})</span>
                       </Link>

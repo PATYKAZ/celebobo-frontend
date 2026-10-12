@@ -106,7 +106,7 @@ export function SaleForm({ sale }: { sale?: Sale }) {
 
       {/* < xl : barre d'actions fixe au-dessus de la barre d'onglets, avec le total */}
       <div className="h-20 xl:hidden" aria-hidden />
-      <div className="fixed inset-x-0 bottom-[max(var(--tabbar-h),env(safe-area-inset-bottom))] z-40 flex items-center gap-3 border-t border-line-3 bg-white/95 px-4 py-3 backdrop-blur-xl xl:hidden">
+      <div className="fixed inset-x-0 bottom-[max(var(--tabbar-h),env(safe-area-inset-bottom))] z-40 flex items-center gap-3 border-t border-line-3 bg-surface/95 px-4 py-3 backdrop-blur-xl xl:hidden">
         <div className="min-w-0 flex-1">
           <p className="text-[11px] font-semibold uppercase tracking-wide text-ink-3">Total</p>
           <p className="truncate text-[20px] font-bold leading-[24px] text-primary">{formatPrice(total)}</p>

@@ -23,7 +23,7 @@ interface Props {
 const TONE = {
   green: "bg-primary-100 text-primary-dark",
   red: "bg-danger-100 text-danger",
-  orange: "bg-star/15 text-[#b87400]",
+  orange: "bg-star/15 text-warn",
   blue: "bg-info/10 text-info",
   dark: "bg-ink-dark/10 text-ink-dark",
 };
@@ -36,7 +36,7 @@ const TONE = {
 export function StatCard({ label, value, format, icon, tone = "green", delta, deltaLabel = "vs période précédente", delay = 0, className }: Props) {
   const up = (delta ?? 0) >= 0;
   return (
-    <Reveal delay={delay} className={cn("group relative min-w-0 rounded-box bg-white p-3.5 transition-transform duration-300 sm:p-5 sm:hover:-translate-y-1", className)}>
+    <Reveal delay={delay} className={cn("group relative min-w-0 rounded-box bg-surface p-3.5 transition-transform duration-300 sm:p-5 sm:hover:-translate-y-1", className)}>
       {/* mobile : l'icône flotte en haut à droite → le montant dispose de toute la largeur de la carte */}
       <div className="flex items-start justify-between gap-2 sm:gap-3">
         <div className="min-w-0 flex-1">

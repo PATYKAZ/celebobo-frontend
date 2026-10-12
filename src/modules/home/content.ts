@@ -67,8 +67,8 @@ export function buildHomeContent(): HomeContent {
         tone: "light",
         eyebrow: "Audio",
         titleLines: [
-          { text: "Casques", className: "text-ink font-bold" },
-          { text: "sans fil", className: "text-ink font-light" },
+          { text: "Casques", className: "sm:text-on-light font-bold" },
+          { text: "sans fil", className: "sm:text-on-light font-light" },
         ],
         text: "Casques, écouteurs et enceintes sans fil.",
         cta: { label: "Acheter", href: ROUTES.category("audio"), variant: "dark" },

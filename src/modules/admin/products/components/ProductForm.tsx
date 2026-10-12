@@ -256,7 +256,7 @@ export function ProductForm({ product }: Props) {
       {/* réserve la place de la barre fixe (mobile) */}
       <div className="h-20 lg:hidden" aria-hidden />
       {/* Mobile : fixée au-dessus de la barre d'onglets (zone sûre iOS) ; desktop : carte collante en bas */}
-      <div className="fixed inset-x-0 bottom-[max(var(--tabbar-h),env(safe-area-inset-bottom))] z-40 flex items-center justify-between gap-3 border-t border-line-3 bg-white/95 px-4 py-3 backdrop-blur-xl lg:sticky lg:inset-x-auto lg:bottom-3 lg:z-30 lg:rounded-box lg:border-0 lg:bg-white lg:p-3 lg:shadow-[0_8px_30px_rgba(0,0,0,.12)] lg:backdrop-blur-none">
+      <div className="fixed inset-x-0 bottom-[max(var(--tabbar-h),env(safe-area-inset-bottom))] z-40 flex items-center justify-between gap-3 border-t border-line-3 bg-surface/95 px-4 py-3 backdrop-blur-xl lg:sticky lg:inset-x-auto lg:bottom-3 lg:z-30 lg:rounded-box lg:border-0 lg:bg-surface lg:p-3 lg:shadow-[0_8px_30px_rgba(0,0,0,.12)] lg:backdrop-blur-none">
         <p className="hidden pl-2 text-[13px] text-ink-3 lg:block">{product ? `Modification de « ${product.name} »` : "Nouveau produit"}</p>
         <div className="grid w-full grid-cols-[1fr_1.6fr] gap-3 lg:ml-auto lg:flex lg:w-auto">
           <Button variant="chip" upper={false} onClick={() => router.push(ROUTES.admin.products)}>Annuler</Button>

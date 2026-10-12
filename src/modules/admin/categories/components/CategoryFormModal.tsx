@@ -92,7 +92,7 @@ export function CategoryFormModal({ open, category, all, onClose }: Props) {
                   aria-label={ic}
                   aria-pressed={v.icon === ic}
                   onClick={() => setV({ ...v, icon: ic })}
-                  className={cn("grid aspect-square place-items-center rounded-box border transition-all", v.icon === ic ? "scale-105 border-primary bg-primary text-white" : "border-line bg-white hover:border-primary hover:text-primary")}
+                  className={cn("grid aspect-square place-items-center rounded-box border transition-all", v.icon === ic ? "scale-105 border-primary bg-primary text-white" : "border-line bg-surface hover:border-primary hover:text-primary")}
                 >
                   <CategoryIcon name={ic} size={20} variant={v.icon === ic ? "Bold" : "Linear"} />
                 </button>

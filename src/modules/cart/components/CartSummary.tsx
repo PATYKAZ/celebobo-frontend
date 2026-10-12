@@ -40,7 +40,7 @@ export function CartSummary({ subtotal, savings, count, quote, coupon, actions, 
             <Gift size={18} variant="Bold" className="shrink-0 text-primary" />
             {remaining > 0 ? <span>Plus que <strong>{formatPrice(remaining)}</strong> pour la livraison offerte</span> : <strong className="text-primary">Livraison offerte débloquée !</strong>}
           </p>
-          <div className="mt-3 h-2 overflow-hidden rounded-full bg-white">
+          <div className="mt-3 h-2 overflow-hidden rounded-full bg-surface">
             <div className="h-full rounded-full bg-primary transition-[width] duration-700 ease-out" style={{ width: `${progress}%` }} />
           </div>
         </div>

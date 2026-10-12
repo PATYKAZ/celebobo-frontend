@@ -20,7 +20,7 @@ export function Heatmap({ data, hours }: { data: number[][]; hours: number[] }) 
         </div>
         {data.map((row, d) => (
           <div key={DAYS[d]} className="mb-1 flex items-center gap-1">
-            <span className="sticky left-0 z-10 w-9 shrink-0 bg-white text-[12px] text-ink-3">{DAYS[d]}</span>
+            <span className="sticky left-0 z-10 w-9 shrink-0 bg-surface text-[12px] text-ink-3">{DAYS[d]}</span>
             <div className="grid flex-1 gap-1" style={{ gridTemplateColumns: `repeat(${hours.length}, minmax(0,1fr))` }}>
               {row.map((v, i) => (
                 <motion.div

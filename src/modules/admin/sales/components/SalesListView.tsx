@@ -35,7 +35,7 @@ const PRESETS: NonNullable<SaleListParams["preset"]>[] = ["", "2", "7", "30", "9
 
 export { MethodBadge };
 
-const chip = (on: boolean) => cn("min-h-10 rounded-full border px-4 py-2 text-[13px] font-semibold transition-all active:scale-95 sm:min-h-0 sm:px-3.5 sm:text-[12px]", on ? "border-primary bg-primary text-white" : "border-line bg-white hover:border-primary hover:text-primary");
+const chip = (on: boolean) => cn("min-h-10 rounded-full border px-4 py-2 text-[13px] font-semibold transition-all active:scale-95 sm:min-h-0 sm:px-3.5 sm:text-[12px]", on ? "border-primary bg-primary text-white" : "border-line bg-surface hover:border-primary hover:text-primary");
 
 function SalesListContent() {
   const { user } = useAuth();
@@ -229,7 +229,7 @@ function SalesListContent() {
             <p className="mb-2 text-[13px] font-semibold">Moyen de paiement</p>
             <div className="flex flex-wrap gap-2" role="group" aria-label="Moyen de paiement">
               {METHODS.map((m) => (
-                <button key={m} type="button" aria-pressed={method === m} onClick={() => reset(setMethod)(method === m ? "" : m)} className={cn("min-h-10 rounded-full border px-4 py-2 text-[13px] font-semibold transition-all active:scale-95", method === m ? "border-transparent " + METHOD_STYLE[m].cls : "border-line bg-white")}>{METHOD_STYLE[m].label}</button>
+                <button key={m} type="button" aria-pressed={method === m} onClick={() => reset(setMethod)(method === m ? "" : m)} className={cn("min-h-10 rounded-full border px-4 py-2 text-[13px] font-semibold transition-all active:scale-95", method === m ? "border-transparent " + METHOD_STYLE[m].cls : "border-line bg-surface")}>{METHOD_STYLE[m].label}</button>
               ))}
             </div>
           </div>
@@ -261,7 +261,7 @@ function SalesListContent() {
           )}
           <div className="flex flex-wrap gap-2" role="group" aria-label="Moyen de paiement">
             {METHODS.map((m) => (
-              <button key={m} type="button" aria-pressed={method === m} onClick={() => reset(setMethod)(method === m ? "" : m)} className={cn("rounded-full border px-3.5 py-2 text-[12px] font-semibold transition-all", method === m ? "border-transparent " + METHOD_STYLE[m].cls : "border-line bg-white hover:border-primary hover:text-primary")}>
+              <button key={m} type="button" aria-pressed={method === m} onClick={() => reset(setMethod)(method === m ? "" : m)} className={cn("rounded-full border px-3.5 py-2 text-[12px] font-semibold transition-all", method === m ? "border-transparent " + METHOD_STYLE[m].cls : "border-line bg-surface hover:border-primary hover:text-primary")}>
                 {METHOD_STYLE[m].label}
               </button>
             ))}

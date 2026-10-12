@@ -73,7 +73,7 @@ export function ProductGallery({ product, activeImage }: { product: Product; /**
           ))}
         </div>
         <div className="pointer-events-none absolute left-3 top-3 z-10">{badge}</div>
-        <span className="pointer-events-none absolute bottom-3 right-3 grid size-10 place-items-center rounded-full bg-white/90"><Maximize4 size={18} /></span>
+        <span className="pointer-events-none absolute bottom-3 right-3 grid size-10 place-items-center rounded-full bg-surface/90"><Maximize4 size={18} /></span>
         {images.length > 1 && (
           <div className="mt-3 flex justify-center gap-1.5" role="tablist" aria-label="Images du produit">
             {images.map((src, i) => (
@@ -130,7 +130,7 @@ export function ProductGallery({ product, activeImage }: { product: Product; /**
             )}
           </AnimatePresence>
           <div className="absolute left-3 top-3 z-10">{badge}</div>
-          <span className="absolute bottom-3 right-3 z-10 grid size-10 place-items-center rounded-full bg-white/90 opacity-0 transition-opacity group-hover:opacity-100">
+          <span className="absolute bottom-3 right-3 z-10 grid size-10 place-items-center rounded-full bg-surface/90 opacity-0 transition-opacity group-hover:opacity-100">
             <Maximize4 size={18} />
           </span>
         </div>

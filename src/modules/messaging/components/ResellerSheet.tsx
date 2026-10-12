@@ -35,7 +35,7 @@ export function ResellerSheet({ open, onClose, options, value, onChange, onConfi
 
   return (
     <BottomSheet open={open} onClose={onClose} title={title} maxVh={88}>
-      <div className="sticky top-0 z-10 -mx-5 bg-white px-5 pb-2 pt-1">
+      <div className="sticky top-0 z-10 -mx-5 bg-surface px-5 pb-2 pt-1">
         <div className="relative">
           <SearchNormal1 size={17} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-3" />
           <input value={q} onChange={(e) => setQ(e.target.value)} placeholder={`Nom ou code… (${options.length} revendeurs)`} aria-label="Rechercher un revendeur" className="field pl-10" />
@@ -75,7 +75,7 @@ export function ResellerSheet({ open, onClose, options, value, onChange, onConfi
         })}
       </ul>
 
-      <div className="sticky bottom-0 -mx-5 border-t border-line-3 bg-white px-5 pb-1 pt-3">
+      <div className="sticky bottom-0 -mx-5 border-t border-line-3 bg-surface px-5 pb-1 pt-3">
         <Button fullWidth upper={false} size="md" loading={loading} disabled={!value} onClick={onConfirm}>
           Confirmer l&apos;assignation
         </Button>

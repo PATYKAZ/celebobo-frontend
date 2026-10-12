@@ -160,7 +160,7 @@ export function AssistantLauncher() {
                 exit={{ opacity: 0, scale: 0.9 }}
                 onClick={toggle}
                 className={cn(
-                  "absolute bottom-[calc(100%+10px)] w-max max-w-[220px] rounded-2xl bg-white px-4 py-2.5 text-left text-[13px] font-semibold leading-[18px] shadow-[0_10px_30px_rgba(0,0,0,.18)]",
+                  "absolute bottom-[calc(100%+10px)] w-max max-w-[220px] rounded-2xl bg-surface px-4 py-2.5 text-left text-[13px] font-semibold leading-[18px] shadow-[0_10px_30px_rgba(0,0,0,.18)]",
                   side === "r" ? "right-0 rounded-br-md" : "left-0 rounded-bl-md",
                 )}
               >
@@ -217,7 +217,7 @@ export function AssistantLauncher() {
             exit={{ opacity: 0, y: 16, scale: 0.97 }}
             transition={{ type: "spring", stiffness: 340, damping: 30 }}
             className={cn(
-              "fixed bottom-[168px] z-61 flex h-[min(560px,calc(100dvh-210px))] w-[390px] flex-col overflow-hidden rounded-box bg-white shadow-[0_20px_60px_rgba(0,0,0,.28)]",
+              "fixed bottom-[168px] z-61 flex h-[min(560px,calc(100dvh-210px))] w-[390px] flex-col overflow-hidden rounded-box bg-surface shadow-[0_20px_60px_rgba(0,0,0,.28)]",
               side === "r" ? "right-5" : "left-5",
             )}
           >

@@ -14,6 +14,7 @@ import { can, ROLE_LABEL } from "@/modules/auth/permissions";
 import { displayName } from "@/modules/auth/types";
 import { useUnreadMessagesCount } from "@/modules/messaging/hooks/useConversations";
 import { useUnreadNotificationsCount } from "@/modules/messaging/hooks/useNotifications";
+import { ThemeToggle } from "@/shared/theme/ThemeSwitch";
 import { AdminTabBar } from "./AdminTabBar";
 import { ADMIN_NAV, type AdminNavItem } from "./nav";
 
@@ -82,7 +83,7 @@ function NavList() {
                           {active && <motion.span layoutId="admin-nav-active" className="absolute inset-0 rounded-box bg-primary" transition={{ type: "spring", stiffness: 400, damping: 34 }} />}
                           <Icon size={19} variant={active ? "Bold" : "Linear"} className="relative transition-transform duration-300 group-hover:scale-110" />
                           <span className="relative flex-1">{item.label}</span>
-                          {n > 0 && <span className={cn("relative grid min-w-5 place-items-center rounded-full px-1.5 text-[11px] font-bold leading-5", active ? "bg-white text-primary" : "bg-danger text-white")}>{n}</span>}
+                          {n > 0 && <span className={cn("relative grid min-w-5 place-items-center rounded-full px-1.5 text-[11px] font-bold leading-5", active ? "bg-surface text-primary" : "bg-danger text-white")}>{n}</span>}
                         </Link>
                       );
                     })}
@@ -140,12 +141,12 @@ export function AdminShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="mx-auto flex min-h-screen max-w-[1760px] gap-4 p-3 pb-[calc(var(--tabbar-h)+12px)] sm:p-4 sm:pb-[calc(var(--tabbar-h)+16px)]">
-      <aside className="sticky top-4 hidden h-[calc(100vh-32px)] w-[270px] shrink-0 overflow-hidden rounded-box bg-white lg:block">
+      <aside className="sticky top-4 hidden h-[calc(100vh-32px)] w-[270px] shrink-0 overflow-hidden rounded-box bg-surface lg:block">
         <SidebarBody />
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col gap-3 sm:gap-4">
-        <header className="flex items-center gap-2.5 rounded-box bg-white px-3 py-2.5 sm:gap-3 sm:px-6 sm:py-3">
+        <header className="flex items-center gap-2.5 rounded-box bg-surface px-3 py-2.5 sm:gap-3 sm:px-6 sm:py-3">
           <span className="lg:hidden"><Logo compact /></span>
           <div className="min-w-0 flex-1">
             <p className="truncate text-[10.5px] uppercase leading-[14px] tracking-wide text-ink-3 sm:text-[12px] sm:leading-[16px]">{user?.role === "revendeur" ? "Espace revendeur" : "Back-office"}</p>
@@ -157,6 +158,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
               <Messages2 size={19} variant="Bold" />
               {nMsgs > 0 && <span className={dot}>{nMsgs}</span>}
             </Link>
+            <ThemeToggle className={circle} />
             <Link href={ROUTES.admin.notifications} aria-label="Notifications" className={circle}>
               <Notification size={19} variant="Bold" />
               {nNotifs > 0 && <span className={dot}>{nNotifs}</span>}

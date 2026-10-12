@@ -242,7 +242,7 @@ export function ChatWindow({ conversationId, onBack, className }: Props) {
   return (
     <section className={cn("flex min-h-0 flex-col", className)} aria-label="Conversation">
       {/* ───── En-tête (collant) ───── */}
-      <header className="relative z-10 flex shrink-0 items-center gap-1.5 border-b border-line-3 bg-white py-2 pl-1.5 pr-2 pt-[max(8px,env(safe-area-inset-top))] sm:gap-3 sm:px-5 sm:py-3 lg:pt-3">
+      <header className="relative z-10 flex shrink-0 items-center gap-1.5 border-b border-line-3 bg-surface py-2 pl-1.5 pr-2 pt-[max(8px,env(safe-area-inset-top))] sm:gap-3 sm:px-5 sm:py-3 lg:pt-3">
         {onBack && (
           <button onClick={onBack} aria-label="Retour aux conversations" className="grid size-11 shrink-0 place-items-center rounded-full transition-colors active:bg-chip lg:hidden">
             <ArrowLeft2 size={22} />
@@ -298,7 +298,7 @@ export function ChatWindow({ conversationId, onBack, className }: Props) {
         <div
           ref={scroller}
           onScroll={onScroll}
-          className="h-full space-y-2 overflow-y-auto overscroll-contain bg-[linear-gradient(180deg,#fff,rgba(226,228,235,.35))] px-3 py-4 sm:px-6 sm:py-5"
+          className="h-full space-y-2 overflow-y-auto overscroll-contain bg-[linear-gradient(180deg,var(--color-surface),color-mix(in_srgb,var(--color-chip)_45%,transparent))] px-3 py-4 sm:px-6 sm:py-5"
         >
           {isLoading && (
             <div className="space-y-4">
@@ -315,7 +315,7 @@ export function ChatWindow({ conversationId, onBack, className }: Props) {
               <Fragment key={m.id}>
                 {newDay && (
                   <div className="flex justify-center py-2">
-                    <span className="rounded-full bg-white px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-ink-3 ring-1 ring-line-3">{dayLabel(m.timestamp)}</span>
+                    <span className="rounded-full bg-surface px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-ink-3 ring-1 ring-line-3">{dayLabel(m.timestamp)}</span>
                   </div>
                 )}
                 <MessageBubble message={m} mine={m.sender.id === myId} showSender={showSender} onOpenImage={setLightbox} isBuyer={isBuyer} />
@@ -344,13 +344,13 @@ export function ChatWindow({ conversationId, onBack, className }: Props) {
       </div>
 
       {/* ───── Zone de saisie (ancrée en bas) ───── */}
-      <footer className="shrink-0 border-t border-line-3 bg-white px-3 pb-[max(10px,env(safe-area-inset-bottom))] pt-2.5 sm:p-4">
+      <footer className="shrink-0 border-t border-line-3 bg-surface px-3 pb-[max(10px,env(safe-area-inset-bottom))] pt-2.5 sm:p-4">
         <AnimatePresence>
           {preview && (
             <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden">
               <div className="relative mb-3 inline-block">
                 <Image src={preview} alt="Aperçu" width={96} height={96} unoptimized className="size-20 rounded-box object-cover sm:size-24" />
-                <button onClick={() => setFile(null)} aria-label="Retirer l'image" className="absolute -right-2 -top-2 grid size-8 place-items-center rounded-full bg-white text-danger shadow-sm">
+                <button onClick={() => setFile(null)} aria-label="Retirer l'image" className="absolute -right-2 -top-2 grid size-8 place-items-center rounded-full bg-surface text-danger shadow-sm">
                   <CloseCircle size={24} variant="Bold" />
                 </button>
               </div>

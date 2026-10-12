@@ -22,7 +22,7 @@ export function ReviewSummary({ reviews }: { reviews: Review[] }) {
           return (
             <li key={n} className="flex items-center gap-3 text-[12px]">
               <span className="w-8 shrink-0 font-semibold">{n} ★</span>
-              <span className="h-2 flex-1 overflow-hidden rounded-full bg-white">
+              <span className="h-2 flex-1 overflow-hidden rounded-full bg-surface">
                 <motion.span initial={{ width: 0 }} whileInView={{ width: `${pct}%` }} viewport={{ once: true }} transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }} className="block h-full rounded-full bg-star" />
               </span>
               <span className="w-6 text-right text-ink-2">{count}</span>

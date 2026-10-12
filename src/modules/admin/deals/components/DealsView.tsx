@@ -24,8 +24,8 @@ const iconBtn = "grid size-11 place-items-center rounded-full bg-chip text-ink-2
 
 const STATUS: Record<DealStatus, { label: string; className: string }> = {
   live: { label: "En cours", className: "bg-primary text-white" },
-  scheduled: { label: "Programmée", className: "bg-sun text-ink" },
-  ended: { label: "Terminée", className: "bg-line-3 text-ink-2" },
+  scheduled: { label: "Programmée", className: "bg-sun text-on-light" },
+  ended: { label: "Terminée", className: "bg-line-3 text-ink" },
 };
 
 const FILTERS: { value: DealStatus | "all"; label: string }[] = [
@@ -63,7 +63,7 @@ function DealRow({ deal, onEdit, onDelete }: { deal: AdminDeal; onEdit: () => vo
           <p className="flex flex-wrap items-center gap-2">
             <span className="text-[15px] font-bold leading-[19px]">{name}</span>
             <span className={cn("rounded-full px-2 py-0.5 text-[10px] font-bold uppercase", status.className)}>{status.label}</span>
-            {!deal.isActive && <span className="rounded-full bg-line-3 px-2 py-0.5 text-[10px] font-bold uppercase text-ink-2">Désactivée</span>}
+            {!deal.isActive && <span className="rounded-full bg-line-3 px-2 py-0.5 text-[10px] font-bold uppercase text-ink">Désactivée</span>}
           </p>
           <p className="mt-1 text-[14px]">
             <strong className="text-primary">{formatPrice(deal.dealPrice)}</strong>

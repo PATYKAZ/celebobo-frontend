@@ -17,7 +17,7 @@ interface Props {
 }
 
 const STATUS = {
-  pending: { label: "En attente de réponse du client", icon: Timer1, cls: "bg-star/15 text-[#b87400]" },
+  pending: { label: "En attente de réponse du client", icon: Timer1, cls: "bg-star/15 text-warn" },
   accepted: { label: "Acceptée", icon: TickCircle, cls: "bg-primary-100 text-primary-dark" },
   refused: { label: "Refusée", icon: CloseCircle, cls: "bg-danger-100 text-danger" },
   superseded: { label: "Remplacée par une nouvelle proposition", icon: Timer1, cls: "bg-chip text-ink-3" },
@@ -40,7 +40,7 @@ export function PriceProposalCard({ meta, canRespond, mine }: Props) {
     );
 
   return (
-    <div className={cn("w-[280px] max-w-full overflow-hidden rounded-xl text-ink shadow-[0_1px_0_rgba(0,0,0,.04)] ring-1 ring-line-3", mine ? "bg-white" : "bg-white")}>
+    <div className={cn("w-[280px] max-w-full overflow-hidden rounded-xl text-ink shadow-[0_1px_0_rgba(0,0,0,.04)] ring-1 ring-line-3", mine ? "bg-surface" : "bg-surface")}>
       <div className="flex items-center gap-2 bg-primary px-3.5 py-2 text-[12px] font-bold uppercase tracking-wide text-white">
         <Money3 size={16} variant="Bold" /> Proposition de prix
       </div>
@@ -57,7 +57,7 @@ export function PriceProposalCard({ meta, canRespond, mine }: Props) {
             </motion.p>
           </div>
           {diff !== 0 && (
-            <span className={cn("rounded-full px-2.5 py-1 text-[12px] font-bold", diff > 0 ? "bg-primary-100 text-primary-dark" : "bg-star/15 text-[#b87400]")}>
+            <span className={cn("rounded-full px-2.5 py-1 text-[12px] font-bold", diff > 0 ? "bg-primary-100 text-primary-dark" : "bg-star/15 text-warn")}>
               {diff > 0 ? "−" : "+"}
               {formatPrice(Math.abs(diff))} / unité
             </span>

@@ -126,14 +126,14 @@ export function SearchBar({ className, compact }: { className?: string; compact?
 
   return (
     <form ref={box} onSubmit={submit} role="search" className={cn("relative scroll-mt-20", className)}>
-      <div className="flex h-[48px] overflow-hidden rounded-pill bg-white sm:h-[45px]">
+      <div className="flex h-[48px] overflow-hidden rounded-pill bg-surface sm:h-[45px]">
         {!compact && (
           <div className="relative hidden w-[143px] shrink-0 sm:block">
             <select
               aria-label="Catégorie"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="h-full w-full appearance-none rounded-l-[4px] bg-white pl-3 pr-8 text-[13px] font-bold leading-[19.5px] text-[#212529] outline-hidden"
+              className="h-full w-full appearance-none rounded-l-[4px] bg-surface pl-3 pr-8 text-[13px] font-bold leading-[19.5px] text-ink outline-hidden"
             >
               <option value="">Catégories</option>
               {categories?.map((c) => (
@@ -142,7 +142,7 @@ export function SearchBar({ className, compact }: { className?: string; compact?
                 </option>
               ))}
             </select>
-            <ArrowDown2 size={11} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#343A40]" />
+            <ArrowDown2 size={11} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-ink-2" />
           </div>
         )}
         <input
@@ -162,7 +162,7 @@ export function SearchBar({ className, compact }: { className?: string; compact?
           aria-autocomplete="list"
           aria-activedescendant={active >= 0 ? `${uid}-${options[active]?.id}` : undefined}
           autoComplete="off"
-          className="min-w-0 flex-1 bg-white px-4 text-[16px] text-ink outline-hidden placeholder:text-ink-3 sm:border-l sm:border-line-3 sm:px-3 sm:text-[13px]"
+          className="min-w-0 flex-1 bg-surface px-4 text-[16px] text-ink outline-hidden placeholder:text-ink-3 sm:border-l sm:border-line-3 sm:px-3 sm:text-[13px]"
         />
         {q && (
           <button
@@ -172,12 +172,12 @@ export function SearchBar({ className, compact }: { className?: string; compact?
               setQ("");
               inputRef.current?.focus();
             }}
-            className="grid w-8 shrink-0 place-items-center bg-white text-ink-3 hover:text-ink"
+            className="grid w-8 shrink-0 place-items-center bg-surface text-ink-3 hover:text-ink"
           >
             <CloseCircle size={16} variant="Bold" />
           </button>
         )}
-        <button type="submit" aria-label="Lancer la recherche" className="grid w-14 shrink-0 place-items-center bg-white text-ink transition-colors hover:text-primary active:text-primary sm:w-12">
+        <button type="submit" aria-label="Lancer la recherche" className="grid w-14 shrink-0 place-items-center bg-surface text-ink transition-colors hover:text-primary active:text-primary sm:w-12">
           <SearchNormal1 size={16} variant="Bold" />
         </button>
       </div>
@@ -192,7 +192,7 @@ export function SearchBar({ className, compact }: { className?: string; compact?
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 6 }}
             transition={{ duration: 0.15 }}
-            className="absolute inset-x-0 top-full z-50 mt-2 max-h-[420px] overflow-y-auto rounded-box border border-line-3 bg-white p-2 shadow-[0_12px_40px_rgba(0,0,0,.14)]"
+            className="absolute inset-x-0 top-full z-50 mt-2 max-h-[420px] overflow-y-auto rounded-box border border-line-3 bg-surface p-2 shadow-[0_12px_40px_rgba(0,0,0,.14)]"
           >
             {!typing && (
               <li role="presentation" className="flex items-center justify-between px-3 pb-1 pt-1 text-[11px] font-bold uppercase tracking-wider text-ink-3">

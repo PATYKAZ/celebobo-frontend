@@ -54,7 +54,7 @@ export function TabBar({ items, onMore, moreActive, moreBadge, hideOn }: Props) 
   const cell = "relative flex flex-1 flex-col items-center justify-center gap-0.5 pt-1.5 text-[10.5px] font-semibold leading-[14px] transition-colors active:scale-95";
 
   return (
-    <nav aria-label="Navigation principale" className="fixed inset-x-0 bottom-0 z-50 border-t border-line-3 bg-white/95 pb-safe-b backdrop-blur-xl lg:hidden">
+    <nav aria-label="Navigation principale" className="fixed inset-x-0 bottom-0 z-50 border-t border-line-3 bg-surface/95 pb-safe-b backdrop-blur-xl lg:hidden">
       <div className="mx-auto flex h-16 max-w-[640px] items-stretch px-1">
         {items.map((t) => {
           const active = isActive(t);

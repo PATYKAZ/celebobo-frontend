@@ -22,7 +22,7 @@ interface Props<P extends string> {
 /** Bloc blanc de graphique : titre, période, légende. Mobile : titre puis légende (wrap) puis période pleine largeur. */
 export function ChartCard<P extends string = string>({ title, subtitle, periods, period, onPeriodChange, legend, children, className, delay = 0 }: Props<P>) {
   return (
-    <Reveal delay={delay} className={cn("min-w-0 rounded-box bg-white p-4 sm:p-[26px]", className)}>
+    <Reveal delay={delay} className={cn("min-w-0 rounded-box bg-surface p-4 sm:p-[26px]", className)}>
       <div className="mb-4 flex flex-col gap-3 sm:mb-5 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between">
         <div className="min-w-0">
           <h2 className="text-[16px] font-bold leading-[21.6px] sm:text-[18px]">{title}</h2>

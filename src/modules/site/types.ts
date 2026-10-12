@@ -40,9 +40,9 @@ export const supportHours = (s: Pick<SiteSettings, "supportAlwaysOpen" | "openin
 
 /** Libellé et pastille de chaque moyen de paiement (codes de l'API). */
 export const PAYMENT_METHODS: Record<string, { label: string; cls: string }> = {
-  orange_money: { label: "Orange Money", cls: "bg-[#FF7900] text-white" },
+  orange_money: { label: "Orange Money", cls: "bg-[#FF7900] text-on-light" },
   airtel_money: { label: "Airtel Money", cls: "bg-[#E40000] text-white" },
-  mpesa: { label: "M-Pesa", cls: "bg-[#2AAE4A] text-white" },
+  mpesa: { label: "M-Pesa", cls: "bg-[#2AAE4A] text-on-light" },
   cash: { label: "Cash", cls: "bg-ink-dark text-white" },
   card: { label: "Carte bancaire", cls: "bg-info text-white" },
 };

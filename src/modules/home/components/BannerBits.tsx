@@ -7,17 +7,17 @@ import { getPricing } from "@/modules/products/utils";
 import type { HomeBanner } from "../types";
 
 /**
- * Couleurs d'une bannière selon son ton. Image claire : voile clair et texte sombre sur desktop ; sur mobile,
- * PhotoBanner pose un voile sombre et repasse les textes `text-ink*` en blanc.
+ * Couleurs d'une bannière selon son ton. Image claire : voile clair et texte foncé (fixe, mode sombre compris) sur
+ * desktop ; sur mobile, PhotoBanner pose un voile sombre et repasse les textes `text-on-light*` en blanc.
  */
 export function bannerTone(b: Pick<HomeBanner, "tone">, darkOverlay: string) {
   const light = b.tone === "light";
   return {
     overlay: light ? "from-white/90 via-white/55 to-transparent" : darkOverlay,
-    text: light ? "text-ink" : "text-white",
-    muted: light ? "text-ink-2" : "text-white/80",
-    price: light ? "text-sun sm:text-danger" : "text-sun",
-    strike: light ? "text-ink-3" : "text-white/70",
+    text: light ? "text-on-light" : "text-white",
+    muted: light ? "text-on-light-2" : "text-white/80",
+    price: light ? "text-sun sm:text-[#c4261d]" : "text-sun",
+    strike: light ? "text-on-light-2" : "text-white/70",
   };
 }
 

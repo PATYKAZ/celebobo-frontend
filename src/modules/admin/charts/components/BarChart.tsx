@@ -97,7 +97,7 @@ function VBars({ data, height: heightProp, color, lineColor, format, title, line
         )}
       </svg>
       {hover != null && (
-        <div className="pointer-events-none absolute top-0 z-10 -translate-x-1/2 rounded-box border border-line-3 bg-white px-3 py-2 text-[12px] shadow-[0_8px_30px_rgba(0,0,0,.12)]" style={{ left: Math.min(Math.max(P.l + slot * hover + slot / 2, 70), width - 70) }}>
+        <div className="pointer-events-none absolute top-0 z-10 -translate-x-1/2 rounded-box border border-line-3 bg-surface px-3 py-2 text-[12px] shadow-[0_8px_30px_rgba(0,0,0,.12)]" style={{ left: Math.min(Math.max(P.l + slot * hover + slot / 2, 70), width - 70) }}>
           <p className="font-bold">{data[hover].label}</p>
           <p className="text-ink-2">{format(data[hover].value)}</p>
           {data[hover].line != null && <p className="text-ink-2">{lineLabel ?? "Ligne"} : {format(data[hover].line as number)}</p>}

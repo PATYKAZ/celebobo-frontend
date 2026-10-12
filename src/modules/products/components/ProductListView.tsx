@@ -47,7 +47,7 @@ export function ProductListView({ locked, emptyExtra }: Props) {
       <BottomSheet open={drawer} onClose={() => setDrawer(false)} title="Filtres" maxVh={90}>
         <div className="pt-1">{filters}</div>
         {/* actions collées en bas de la feuille */}
-        <div className="sticky bottom-0 -mx-5 mt-3 flex gap-2.5 border-t border-line-3 bg-white px-5 pb-safe pt-3">
+        <div className="sticky bottom-0 -mx-5 mt-3 flex gap-2.5 border-t border-line-3 bg-surface px-5 pb-safe pt-3">
           {activeCount > 0 && (
             <Button variant="chip" onClick={reset} upper={false} className="shrink-0">
               Réinitialiser

@@ -24,9 +24,9 @@ const iconBtn = "grid size-11 place-items-center rounded-full bg-chip text-ink-2
 
 const STATUS: Record<BannerStatus, { label: string; className: string }> = {
   live: { label: "En ligne", className: "bg-primary text-white" },
-  scheduled: { label: "Programmée", className: "bg-sun text-ink" },
-  expired: { label: "Terminée", className: "bg-line-3 text-ink-2" },
-  off: { label: "Inactive", className: "bg-line-3 text-ink-2" },
+  scheduled: { label: "Programmée", className: "bg-sun text-on-light" },
+  expired: { label: "Terminée", className: "bg-line-3 text-ink" },
+  off: { label: "Inactive", className: "bg-line-3 text-ink" },
 };
 
 const dateFmt = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
@@ -128,7 +128,7 @@ function Content() {
                 <li key={b.id} className={cn("flex flex-col gap-3 rounded-box border border-line-3 p-3 sm:flex-row sm:items-center sm:p-4", status.label !== "En ligne" && "bg-chip/50")}>
                   <div className={cn("relative w-full shrink-0 overflow-hidden rounded-md bg-page sm:w-[200px]", slot.aspect)}>
                     {b.image && <Image src={b.image} alt="" fill sizes="(min-width:640px) 200px, 100vw" className="object-cover" />}
-                    <span className="absolute left-2 top-2 grid size-6 place-items-center rounded-full bg-white text-[12px] font-bold text-primary-dark shadow-sm">{i + 1}</span>
+                    <span className="absolute left-2 top-2 grid size-6 place-items-center rounded-full bg-surface text-[12px] font-bold text-primary-dark shadow-sm">{i + 1}</span>
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="flex flex-wrap items-center gap-2">

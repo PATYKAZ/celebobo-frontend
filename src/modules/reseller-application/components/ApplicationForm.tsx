@@ -75,7 +75,7 @@ export function ApplicationForm() {
           <Input label="E-mail" type="email" required value={form.email} onChange={(e) => set("email", e.target.value)} error={errors.email} leftIcon={<Sms size={17} />} autoComplete="email" inputMode="email" autoCapitalize="none" enterKeyHint="next" />
           <Input label="Ville" required value={form.city} onChange={(e) => set("city", e.target.value)} placeholder="Ex. Bukavu, Goma" error={errors.city} leftIcon={<Location size={17} />} wrapperClassName="sm:col-span-2" />
           <Textarea label="Parlez-nous de votre projet" required value={form.motivation} onChange={(e) => set("motivation", e.target.value)} error={errors.motivation} placeholder="Votre expérience de la vente, votre réseau, vos objectifs…" wrapperClassName="sm:col-span-2" rows={5} maxLength={2000} />
-          <div className="sticky bottom-[calc(var(--tabbar-h)+8px)] z-10 -mx-4 bg-white/90 px-4 py-2 backdrop-blur-md sm:static sm:col-span-2 sm:mx-0 sm:bg-transparent sm:p-0 sm:backdrop-blur-none">
+          <div className="sticky bottom-[calc(var(--tabbar-h)+8px)] z-10 -mx-4 bg-surface/90 px-4 py-2 backdrop-blur-md sm:static sm:col-span-2 sm:mx-0 sm:bg-transparent sm:p-0 sm:backdrop-blur-none">
             <Button type="submit" size="lg" loading={submit.isPending} fullWidth>Envoyer ma candidature</Button>
           </div>
           <p className="text-[12px] text-ink-3 sm:col-span-2">Gratuit et sans engagement. Vos informations ne sont utilisées que pour traiter votre candidature.</p>

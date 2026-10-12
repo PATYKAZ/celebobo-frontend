@@ -34,7 +34,7 @@ export function GoogleButton({ next = ROUTES.home, label = "Continuer avec Googl
       <button
         type="button"
         onClick={onClick}
-        className="flex h-12 w-full items-center justify-center gap-3 sm:h-[45px] rounded-box border border-line bg-white text-[14px] font-semibold transition-all hover:border-ink-3 hover:bg-page/50 active:scale-[0.98]"
+        className="flex h-12 w-full items-center justify-center gap-3 sm:h-[45px] rounded-box border border-line bg-surface text-[14px] font-semibold transition-all hover:border-ink-3 hover:bg-page/50 active:scale-[0.98]"
       >
         <GoogleLogo /> {label}
       </button>

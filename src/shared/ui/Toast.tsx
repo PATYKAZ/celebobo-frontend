@@ -36,7 +36,7 @@ export function Toaster() {
         closeButtonAriaLabel: "Fermer",
         classNames: {
           toast:
-            "group relative flex w-full items-start gap-3 rounded-box border-l-4 border-info bg-white p-4 pr-10 font-sans text-ink shadow-[0_8px_30px_rgba(0,0,0,.12)] sm:w-[360px]",
+            "group relative flex w-full items-start gap-3 rounded-box border-l-4 border-info bg-surface p-4 pr-10 font-sans text-ink shadow-[0_8px_30px_rgba(0,0,0,.12)] sm:w-[360px]",
           success: "border-primary",
           error: "border-danger",
           info: "border-info",

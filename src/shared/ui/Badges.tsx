@@ -50,7 +50,7 @@ export function Pill({ tone = "green", children, className }: { tone?: Tone; chi
 export function StatusDot({ tone, children }: { tone: "green" | "orange" | "red" | "gray" | "blue"; children: ReactNode }) {
   const map = {
     green: "bg-primary-100 text-primary-dark",
-    orange: "bg-star/15 text-[#b87400]",
+    orange: "bg-star/15 text-warn",
     red: "bg-danger-100 text-danger",
     gray: "bg-chip text-ink-2",
     blue: "bg-info/10 text-info",

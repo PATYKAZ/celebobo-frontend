@@ -106,7 +106,7 @@ function AllCommissions({ data }: { data?: CommissionsOverview }) {
     <>
       <PageHeader title="Commissions" description={data ? `${data.asOfLabel} · mois en cours : ${data.monthLabel}` : "Commissions des revendeurs : gagnées, payées, restant dû."} />
       <Totals data={data} />
-      <div className="overflow-hidden rounded-box bg-white">
+      <div className="overflow-hidden rounded-box bg-surface">
         <DataTable columns={columns} rows={data?.rows} loading={!data} rowKey={(r) => r.resellerId} onRowClick={(r) => setHistory(r.resellerId)} skeletonRows={8} />
       </div>
 

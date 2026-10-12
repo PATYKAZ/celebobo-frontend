@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import { SITE } from "@/config/site";
 import { siteUrl } from "@/config/site-url";
 import { Providers } from "@/shared/providers/Providers";
+import { THEME_SCRIPT } from "@/shared/theme/theme";
 import "./globals.css";
 
 /**
@@ -30,6 +31,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
+  // ajustée au thème choisi par useTheme
   themeColor: "#226D68",
   width: "device-width",
   initialScale: 1,
@@ -38,7 +40,11 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr" className={alibabaSans.variable}>
+    // le script de thème pose la classe `dark` avant l'hydratation
+    <html lang="fr" className={alibabaSans.variable} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+      </head>
       <body>
         <Providers>{children}</Providers>
       </body>

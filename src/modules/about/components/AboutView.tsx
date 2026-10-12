@@ -48,7 +48,7 @@ export function AboutView() {
           <div className="relative h-[220px] sm:h-[320px] lg:h-[520px]">
             <ParallaxImage src="/images/about/team-1.jpg" alt="L'équipe Celebobo au travail" fill sizes="(min-width:1024px) 650px, 100vw" priority wrapperClassName="absolute inset-0" />
             <Float slow className="absolute bottom-6 left-6 hidden sm:block">
-              <div className="rounded-box bg-white p-4 shadow-[0_12px_40px_rgba(0,0,0,.15)]">
+              <div className="rounded-box bg-surface p-4 shadow-[0_12px_40px_rgba(0,0,0,.15)]">
                 <p className="text-[28px] font-extrabold leading-none text-primary"><CountUp to={4.9} decimals={1} /></p>
                 <p className="mt-1 text-[12px] text-ink-2">Note moyenne clients</p>
               </div>
@@ -61,7 +61,7 @@ export function AboutView() {
       <RevealGroup className="grid grid-cols-2 gap-2.5 sm:gap-4 lg:grid-cols-4">
         {STATS.map(({ value, suffix, label, icon: Icon }) => (
           <RevealItem key={label} className="min-w-0">
-            <TiltCard className="h-full rounded-box bg-white p-4 text-center sm:p-7">
+            <TiltCard className="h-full rounded-box bg-surface p-4 text-center sm:p-7">
               <span className="mx-auto grid size-11 place-items-center rounded-full bg-primary-100 text-primary-dark sm:size-14"><Icon size={22} variant="Bold" /></span>
               <p className="mt-3 text-[26px] font-extrabold leading-[32px] sm:mt-4 sm:text-[34px] sm:leading-[40px]"><CountUp to={value} suffix={suffix} /></p>
               <p className="mt-1 text-[12px] leading-[16px] text-ink-2 sm:text-[13px]">{label}</p>

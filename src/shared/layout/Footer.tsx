@@ -61,7 +61,7 @@ export function Footer() {
   const { data: categories } = useCategories();
   const categoryLinks: [string, string][] = (categories ?? []).filter((c) => c.productsCount > 0).map((c) => [c.name, ROUTES.category(c.slug)]);
   return (
-    <footer className="mt-6 bg-white lg:mt-[40px]">
+    <footer className="mt-6 bg-surface lg:mt-[40px]">
       <div className="container pt-8 lg:pt-[79px]">
         <div className="grid gap-8 lg:grid-cols-[293px_repeat(4,1fr)] lg:gap-8">
           {/* Colonne 1 */}

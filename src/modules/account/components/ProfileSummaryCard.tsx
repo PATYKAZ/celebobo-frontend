@@ -73,7 +73,7 @@ export function ProfileSummaryCard({ user, profile, previewAvatar, onPickAvatar 
             <p className="text-[12px] font-semibold uppercase text-ink-2">Mon code revendeur</p>
             <div className="mt-2 flex items-center justify-between gap-3">
               <span className="text-[26px] font-extrabold leading-[32px] tracking-[0.2em] text-primary sm:text-[30px] sm:leading-[36px]">{code}</span>
-              <button onClick={copy} aria-label="Copier le code" className={cn("grid size-11 place-items-center rounded-full transition-colors active:scale-90 sm:size-10", copied ? "bg-primary text-white" : "bg-white text-ink hover:bg-primary hover:text-white")}>
+              <button onClick={copy} aria-label="Copier le code" className={cn("grid size-11 place-items-center rounded-full transition-colors active:scale-90 sm:size-10", copied ? "bg-primary text-white" : "bg-surface text-ink hover:bg-primary hover:text-white")}>
                 {copied ? <TickCircle size={18} variant="Bold" /> : <Copy size={18} />}
               </button>
             </div>

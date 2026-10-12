@@ -20,7 +20,7 @@ import type { Brand } from "../types";
 function Wordmark({ brand }: { brand: Brand }) {
   return (
     <span
-      className={cn("inline-block select-none text-[#b4b7c0] grayscale transition-all duration-300 hover:-translate-y-1 hover:scale-110 hover:grayscale-0", brand.className)}
+      className={cn("inline-block select-none text-[#b4b7c0] grayscale transition-all duration-300 hover:-translate-y-1 hover:scale-110 hover:grayscale-0 dark:brightness-[2.2] dark:hover:brightness-125", brand.className)}
       onMouseEnter={(e) => (e.currentTarget.style.color = brand.color)}
       onMouseLeave={(e) => (e.currentTarget.style.color = "")}
     >

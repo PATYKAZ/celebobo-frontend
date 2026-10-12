@@ -120,7 +120,7 @@ export function OrderDetailView({ number }: { number: string }) {
           <div className="mt-5 md:hidden"><OrderProgress status={order.status} /></div>
           <div className="mt-8 hidden md:block"><OrderTimeline order={order} /></div>
           {order.status === "attente" && (
-            <p className="mt-4 rounded-md bg-star/10 px-3.5 py-3 text-[13px] leading-[19px] text-[#8a5a00] sm:mt-6 sm:px-4">
+            <p className="mt-4 rounded-md bg-star/10 px-3.5 py-3 text-[13px] leading-[19px] text-warn sm:mt-6 sm:px-4">
               Votre commande est <strong>en attente d&apos;assignation</strong>. Vous pouvez encore l&apos;annuler tant qu&apos;un revendeur ne l&apos;a pas prise en charge.
             </p>
           )}
@@ -193,7 +193,7 @@ export function OrderDetailView({ number }: { number: string }) {
       {order.conversationId && (
         <>
           <div aria-hidden className="h-20 lg:hidden" />
-          <div className="fixed inset-x-0 bottom-tabbar z-40 border-t border-line-3 bg-white/95 px-4 pb-3 pt-3 backdrop-blur-xl sm:hidden">
+          <div className="fixed inset-x-0 bottom-tabbar z-40 border-t border-line-3 bg-surface/95 px-4 pb-3 pt-3 backdrop-blur-xl sm:hidden">
             <Button href={ROUTES.conversation(order.conversationId)} size="lg" fullWidth leftIcon={<Messages2 size={17} variant="Bold" />}>Ouvrir la discussion</Button>
           </div>
         </>

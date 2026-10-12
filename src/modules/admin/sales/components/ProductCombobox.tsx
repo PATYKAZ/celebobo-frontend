@@ -44,7 +44,7 @@ export function ProductCombobox({ value, onChange, error, label, compact }: Prop
           <span className="min-w-0 flex-1">
             <span className="block truncate text-[13px] font-bold">{p.name}</span>
             <span className="text-[12px] text-ink-3">
-              {p.category} · <span className={p.stock <= 0 ? "text-danger" : p.stock <= p.stockThreshold ? "text-[#b87400]" : ""}>stock {p.stock}</span>
+              {p.category} · <span className={p.stock <= 0 ? "text-danger" : p.stock <= p.stockThreshold ? "text-warn" : ""}>stock {p.stock}</span>
             </span>
           </span>
           <span className="text-[13px] font-semibold text-primary">{formatPrice(getPricing(p).current)}</span>

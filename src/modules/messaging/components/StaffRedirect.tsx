@@ -19,7 +19,7 @@ export function StaffRedirect({ to, children }: { to: string; children: ReactNod
 
   if (isStaff) {
     return (
-      <div className="grid min-h-[320px] place-items-center rounded-box bg-white">
+      <div className="grid min-h-[320px] place-items-center rounded-box bg-surface">
         <Spinner size={28} />
       </div>
     );

@@ -27,7 +27,7 @@ export function Breadcrumb({ items, className }: { items: Crumb[]; className?: s
                     {c.label}
                   </Link>
                 )}
-                {!last && <span className="mx-2 shrink-0 text-[#6C757D]">/</span>}
+                {!last && <span className="mx-2 shrink-0 text-ink-3">/</span>}
               </li>
             );
           })}

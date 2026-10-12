@@ -54,7 +54,7 @@ export function NotificationItem({ notification: n, role, resellers }: Props) {
   };
 
   return (
-    <motion.li layout initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, x: -30 }} className={cn("relative rounded-box border p-4 transition-colors sm:p-5", n.isRead ? "border-line-3 bg-white" : "border-primary/30 bg-primary-50")}>
+    <motion.li layout initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, x: -30 }} className={cn("relative rounded-box border p-4 transition-colors sm:p-5", n.isRead ? "border-line-3 bg-surface" : "border-primary/30 bg-primary-50")}>
       <div className="flex items-start gap-3 sm:gap-4">
         <span className={cn("relative grid size-11 shrink-0 place-items-center rounded-full", n.type === "order" ? "bg-primary-100 text-primary-dark" : "bg-info/10 text-info")}>
           <Icon size={22} variant="Bold" />
@@ -77,7 +77,7 @@ export function NotificationItem({ notification: n, role, resellers }: Props) {
           <Link
             href={n.link || ROUTES.notifications}
             onClick={() => !n.isRead && markRead.mutate(n.id)}
-            className="group inline-flex min-h-12 w-full items-center justify-center gap-1.5 rounded-box bg-white text-[14px] font-bold text-primary ring-1 ring-primary/30 transition-all active:scale-[0.98] sm:min-h-0 sm:w-auto sm:bg-transparent sm:text-[13px] sm:ring-0"
+            className="group inline-flex min-h-12 w-full items-center justify-center gap-1.5 rounded-box bg-surface text-[14px] font-bold text-primary ring-1 ring-primary/30 transition-all active:scale-[0.98] sm:min-h-0 sm:w-auto sm:bg-transparent sm:text-[13px] sm:ring-0"
           >
             {n.conversationId ? "Ouvrir la discussion" : "Voir la commande"} <ArrowRight2 size={15} className="transition-transform group-hover:translate-x-1" />
           </Link>

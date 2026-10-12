@@ -31,7 +31,7 @@ export function InviteCard({ code, invitedCount }: { code: string; invitedCount?
 
   return (
     <Reveal>
-      <Block pad="sm" className="overflow-hidden bg-[radial-gradient(120%_120%_at_0%_0%,rgba(34,109,104,.09),transparent_60%),#fff]">
+      <Block pad="sm" className="overflow-hidden bg-[radial-gradient(120%_120%_at_0%_0%,rgba(34,109,104,.09),transparent_60%),var(--color-surface)]">
         <div className="flex items-start justify-between gap-3">
           <div>
             <h2 className="text-[16px] font-bold leading-[22px]">Mon code d&apos;invitation</h2>
@@ -45,7 +45,7 @@ export function InviteCard({ code, invitedCount }: { code: string; invitedCount?
         </button>
 
         <div className="mt-4 flex flex-col items-center gap-4 sm:flex-row">
-          <div className="grid aspect-square w-[min(200px,62vw)] shrink-0 place-items-center rounded-box bg-white p-3 ring-1 ring-line-3 sm:size-[116px] sm:w-[116px] sm:p-2">
+          <div className="grid aspect-square w-[min(200px,62vw)] shrink-0 place-items-center rounded-box bg-surface p-3 ring-1 ring-line-3 sm:size-[116px] sm:w-[116px] sm:p-2">
             {link ? <QRCodeSVG value={link} size={256} level="M" fgColor="#18534F" className="h-full w-full" /> : <span className="size-full animate-pulse rounded-sm bg-chip" />}
           </div>
           <div className="w-full min-w-0 flex-1 space-y-2.5 sm:space-y-2">

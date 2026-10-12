@@ -98,9 +98,9 @@ export interface ConvertOrderInput {
 }
 
 export const METHOD_STYLE: Record<PaymentMethod, { label: string; cls: string }> = {
-  OrangeMoney: { label: "Orange Money", cls: "bg-[#FF7900] text-white" },
+  OrangeMoney: { label: "Orange Money", cls: "bg-[#FF7900] text-on-light" },
   AirtelMoney: { label: "Airtel Money", cls: "bg-[#E40000] text-white" },
-  "M-Pesa": { label: "M-Pesa", cls: "bg-[#2AAE4A] text-white" },
+  "M-Pesa": { label: "M-Pesa", cls: "bg-[#2AAE4A] text-on-light" },
   Cash: { label: "Cash", cls: "bg-ink-dark text-white" },
 };
 

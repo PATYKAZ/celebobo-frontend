@@ -74,7 +74,7 @@ export function AddressPicker({ form, errors, set, onPick, cities = [], zone }: 
           onClick={() => onPick(null)}
           className={cn("flex min-h-[72px] flex-col items-center justify-center gap-2 rounded-box border-2 border-dashed p-4 sm:min-h-[120px] text-[14px] font-bold transition-all", isNew ? "border-primary bg-primary-50 text-primary-dark" : "border-line hover:border-primary/60 hover:text-primary")}
         >
-          <span className="grid size-10 place-items-center rounded-full bg-white"><Add size={20} /></span>
+          <span className="grid size-10 place-items-center rounded-full bg-surface"><Add size={20} /></span>
           Nouvelle adresse
         </button>
       </div>
