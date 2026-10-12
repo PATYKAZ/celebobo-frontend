@@ -3,7 +3,8 @@ import { money, toProduct, type ProductCardDto, type ProductDetailDto } from "@/
 import type { Product } from "@/modules/products/types";
 import { BRANDS, buildHomeContent } from "../content";
 import { getPricing } from "@/modules/products/utils";
-import type { Brand, HeroSlide, HomeBanner, HomeCatalog, HomeContent, HomeDeal, HomePicks } from "../types";
+import { toCategory, type CategoryDto } from "@/modules/categories/services/categories.mapper";
+import type { Brand, HeroSlide, HomeBanner, HomeBlock, HomeCatalog, HomeContent, HomeDeal, HomePicks } from "../types";
 
 /** Bannière gérée dans le back-office (après camelCase). */
 export interface BannerDto {
@@ -114,13 +115,45 @@ export interface HomeDto {
   newArrivals: ProductCardDto[];
   bestSellers: ProductCardDto[];
   categories: { category: { slug: string }; products: ProductCardDto[] }[];
+  /** blocs catégorie choisis dans le back-office, dans l'ordre ; vide → blocs par défaut */
+  sections?: SectionDto[];
+}
+
+/** Section de l'accueil (après camelCase) : catégorie avec ses sous-catégories, ses meilleures ventes. */
+export interface SectionDto {
+  id: number;
+  kind: "showcase" | "column";
+  title: string;
+  category: CategoryDto;
+  products: ProductCardDto[];
+}
+
+/** Sections → blocs : chaque grand bloc seul, les colonnes qui se suivent sur une même rangée. */
+export function toBlocks(sections: SectionDto[]): HomeBlock[] {
+  const blocks: HomeBlock[] = [];
+  for (const s of sections) {
+    const category = toCategory(s.category);
+    if (s.kind === "showcase") {
+      const showcase = { title: s.title || category.name, categorySlug: category.slug, viewAllHref: ROUTES.category(category.slug), related: [], subcategories: category.children };
+      blocks.push({ kind: "showcase", key: `s${s.id}`, showcase });
+      continue;
+    }
+    const column = { categorySlug: category.slug, title: s.title || category.name, category };
+    const last = blocks.at(-1);
+    if (last?.kind === "columns") last.columns.push(column);
+    else blocks.push({ kind: "columns", key: `c${s.id}`, columns: [column] });
+  }
+  return blocks;
 }
 
 export const toCatalog = (dto: HomeDto): HomeCatalog => ({
   deals: dto.deals.map(toProduct),
   newArrivals: dto.newArrivals.map(toProduct),
   bestSellers: dto.bestSellers.map(toProduct),
-  byCategory: Object.fromEntries(dto.categories.map((block) => [block.category.slug, block.products.map(toProduct)])),
+  byCategory: Object.fromEntries([
+    ...dto.categories.map((block) => [block.category.slug, block.products.map(toProduct)] as const),
+    ...(dto.sections ?? []).map((s) => [s.category.slug, s.products.map(toProduct)] as const),
+  ]),
 });
 
 /**
@@ -176,5 +209,6 @@ export function toHomeContent(dto: HomeDto): HomeContent {
     picks: pickHomeProducts(catalog, dto.deal ? toDeal(dto.deal) : null, placements),
     brands: brandsInCatalog(catalog),
     slides: slides.length ? slides : content.slides,
+    blocks: dto.sections?.length ? toBlocks(dto.sections) : content.blocks,
   };
 }

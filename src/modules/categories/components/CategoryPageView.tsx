@@ -11,6 +11,7 @@ import { Skeleton } from "@/shared/ui/Skeleton";
 import { ProductListView } from "@/modules/products/components/ProductListView";
 import { useCategory } from "../hooks/useCategories";
 import { CategoryBanner } from "./CategoryBanner";
+import { SubcategoryChips } from "./SubcategoryChips";
 
 export function CategoryPageView({ slug }: { slug: string }) {
   const { data: category, isLoading, isError } = useCategory(slug);
@@ -43,8 +44,9 @@ export function CategoryPageView({ slug }: { slug: string }) {
 
   return (
     <>
-      <Breadcrumb items={[{ label: "Produits", href: ROUTES.products }, { label: category.name }]} />
+      <Breadcrumb items={[{ label: "Produits", href: ROUTES.products }, ...(category.parent ? [{ label: category.parent.name, href: ROUTES.category(category.parent.slug) }] : []), { label: category.name }]} />
       <CategoryBanner category={category} />
+      <SubcategoryChips category={category} />
       <Suspense fallback={<Block><Skeleton className="h-[600px] w-full" /></Block>}>
         <ProductListView locked={{ category: category.slug }} />
       </Suspense>

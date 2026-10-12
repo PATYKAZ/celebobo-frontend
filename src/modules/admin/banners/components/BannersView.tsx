@@ -12,7 +12,8 @@ import { Select, Switch } from "@/shared/ui/Form";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { toast } from "@/shared/ui/Toast";
 import { PermissionGuard } from "@/modules/auth/hooks/useCan";
-import { useCategories } from "@/modules/categories/hooks/useCategories";
+import { useFlatCategories } from "@/modules/categories/hooks/useCategories";
+import { useAdminHomeSections } from "../../home-sections/hooks/useAdminHomeSections";
 import { ConfirmDialog } from "../../ui/ConfirmDialog";
 import { PageHeader } from "../../ui/PageHeader";
 import { useAdminBanners, useDeleteBanner, useMoveBanner, usePatchBanner } from "../hooks/useAdminBanners";
@@ -47,7 +48,8 @@ export function BannersView() {
 
 function Content() {
   const { data, isLoading, isError, error, refetch } = useAdminBanners();
-  const { data: categories } = useCategories();
+  const { data: categories } = useFlatCategories();
+  const { data: sections } = useAdminHomeSections();
   const [placement, setPlacement] = useState("hero");
   const [editing, setEditing] = useState<AdminBanner | "new" | null>(null);
   const [toDelete, setToDelete] = useState<AdminBanner | null>(null);
@@ -55,7 +57,14 @@ function Content() {
   const move = useMoveBanner();
   const del = useDeleteBanner();
   const all = data ?? [];
-  const slots = bannerSlots((slug) => categories?.find((c) => c.slug === slug)?.name ?? slug);
+  const categoryById = (id: number) => categories?.find((c) => c.id === id);
+  const slots = bannerSlots(
+    (slug) => categories?.find((c) => c.slug === slug)?.name ?? slug,
+    (sections ?? []).filter((s) => s.isActive).flatMap((s) => {
+      const c = categoryById(s.categoryId);
+      return c ? [{ kind: s.kind, slug: c.slug, title: s.title || c.name }] : [];
+    }),
+  );
   const slot = slots.find((x) => x.value === placement) ?? slots[0];
   const list = all.filter((b) => b.placement === placement);
   const busy = patch.isPending || move.isPending;

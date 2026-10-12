@@ -8,7 +8,8 @@ import { ROUTES } from "@/config/routes";
 import { cn } from "@/shared/lib/cn";
 import { useFormatPrice } from "@/shared/currency/CurrencyProvider";
 import { useDebounce } from "@/shared/hooks/useDebounce";
-import { useCategories } from "@/modules/categories/hooks/useCategories";
+import { useFlatCategories } from "@/modules/categories/hooks/useCategories";
+import { categoryOptionLabel } from "@/modules/categories/services/categories.mapper";
 import { useProductSuggestions } from "@/modules/products/hooks/useProducts";
 import { useRecentSearches } from "@/modules/search/hooks/useRecentSearches";
 import { useAppRouter } from "@/shared/hooks/useAppRouter";
@@ -44,7 +45,7 @@ export function SearchBar({ className, compact }: { className?: string; compact?
   const formatPrice = useFormatPrice();
   const router = useAppRouter();
   const uid = useId();
-  const { data: categories } = useCategories();
+  const { data: categories } = useFlatCategories();
   const recent = useRecentSearches();
   const [category, setCategory] = useState("");
   const [q, setQ] = useState("");
@@ -137,7 +138,7 @@ export function SearchBar({ className, compact }: { className?: string; compact?
               <option value="">Catégories</option>
               {categories?.map((c) => (
                 <option key={c.id} value={c.slug}>
-                  {c.name}
+                  {categoryOptionLabel(c)}
                 </option>
               ))}
             </select>

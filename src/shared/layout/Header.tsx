@@ -73,17 +73,31 @@ function NavItem({ item }: { item: (typeof NAV)[number] }) {
         "mega" in item ? (
           <div>
             <div className="grid grid-cols-2 gap-1">
-              {categories?.map((c) => (
-                <Link key={c.id} href={ROUTES.category(c.slug)} onClick={close} className="group/i flex items-center gap-3 rounded-md p-2.5 transition-colors hover:bg-chip">
-                  <span className="grid size-9 place-items-center rounded-full bg-chip text-ink transition-colors group-hover/i:bg-primary group-hover/i:text-white">
-                    <CategoryIcon name={c.icon} size={18} />
-                  </span>
-                  <span className="min-w-0">
-                    <span className="block truncate text-[13px] font-semibold leading-[18px]">{c.name}</span>
-                    <span className="text-[11px] text-ink-3">{c.productsCount} produits</span>
-                  </span>
-                </Link>
-              ))}
+              {categories?.map((c) => {
+                const subs = c.children.filter((x) => x.productsCount > 0);
+                return (
+                  <div key={c.id} className="rounded-md p-2.5 transition-colors hover:bg-chip/60">
+                    <Link href={ROUTES.category(c.slug)} onClick={close} className="group/i flex items-center gap-3">
+                      <span className="grid size-9 shrink-0 place-items-center rounded-full bg-chip text-ink transition-colors group-hover/i:bg-primary group-hover/i:text-white">
+                        <CategoryIcon name={c.icon} size={18} />
+                      </span>
+                      <span className="min-w-0">
+                        <span className="block truncate text-[13px] font-semibold leading-[18px] group-hover/i:text-primary">{c.name}</span>
+                        <span className="text-[11px] text-ink-3">{c.productsCount} produits</span>
+                      </span>
+                    </Link>
+                    {subs.length > 0 && (
+                      <p className="mt-1.5 flex flex-wrap gap-x-3 gap-y-1 pl-12 text-[12px]">
+                        {subs.map((x) => (
+                          <Link key={x.id} href={ROUTES.category(x.slug)} onClick={close} className="text-ink-2 hover:text-primary hover:underline">
+                            {x.name}
+                          </Link>
+                        ))}
+                      </p>
+                    )}
+                  </div>
+                );
+              })}
             </div>
             <Link href={ROUTES.products} onClick={close} className="mt-2 block rounded-md bg-primary-50 py-2.5 text-center text-[13px] font-bold text-primary hover:bg-primary hover:text-white">
               Voir tous les produits

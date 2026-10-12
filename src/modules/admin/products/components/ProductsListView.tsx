@@ -18,7 +18,8 @@ import { Input, Select } from "@/shared/ui/Form";
 import { Tabs } from "@/shared/ui/Tabs";
 import { toast } from "@/shared/ui/Toast";
 import { PermissionGuard, useCan } from "@/modules/auth/hooks/useCan";
-import { useCategories } from "@/modules/categories/hooks/useCategories";
+import { useFlatCategories } from "@/modules/categories/hooks/useCategories";
+import { categoryOptionLabel } from "@/modules/categories/services/categories.mapper";
 import { useAdminCategories } from "../../categories/hooks/useAdminCategories";
 import type { Product } from "@/modules/products/types";
 import { getPricing } from "@/modules/products/utils";
@@ -60,7 +61,7 @@ function Content() {
   const canCategories = useCan("categories.manage");
   // les catégories masquées ne sont visibles que de ceux qui gèrent le catalogue
   const { data: adminCategories } = useAdminCategories(canCategories);
-  const { data: shopCategories } = useCategories();
+  const { data: shopCategories } = useFlatCategories();
   const categories = canCategories ? adminCategories : shopCategories;
 
   const [search, setSearch] = useState(params.search ?? "");
@@ -261,7 +262,7 @@ function Content() {
           <ActiveChips chips={chips} />
         </div>
         <FilterSheet open={sheet} onClose={() => setSheet(false)} title="Filtrer les produits" onReset={() => { reset(); setSearch(""); }} resetDisabled={activeCount === 0}>
-          <Select label="Catégorie" value={params.category ? String(params.category) : ""} onChange={(e) => set({ cat: e.target.value })} options={[{ value: "", label: "Toutes les catégories" }, ...(categories ?? []).map((c) => ({ value: c.id, label: c.name }))]} />
+          <Select label="Catégorie" value={params.category ? String(params.category) : ""} onChange={(e) => set({ cat: e.target.value })} options={[{ value: "", label: "Toutes les catégories" }, ...(categories ?? []).map((c) => ({ value: c.id, label: categoryOptionLabel(c) }))]} />
           <div>
             <p className="mb-2 text-[13px] font-semibold">Disponibilité</p>
             <div className="grid grid-cols-3 gap-2">
@@ -283,7 +284,7 @@ function Content() {
             wrapperClassName="w-full sm:w-[200px]"
             value={params.category ? String(params.category) : ""}
             onChange={(e) => set({ cat: e.target.value })}
-            options={[{ value: "", label: "Toutes les catégories" }, ...(categories ?? []).map((c) => ({ value: c.id, label: c.name }))]}
+            options={[{ value: "", label: "Toutes les catégories" }, ...(categories ?? []).map((c) => ({ value: c.id, label: categoryOptionLabel(c) }))]}
           />
           <Toggle active={!!params.onSale} onClick={() => set({ sale: !params.onSale })}>En promo</Toggle>
           <Toggle active={!!params.lowStock} onClick={() => set({ low: !params.lowStock, out: undefined })}>Stock bas</Toggle>

@@ -199,6 +199,11 @@ export const ENDPOINTS = {
       list: "/bo/deals/", // GET ?status=live|scheduled|ended (liste simple) / POST (products.manage)
       detail: (id: number) => `/bo/deals/${id}/`, // PATCH / DELETE
     },
+    homeSections: {
+      list: "/bo/home-sections/", // GET / POST (content.manage)
+      detail: (id: number) => `/bo/home-sections/${id}/`, // PATCH / DELETE
+      reorder: "/bo/home-sections/reorder/", // { ids } dans le nouvel ordre
+    },
     banners: {
       list: "/bo/banners/", // GET ?placement= / POST (responsable, admin : content.manage)
       detail: (id: number) => `/bo/banners/${id}/`, // PATCH / DELETE

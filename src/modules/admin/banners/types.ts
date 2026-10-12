@@ -82,16 +82,35 @@ export interface BannerSlot {
   size: string;
 }
 
-/** Emplacements : fixes, puis un par bloc catégorie et par colonne catégorie de l'accueil. */
-export function bannerSlots(categoryName: (slug: string) => string): BannerSlot[] {
+/** Bloc catégorie de l'accueil (section du back-office, ou bloc par défaut). */
+export interface SlotSection {
+  kind: "showcase" | "column";
+  slug: string;
+  title: string;
+}
+
+/**
+ * Emplacements : fixes, puis un par bloc et par colonne catégorie de l'accueil. `sections` : blocs du back-office
+ * (Blocs de l'accueil) ; vide = blocs par défaut de l'accueil.
+ */
+export function bannerSlots(categoryName: (slug: string) => string, sections: SlotSection[] = []): BannerSlot[] {
   const home = buildHomeContent();
+  const blocks: SlotSection[] = sections.length
+    ? sections
+    : [
+        ...home.showcases.map((s) => ({ kind: "showcase" as const, slug: s.categorySlug, title: s.title })),
+        ...home.columns.map((c) => ({ kind: "column" as const, slug: c.categorySlug, title: categoryName(c.categorySlug) })),
+      ];
   return [
     { value: "hero", label: "Carrousel", where: "Grand visuel défilant en haut de l'accueil.", shown: null, aspect: "aspect-45/16", size: "1800 × 640 px" },
     { value: "hero_mini", label: "Sous le carrousel", where: "Deux petites bannières sous le carrousel.", shown: 2, aspect: "aspect-[8/3]", size: "960 × 360 px" },
     { value: "hero_side", label: "À droite du carrousel", where: "Deux cartes à droite du carrousel (sous le carrousel sur mobile).", shown: 2, aspect: "aspect-[10/7]", size: "900 × 630 px" },
     { value: "deal_side", label: "À côté de l'offre du jour", where: "Trois cartes à côté du bloc « Offres du jour ».", shown: 3, aspect: "aspect-[7/4]", size: "840 × 480 px" },
-    ...home.showcases.map((s) => ({ value: `showcase:${s.categorySlug}`, label: `Bloc « ${s.title} »`, where: `Bannière du bloc « ${s.title} ».`, shown: 1, aspect: "aspect-[3/1]", size: "1500 × 500 px" })),
-    ...home.columns.map((c) => ({ value: `column:${c.categorySlug}`, label: `Colonne « ${categoryName(c.categorySlug)} »`, where: `Bannière de la colonne « ${categoryName(c.categorySlug)} ».`, shown: 1, aspect: "aspect-[2/1]", size: "900 × 450 px" })),
+    ...blocks.map((b) =>
+      b.kind === "showcase"
+        ? { value: `showcase:${b.slug}`, label: `Bloc « ${b.title} »`, where: `Bannière du bloc « ${b.title} ».`, shown: 1, aspect: "aspect-[3/1]", size: "1500 × 500 px" }
+        : { value: `column:${b.slug}`, label: `Colonne « ${b.title} »`, where: `Bannière de la colonne « ${b.title} ».`, shown: 1, aspect: "aspect-[2/1]", size: "900 × 450 px" },
+    ),
   ];
 }
 

@@ -1,4 +1,4 @@
-// Généré par scripts/generate-icons.mjs — ne pas modifier. 115 icônes, variantes Linear / Bold / Bulk.
+// Généré par scripts/generate-icons.mjs — ne pas modifier. 116 icônes, variantes Linear / Bold / Bulk.
 export type { Icon, IconProps, IconVariant } from "./icon";
 export { Add } from "./svg/Add";
 export { ArrowDown } from "./svg/ArrowDown";
@@ -82,6 +82,7 @@ export { ReceiptItem } from "./svg/ReceiptItem";
 export { RecordCircle } from "./svg/RecordCircle";
 export { Refresh2 } from "./svg/Refresh2";
 export { Routing } from "./svg/Routing";
+export { RowVertical } from "./svg/RowVertical";
 export { SearchNormal1 } from "./svg/SearchNormal1";
 export { SearchStatus } from "./svg/SearchStatus";
 export { Send2 } from "./svg/Send2";

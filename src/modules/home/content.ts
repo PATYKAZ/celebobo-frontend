@@ -1,5 +1,5 @@
 import { ROUTES } from "@/config/routes";
-import type { Brand, HomeContent } from "./types";
+import type { Brand, CategoryColumn, HomeBlock, HomeContent, ShowcaseConfig } from "./types";
 
 const p = (n: string) => `/images/products/${n}.jpg`;
 const h = (n: string) => `/images/hero/${n}.jpg`;
@@ -29,7 +29,7 @@ export const BRANDS: Brand[] = [
  * n'est écrit ici : ils viennent tous de l'API (cf. home.mapper → picks, brands).
  */
 export function buildHomeContent(): HomeContent {
-  return {
+  const content: Omit<HomeContent, "blocks"> = {
     catalog: null,
     picks: null,
     placements: null,
@@ -90,4 +90,13 @@ export function buildHomeContent(): HomeContent {
       ],
     },
   };
+  return { ...content, blocks: defaultBlocks(content.showcases, content.columns) };
+}
+
+/** Blocs par défaut (sans section dans le back-office) : les grands blocs, puis une rangée de colonnes. */
+export function defaultBlocks(showcases: ShowcaseConfig[], columns: CategoryColumn[]): HomeBlock[] {
+  return [
+    ...showcases.map((showcase) => ({ kind: "showcase" as const, key: `s-${showcase.categorySlug}`, showcase })),
+    ...(columns.length ? [{ kind: "columns" as const, key: "columns", columns }] : []),
+  ];
 }

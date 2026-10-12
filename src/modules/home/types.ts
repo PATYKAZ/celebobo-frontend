@@ -1,3 +1,4 @@
+import type { Category } from "@/modules/categories/types";
 import type { Product, ProductVariant } from "@/modules/products/types";
 
 export interface HeroSlide {
@@ -51,14 +52,22 @@ export interface ShowcaseConfig {
   title: string;
   categorySlug: string;
   viewAllHref: string;
-  /** catégories affichées dans la grille (slugs), dans l'ordre */
+  /** catégories affichées dans la grille (slugs), dans l'ordre ; ignorées quand la catégorie a des sous-catégories */
   related: string[];
+  /** sous-catégories (section du back-office) */
+  subcategories?: Category[];
 }
 
 /** Colonne catégorie : visuel et nombre d'articles de la catégorie, puis ses 4 produits les plus vendus. */
 export interface CategoryColumn {
   categorySlug: string;
+  /** section du back-office : titre (sinon nom de la catégorie) et catégorie fournis par l'API */
+  title?: string;
+  category?: Category;
 }
+
+/** Bloc de l'accueil, dans l'ordre du back-office : un grand bloc catégorie, ou une rangée de colonnes. */
+export type HomeBlock = { kind: "showcase"; key: string; showcase: ShowcaseConfig } | { kind: "columns"; key: string; columns: CategoryColumn[] };
 
 /** Produits de l'accueil, servis en un seul appel par l'API (`GET /home/`). */
 export interface HomeCatalog {
@@ -112,5 +121,7 @@ export interface HomeContent {
   brands: Brand[] | null;
   showcases: ShowcaseConfig[];
   columns: CategoryColumn[];
+  /** blocs catégorie dans l'ordre d'affichage : sections du back-office, sinon les blocs et colonnes par défaut */
+  blocks: HomeBlock[];
   seo: { title: string; paragraphs: string[] };
 }

@@ -13,6 +13,7 @@ function useInvalidate() {
     qc.invalidateQueries({ queryKey: ["categories"] });
     qc.invalidateQueries({ queryKey: ["products"] });
     qc.invalidateQueries({ queryKey: ["admin", "products"] });
+    qc.invalidateQueries({ queryKey: ["home"] });
   };
 }
 

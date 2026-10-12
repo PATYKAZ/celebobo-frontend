@@ -8,7 +8,7 @@ import { cn } from "@/shared/lib/cn";
 import { Block } from "@/shared/ui/Block";
 import { SectionHeader } from "@/shared/ui/SectionHeader";
 import { Skeleton } from "@/shared/ui/Skeleton";
-import { useCategories } from "@/modules/categories/hooks/useCategories";
+import { useCategories, useFlatCategories } from "@/modules/categories/hooks/useCategories";
 import { useProducts } from "@/modules/products/hooks/useProducts";
 import { productBanner } from "../services/home.mapper";
 import type { HomeBanner, HomeCatalog, ShowcaseConfig } from "../types";
@@ -38,11 +38,16 @@ export function CategoryShowcase({ config, catalog, banner }: { config: Showcase
   const fallback = useProducts({ category: config.categorySlug, ordering: "-sales", pageSize: 10 }, !!catalog && !provided);
   const products = provided ?? fallback.data?.results;
   const isLoading = !catalog || (!provided && fallback.isLoading);
-  const { data: categories } = useCategories();
+  const { data: tree } = useCategories();
+  const { data: categories } = useFlatCategories();
   // bannière de l'admin (`showcase:<catégorie>`), sinon le produit le plus vendu de la catégorie
   const top = products?.find((p) => p.image);
   const shown: HomeBanner | null = banner ?? (top ? { ...productBanner(top, "Acheter"), eyebrow: "Le plus demandé", subtitle: top.description } : null);
-  const tiles = config.related.flatMap((slug) => categories?.find((c) => c.slug === slug && c.productsCount > 0) ?? []);
+  // grille : sous-catégories de la catégorie, sinon les catégories prévues, sinon les autres catégories principales
+  const subs = (config.subcategories ?? categories?.find((c) => c.slug === config.categorySlug)?.children ?? []).filter((c) => c.productsCount > 0);
+  const related = config.related.flatMap((slug) => categories?.find((c) => c.slug === slug && c.productsCount > 0) ?? []);
+  const others = (tree ?? []).filter((c) => c.slug !== config.categorySlug && c.productsCount > 0).slice(0, 6);
+  const tiles = subs.length ? subs : related.length ? related : others;
 
   return (
     <Reveal>

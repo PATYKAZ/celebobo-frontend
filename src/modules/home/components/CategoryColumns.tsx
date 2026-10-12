@@ -9,7 +9,7 @@ import { useFormatPrice } from "@/shared/currency/CurrencyProvider";
 import { Block } from "@/shared/ui/Block";
 import { SectionHeader } from "@/shared/ui/SectionHeader";
 import { Skeleton } from "@/shared/ui/Skeleton";
-import { useCategories } from "@/modules/categories/hooks/useCategories";
+import { useFlatCategories } from "@/modules/categories/hooks/useCategories";
 import { useProducts } from "@/modules/products/hooks/useProducts";
 import { getPricing } from "@/modules/products/utils";
 import type { Category } from "@/modules/categories/types";
@@ -18,7 +18,8 @@ import { BannerPrice, bannerTone } from "./BannerBits";
 import { PhotoBanner } from "./PhotoBanner";
 
 /** Colonne : visuel de la catégorie avec son nombre d'articles, puis ses 4 produits les plus vendus. */
-function Column({ category, catalog, banner, index }: { category: Category; catalog: HomeCatalog; banner?: HomeBanner; index: number }) {
+/** `wide` : colonne seule sur sa rangée, ses 4 produits sur une ligne. */
+function Column({ category, title, catalog, banner, index, wide }: { category: Category; title: string; catalog: HomeCatalog; banner?: HomeBanner; index: number; wide?: boolean }) {
   const formatPrice = useFormatPrice();
   // produits fournis par l'accueil ; appel dédié seulement si la catégorie n'y figure pas
   const provided = catalog.byCategory[category.slug];
@@ -31,7 +32,7 @@ function Column({ category, catalog, banner, index }: { category: Category; cata
   return (
     <Reveal delay={index * 0.1} className="h-full">
       <Block pad="none" className="h-full min-w-0 overflow-hidden px-4 pb-5 pt-4 sm:px-[30px] sm:pb-8 sm:pt-[30px]">
-        <SectionHeader title={category.name} viewAllHref={href} />
+        <SectionHeader title={title} viewAllHref={href} />
         {banner ? (
           <PhotoBanner image={banner.image} href={banner.href} label={banner.title} overlay={tone.overlay} className="mt-4 h-[150px] sm:mt-6 sm:h-[190px]" sizes="(min-width:1280px) 368px, 100vw" contentClassName="flex flex-col justify-center px-[30px]">
             {banner.eyebrow && <p className={cn("text-[10px] uppercase tracking-[0.2em]", tone.muted)}>{banner.eyebrow}</p>}
@@ -49,7 +50,7 @@ function Column({ category, catalog, banner, index }: { category: Category; cata
           </PhotoBanner>
         )}
 
-        <div className="mt-5 grid grid-cols-2 gap-x-4 gap-y-5 border-t border-line-2/30 pt-5 sm:mt-7 sm:gap-x-6 sm:gap-y-7 sm:pt-7">
+        <div className={cn("mt-5 grid grid-cols-2 gap-x-4 gap-y-5 border-t border-line-2/30 pt-5 sm:mt-7 sm:gap-x-6 sm:gap-y-7 sm:pt-7", wide && "md:grid-cols-4")}>
           {!products
             ? Array.from({ length: 4 }, (_, i) => <Skeleton key={i} className="mx-auto size-24 rounded-full sm:size-[120px]" />)
             : products.map((p) => (
@@ -69,13 +70,17 @@ function Column({ category, catalog, banner, index }: { category: Category; cata
 
 /** Colonnes catégories : seules celles qui existent et ont des produits s'affichent. */
 export function CategoryColumns({ columns, catalog, placements }: { columns: CategoryColumn[]; catalog: HomeCatalog | null; placements: Record<string, HomeBanner[]> | null }) {
-  const { data: categories } = useCategories();
-  const shown = columns.flatMap((c) => categories?.find((x) => x.slug === c.categorySlug && x.productsCount > 0) ?? []);
-  if (!catalog || !categories) return null;
+  const { data: categories } = useFlatCategories();
+  // catégorie fournie par la section du back-office, sinon retrouvée par son slug ; sans article, pas de colonne
+  const shown = columns.flatMap((col) => {
+    const category = col.category ?? categories?.find((x) => x.slug === col.categorySlug);
+    return category && category.productsCount > 0 ? [{ category, title: col.title || category.name }] : [];
+  });
+  if (!catalog || !shown.length) return null;
   return (
-    <section className="grid grid-cols-[minmax(0,1fr)] gap-3 sm:gap-4 md:grid-cols-2 xl:grid-cols-3">
-      {shown.map((c, i) => (
-        <Column key={c.slug} category={c} catalog={catalog} banner={placements?.[`column:${c.slug}`]?.[0]} index={i} />
+    <section className={cn("grid grid-cols-[minmax(0,1fr)] gap-3 sm:gap-4", shown.length > 1 && "md:grid-cols-2", shown.length > 2 && "xl:grid-cols-3")}>
+      {shown.map(({ category, title }, i) => (
+        <Column key={category.slug} category={category} title={title} catalog={catalog} banner={placements?.[`column:${category.slug}`]?.[0]} index={i} wide={shown.length === 1} />
       ))}
     </section>
   );

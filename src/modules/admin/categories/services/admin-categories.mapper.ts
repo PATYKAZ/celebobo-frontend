@@ -11,6 +11,7 @@ export interface AdminCategoryDto {
   isActive: boolean;
   position: number;
   productsCount: number;
+  parentId?: number | null;
   seoTitle?: string;
   seoDescription?: string;
 }
@@ -27,4 +28,8 @@ export const toAdminCategory = (dto: AdminCategoryDto): AdminCategory => ({
   order: dto.position,
   seoTitle: dto.seoTitle || null,
   seoDescription: dto.seoDescription || null,
+  parentId: dto.parentId ?? null,
+  // reconstitués par categoryTree
+  parent: null,
+  children: [],
 });

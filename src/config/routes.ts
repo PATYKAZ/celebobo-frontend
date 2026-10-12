@@ -53,6 +53,7 @@ export const ROUTES = {
     audit: "/admin/audit",
     settings: "/admin/reglages",
     banners: "/admin/bannieres",
+    homeSections: "/admin/accueil",
     deals: "/admin/offres",
     invites: "/admin/invites",
   },

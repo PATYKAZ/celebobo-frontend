@@ -12,7 +12,8 @@ import { Block } from "@/shared/ui/Block";
 import { Button } from "@/shared/ui/Button";
 import { Input, Select, Switch, Textarea } from "@/shared/ui/Form";
 import { toast } from "@/shared/ui/Toast";
-import { useCategories } from "@/modules/categories/hooks/useCategories";
+import { useFlatCategories } from "@/modules/categories/hooks/useCategories";
+import { categoryOptionLabel } from "@/modules/categories/services/categories.mapper";
 import type { Product } from "@/modules/products/types";
 import { useSaveProduct } from "../hooks/useAdminProducts";
 import {
@@ -47,7 +48,7 @@ interface Props {
 
 export function ProductForm({ product }: Props) {
   const router = useAppRouter();
-  const { data: categories } = useCategories();
+  const { data: categories } = useFlatCategories();
   const save = useSaveProduct(product ?? null);
 
   const [v, setV] = useState<ProductFormValues>(() => (product ? productToForm(product) : EMPTY_FORM));
@@ -157,7 +158,7 @@ export function ProductForm({ product }: Props) {
 
       <Section title="Catégorie & badge" delay={0.03}>
         <div className="grid gap-5 sm:grid-cols-2">
-          <Select label="Catégorie" required value={v.categoryId} onChange={(e) => set("categoryId", e.target.value)} error={errors.categoryId} options={[{ value: "", label: "Choisir…" }, ...(categories ?? []).map((c) => ({ value: c.id, label: c.name }))]} />
+          <Select label="Catégorie" required value={v.categoryId} onChange={(e) => set("categoryId", e.target.value)} error={errors.categoryId} options={[{ value: "", label: "Choisir…" }, ...(categories ?? []).map((c) => ({ value: c.id, label: categoryOptionLabel(c) }))]} />
           <Select label="Badge" value={v.badge} onChange={(e) => set("badge", e.target.value as ProductBadgeCode | "")} options={BADGE_OPTIONS} />
         </div>
       </Section>

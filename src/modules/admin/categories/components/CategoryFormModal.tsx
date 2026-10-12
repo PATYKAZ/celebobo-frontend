@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { cn } from "@/shared/lib/cn";
 import { ApiError, getErrorMessage } from "@/shared/lib/api";
 import { Button } from "@/shared/ui/Button";
-import { Input, Switch, Textarea } from "@/shared/ui/Form";
+import { Input, Select, Switch, Textarea } from "@/shared/ui/Form";
 import { Modal } from "@/shared/ui/Overlay";
 import { toast } from "@/shared/ui/Toast";
 import { CategoryIcon } from "@/modules/categories/components/CategoryIcon";
@@ -16,19 +16,24 @@ interface Props {
   open: boolean;
   /** null = création */
   category: AdminCategory | null;
-  existingNames: string[];
+  /** toutes les catégories (noms déjà pris, parents possibles) */
+  all: AdminCategory[];
   onClose: () => void;
 }
 
-export function CategoryFormModal({ open, category, existingNames, onClose }: Props) {
+export function CategoryFormModal({ open, category, all, onClose }: Props) {
   const save = useSaveCategory(category?.id ?? null);
   const [v, setV] = useState<CategoryFormValues>(EMPTY_CATEGORY_FORM);
   const [image, setImage] = useState<CategoryImageValue>({ url: null });
-  const [errors, setErrors] = useState<{ name?: string; image?: string }>({});
+  const [errors, setErrors] = useState<{ name?: string; image?: string; parentId?: string }>({});
+  const existingNames = all.map((c) => c.name);
+  // deux niveaux au plus : une catégorie qui a des sous-catégories reste principale
+  const hasChildren = !!category && all.some((c) => c.parentId === category.id);
+  const parents = all.filter((c) => c.parentId == null && c.id !== category?.id);
 
   useEffect(() => {
     if (!open) return;
-    setV(category ? { name: category.name, description: category.description ?? "", icon: category.icon?.toLowerCase() ?? "mobile", active: category.active, seoTitle: category.seoTitle ?? "", seoDescription: category.seoDescription ?? "" } : EMPTY_CATEGORY_FORM);
+    setV(category ? { name: category.name, description: category.description ?? "", icon: category.icon?.toLowerCase() ?? "mobile", active: category.active, parentId: category.parentId, seoTitle: category.seoTitle ?? "", seoDescription: category.seoDescription ?? "" } : EMPTY_CATEGORY_FORM);
     setImage({ url: category?.image ?? null });
     setErrors({});
   }, [open, category]);
@@ -50,7 +55,8 @@ export function CategoryFormModal({ open, category, existingNames, onClose }: Pr
           onClose();
         },
         onError: (err) => {
-          if (err instanceof ApiError && err.status === 400 && err.fieldErrors.name) setErrors({ name: String(Array.isArray(err.fieldErrors.name) ? err.fieldErrors.name[0] : err.fieldErrors.name) });
+          const first = (x: unknown) => (x == null ? undefined : String(Array.isArray(x) ? x[0] : x));
+          if (err instanceof ApiError && err.status === 400 && (err.fieldErrors.name || err.fieldErrors.parentId)) setErrors({ name: first(err.fieldErrors.name), parentId: first(err.fieldErrors.parentId) });
           else toast.error("Enregistrement impossible", getErrorMessage(err));
         },
       },
@@ -61,6 +67,15 @@ export function CategoryFormModal({ open, category, existingNames, onClose }: Pr
     <Modal open={open} onClose={onClose} title={category ? "Modifier la catégorie" : "Nouvelle catégorie"} className="max-w-[560px]">
       <div className="grid gap-4">
         <Input label="Nom" required value={v.name} onChange={(e) => { setV({ ...v, name: e.target.value }); setErrors((x) => ({ ...x, name: undefined })); }} error={errors.name} placeholder="Ex : Smartphones" />
+        <Select
+          label="Catégorie parente"
+          value={v.parentId ?? ""}
+          disabled={hasChildren}
+          onChange={(e) => { setV({ ...v, parentId: e.target.value ? Number(e.target.value) : null }); setErrors((x) => ({ ...x, parentId: undefined })); }}
+          hint={hasChildren ? "Elle a des sous-catégories : elle reste une catégorie principale." : v.parentId ? "Sous-catégorie : ses produits comptent aussi dans la catégorie parente." : "Aucune : catégorie principale, affichée dans le menu."}
+          error={errors.parentId}
+          options={[{ value: "", label: "Aucune (catégorie principale)" }, ...parents.map((c) => ({ value: c.id, label: c.name }))]}
+        />
         <Textarea label="Description" className="min-h-[80px]" value={v.description} onChange={(e) => setV({ ...v, description: e.target.value })} />
         {/* limites du modèle Django ; vides → nom et description (cf. categoryMetadata) */}
         <Input label="Titre SEO" maxLength={70} value={v.seoTitle} onChange={(e) => setV({ ...v, seoTitle: e.target.value })} placeholder={v.name ? `${v.name} — achat en ligne` : "Facultatif"} hint={`Affiché par Google · ${v.seoTitle.length}/70`} />
