@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { Bag2 } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import { SITE } from "@/config/site";
 import { cn } from "@/shared/lib/cn";
+import { LogoMark } from "./LogoMark";
 
 /**
  * Logo de la marque, redessiné d'après celui que les clients connaissent : « CeLE BoBO » (casse d'origine)
@@ -18,14 +18,11 @@ function Wordmark({ light }: { light?: boolean }) {
   );
 }
 
-/** Logo Celebobo : carré arrondi vert (sac) + logo de la marque. */
+/** Logo Celebobo : pictogramme (sac aux deux traits) + logo de la marque. */
 export function Logo({ className, light, compact }: { className?: string; light?: boolean; compact?: boolean }) {
   return (
     <Link href={ROUTES.home} aria-label={`${SITE.name} — accueil`} className={cn("group inline-flex items-center gap-2.5", className)}>
-      <span className="relative grid size-10 place-items-center rounded-[12px] bg-primary text-white transition-transform duration-500 group-hover:rotate-[-8deg] group-hover:scale-105">
-        <Bag2 size={22} variant="Bold" />
-        <span className="absolute -right-0.5 -top-0.5 size-2.5 rounded-full bg-sun ring-2 ring-surface" />
-      </span>
+      <LogoMark className="size-10 shrink-0 transition-transform duration-500 group-hover:rotate-[-8deg] group-hover:scale-105" />
       {!compact && <Wordmark light={light} />}
     </Link>
   );
