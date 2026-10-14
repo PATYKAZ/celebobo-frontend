@@ -177,9 +177,11 @@ export function SearchBar({ className, compact }: { className?: string; compact?
             <CloseCircle size={16} variant="Bold" />
           </button>
         )}
-        <button type="submit" aria-label="Lancer la recherche" className="grid w-14 shrink-0 place-items-center bg-surface text-ink transition-colors hover:text-primary active:text-primary sm:w-12">
-          <SearchNormal1 size={16} variant="Bold" />
-        </button>
+        <span className="grid shrink-0 place-items-center bg-surface pr-1.5">
+          <button type="submit" aria-label="Lancer la recherche" className="grid size-9 place-items-center rounded-full bg-primary text-white transition-all hover:bg-primary-dark active:scale-90">
+            <SearchNormal1 size={17} />
+          </button>
+        </span>
       </div>
 
       <AnimatePresence>
