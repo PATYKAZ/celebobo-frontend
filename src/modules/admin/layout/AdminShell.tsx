@@ -140,7 +140,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
   const dot = "absolute -right-1 -top-1 grid min-w-[18px] place-items-center rounded-full bg-danger px-1 text-[10px] leading-[18px] text-white ring-2 ring-white";
 
   return (
-    <div className="flex min-h-[calc(var(--dvh)*100)] w-full gap-4 p-3 lg:px-0 pb-[calc(var(--tabbar-h)+12px)] sm:p-4 sm:pb-[calc(var(--tabbar-h)+16px)]">
+    <div className="flex min-h-[calc(var(--dvh)*100)] w-full gap-4 p-3 pb-[calc(var(--tabbar-h)+12px)] sm:p-4 sm:pb-[calc(var(--tabbar-h)+16px)]">
       <aside className="sticky top-4 hidden h-[calc(calc(var(--dvh)*100)-32px)] w-[270px] shrink-0 overflow-hidden rounded-box bg-surface lg:block">
         <SidebarBody />
       </aside>

@@ -5,14 +5,17 @@
 /* Mode sombre : classe `dark` sur <html>, posée avant l'affichage (cf. ThemeScript) ; `dark:` des composants shadcn. */
 @custom-variant dark (&:is(.dark *));
 
-/* Pleine largeur à toutes les tailles : aucune marge latérale sur grand écran ; petite gouttière sur mobile et tablette. */
+/*
+  Pleine largeur à toutes les tailles. Sur grand écran, bordure de 16 px : le même espace qu'entre deux blocs,
+  pour que les blocs arrondis ne soient pas coupés par le bord de l'écran.
+*/
 @utility container {
   width: 100%;
   /* annule les paliers du container de Tailwind (jusqu'à 1536 px) */
   max-width: none !important;
   padding-inline: 15px;
   @media (width >= 1024px) {
-    padding-inline: 0;
+    padding-inline: 16px;
   }
 }
 
