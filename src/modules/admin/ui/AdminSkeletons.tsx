@@ -186,7 +186,7 @@ export function AdminInboxSkeleton() {
  */
 export function AdminShellSkeleton() {
   return (
-    <div className="flex min-h-[calc(var(--dvh)*100)] w-full gap-4 p-3 lg:px-0 sm:p-4">
+    <div className="flex min-h-[calc(var(--dvh)*100)] w-full gap-4 p-3 sm:p-4">
       <div aria-hidden className="sticky top-4 hidden h-[calc(calc(var(--dvh)*100)-32px)] w-[270px] shrink-0 flex-col gap-3 rounded-box bg-surface p-5 lg:flex">
         <Skeleton className="h-10 w-40" />
         <div className="mt-4 flex flex-col gap-3">
