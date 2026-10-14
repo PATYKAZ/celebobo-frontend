@@ -22,9 +22,10 @@ export function ThemeSwitch({ compact, fullWidth, className }: { compact?: boole
           <span className="sr-only">{value === "system" ? "Thème de l'appareil" : `Thème ${LABEL[value].toLowerCase()}`}</span>
         </>
       ) : (
-        <>
+        // icône et libellé côte à côte (les SVG sont en display:block)
+        <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
           <Icon size={15} variant="Bold" aria-hidden /> {LABEL[value]}
-        </>
+        </span>
       ),
     };
   });
