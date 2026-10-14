@@ -488,7 +488,7 @@ export function ChatWindow({ conversationId, onBack, className }: Props) {
             <button onClick={() => setLightbox(null)} aria-label="Fermer" className="absolute right-3 top-[max(12px,env(safe-area-inset-top))] grid size-11 place-items-center rounded-full bg-white/15 text-white backdrop-blur-sm active:scale-90">
               <CloseCircle size={26} />
             </button>
-            <motion.img initial={{ scale: 0.92 }} animate={{ scale: 1 }} src={lightbox} alt="Pièce jointe agrandie" className="max-h-[88dvh] max-w-full rounded-box object-contain" onClick={(e) => e.stopPropagation()} />
+            <motion.img initial={{ scale: 0.92 }} animate={{ scale: 1 }} src={lightbox} alt="Pièce jointe agrandie" className="max-h-[calc(var(--dvh)*88)] max-w-full rounded-box object-contain" onClick={(e) => e.stopPropagation()} />
           </motion.div>
         )}
       </AnimatePresence>

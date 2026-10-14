@@ -160,7 +160,7 @@ export function AdminDetailSkeleton() {
 export function AdminInboxSkeleton() {
   return (
     <SkeletonRoot label="Chargement des messages">
-      <Block pad="none" className="lg:grid lg:h-[calc(100vh-150px)] lg:grid-cols-[360px_1fr]">
+      <Block pad="none" className="lg:grid lg:h-[calc(calc(var(--dvh)*100)-150px)] lg:grid-cols-[360px_1fr]">
         <div className="flex flex-col gap-1 p-3 lg:border-r lg:border-line-3">
           <Skeleton className="mb-2 h-11 w-full rounded-box" />
           {Array.from({ length: 7 }, (_, i) => (
@@ -186,8 +186,8 @@ export function AdminInboxSkeleton() {
  */
 export function AdminShellSkeleton() {
   return (
-    <div className="mx-auto flex min-h-screen max-w-[1760px] gap-4 p-3 sm:p-4">
-      <div aria-hidden className="sticky top-4 hidden h-[calc(100vh-32px)] w-[270px] shrink-0 flex-col gap-3 rounded-box bg-surface p-5 lg:flex">
+    <div className="flex min-h-[calc(var(--dvh)*100)] w-full gap-4 p-3 lg:px-0 sm:p-4">
+      <div aria-hidden className="sticky top-4 hidden h-[calc(calc(var(--dvh)*100)-32px)] w-[270px] shrink-0 flex-col gap-3 rounded-box bg-surface p-5 lg:flex">
         <Skeleton className="h-10 w-40" />
         <div className="mt-4 flex flex-col gap-3">
           {Array.from({ length: 10 }, (_, i) => <Skeleton key={i} className="h-9 w-full rounded-box" />)}

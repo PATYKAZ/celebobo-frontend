@@ -201,8 +201,8 @@ export function AssistantLauncher() {
 
       {/* Mobile : feuille ancrée en bas */}
       {!desktop && (
-        <BottomSheet open={open} onClose={() => setOpen(false)} title="Assistant Celebobo" maxVh={88} className="h-[min(86dvh,720px)]">
-          <AssistantPanel className="-mx-5 h-full max-h-[calc(86dvh-70px)]" onNavigate={() => setOpen(false)} />
+        <BottomSheet open={open} onClose={() => setOpen(false)} title="Assistant Celebobo" maxVh={88} className="h-[min(calc(var(--dvh)*86),720px)]">
+          <AssistantPanel className="-mx-5 h-full max-h-[calc(calc(var(--dvh)*86)-70px)]" onNavigate={() => setOpen(false)} />
         </BottomSheet>
       )}
 
@@ -217,7 +217,7 @@ export function AssistantLauncher() {
             exit={{ opacity: 0, y: 16, scale: 0.97 }}
             transition={{ type: "spring", stiffness: 340, damping: 30 }}
             className={cn(
-              "fixed bottom-[168px] z-61 flex h-[min(560px,calc(100dvh-210px))] w-[390px] flex-col overflow-hidden rounded-box bg-surface shadow-[0_20px_60px_rgba(0,0,0,.28)]",
+              "fixed bottom-[168px] z-61 flex h-[min(560px,calc(calc(var(--dvh)*100)-210px))] w-[390px] flex-col overflow-hidden rounded-box bg-surface shadow-[0_20px_60px_rgba(0,0,0,.28)]",
               side === "r" ? "right-5" : "left-5",
             )}
           >

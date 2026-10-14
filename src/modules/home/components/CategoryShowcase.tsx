@@ -54,7 +54,7 @@ export function CategoryShowcase({ config, catalog, banner }: { config: Showcase
       <Block pad="none" className="min-w-0 overflow-hidden px-3 pb-4 pt-4 sm:px-[30px] sm:pb-8 sm:pt-[30px]">
         <SectionHeader title={config.title} viewAllHref={config.viewAllHref} />
 
-        <div className="mt-4 grid grid-cols-[minmax(0,1fr)] gap-4 border-b border-line-2/25 pb-5 sm:mt-6 sm:gap-6 sm:pb-7 lg:grid-cols-[minmax(0,605px)_minmax(0,1fr)] lg:gap-[46px]">
+        <div className="mt-4 grid grid-cols-[minmax(0,1fr)] gap-4 border-b border-line-2/25 pb-5 sm:mt-6 sm:gap-6 sm:pb-7 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-[46px]">
           {shown ? (
             <ShowcaseBanner b={shown} />
           ) : (

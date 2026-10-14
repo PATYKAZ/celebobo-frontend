@@ -27,7 +27,7 @@ export function ProductCarousel({ products, loading, perView = 5 }: Props) {
       <SideArrow dir="prev" onClick={() => swiper?.slidePrev()} disabled={edge.begin} />
       <SideArrow dir="next" onClick={() => swiper?.slideNext()} disabled={edge.end} />
       {loading || !products ? (
-        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5">
+        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 min-[1600px]:grid-cols-6 min-[2000px]:grid-cols-7">
           {Array.from({ length: perView }, (_, i) => (
             <ProductCardSkeleton key={i} />
           ))}
@@ -41,7 +41,7 @@ export function ProductCarousel({ products, loading, perView = 5 }: Props) {
           onSlideChange={sync}
           onResize={sync}
           slidesPerView={1.6}
-          breakpoints={{ 480: { slidesPerView: 2.2 }, 640: { slidesPerView: 3 }, 1024: { slidesPerView: 4 }, 1280: { slidesPerView: perView } }}
+          breakpoints={{ 480: { slidesPerView: 2.2 }, 640: { slidesPerView: 3 }, 1024: { slidesPerView: 4 }, 1280: { slidesPerView: perView }, 1600: { slidesPerView: perView + 1 }, 2000: { slidesPerView: perView + 2 } }}
           spaceBetween={0}
           className="w-full overflow-hidden!"
         >

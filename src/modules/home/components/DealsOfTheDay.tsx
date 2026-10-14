@@ -99,7 +99,7 @@ function DealCard({ deal }: { deal: HomeDeal }) {
   const addToCart = () => add(product, 1, variant ? { variantId: variant.id, variantLabel: variant.label, priceDelta: deal.dealPrice - product.price } : undefined);
 
   return (
-    <div className="grid grid-cols-[minmax(0,1fr)] gap-5 rounded-b-box bg-surface p-4 sm:gap-6 sm:p-[30px] lg:grid-cols-[minmax(0,441px)_minmax(0,1fr)] lg:gap-[34px]">
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-5 rounded-b-box bg-surface p-4 sm:gap-6 sm:p-[30px] lg:grid-cols-[minmax(0,45fr)_minmax(0,55fr)] lg:gap-[34px]">
       {/* Galerie */}
       <div className="flex min-w-0 flex-col-reverse gap-3 sm:flex-row">
         <div className="no-scrollbar flex shrink-0 gap-2.5 overflow-x-auto sm:w-[35px] sm:flex-col sm:gap-4 sm:overflow-visible">
@@ -190,7 +190,7 @@ export function DealsOfTheDay({ content }: { content?: HomeContent }) {
   const formatPrice = useFormatPrice();
 
   return (
-    <section className="grid grid-cols-[minmax(0,1fr)] gap-3 sm:gap-4 xl:grid-cols-[minmax(0,971px)_minmax(0,1fr)]">
+    <section className="grid grid-cols-[minmax(0,1fr)] gap-3 sm:gap-4 xl:grid-cols-[minmax(0,3.3fr)_minmax(0,1fr)]">
       <div>
         <div className="flex h-14 items-center rounded-t-box bg-primary px-4 sm:h-[62px] sm:px-[30px]">
           <SectionHeader title="Offres du jour" viewAllHref={`${ROUTES.products}?onSale=1`} onPrimary className="w-full" />
