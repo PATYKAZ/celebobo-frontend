@@ -70,7 +70,7 @@ export function AssignResellerModal({ order, onClose }: Props) {
       <Input placeholder="Rechercher par nom ou code…" inputMode="search" value={q} onChange={(e) => setQ(e.target.value)} leftIcon={<SearchNormal1 size={16} />} aria-label="Rechercher un revendeur" />
       <p className="mt-3 text-[12px] text-ink-3">{data ? `${data.filter((r) => r.active).length} revendeurs actifs sur ${data.length}` : "Chargement…"} · triés par disponibilité puis par charge</p>
 
-      <ul className="mt-2 max-h-[40vh] space-y-1 overflow-y-auto overscroll-contain pr-1 sm:max-h-[340px]">
+      <ul className="mt-2 max-h-[calc(var(--dvh)*40)] space-y-1 overflow-y-auto overscroll-contain pr-1 sm:max-h-[340px]">
         {isLoading && Array.from({ length: 5 }, (_, i) => <Skeleton key={i} className="h-14 w-full" />)}
         {list.map((r) => {
           const reason = disabledReason(r);

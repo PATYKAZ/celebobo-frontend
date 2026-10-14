@@ -17,9 +17,10 @@ interface Props {
 }
 
 const COLS = {
-  3: "grid-cols-2 md:grid-cols-3",
-  4: "grid-cols-2 md:grid-cols-3 xl:grid-cols-4",
-  5: "grid-cols-2 md:grid-cols-3 xl:grid-cols-5",
+  // pleine largeur : colonnes supplémentaires sur très grand écran
+  3: "grid-cols-2 md:grid-cols-3 min-[1600px]:grid-cols-4 min-[2000px]:grid-cols-5",
+  4: "grid-cols-2 md:grid-cols-3 xl:grid-cols-4 min-[1600px]:grid-cols-5 min-[2000px]:grid-cols-6",
+  5: "grid-cols-2 md:grid-cols-3 xl:grid-cols-5 min-[1600px]:grid-cols-6 min-[2000px]:grid-cols-7",
 };
 
 /** Grille responsive de cartes produit (2 → 3 → 4/5 colonnes), avec apparition en cascade. */

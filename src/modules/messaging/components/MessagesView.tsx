@@ -53,14 +53,14 @@ export function MessagesView({ initialId = null, embedded }: Props) {
   const fullScreen = !!activeId;
   const body = (
     <Block pad="none" className="max-lg:overflow-visible max-lg:rounded-box lg:overflow-hidden">
-      <div className={cn("lg:grid lg:min-h-[560px] lg:grid-cols-[360px_1fr]", embedded ? "lg:h-[calc(100vh-150px)]" : "lg:h-[calc(100vh-120px)] lg:max-h-[760px]")}>
+      <div className={cn("lg:grid lg:min-h-[560px] lg:grid-cols-[360px_1fr]", embedded ? "lg:h-[calc(calc(var(--dvh)*100)-150px)]" : "lg:h-[calc(calc(var(--dvh)*100)-120px)] lg:max-h-[760px]")}>
         <div className={cn("min-h-0 border-line-3 lg:flex lg:flex-col lg:border-r", activeId ? "hidden" : "block")}>
           <ConversationList activeId={activeId} onSelect={select} inbox={embedded} />
         </div>
         <div className={cn("min-h-0", activeId ? "block" : "hidden lg:flex lg:flex-col")}>
           {activeId ? (
             <div
-              className={cn("flex min-h-0 flex-col bg-surface", fullScreen && "max-lg:fixed max-lg:inset-x-0 max-lg:top-0 max-lg:z-60 max-lg:h-dvh lg:h-full")}
+              className={cn("flex min-h-0 flex-col bg-surface", fullScreen && "max-lg:fixed max-lg:inset-x-0 max-lg:top-0 max-lg:z-60 max-lg:h-[calc(var(--dvh)*100)] lg:h-full")}
               style={vv ? { top: vv.top, height: vv.height } : undefined}
             >
               <ChatWindow key={activeId} conversationId={activeId} onBack={() => select(null)} className="h-full min-h-0 flex-1" />

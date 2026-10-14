@@ -5,14 +5,14 @@
 /* Mode sombre : classe `dark` sur <html>, posée avant l'affichage (cf. ThemeScript) ; `dark:` des composants shadcn. */
 @custom-variant dark (&:is(.dark *));
 
+/* Pleine largeur à toutes les tailles : aucune marge latérale sur grand écran ; petite gouttière sur mobile et tablette. */
 @utility container {
-  margin-inline: auto;
+  width: 100%;
+  /* annule les paliers du container de Tailwind (jusqu'à 1536 px) */
+  max-width: none !important;
   padding-inline: 15px;
-  @media (width >= --theme(--breakpoint-xs)) {
-    max-width: none;
-  }
-  @media (width >= 1330px) {
-    max-width: 1330px;
+  @media (width >= 1024px) {
+    padding-inline: 0;
   }
 }
 
@@ -389,6 +389,28 @@
     :root {
       --tabbar-h: calc(64px + env(safe-area-inset-bottom));
     }
+  }
+}
+
+/*
+  Échelle mobile : les tailles des composants sont en px (textes, icônes, hauteurs). Sous 1024 px, toute l'interface
+  est réduite d'un même facteur (zoom, standard CSS) : 90 % sur tablette, 85 % sur téléphone. La mise en page
+  mobile reste celle des points de rupture (calculés sur la vraie largeur de l'écran).
+*/
+/* --dvh : 1 % de la hauteur d'écran, compensé du zoom (les unités vh/dvh sont réduites avec le reste) */
+:root {
+  --dvh: 1dvh;
+}
+@media (max-width: 1023px) {
+  :root {
+    zoom: 0.9;
+    --dvh: calc(1dvh / 0.9);
+  }
+}
+@media (max-width: 639px) {
+  :root {
+    zoom: 0.85;
+    --dvh: calc(1dvh / 0.85);
   }
 }
 

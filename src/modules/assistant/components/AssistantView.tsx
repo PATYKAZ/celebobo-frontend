@@ -105,9 +105,9 @@ export function AssistantView() {
       <Block
         pad="none"
         style={mobile && vv ? { height: vv.height, top: vv.top } : undefined}
-        className="overflow-hidden max-lg:fixed max-lg:inset-x-0 max-lg:top-0 max-lg:z-70 max-lg:h-dvh max-lg:rounded-none"
+        className="overflow-hidden max-lg:fixed max-lg:inset-x-0 max-lg:top-0 max-lg:z-70 max-lg:h-[calc(var(--dvh)*100)] max-lg:rounded-none"
       >
-        <div className="flex h-[calc(100vh-150px)] min-h-[560px] max-h-[780px] flex-col max-lg:h-full max-lg:max-h-none max-lg:min-h-0">
+        <div className="flex h-[calc(calc(var(--dvh)*100)-150px)] min-h-[560px] max-h-[780px] flex-col max-lg:h-full max-lg:max-h-none max-lg:min-h-0">
           <header className="flex items-center gap-2.5 border-b border-line-3 bg-primary px-3 pb-3 pt-[max(12px,env(safe-area-inset-top))] text-white sm:gap-3 sm:px-5 sm:py-4 lg:pt-4">
             <button onClick={back} aria-label="Retour" className="grid size-10 shrink-0 place-items-center rounded-full bg-white/15 transition-colors hover:bg-white/30 active:scale-90 lg:hidden">
               <ArrowLeft2 size={20} />

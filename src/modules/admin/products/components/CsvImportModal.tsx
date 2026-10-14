@@ -105,7 +105,7 @@ export function CsvImportModal({ open, onClose }: { open: boolean; onClose: () =
               </div>
             </div>
             {preview.errors.length > 0 && (
-              <ul className="grid max-h-[46vh] gap-2 overflow-y-auto">
+              <ul className="grid max-h-[calc(var(--dvh)*46)] gap-2 overflow-y-auto">
                 {preview.errors.map((r) => (
                   <li key={r.row} className="rounded-box border border-danger/30 bg-danger-50/60 p-3 text-[13px]">
                     <p className="font-bold">Ligne {r.row}</p>

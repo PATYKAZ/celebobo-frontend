@@ -20,7 +20,7 @@ export function NotFoundView() {
   };
 
   return (
-    <div className="container flex min-h-screen flex-col py-4">
+    <div className="container flex min-h-[calc(var(--dvh)*100)] flex-col py-4">
       <header className="rounded-box bg-surface px-4 py-3 sm:px-[30px] sm:py-4"><Logo /></header>
       <main className="mt-3 flex flex-1 items-center justify-center overflow-hidden rounded-box bg-surface px-4 py-8 sm:mt-4 sm:py-14">
         <div className="grid w-full max-w-[980px] items-center gap-6 sm:gap-10 lg:grid-cols-2">

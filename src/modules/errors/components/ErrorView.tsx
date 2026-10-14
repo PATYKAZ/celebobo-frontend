@@ -13,7 +13,7 @@ export function ErrorView({ error, reset }: { error: Error & { digest?: string }
   }, [error]);
 
   return (
-    <div className="container flex min-h-screen flex-col py-4">
+    <div className="container flex min-h-[calc(var(--dvh)*100)] flex-col py-4">
       <header className="rounded-box bg-surface px-4 py-3 sm:px-[30px] sm:py-4"><Logo /></header>
       <main className="mt-3 grid flex-1 place-items-center rounded-box bg-surface px-4 py-10 text-center sm:mt-4 sm:py-16">
         <div>
