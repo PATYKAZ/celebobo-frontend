@@ -111,6 +111,10 @@ export interface Order {
   /** Remise du code promo */
   discount?: number;
   couponCode?: string | null;
+  /** Cagnotte utilisée sur la commande */
+  cashback?: number;
+  /** Cagnotte gagnée une fois la commande livrée (null : rien, ou pas encore) */
+  cashbackEarned?: number | null;
   shippingFee?: number;
   shippingZone?: string | null;
   address?: OrderAddress | null;
@@ -148,6 +152,8 @@ export interface CreateOrderInput {
   items: (Pick<CartItem, "productId" | "quantity"> & { variantId?: number | null })[];
   paymentMethod: PaymentMethod;
   couponCode?: string | null;
+  /** Payer une partie avec la cagnotte (montant calculé par l'API) */
+  useCashback?: boolean;
   /** Adresse du carnet d'adresses choisie */
   addressId?: number | null;
   /** Nouvelle adresse saisie (si pas d'adresse du carnet) */

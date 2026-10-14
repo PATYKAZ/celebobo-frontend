@@ -33,6 +33,7 @@ export const ordersService = {
         lines: input.items.map((i) => ({ productId: i.productId, variantId: i.variantId ?? null, quantity: i.quantity })),
         paymentMethod: PAYMENT_TO_API[input.paymentMethod],
         couponCode: input.couponCode || null,
+        useCashback: input.useCashback ?? false,
         addressId: input.addressId ?? null,
         address: input.addressId ? null : (input.address ?? null),
         note: input.note ?? "",

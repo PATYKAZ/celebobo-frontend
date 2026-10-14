@@ -13,6 +13,7 @@ import { Skeleton } from "@/shared/ui/Skeleton";
 import { AuthGuard } from "@/modules/auth/components/AuthGuard";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
 import { useSiteSettings } from "@/modules/site";
+import { CashbackCard } from "@/modules/membership/components/CashbackCard";
 import { useProfile } from "../hooks/useAccount";
 import { useAddresses } from "../hooks/useAddressBook";
 import { addressIcon } from "./AddressBookView";
@@ -67,6 +68,7 @@ function Content() {
       <Reveal direction="up" className="min-w-0">
         <div className="space-y-3 sm:space-y-4">
           <ProfileSummaryCard user={user} profile={profile} previewAvatar={preview} onPickAvatar={setFile} />
+          <CashbackCard />
           <Block pad="sm" className="p-2!">
             {[
               { href: ROUTES.orders, label: "Mes commandes", icon: Receipt2 },

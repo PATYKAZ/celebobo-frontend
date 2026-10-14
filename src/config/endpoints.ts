@@ -77,6 +77,7 @@ export const ENDPOINTS = {
     trial: "/me/membership/trial/", // POST : démarre l'essai (422 trial_unavailable, meta.reason)
     requests: "/me/membership/requests/", // POST { plan, payment_method } : demande en attente de paiement
     cancel: (id: number) => `/me/membership/requests/${id}/cancel/`,
+    cashback: "/me/cashback/", // GET : { eligible, available, pending, next_expiry }
   },
   uploads: {
     sign: "/uploads/sign/",

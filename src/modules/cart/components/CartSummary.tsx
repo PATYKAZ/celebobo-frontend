@@ -16,13 +16,15 @@ interface Props {
   quote?: CartQuote | null;
   /** Bloc code promo */
   coupon?: ReactNode;
+  /** Case « Utiliser ma cagnotte » (paiement) */
+  cashback?: ReactNode;
   /** Boutons d'action (CTA) */
   actions?: ReactNode;
   title?: string;
 }
 
 /** Récapitulatif de commande (panier & checkout). */
-export function CartSummary({ subtotal, savings, count, quote, coupon, actions, title = "Récapitulatif" }: Props) {
+export function CartSummary({ subtotal, savings, count, quote, coupon, cashback, actions, title = "Récapitulatif" }: Props) {
   const { currency, rate } = useCurrency();
   const discount = quote?.discount ?? 0;
   const shipping = quote?.shippingFee ?? 0;
@@ -48,11 +50,13 @@ export function CartSummary({ subtotal, savings, count, quote, coupon, actions, 
       )}
 
       {coupon && <div className="mt-5">{coupon}</div>}
+      {cashback && <div className="mt-3">{cashback}</div>}
 
       <dl className="mt-5 space-y-3 text-[14px]">
         <div className="flex justify-between"><dt className="text-ink-2">Articles ({count})</dt><dd className="font-semibold">{formatPrice(subtotal + savings)}</dd></div>
         {savings > 0 && <div className="flex justify-between"><dt className="text-ink-2">Remises</dt><dd className="font-semibold text-danger">-{formatPrice(savings)}</dd></div>}
         {discount > 0 && <div className="flex justify-between"><dt className="text-ink-2">Code promo{quote?.couponCode ? ` (${quote.couponCode})` : ""}</dt><dd className="font-semibold text-danger">-{formatPrice(discount)}</dd></div>}
+        {!!quote?.cashback && <div className="flex justify-between"><dt className="text-ink-2">Cagnotte</dt><dd className="font-semibold text-danger">-{formatPrice(quote.cashback)}</dd></div>}
         <div className="flex justify-between gap-3">
           <dt className="text-ink-2">Livraison{quote?.shippingZone ? ` · ${quote.shippingZone}` : ""}</dt>
           <dd className="text-right font-semibold">

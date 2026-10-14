@@ -25,6 +25,9 @@ export interface QuoteDto {
   couponCode: string | null;
   couponError: string | null;
   memberFreeShipping?: boolean;
+  /** cagnotte utilisable sur cette commande, et montant appliqué (use_cashback) */
+  cashbackAvailable?: string;
+  cashback?: string;
 }
 
 export interface CartLineDto {
@@ -53,6 +56,8 @@ export function toQuote(dto: QuoteDto): CartQuote {
     couponCode: dto.couponCode || null,
     couponError: dto.couponError || null,
     memberFreeShipping: dto.memberFreeShipping ?? false,
+    cashbackAvailable: money(dto.cashbackAvailable),
+    cashback: money(dto.cashback),
   };
 }
 

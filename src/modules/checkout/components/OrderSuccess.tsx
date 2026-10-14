@@ -66,6 +66,12 @@ export function OrderSuccess({ order, conversationId }: { order: Order; conversa
               <span className="font-semibold text-danger">-{formatPrice(order.discount)}</span>
             </div>
           )}
+          {!!order.cashback && (
+            <div className="mt-2 flex items-center justify-between text-[13px]">
+              <span className="text-ink-2">Cagnotte</span>
+              <span className="font-semibold text-danger">-{formatPrice(order.cashback)}</span>
+            </div>
+          )}
           {order.shippingFee != null && (
             <div className="mt-2 flex items-center justify-between text-[13px]">
               <span className="text-ink-2">Livraison{order.shippingZone ? ` · ${order.shippingZone}` : ""}</span>

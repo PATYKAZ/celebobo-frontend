@@ -8,7 +8,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { ROUTES } from "@/config/routes";
 import { Breadcrumb } from "@/shared/layout/Breadcrumb";
 import { Reveal } from "@/shared/animations/Reveal";
-import { getErrorMessage } from "@/shared/lib/api";
+import { ApiError, getErrorMessage } from "@/shared/lib/api";
 import { formatPrice } from "@/shared/lib/format";
 import { Block } from "@/shared/ui/Block";
 import { BottomSheet } from "@/shared/ui/BottomSheet";
@@ -23,6 +23,7 @@ import { useAuth } from "@/modules/auth/hooks/useAuth";
 import { displayName } from "@/modules/auth/types";
 import { CartSummary } from "@/modules/cart/components/CartSummary";
 import { CouponForm } from "@/modules/cart/components/CouponForm";
+import { CashbackToggle } from "./CashbackToggle";
 import { cartKeys, useCart } from "@/modules/cart/hooks/useCart";
 import { cartTotal, cartSavings, cartCount } from "@/modules/cart/store/cart.store";
 import { unitPrice } from "@/modules/cart/types";
@@ -80,7 +81,10 @@ function Content() {
   const items = useMemo(() => cartItems.filter((i) => i.available !== false), [cartItems]);
   const lines = useMemo(() => items.map((i) => ({ productId: i.productId, variantId: i.variantId ?? null, quantity: i.quantity })), [items]);
   const couponCode = cartQuote?.couponCode ?? null;
-  const { data: quote } = useCheckoutQuote(lines, form.city, couponCode);
+  // cagnotte : proposée quand le devis en renvoie une utilisable, appliquée par l'API (devis et commande)
+  const [useCashback, setUseCashback] = useState(false);
+  const { data: quote, refetch: refetchQuote } = useCheckoutQuote(lines, form.city, couponCode, useCashback);
+  const cashbackAvailable = quote?.cashbackAvailable ?? 0;
   const count = cartCount(items);
   const total = cartTotal(items);
   const savings = cartSavings(items);
@@ -153,13 +157,14 @@ function Content() {
     const address = { recipient: form.recipient.trim(), phone: form.phone.trim(), line1: form.address.trim(), quarter: form.quarter.trim(), city: form.city.trim(), country: form.country.trim() };
     try {
       const res = await createOrder.mutateAsync({
-        input: { items: lines, paymentMethod: form.paymentMethod, couponCode, addressId: form.addressId, address: isNew ? address : null, note: form.note.trim() },
+        input: { items: lines, paymentMethod: form.paymentMethod, couponCode, useCashback: useCashback && cashbackAvailable > 0, addressId: form.addressId, address: isNew ? address : null, note: form.note.trim() },
         idempotencyKey: idempotencyKey.current,
       });
       idempotencyKey.current = newKey();
       setDone({ order: res.order, conversationId: res.conversationId });
       // Le backend a vidé le panier du compte
       qc.invalidateQueries({ queryKey: cartKeys.all });
+      qc.invalidateQueries({ queryKey: ["cashback"] }); // solde de cagnotte entamé
       toast.success("Commande envoyée", `Commande ${res.order.number}`);
       // Nouvelle adresse à conserver dans le carnet (n'empêche pas la commande en cas d'échec)
       if (isNew && form.saveToBook) {
@@ -169,6 +174,12 @@ function Content() {
         );
       }
     } catch (e) {
+      // solde de cagnotte changé entre le devis et la commande : nouveau devis, le client vérifie le total
+      if (e instanceof ApiError && e.code === "cashback_unavailable") {
+        await refetchQuote();
+        setSubmitError("Votre cagnotte a changé depuis le calcul du total. Vérifiez le nouveau montant puis confirmez.");
+        return;
+      }
       setSubmitError(generalError(e) ?? getErrorMessage(e));
     }
   };
@@ -284,12 +295,12 @@ function Content() {
       </Reveal>
 
       <Reveal delay={0.1} direction="up" className="hidden min-w-0 lg:block">
-        <CartSummary title="Votre commande" subtotal={total} savings={savings} count={count} quote={quote} coupon={<CouponForm quote={cartQuote} />} />
+        <CartSummary title="Votre commande" subtotal={total} savings={savings} count={count} quote={quote} coupon={<CouponForm quote={cartQuote} />} cashback={cashbackAvailable > 0 ? <CashbackToggle available={cashbackAvailable} checked={useCashback} onChange={setUseCashback} /> : undefined} />
       </Reveal>
 
       <BottomSheet open={recap} onClose={() => setRecap(false)} title="Votre commande">
         <div className="-mx-5 pb-2">
-          <CartSummary title="Récapitulatif" subtotal={total} savings={savings} count={count} quote={quote} coupon={<CouponForm quote={cartQuote} />} />
+          <CartSummary title="Récapitulatif" subtotal={total} savings={savings} count={count} quote={quote} coupon={<CouponForm quote={cartQuote} />} cashback={cashbackAvailable > 0 ? <CashbackToggle available={cashbackAvailable} checked={useCashback} onChange={setUseCashback} /> : undefined} />
         </div>
       </BottomSheet>
     </div>

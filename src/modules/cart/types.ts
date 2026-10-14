@@ -39,6 +39,10 @@ export interface CartQuote {
   couponError: string | null;
   /** Livraison offerte au titre de l'abonnement Celebobo Plus */
   memberFreeShipping: boolean;
+  /** Cagnotte utilisable sur cette commande (0 : rien à proposer) */
+  cashbackAvailable: number;
+  /** Cagnotte appliquée au total (quand le client l'utilise) */
+  cashback: number;
 }
 
 export interface Cart {
@@ -59,6 +63,8 @@ export const EMPTY_QUOTE: CartQuote = {
   couponCode: null,
   couponError: null,
   memberFreeShipping: false,
+  cashbackAvailable: 0,
+  cashback: 0,
 };
 
 export const EMPTY_CART: Cart = { token: null, items: [], quote: EMPTY_QUOTE };

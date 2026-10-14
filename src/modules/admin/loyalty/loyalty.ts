@@ -19,6 +19,7 @@ export interface LoyaltyFormValues {
   cashbackMaxShare: string;
   cashbackMinBalance: string;
   cashbackValidityMonths: string;
+  cashbackMembersOnly: boolean;
   appStoreUrl: string;
   playStoreUrl: string;
 }
@@ -34,6 +35,7 @@ export const toLoyaltyForm = ({ membership: m, cashback: c, appLinks: a }: Progr
   cashbackMaxShare: String(c.maxShare),
   cashbackMinBalance: c.minBalance.toFixed(2),
   cashbackValidityMonths: String(c.validityMonths),
+  cashbackMembersOnly: c.membersOnly,
   appStoreUrl: a.appStore,
   playStoreUrl: a.playStore,
 });
@@ -52,6 +54,7 @@ const toPayload = (v: LoyaltyFormValues) => ({
   cashbackMaxShare: Number(v.cashbackMaxShare),
   cashbackMinBalance: dec(v.cashbackMinBalance),
   cashbackValidityMonths: Number(v.cashbackValidityMonths),
+  cashbackMembersOnly: v.cashbackMembersOnly,
   appStoreUrl: v.appStoreUrl.trim(),
   playStoreUrl: v.playStoreUrl.trim(),
 });

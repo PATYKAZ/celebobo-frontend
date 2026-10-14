@@ -107,6 +107,9 @@ function Form({ initial }: { initial: Programmes }) {
           <Input label="Solde minimum pour l'utiliser ($)" type="number" inputMode="decimal" min="0" step="0.01" {...field("cashbackMinBalance")} />
           <Input label="Validité (mois)" type="number" inputMode="numeric" min="1" max="60" hint="Après chaque crédit." {...field("cashbackValidityMonths")} />
         </div>
+        <ProgrammeSwitch label="Réservée aux membres Plus" on={v.cashbackMembersOnly} onChange={(x) => set("cashbackMembersOnly", x)}>
+          {v.cashbackMembersOnly ? "Seuls les membres Celebobo Plus gagnent et utilisent la cagnotte." : "Tous les clients gagnent et utilisent la cagnotte."}
+        </ProgrammeSwitch>
       </SettingsSection>
 
       <SettingsSection title="Application mobile" hint={apps.length ? `L'accueil affiche le bloc « Téléchargez notre app » avec ${apps.join(" et ")}.` : "Sans lien, le bloc « Téléchargez notre app » n'apparaît pas."}>
