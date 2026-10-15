@@ -60,8 +60,8 @@ function Content() {
     return () => URL.revokeObjectURL(url);
   }, [file]);
 
-  // Celebobo Plus : lien tant que le programme est ouvert
-  const plusOpen = useSiteSettings().programmes.membership.enabled;
+  // Points fidélité : lien tant que la cagnotte est activée
+  const pointsOpen = useSiteSettings().programmes.cashback.enabled;
   if (!user) return null;
   return (
     <div className="grid gap-3 sm:gap-4 lg:grid-cols-[360px_minmax(0,1fr)]">
@@ -72,7 +72,7 @@ function Content() {
           <Block pad="sm" className="p-2!">
             {[
               { href: ROUTES.orders, label: "Mes commandes", icon: Receipt2 },
-              ...(plusOpen ? [{ href: ROUTES.membership, label: "Abonnement Celebobo Plus", icon: Crown1 }] : []),
+              ...(pointsOpen ? [{ href: ROUTES.points, label: "Mes points fidélité", icon: Crown1 }] : []),
               { href: ROUTES.addresses, label: "Mon carnet d'adresses", icon: Location },
               { href: ROUTES.settings, label: "Notifications & préférences", icon: Notification },
             ].map(({ href, label, icon: Icon }) => (

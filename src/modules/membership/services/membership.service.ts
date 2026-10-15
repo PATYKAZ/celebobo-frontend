@@ -1,35 +1,43 @@
 import { ENDPOINTS } from "@/config/endpoints";
-import { api, idempotent } from "@/shared/lib/api";
-import { money } from "@/modules/products/services/products.mapper";
-import type { MembershipRequest, MyMembership, PaidPlan } from "../types";
+import { api } from "@/shared/lib/api";
+import type { PointBalance, PointTransaction } from "../types";
 
-/** Demande d'abonnement (après camelCase). */
-export interface RequestDto extends Omit<MembershipRequest, "price"> {
-  price: string;
+interface BalanceDto {
+  eligible: boolean;
+  available: string;
+  pending: string;
+  nextExpiry: string | null;
 }
 
-interface MembershipDto extends Omit<MyMembership, "pendingRequest"> {
-  pendingRequest: RequestDto | null;
+interface TransactionDto {
+  id: number;
+  points: number;
+  reason: string;
+  rule_id: number | null;
+  rule_name: string | null;
+  reference_type: string | null;
+  reference_id: string | null;
+  created_at: string;
 }
 
-export const toRequest = (dto: RequestDto): MembershipRequest => ({ ...dto, price: money(dto.price) });
-const toMembership = (dto: MembershipDto): MyMembership => ({ ...dto, pendingRequest: dto.pendingRequest && toRequest(dto.pendingRequest) });
+const { points } = ENDPOINTS;
 
-const { membership } = ENDPOINTS;
-
-export const membershipService = {
-  async mine(): Promise<MyMembership> {
-    return toMembership(await api.get<MembershipDto>(membership.me));
+export const pointsService = {
+  async balance(): Promise<PointBalance> {
+    const dto = await api.get<BalanceDto>(points.me);
+    return { total: Number(dto.available) + Number(dto.pending), available: Number(dto.available), pending: Number(dto.pending) };
   },
-  /** Démarre l'essai gratuit ; 422 `trial_unavailable` (meta.reason) sinon. Chaque action renvoie l'abonnement à jour. */
-  async startTrial(): Promise<MyMembership> {
-    return toMembership(await api.post<MembershipDto>(membership.trial, {}));
-  },
-  /** Demande un abonnement payant au prix du jour ; une seule demande à la fois. */
-  async request(plan: PaidPlan, paymentMethod: string): Promise<MyMembership> {
-    return toMembership(await api.post<MembershipDto>(membership.requests, { plan, paymentMethod }, idempotent()));
-  },
-  async cancel(id: number): Promise<MyMembership> {
-    return toMembership(await api.post<MembershipDto>(membership.cancel(id), {}));
+  async transactions(): Promise<PointTransaction[]> {
+    const dtos = await api.get<TransactionDto[]>(points.transactions);
+    return dtos.map((d) => ({
+      id: d.id,
+      points: d.points,
+      reason: d.reason,
+      ruleId: d.rule_id,
+      ruleName: d.rule_name,
+      referenceType: d.reference_type,
+      referenceId: d.reference_id,
+      createdAt: d.created_at,
+    }));
   },
 };
