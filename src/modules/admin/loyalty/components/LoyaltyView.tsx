@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, type FormEvent, type ReactNode } from "react";
-import { ApiError, getErrorMessage } from "@/shared/lib/api";
-import { formatPrice } from "@/shared/lib/format";
+import { getErrorMessage } from "@/shared/lib/api";
 import { Block } from "@/shared/ui/Block";
 import { Button } from "@/shared/ui/Button";
 import { Input, Switch } from "@/shared/ui/Form";
@@ -13,6 +12,7 @@ import type { Programmes } from "@/modules/site/types";
 import { SettingsSection } from "../../settings/components/SettingsForm";
 import { PageHeader } from "../../ui/PageHeader";
 import { toLoyaltyForm, useLoyaltySettings, useSaveLoyalty, type LoyaltyFormValues } from "../loyalty";
+import { RulesSection } from "./RulesSection";
 
 type Errors = Partial<Record<keyof LoyaltyFormValues, string>>;
 
@@ -89,7 +89,7 @@ function Form({ initial }: { initial: Programmes }) {
 
       <div className="sticky bottom-[calc(var(--tabbar-h)+8px)] z-10 lg:bottom-4">
         <Block pad="none" className="flex items-center justify-between gap-3 px-4 py-3 shadow-[0_8px_30px_rgba(0,0,0,.08)] sm:px-[30px]">
-          <p className="text-[13px] text-ink-2 max-sm:hidden">Chaque programme n'apparaît en boutique qu'une fois activé.</p>
+          <p className="text-[13px] text-ink-2 max-sm:hidden">Chaque programme n&apos;apparaît en boutique qu&apos;une fois activé.</p>
           <Button type="submit" loading={save.isPending} upper={false} className="max-sm:w-full">Enregistrer</Button>
         </Block>
       </div>
@@ -101,7 +101,8 @@ function Content() {
   const { data, isLoading, isError, error, refetch } = useLoyaltySettings();
   return (
     <>
-      <PageHeader title="Programmes de fidélité" description="Cagnotte et application : chaque règle se règle ici, chaque programme reste invisible tant qu'il n'est pas activé." />
+      <PageHeader title="Programmes de fidélité" description="Points, cagnotte et application : chaque règle se règle ici, chaque programme reste invisible tant qu'il n'est pas activé." />
+      <RulesSection />
       {isLoading ? (
         <div role="status" aria-busy="true" className="grid gap-3">
           <span className="sr-only">Chargement des programmes…</span>
