@@ -30,7 +30,6 @@ export const ADMIN_NAV: AdminNavItem[] = [
   { section: "Catalogue", label: "Bannières de l'accueil", href: ROUTES.admin.banners, icon: Gallery, permission: "content.manage" },
   { section: "Activité", label: "Commandes", resellerLabel: "Mes commandes", href: ROUTES.admin.orders, icon: Messages2, permission: "orders.view.own" },
   { section: "Activité", label: "Ventes", resellerLabel: "Mes ventes", href: ROUTES.admin.sales, icon: MoneyRecive, permission: "sales.view.own" },
-  { section: "Activité", label: "Abonnements Plus", href: ROUTES.admin.memberships, icon: Crown1, permission: "membership.manage" },
   { section: "Activité", label: "Messages", resellerLabel: "Mes discussions", href: ROUTES.admin.inbox, icon: Messages2, permission: "inbox.view.own", badge: "messages" },
   { section: "Activité", label: "Notifications", href: ROUTES.admin.notifications, icon: Notification, permission: "backoffice.access", badge: "notifications" },
   { section: "Équipe", label: "Revendeurs", href: ROUTES.admin.resellers, icon: People, permission: "resellers.view" },

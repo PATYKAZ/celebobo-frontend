@@ -24,7 +24,7 @@ export function useCashbackBalance(enabled = true) {
   return useQuery({
     queryKey: ["cashback", "mine"] as const,
     queryFn: async (): Promise<CashbackBalance> => {
-      const dto = await api.get<BalanceDto>(ENDPOINTS.membership.cashback);
+      const dto = await api.get<BalanceDto>(ENDPOINTS.cashback.me);
       return { eligible: dto.eligible, available: money(dto.available), pending: money(dto.pending), nextExpiry: dto.nextExpiry };
     },
     enabled,

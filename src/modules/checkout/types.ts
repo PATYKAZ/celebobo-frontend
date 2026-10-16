@@ -27,6 +27,4 @@ export interface ShippingZone {
   freeThreshold: number | null;
   deliveryEstimate: string;
   isDefault: boolean;
-  /** livraison offerte sans minimum aux membres Celebobo Plus */
-  memberFreeShipping: boolean;
 }

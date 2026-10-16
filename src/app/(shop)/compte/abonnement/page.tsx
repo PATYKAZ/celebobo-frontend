@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { MembershipView } from "@/modules/membership/components/MembershipView";
+import { redirect } from "next/navigation";
 
-export const metadata: Metadata = { title: "Abonnement Celebobo Plus" };
+export const metadata: Metadata = { title: "Mes points fidélité" };
 
 export default function Page() {
-  return <MembershipView />;
+  redirect("/compte/points");
 }

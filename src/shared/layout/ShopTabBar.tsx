@@ -65,7 +65,7 @@ export function ShopTabBar() {
               { label: "Favoris", href: ROUTES.favorites, icon: Heart },
               { label: "Messages", href: isStaff ? ROUTES.admin.inbox : ROUTES.messages, icon: Messages2, badge: msgs || undefined },
               ...(isAuthenticated && !isStaff ? [{ label: "Notifications", href: ROUTES.notifications, icon: Notification, badge: notifs || undefined }] : []),
-              ...(isAuthenticated && !isStaff && site.programmes.membership.enabled ? [{ label: "Celebobo Plus", href: ROUTES.membership, icon: Crown1 }] : []),
+              ...(isAuthenticated && !isStaff ? [{ label: "Points fidélité", href: ROUTES.points, icon: Crown1 }] : []),
               { label: "Adresses", href: ROUTES.addresses, icon: Location },
               { label: "Paramètres", href: ROUTES.settings, icon: Setting2 },
               { label: "Suivi", href: ROUTES.track, icon: TruckFast },
@@ -93,7 +93,7 @@ export function ShopTabBar() {
         ],
       },
     ],
-    [categories, isStaff, msgs, notifs, user?.role, isAuthenticated, site.programmes.membership.enabled],
+    [categories, isStaff, msgs, notifs, user?.role, isAuthenticated],
   );
 
   return (
