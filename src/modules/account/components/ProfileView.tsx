@@ -12,7 +12,6 @@ import { Tabs } from "@/shared/ui/Tabs";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { AuthGuard } from "@/modules/auth/components/AuthGuard";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
-import { useSiteSettings } from "@/modules/site";
 import { CashbackCard } from "@/modules/membership/components/CashbackCard";
 import { useProfile } from "../hooks/useAccount";
 import { useAddresses } from "../hooks/useAddressBook";
@@ -47,7 +46,7 @@ function DefaultAddress() {
 }
 
 function Content() {
-  const { user } = useAuth();
+  const { user, isStaff } = useAuth();
   const { data: profile, isLoading } = useProfile();
   const [tab, setTab] = useState<Tab>("info");
   const [file, setFile] = useState<File | null>(null);
@@ -60,8 +59,6 @@ function Content() {
     return () => URL.revokeObjectURL(url);
   }, [file]);
 
-  // Points fidélité : lien tant que la cagnotte est activée
-  const pointsOpen = useSiteSettings().programmes.cashback.enabled;
   if (!user) return null;
   return (
     <div className="grid gap-3 sm:gap-4 lg:grid-cols-[360px_minmax(0,1fr)]">
@@ -72,7 +69,7 @@ function Content() {
           <Block pad="sm" className="p-2!">
             {[
               { href: ROUTES.orders, label: "Mes commandes", icon: Receipt2 },
-              ...(pointsOpen ? [{ href: ROUTES.points, label: "Mes points fidélité", icon: Crown1 }] : []),
+              ...(!isStaff ? [{ href: ROUTES.points, label: "Mes points fidélité", icon: Crown1 }] : []),
               { href: ROUTES.addresses, label: "Mon carnet d'adresses", icon: Location },
               { href: ROUTES.settings, label: "Notifications & préférences", icon: Notification },
             ].map(({ href, label, icon: Icon }) => (
