@@ -46,7 +46,7 @@ function DefaultAddress() {
 }
 
 function Content() {
-  const { user, isStaff } = useAuth();
+  const { user } = useAuth();
   const { data: profile, isLoading } = useProfile();
   const [tab, setTab] = useState<Tab>("info");
   const [file, setFile] = useState<File | null>(null);
@@ -69,7 +69,7 @@ function Content() {
           <Block pad="sm" className="p-2!">
             {[
               { href: ROUTES.orders, label: "Mes commandes", icon: Receipt2 },
-              ...(!isStaff ? [{ href: ROUTES.points, label: "Mes points fidélité", icon: Crown1 }] : []),
+              { href: ROUTES.points, label: "Mes points fidélité", icon: Crown1 },
               { href: ROUTES.addresses, label: "Mon carnet d'adresses", icon: Location },
               { href: ROUTES.settings, label: "Notifications & préférences", icon: Notification },
             ].map(({ href, label, icon: Icon }) => (

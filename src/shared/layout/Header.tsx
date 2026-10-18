@@ -178,7 +178,7 @@ function AccountMenu() {
               </div>
               <Link href={ROUTES.profile} className={item}><Profile size={17} /> Mon profil</Link>
               <Link href={ROUTES.orders} className={item}><Receipt2 size={17} /> Mes commandes</Link>
-              {!isStaff && <Link href={ROUTES.points} className={item}><Crown1 size={17} /> Mes points fidélité</Link>}
+              <Link href={ROUTES.points} className={item}><Crown1 size={17} /> Mes points fidélité</Link>
               <Link href={ROUTES.favorites} className={item}><Heart size={17} /> Mes favoris</Link>
               <Link href={isStaff ? ROUTES.admin.notifications : ROUTES.notifications} className={item}><Notification size={17} /> Notifications</Link>
               {isStaff && <Link href={ROUTES.admin.root} className={cn(item, "text-primary")}><Setting2 size={17} /> {user.role === "revendeur" ? "Mon espace revendeur" : "Back-office"}</Link>}
