@@ -8,7 +8,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   const { id } = await params;
   const n = Number(id);
   return (
-    <PermissionGuard permission="inbox.view.own">
+    <PermissionGuard permission="conversations.moderate">
       <MessagesView embedded initialId={Number.isFinite(n) && n > 0 ? n : null} />
     </PermissionGuard>
   );

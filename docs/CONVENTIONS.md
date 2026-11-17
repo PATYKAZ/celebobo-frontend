@@ -75,7 +75,7 @@ Modules : `products`, `categories`, `auth`, `cart`, `favorites`, `orders`, `mess
 
 ## v2 — Rôles, temps réel
 
-- **Permissions** : `modules/auth/permissions.ts` (matrice revendeur / responsable (mukubwa) / admin). Utiliser `useCan("…")`, `<Can>`, `<PermissionGuard>`.
+- **Permissions** : la liste `permissions` envoyée par l'API dans `GET /me/` est la seule source ; `modules/auth/permissions.ts` ne fait que typer les codes consultés (aucune matrice par rôle côté UI). Utiliser `useCan("…")`, `<Can>`, `<PermissionGuard>` avec le code de l'API (ex. `orders.status.any`).
   Règle : *même page, données filtrées par rôle* (ex. `/admin/commandes` = toutes pour un responsable, seulement les siennes pour un revendeur).
 - **Workflow commande** : `modules/orders/services/workflow.service.ts` (`orderWorkflow.setStatus/assign`, `canTransition`, `availableTransitions`) + hooks `useSetOrderStatus`, `useAssignOrder`.
   Statuts : attente → assignee → confirmee → payee → en_livraison → livree (+ annulee, retournee). Correspondance API : `STATUS_FROM_API` / `STATUS_TO_API` (`orders.mapper.ts`) ;

@@ -57,7 +57,7 @@ function Content() {
   const { params, set, reset, activeCount } = useAdminProductFilters();
   const canManage = useCan("products.manage");
   const canStock = useCan("stock.adjust");
-  const canImport = useCan("products.import");
+  const canImport = useCan("imports.products");
   const canCategories = useCan("categories.manage");
   // les catégories masquées ne sont visibles que de ceux qui gèrent le catalogue
   const { data: adminCategories } = useAdminCategories(canCategories);

@@ -26,7 +26,7 @@ const hello = () => {
 
 export function DashboardView() {
   return (
-    <PermissionGuard permission="dashboard.all">
+    <PermissionGuard permission="analytics.view">
       <DashboardContent />
     </PermissionGuard>
   );

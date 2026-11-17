@@ -1,25 +1,21 @@
 import type { User, UserRole } from "./types";
 
 /**
- * Matrice de permissions — SOURCE DE VÉRITÉ côté UI (le backend reste l'autorité : 403).
+ * Permissions de l'équipe : codes envoyés par l'API dans `GET /me/` (`permissions`).
  *
- * v1 : `admin_required` laissait entrer revendeur + mukubwa avec des données filtrées
- *      (revendeur = ses commandes / ses ventes ; mukubwa = tout).
- * v2 : 3 niveaux distincts —
- *   revendeur : son espace (ses commandes, ses ventes, ses commissions, ses invités, ses discussions)
- *   mukubwa   : gère tout le catalogue + toutes les commandes/ventes, assigne, voit l'analytique
- *   admin     : + utilisateurs & rôles, paiement des commissions, suppressions, journal d'audit
+ * L'API est la seule source : elle dérive la liste du rôle (revendeur ⊂ responsable ⊂ admin) et
+ * refuse elle-même toute action non permise (403). L'UI ne fait que masquer ce que la liste
+ * n'autorise pas ; il n'y a plus de matrice rôle → permissions côté interface.
+ * Seuls les codes que l'interface consulte sont listés ici.
  */
 export type Permission =
-  | "backoffice.access"
-  | "dashboard.own"
-  | "dashboard.all"
-  | "orders.view.own"
+  | "dashboard.view" // espace équipe (revendeur et plus)
+  | "analytics.view" // tableau de bord global et analytique (responsable et plus)
+  | "orders.view.assigned"
   | "orders.view.all"
   | "orders.assign"
   | "orders.status.advance" // faire avancer SES commandes assignées
-  | "orders.status.any"
-  | "orders.cancel"
+  | "orders.status.any" // tout statut, y compris l'annulation
   | "sales.view.own"
   | "sales.view.all"
   | "sales.create"
@@ -28,11 +24,10 @@ export type Permission =
   | "sales.edit.all"
   | "sales.refund"
   | "sales.delete"
-  | "sales.export"
+  | "exports.sales"
   | "products.view"
   | "products.manage"
-  | "products.delete"
-  | "products.import"
+  | "imports.products"
   | "stock.adjust"
   | "categories.manage"
   | "resellers.view"
@@ -41,73 +36,23 @@ export type Permission =
   | "commissions.view.all"
   | "commissions.pay"
   | "users.manage"
-  | "analytics.view"
-  | "analytics.resellers"
   | "audit.view"
-  | "inbox.view.own"
-  | "inbox.view.all"
+  | "conversations.moderate" // boîte de discussions de l'équipe
+  | "conversations.assign" // toutes les discussions, assignation du support
   | "price.adjust" // proposer un prix final dans la discussion
-  | "shipping.manage" // zones de livraison (backend : responsable et admin)
-  | "content.manage" // bannières de l'accueil (backend : responsable et admin)
-  | "settings.manage" // réglages du site : taux USD → FC, coordonnées, horaires (backend : admin seul)
-  | "membership.manage" // abonnements Celebobo Plus : confirmer / refuser les demandes, liste des membres
-  | "loyalty.manage"; // programmes de fidélité : Celebobo Plus, cagnotte, liens de l'app (backend : admin seul)
+  | "shipping.manage"
+  | "content.manage"
+  | "settings.manage"
+  | "membership.manage"
+  | "loyalty.manage";
 
-const RESELLER: Permission[] = [
-  "backoffice.access",
-  "dashboard.own",
-  "orders.view.own",
-  "orders.status.advance",
-  "sales.view.own",
-  "sales.create",
-  "sales.convert",
-  "sales.edit.own",
-  "products.view",
-  "commissions.view.own",
-  "inbox.view.own",
-  "price.adjust",
-];
+type WithPermissions = Pick<User, "permissions"> | null | undefined;
 
-const MANAGER: Permission[] = [
-  ...RESELLER,
-  "dashboard.all",
-  "orders.view.all",
-  "orders.assign",
-  "orders.status.any",
-  "orders.cancel",
-  "sales.view.all",
-  "sales.edit.all",
-  "sales.refund",
-  "sales.export",
-  "products.manage",
-  "products.import",
-  "stock.adjust",
-  "categories.manage",
-  "resellers.view",
-  "resellers.manage",
-  "commissions.view.all",
-  "analytics.view",
-  "analytics.resellers",
-  "inbox.view.all",
-  "shipping.manage",
-  "content.manage",
-  "membership.manage",
-];
-
-const ADMIN: Permission[] = [...MANAGER, "sales.delete", "products.delete", "commissions.pay", "users.manage", "audit.view", "settings.manage", "loyalty.manage"];
-
-export const PERMISSIONS: Record<UserRole, ReadonlySet<Permission>> = {
-  client: new Set<Permission>(),
-  revendeur: new Set(RESELLER),
-  mukubwa: new Set(MANAGER),
-  admin: new Set(ADMIN),
-};
-
-export function can(user: Pick<User, "role"> | null | undefined, permission: Permission): boolean {
-  return !!user && PERMISSIONS[user.role].has(permission);
+export function can(user: WithPermissions, permission: Permission): boolean {
+  return !!user?.permissions?.includes(permission);
 }
 
-export const canAny = (user: Pick<User, "role"> | null | undefined, ...ps: Permission[]) => ps.some((p) => can(user, p));
+export const canAny = (user: WithPermissions, ...ps: Permission[]) => ps.some((p) => can(user, p));
 
 export const ROLE_LABEL: Record<UserRole, string> = {
   client: "Client",

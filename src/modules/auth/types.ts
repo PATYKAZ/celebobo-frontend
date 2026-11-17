@@ -19,7 +19,7 @@ export interface User {
   /** Code d'invitation du revendeur (4 chiffres). */
   codeRevendeur?: string | null;
   emailVerified?: boolean;
-  /** Permissions accordées par l'API (informatives : l'UI s'appuie sur `permissions.ts`). */
+  /** Permissions accordées par l'API : seule source des droits affichés (`can()` dans `permissions.ts`). */
   permissions?: string[];
   availability?: ResellerAvailability;
 }
