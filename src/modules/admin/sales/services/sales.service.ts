@@ -52,6 +52,7 @@ const BLOCKED_LABEL: Record<string, string> = {
   cancelled: "Commande annulée",
   returned: "Commande retournée",
   no_products: "Aucun produit à convertir",
+  not_delivered: "Pas encore livrée (code de livraison à saisir)",
 };
 const blockedLabel = (code: string | null) => (code ? (BLOCKED_LABEL[code] ?? code) : null);
 

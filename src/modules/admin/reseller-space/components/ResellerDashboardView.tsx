@@ -55,7 +55,12 @@ function OrderRow({ o }: { o: ResellerOpenOrder }) {
             {o.unread > 0 && <span className="absolute -right-1.5 -top-1.5 grid min-w-[20px] place-items-center rounded-full bg-danger px-1 text-[11px] leading-[20px] text-white ring-2 ring-white">{o.unread}</span>}
           </Link>
         )}
-        {next && (
+        {next === "livree" && (
+          <Link prefetch={false} href={ROUTES.admin.order(o.id)} className="inline-flex h-12 flex-2 items-center justify-center gap-1.5 rounded-box bg-primary px-3 text-[13px] font-bold text-white transition-all hover:bg-primary-dark active:scale-95 sm:h-9 sm:flex-none sm:rounded-md sm:text-[12px]">
+            <TickCircle size={14} variant="Bold" /> Saisir le code de livraison
+          </Link>
+        )}
+        {next && next !== "livree" && (
           <Button
             size="sm"
             className="max-sm:min-h-12 max-sm:flex-2 sm:h-9"

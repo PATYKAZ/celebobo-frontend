@@ -131,6 +131,17 @@ export function OrderDetailView({ number }: { number: string }) {
               )}
             </p>
           )}
+          {order.deliveryCode && (
+            <div className="mt-4 flex flex-col gap-3 rounded-box border-2 border-dashed border-primary/40 bg-primary-50 px-4 py-3.5 sm:flex-row sm:items-center sm:gap-5">
+              <div className="shrink-0">
+                <p className="text-[12px] font-bold uppercase text-primary-dark">Code de livraison</p>
+                <p className="font-mono text-[28px] font-extrabold leading-[34px] tracking-[0.25em] text-primary">{order.deliveryCode.slice(0, 3)} {order.deliveryCode.slice(3)}</p>
+              </div>
+              <p className="text-[13px] leading-[19px] text-ink-2">
+                Donnez ce code au revendeur <strong className="text-ink">seulement quand vous avez votre commande en main et en bon état</strong> : c&apos;est lui qui confirme la livraison. Ne le communiquez pas avant.
+              </p>
+            </div>
+          )}
           <div className="mt-5 md:hidden"><OrderProgress status={order.status} /></div>
           <div className="mt-8 hidden md:block"><OrderTimeline order={order} /></div>
           {order.awaitingShippingQuote && !ORDER_FINAL.includes(order.status) ? (

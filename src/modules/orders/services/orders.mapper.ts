@@ -71,6 +71,9 @@ export interface OrderDto extends OrderSummaryDto {
   refundDue?: string;
   refundedAt?: string | null;
   refundNote?: string;
+  deliveryCode?: string | null;
+  deliveryCodeAttempts?: number;
+  deliveryCodeLocked?: boolean;
   cancelReason: string;
   history: StatusEntryDto[];
   allowedTransitions: ApiOrderStatus[];
@@ -169,6 +172,9 @@ export function toOrder(dto: OrderSummaryDto | OrderDto): Order {
     refundDue: detail ? money(detail.refundDue) : undefined,
     refundedAt: detail?.refundedAt ?? null,
     refundNote: detail?.refundNote || null,
+    deliveryCode: detail?.deliveryCode || null,
+    deliveryCodeAttempts: detail?.deliveryCodeAttempts ?? 0,
+    deliveryCodeLocked: detail?.deliveryCodeLocked ?? false,
     allowedTransitions: detail?.allowedTransitions.map(toStatus) ?? [],
   };
 }

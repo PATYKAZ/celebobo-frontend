@@ -49,8 +49,9 @@ export const orderWorkflow = {
   availableTransitions,
 
   /** Change le statut (avance, annule, retour) depuis le back-office. */
-  async setStatus(orderId: number, to: OrderStatus, opts: { note?: string } = {}): Promise<Order> {
-    const body = { to: STATUS_TO_API[to], note: opts.note ?? "", reason: to === "annulee" || to === "retournee" ? (opts.note ?? "") : "" };
+  async setStatus(orderId: number, to: OrderStatus, opts: { note?: string; deliveryCode?: string; reason?: string } = {}): Promise<Order> {
+    const reason = to === "annulee" || to === "retournee" ? (opts.note ?? "") : (opts.reason ?? "");
+    const body = { to: STATUS_TO_API[to], note: opts.note ?? "", reason, deliveryCode: opts.deliveryCode?.replace(/\s/g, "") ?? "" };
     return toOrder(await api.post<OrderDto>(ENDPOINTS.admin.orders.transition(orderId), body));
   },
 
