@@ -22,6 +22,11 @@ export const ordersService = {
     return toOrder(await api.post<OrderDto>(ENDPOINTS.orders.cancel(number), { reason: input.reason, details: input.details ?? "" }));
   },
 
+  /** Après la livraison : note du revendeur (1 à 5) et commentaire, une seule fois. */
+  async rate(number: string, input: { score: number; comment: string }): Promise<Order> {
+    return toOrder(await api.post<OrderDto>(ENDPOINTS.orders.rating(number), { score: input.score, comment: input.comment.trim() }));
+  },
+
   /** Facture PDF (lien direct, cookies de session). */
   invoiceUrl: (number: string) => api.url(ENDPOINTS.orders.invoice(number)),
   /** Reçu de livraison signé, une fois la commande livrée. */

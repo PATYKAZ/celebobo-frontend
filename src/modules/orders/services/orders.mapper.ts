@@ -74,6 +74,8 @@ export interface OrderDto extends OrderSummaryDto {
   deliveryCode?: string | null;
   deliveryCodeAttempts?: number;
   deliveryCodeLocked?: boolean;
+  rating?: { score: number; comment: string; createdAt: string } | null;
+  canRate?: boolean;
   cancelReason: string;
   history: StatusEntryDto[];
   allowedTransitions: ApiOrderStatus[];
@@ -175,6 +177,8 @@ export function toOrder(dto: OrderSummaryDto | OrderDto): Order {
     deliveryCode: detail?.deliveryCode || null,
     deliveryCodeAttempts: detail?.deliveryCodeAttempts ?? 0,
     deliveryCodeLocked: detail?.deliveryCodeLocked ?? false,
+    rating: detail?.rating ?? null,
+    canRate: detail?.canRate ?? false,
     allowedTransitions: detail?.allowedTransitions.map(toStatus) ?? [],
   };
 }

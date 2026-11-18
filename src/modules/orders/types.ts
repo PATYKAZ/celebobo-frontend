@@ -137,6 +137,10 @@ export interface Order {
   /** Back-office : codes incorrects saisis, et code bloqué après 5 erreurs */
   deliveryCodeAttempts?: number;
   deliveryCodeLocked?: boolean;
+  /** Note donnée par le client au revendeur après la livraison */
+  rating?: { score: number; comment: string; createdAt: string } | null;
+  /** Le client peut encore noter le revendeur (livrée, pas encore notée) */
+  canRate?: boolean;
   address?: OrderAddress | null;
   /** Transitions permises à l'utilisateur courant (ex: `annulee` pour le client tant qu'elle est en attente). */
   allowedTransitions?: OrderStatus[];

@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { Copy, Wallet3 } from "@/shared/ui/icons";
+import { Copy, Wallet3 } from "@/shared/ui/icons";
+import { Stars } from "@/shared/ui/Stars";
 import { useEffect, useState } from "react";
 import { ROUTES } from "@/config/routes";
 import { RevealGroup, RevealItem } from "@/shared/animations/Reveal";
@@ -107,6 +108,28 @@ export function ResellerDrawer({ id, period, onClose }: { id: number | null; per
               </div>
               {r.status !== "actif" && <p className="mt-3 text-[12px] leading-[18px] text-danger">Compte désactivé : ne peut plus recevoir de commandes.</p>}
             </div>
+          )}
+
+          <h4 className="mb-3 mt-6 flex flex-wrap items-center gap-2 text-[15px] font-bold">
+            Note des clients
+            {r.ratingAverage != null && (
+              <span className="flex items-center gap-1.5 text-[13px] font-semibold text-ink-2"><Stars rating={r.ratingAverage} size={14} hideCount /> {r.ratingAverage.toFixed(1)}/5 · {pluralize(r.ratingCount, "note")}</span>
+            )}
+          </h4>
+          {r.ratings.length === 0 ? (
+            <p className="rounded-box bg-chip p-6 text-center text-[13px] text-ink-3">Aucune note pour le moment : les clients notent leur revendeur après la livraison.</p>
+          ) : (
+            <ul className="flex flex-col gap-2">
+              {r.ratings.map((rating) => (
+                <li key={rating.orderNumber} className="rounded-box border border-line-3 p-3">
+                  <div className="flex flex-wrap items-center gap-2 text-[12px] text-ink-3">
+                    <Stars rating={rating.score} size={13} hideCount />
+                    <span className="font-semibold text-ink">{rating.clientName}</span> · commande {rating.orderNumber} · {formatDate(rating.createdAt)}
+                  </div>
+                  {rating.comment && <p className="mt-1.5 text-[13px] leading-[19px] text-ink-2">« {rating.comment} »</p>}
+                </li>
+              ))}
+            </ul>
           )}
 
           <h4 className="mb-3 mt-6 text-[15px] font-bold">Clients invités ({r.invited.length})</h4>
