@@ -2,12 +2,13 @@
 
 import { CloseCircle, Refresh2, TickCircle, Truck, Wallet3 } from "@/shared/ui/icons";
 import { useState, type ReactNode } from "react";
-import { getErrorMessage } from "@/shared/lib/api";
+import { ApiError, getErrorMessage } from "@/shared/lib/api";
 import { Button, type ButtonVariant } from "@/shared/ui/Button";
-import { Textarea } from "@/shared/ui/Form";
+import { Input, Textarea } from "@/shared/ui/Form";
 import { Modal } from "@/shared/ui/Overlay";
 import { toast } from "@/shared/ui/Toast";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
+import { can } from "@/modules/auth/permissions";
 import { useSetOrderStatus } from "@/modules/orders/hooks/useOrderWorkflow";
 import { orderWorkflow } from "@/modules/orders/services/workflow.service";
 import { nextOrderStatus, ORDER_FINAL, ORDER_STATUS_LABEL, type Order, type OrderStatus } from "@/modules/orders/types";
@@ -24,7 +25,7 @@ const ACTIONS: Partial<Record<OrderStatus, ActionDef>> = {
   confirmee: { label: "Confirmer la commande", confirm: "Le client est contacté et la commande est confirmée.", variant: "primary", icon: <TickCircle size={16} variant="Bold" /> },
   payee: { label: "Marquer payée", confirm: "Le paiement a bien été reçu (mobile money ou cash).", variant: "primary", icon: <Wallet3 size={16} variant="Bold" /> },
   en_livraison: { label: "Passer en livraison", confirm: "La commande part en livraison chez le client.", variant: "primary", icon: <Truck size={16} variant="Bold" /> },
-  livree: { label: "Marquer livrée", confirm: "Le client a reçu sa commande.", variant: "primary", icon: <TickCircle size={16} variant="Bold" /> },
+  livree: { label: "Marquer livrée", confirm: "Saisissez le code de livraison que le client vous donne une fois sa commande en main.", variant: "primary", icon: <TickCircle size={16} variant="Bold" /> },
   annulee: { label: "Annuler la commande", confirm: "Cette action clôture la commande. Indiquez le motif.", variant: "danger", icon: <CloseCircle size={16} variant="Bold" />, noteRequired: true },
   retournee: { label: "Enregistrer un retour", confirm: "La commande livrée est retournée par le client. Indiquez le motif.", variant: "dark", icon: <Refresh2 size={16} variant="Bold" />, noteRequired: true },
 };
@@ -35,6 +36,13 @@ export function StatusActionBar({ order, onAssign }: { order: Order; onAssign?: 
   const set = useSetOrderStatus();
   const [pending, setPending] = useState<OrderStatus | null>(null);
   const [note, setNote] = useState("");
+  const [code, setCode] = useState("");
+  const [reason, setReason] = useState("");
+  const [codeError, setCodeError] = useState<string>();
+  // responsable / admin : peut confirmer sans le code du client, avec un motif (journal d'audit)
+  const staff = can(user, "orders.status.any");
+  const delivering = pending === "livree";
+  const locked = !!order.deliveryCodeLocked;
 
   const candidates: OrderStatus[] = [];
   const next = order.status === "attente" ? null : nextOrderStatus(order.status);
@@ -46,20 +54,33 @@ export function StatusActionBar({ order, onAssign }: { order: Order; onAssign?: 
   const close = () => {
     setPending(null);
     setNote("");
+    setCode("");
+    setReason("");
+    setCodeError(undefined);
   };
+  const cleanCode = code.replace(/\s/g, "");
   const submit = () => {
     if (!pending) return;
     set.mutate(
-      { orderId: order.id, to: pending, note: note.trim() || undefined },
+      { orderId: order.id, to: pending, note: note.trim() || undefined, deliveryCode: delivering ? cleanCode : undefined, reason: delivering ? reason.trim() : undefined },
       {
         onSuccess: () => {
           toast.success(`Statut : ${ORDER_STATUS_LABEL[pending]}`, `Commande #${order.id}`);
           close();
         },
-        onError: (e) => toast.error("Changement impossible", getErrorMessage(e)),
+        onError: (e) => {
+          if (delivering && e instanceof ApiError) {
+            const left = (e.meta as { attemptsLeft?: number } | undefined)?.attemptsLeft;
+            setCodeError(left != null ? `Code incorrect : encore ${left} essai${left > 1 ? "s" : ""}.` : getErrorMessage(e));
+            return;
+          }
+          toast.error("Changement impossible", getErrorMessage(e));
+        },
       },
     );
   };
+  // livrée : le code du client (6 chiffres), ou pour l'équipe un motif sans code
+  const deliveryReady = /^\d{6}$/.test(cleanCode) ? !locked : staff && reason.trim().length >= 3;
 
   // actions réellement possibles → barre fixe en bas sur mobile (action principale + icônes pour annuler / retour)
   const doable = candidates.filter((s) => ACTIONS[s] && orderWorkflow.canTransition(user, order, s).ok);
@@ -109,11 +130,60 @@ export function StatusActionBar({ order, onAssign }: { order: Order; onAssign?: 
       {candidates.length === 0 && order.status !== "attente" && <p className="text-[13px] text-ink-3 lg:hidden">Commande clôturée — aucune action possible.</p>}
 
       <Modal open={!!pending} onClose={close} title={def?.label} className="max-w-[460px]">
-        <p className="text-[14px] leading-[22px] text-ink-2">{def?.confirm}</p>
-        <Textarea label={def?.noteRequired ? "Motif" : "Note (optionnel)"} required={def?.noteRequired} value={note} onChange={(e) => setNote(e.target.value)} className="mt-3 min-h-[80px]" wrapperClassName="mt-3" />
+        {delivering ? (
+          <div className="space-y-3">
+            {locked ? (
+              <p className="rounded-md bg-danger-50 px-3 py-2.5 text-[13px] leading-[19px] text-danger">
+                Code bloqué après trop d&apos;erreurs. {staff ? "Vérifiez avec le client, puis confirmez la livraison avec un motif." : "Un responsable doit confirmer la livraison."}
+              </p>
+            ) : (
+              <>
+                <p className="text-[14px] leading-[22px] text-ink-2">{def?.confirm}</p>
+                <Input
+                  label="Code de livraison"
+                  value={code}
+                  onChange={(e) => {
+                    setCode(e.target.value);
+                    setCodeError(undefined);
+                  }}
+                  inputMode="numeric"
+                  autoComplete="one-time-code"
+                  maxLength={7}
+                  placeholder="6 chiffres"
+                  error={codeError}
+                  className="text-center text-[20px] tracking-[0.3em]"
+                  autoFocus
+                />
+              </>
+            )}
+            {staff && (
+              <Textarea
+                label={locked ? "Motif" : "Pas de code ? Motif (responsable)"}
+                value={reason}
+                onChange={(e) => setReason(e.target.value)}
+                placeholder="Ex. client joint par téléphone, remise confirmée"
+                className="min-h-[72px]"
+                hint="Sans code, la confirmation est enregistrée dans le journal d'audit avec ce motif."
+              />
+            )}
+          </div>
+        ) : (
+          <>
+            <p className="text-[14px] leading-[22px] text-ink-2">{def?.confirm}</p>
+            <Textarea label={def?.noteRequired ? "Motif" : "Note (optionnel)"} required={def?.noteRequired} value={note} onChange={(e) => setNote(e.target.value)} className="mt-3 min-h-[80px]" wrapperClassName="mt-3" />
+          </>
+        )}
         <div className="mt-5 grid grid-cols-2 gap-3">
           <Button variant="chip" upper={false} onClick={close}>Retour</Button>
-          <Button variant={def?.variant ?? "primary"} upper={false} loading={set.isPending} disabled={!!def?.noteRequired && note.trim().length < 3} onClick={submit}>Confirmer</Button>
+          <Button
+            variant={def?.variant ?? "primary"}
+            upper={false}
+            loading={set.isPending}
+            disabled={delivering ? !deliveryReady : !!def?.noteRequired && note.trim().length < 3}
+            onClick={submit}
+          >
+            Confirmer
+          </Button>
         </div>
       </Modal>
     </>

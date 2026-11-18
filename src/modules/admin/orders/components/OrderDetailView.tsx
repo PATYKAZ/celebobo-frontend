@@ -188,6 +188,11 @@ function Content({ id }: { id: number }) {
           </Card>
 
           <Card title="Livraison & paiement" icon={<Location size={17} variant="Bold" />} delay={0.05}>
+            {order.deliveryCodeLocked && !closed && (
+              <p className="mb-3 rounded-md bg-danger-50 px-3 py-2.5 text-[13px] leading-[19px] text-danger">
+                <strong>Code de livraison bloqué</strong> après {order.deliveryCodeAttempts} codes incorrects. Un responsable doit vérifier avec le client puis confirmer la livraison avec un motif.
+              </p>
+            )}
             {order.awaitingShippingQuote && !closed && (
               <p className="mb-3 rounded-md bg-star/10 px-3 py-2.5 text-[13px] leading-[19px] text-warn">
                 Zone <strong>sur devis</strong> : proposez les frais de livraison dans la discussion. La commande ne peut être confirmée qu&apos;après l&apos;accord du client, qui peut annuler sans frais d&apos;ici là.

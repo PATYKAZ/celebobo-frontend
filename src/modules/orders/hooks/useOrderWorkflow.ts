@@ -13,7 +13,8 @@ function useInvalidateOrders() {
 export function useSetOrderStatus() {
   const invalidate = useInvalidateOrders();
   return useMutation({
-    mutationFn: ({ orderId, to, note }: { orderId: number; to: OrderStatus; note?: string }) => orderWorkflow.setStatus(orderId, to, { note }),
+    mutationFn: ({ orderId, to, note, deliveryCode, reason }: { orderId: number; to: OrderStatus; note?: string; deliveryCode?: string; reason?: string }) =>
+      orderWorkflow.setStatus(orderId, to, { note, deliveryCode, reason }),
     onSuccess: invalidate,
   });
 }

@@ -132,6 +132,11 @@ export interface Order {
   refundedAt?: string | null;
   /** Ex. référence de la transaction Mobile Money */
   refundNote?: string | null;
+  /** Client uniquement : code à donner au revendeur à la remise (de la confirmation à la livraison) */
+  deliveryCode?: string | null;
+  /** Back-office : codes incorrects saisis, et code bloqué après 5 erreurs */
+  deliveryCodeAttempts?: number;
+  deliveryCodeLocked?: boolean;
   address?: OrderAddress | null;
   /** Transitions permises à l'utilisateur courant (ex: `annulee` pour le client tant qu'elle est en attente). */
   allowedTransitions?: OrderStatus[];
