@@ -14,7 +14,8 @@ import { EmptyState } from "@/shared/ui/EmptyState";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { Input } from "@/shared/ui/Form";
 import { toast } from "@/shared/ui/Toast";
-import { getErrorMessage } from "@/shared/lib/api";
+import { api, getErrorMessage } from "@/shared/lib/api";
+import { ENDPOINTS } from "@/config/endpoints";
 import { PermissionGuard, useCan } from "@/modules/auth/hooks/useCan";
 import { conversationsService } from "@/modules/messaging/services/conversations.service";
 import { ORDER_FINAL, shippingFeeLabel, type Order } from "@/modules/orders/types";
@@ -226,6 +227,14 @@ function Content({ id }: { id: number }) {
                 <dt className="flex items-center gap-1.5 text-ink-3"><Wallet3 size={14} /> Mode de paiement choisi</dt>
                 <dd className="mt-0.5 font-semibold">{order.paymentMethod ? PAYMENT_LABEL[order.paymentMethod] : "—"}</dd>
               </div>
+              {(order.status === "livree" || order.status === "retournee") && (
+                <div>
+                  <dt className="text-ink-3">Reçu de livraison</dt>
+                  <dd className="mt-0.5">
+                    <a href={api.url(ENDPOINTS.admin.orders.receipt(order.id))} target="_blank" rel="noreferrer" className="font-semibold text-primary hover:underline">Télécharger le reçu signé (PDF)</a>
+                  </dd>
+                </div>
+              )}
               <div>
                 <dt className="text-ink-3">Note du client</dt>
                 <dd className="mt-0.5 rounded-md bg-page/60 px-3 py-2 italic text-ink-2">{order.note ?? "Aucune note."}</dd>

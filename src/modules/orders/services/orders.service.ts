@@ -24,6 +24,8 @@ export const ordersService = {
 
   /** Facture PDF (lien direct, cookies de session). */
   invoiceUrl: (number: string) => api.url(ENDPOINTS.orders.invoice(number)),
+  /** Reçu de livraison signé, une fois la commande livrée. */
+  receiptUrl: (number: string) => api.url(ENDPOINTS.orders.receipt(number)),
 
   /** Passe la commande (+ discussion côté backend) ; `idempotencyKey` évite un doublon en cas de double envoi. */
   async create(input: CreateOrderInput, idempotencyKey: string): Promise<CreateOrderResult> {

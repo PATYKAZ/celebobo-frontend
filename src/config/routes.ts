@@ -26,6 +26,7 @@ export const ROUTES = {
   page: (slug: string) => `/pages/${slug}`,
   newsletterUnsubscribe: "/newsletter/desinscription",
   track: "/suivi",
+  receiptVerify: "/verifier-recu",
   orderDetail: (number: number | string) => `/compte/commandes/${encodeURIComponent(number)}`,
   addresses: "/compte/adresses",
   settings: "/compte/parametres",
