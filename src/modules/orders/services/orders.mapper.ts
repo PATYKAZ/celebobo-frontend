@@ -17,6 +17,7 @@ export interface OrderSummaryDto {
   previewImage: string;
   clientName: string;
   resellerName: string | null;
+  refundStatus?: "due" | "done" | null;
 }
 
 export interface OrderLineDto {
@@ -67,6 +68,9 @@ export interface OrderDto extends OrderSummaryDto {
   pickupAddress?: string;
   deliveryEstimate?: string;
   awaitingShippingQuote?: boolean;
+  refundDue?: string;
+  refundedAt?: string | null;
+  refundNote?: string;
   cancelReason: string;
   history: StatusEntryDto[];
   allowedTransitions: ApiOrderStatus[];
@@ -161,6 +165,10 @@ export function toOrder(dto: OrderSummaryDto | OrderDto): Order {
     pickupAddress: detail?.pickupAddress || null,
     deliveryEstimate: detail?.deliveryEstimate || null,
     awaitingShippingQuote: detail?.awaitingShippingQuote ?? false,
+    refundStatus: dto.refundStatus ?? null,
+    refundDue: detail ? money(detail.refundDue) : undefined,
+    refundedAt: detail?.refundedAt ?? null,
+    refundNote: detail?.refundNote || null,
     allowedTransitions: detail?.allowedTransitions.map(toStatus) ?? [],
   };
 }

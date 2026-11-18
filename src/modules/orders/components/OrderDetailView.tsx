@@ -117,6 +117,20 @@ export function OrderDetailView({ number }: { number: string }) {
             </div>
           </div>
 
+          {order.refundStatus && (
+            <p className={`mt-4 rounded-md px-3.5 py-3 text-[13px] leading-[19px] sm:px-4 ${order.refundStatus === "done" ? "bg-primary-50 text-primary-dark" : "bg-star/10 text-warn"}`}>
+              {order.refundStatus === "done" ? (
+                <>
+                  <strong>Remboursement effectué</strong> : {formatPrice(order.refundDue ?? 0)}
+                  {order.refundedAt && <> le {formatDateTime(order.refundedAt)}</>}.
+                </>
+              ) : (
+                <>
+                  <strong>Remboursement en cours</strong> : {formatPrice(order.refundDue ?? 0)} vous seront rendus sous 72 heures, par le moyen utilisé pour payer.
+                </>
+              )}
+            </p>
+          )}
           <div className="mt-5 md:hidden"><OrderProgress status={order.status} /></div>
           <div className="mt-8 hidden md:block"><OrderTimeline order={order} /></div>
           {order.awaitingShippingQuote && !ORDER_FINAL.includes(order.status) ? (
@@ -133,7 +147,7 @@ export function OrderDetailView({ number }: { number: string }) {
           ) : (
             order.status === "attente" && (
               <p className="mt-4 rounded-md bg-star/10 px-3.5 py-3 text-[13px] leading-[19px] text-warn sm:mt-6 sm:px-4">
-                Votre commande est <strong>en attente d&apos;assignation</strong>. Vous pouvez encore l&apos;annuler tant qu&apos;un revendeur ne l&apos;a pas prise en charge.
+                Votre commande est <strong>en attente d&apos;assignation</strong>. Vous pouvez l&apos;annuler sans frais jusqu&apos;à son départ en livraison.
               </p>
             )
           )}
@@ -228,7 +242,10 @@ export function OrderDetailView({ number }: { number: string }) {
       )}
 
       <Modal open={cancelOpen} onClose={() => setCancelOpen(false)} title="Annuler la commande" className="max-w-[460px]">
-        <p className="mb-4 text-[14px] leading-[21px] text-ink-2">Dites-nous pourquoi : cela nous aide à nous améliorer. Cette action est définitive.</p>
+        <p className="mb-4 text-[14px] leading-[21px] text-ink-2">
+          Dites-nous pourquoi : cela nous aide à nous améliorer. Cette action est définitive.
+          {order.status === "payee" && <> Votre paiement de <strong className="text-ink">{formatPrice(order.totalPrice)}</strong> vous sera remboursé sous 72 heures.</>}
+        </p>
         <div className="space-y-4">
           <Select label="Motif" value={reason} onChange={(e) => setReason(e.target.value as CancelReason)} options={CANCEL_REASONS} />
           <Textarea label="Précisions (facultatif)" value={details} onChange={(e) => setDetails(e.target.value)} placeholder="Ajoutez un commentaire…" className="min-h-[90px]" />

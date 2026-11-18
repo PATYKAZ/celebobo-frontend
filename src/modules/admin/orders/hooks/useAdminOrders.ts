@@ -1,6 +1,6 @@
 "use client";
 
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRealtime } from "@/shared/hooks/useRealtime";
 import { channels, type UserEvent } from "@/shared/lib/realtime";
@@ -26,6 +26,18 @@ export function useAdminOrders(params: AdminOrderListParams) {
 
 export function useAdminOrder(id: number | undefined) {
   return useQuery({ queryKey: adminOrderKeys.detail(id ?? 0), queryFn: () => adminOrdersService.detail(id as number), enabled: !!id, retry: false });
+}
+
+/** Enregistre le remboursement d'une commande payée puis annulée. */
+export function useRecordRefund(id: number) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (note: string) => adminOrdersService.recordRefund(id, note),
+    onSuccess: (order) => {
+      qc.setQueryData(adminOrderKeys.detail(id), order);
+      qc.invalidateQueries({ queryKey: adminOrderKeys.all });
+    },
+  });
 }
 
 /** Revendeurs assignables avec disponibilité et charge — réservé à ceux qui assignent les commandes. */

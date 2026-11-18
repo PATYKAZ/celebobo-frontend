@@ -199,6 +199,7 @@ export const ENDPOINTS = {
       assign: (id: number) => `/bo/orders/${id}/assign/`,
       transition: (id: number) => `/bo/orders/${id}/transition/`,
       decline: (id: number) => `/bo/orders/${id}/decline/`,
+      refund: (id: number) => `/bo/orders/${id}/refund/`, // { note } : remboursement effectué
       invoice: (id: number) => `/bo/orders/${id}/invoice/`,
       convertible: "/bo/orders/convertible/",
       convertToSales: (id: number) => `/bo/orders/${id}/convert-to-sales/`,
