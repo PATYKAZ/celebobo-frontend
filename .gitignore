@@ -11,3 +11,8 @@ npm-debug.log*
 
 .vercel
 .env*
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
