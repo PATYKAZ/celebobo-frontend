@@ -62,6 +62,7 @@ export const ENDPOINTS = {
     detail: (number: string) => `/me/orders/${encodeURIComponent(number)}/`,
     cancel: (number: string) => `/me/orders/${encodeURIComponent(number)}/cancel/`,
     invoice: (number: string) => `/me/orders/${encodeURIComponent(number)}/invoice/`,
+    receipt: (number: string) => `/me/orders/${encodeURIComponent(number)}/receipt/`, // reçu de livraison signé (PDF)
   },
 
   // ---- Compte -----------------------------------------------------------
@@ -136,6 +137,9 @@ export const ENDPOINTS = {
   tracking: {
     lookup: "/orders/track/", // POST { number, contact } (suivi public sans compte)
   },
+  receipts: {
+    verify: "/receipts/verify/", // POST { number, signature } → { valid, orderNumber, deliveredAt, total } (public)
+  },
   /** Temps réel : WebSocket direct vers le backend (env.WS_URL, ticket `auth.wsTicket`) — voir shared/lib/realtime.ts */
   addressBook: {
     list: "/me/addresses/",
@@ -201,6 +205,7 @@ export const ENDPOINTS = {
       decline: (id: number) => `/bo/orders/${id}/decline/`,
       refund: (id: number) => `/bo/orders/${id}/refund/`, // { note } : remboursement effectué
       invoice: (id: number) => `/bo/orders/${id}/invoice/`,
+      receipt: (id: number) => `/bo/orders/${id}/receipt/`,
       convertible: "/bo/orders/convertible/",
       convertToSales: (id: number) => `/bo/orders/${id}/convert-to-sales/`,
     },

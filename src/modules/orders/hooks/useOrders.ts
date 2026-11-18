@@ -52,3 +52,4 @@ export function useCancelOrder(number: string) {
 
 /** Lien de téléchargement de la facture PDF. */
 export const orderInvoiceUrl = (number: string) => ordersService.invoiceUrl(number);
+export const orderReceiptUrl = (number: string) => ordersService.receiptUrl(number);

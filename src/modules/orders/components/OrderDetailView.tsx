@@ -20,7 +20,7 @@ import { Modal } from "@/shared/ui/Overlay";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { toast } from "@/shared/ui/Toast";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
-import { orderInvoiceUrl, useCancelOrder, useOrder, orderKeys } from "../hooks/useOrders";
+import { orderInvoiceUrl, orderReceiptUrl, useCancelOrder, useOrder, orderKeys } from "../hooks/useOrders";
 import { useResellerAvailability } from "../hooks/useResellerAvailability";
 import { toStatus } from "../services/orders.mapper";
 import { CANCEL_REASONS, ORDER_FINAL, ORDER_STATUS_LABEL, PAYMENT_METHODS, shippingFeeLabel, type CancelReason } from "../types";
@@ -113,6 +113,9 @@ export function OrderDetailView({ number }: { number: string }) {
             <div className="flex w-full flex-wrap gap-2 sm:w-auto">
               {order.conversationId && <Button href={ROUTES.conversation(order.conversationId)} leftIcon={<Messages2 size={16} variant="Bold" />} className="max-sm:hidden">Ouvrir la discussion</Button>}
               <Button href={orderInvoiceUrl(number)} target="_blank" variant="chip" upper={false} leftIcon={<DocumentDownload size={16} />} className="max-sm:flex-1">Facture</Button>
+              {(order.status === "livree" || order.status === "retournee") && (
+                <Button href={orderReceiptUrl(number)} target="_blank" variant="chip" upper={false} leftIcon={<DocumentDownload size={16} />} className="max-sm:flex-1">Reçu de livraison</Button>
+              )}
               {canCancel && <Button variant="danger" upper={false} onClick={() => setCancelOpen(true)} className="max-sm:flex-1">Annuler la commande</Button>}
             </div>
           </div>
