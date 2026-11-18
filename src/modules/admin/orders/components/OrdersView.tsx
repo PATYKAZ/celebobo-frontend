@@ -20,7 +20,7 @@ import { StatCard } from "../../ui/StatCard";
 import { useAdminOrders } from "../hooks/useAdminOrders";
 import type { AdminOrderListParams, OrderTab } from "../types";
 import { AssignResellerModal } from "./AssignResellerModal";
-import { AvailabilityDot, OrderStatusDot, PAYMENT_LABEL, Thumbs } from "./parts";
+import { AvailabilityDot, OrderStatusDot, PAYMENT_LABEL, RefundBadge, Thumbs } from "./parts";
 import { ResellerFilter } from "./ResellerFilter";
 import { useResellerOptions } from "../hooks/useAdminOrders";
 import { useAppRouter } from "@/shared/hooks/useAppRouter";
@@ -39,6 +39,7 @@ export function OrdersView() {
 function OrdersContent() {
   const router = useAppRouter();
   const canAll = useCan("orders.view.all");
+  const canRefund = useCan("orders.refund");
   const canAssign = useCan("orders.assign");
   const [tab, setTab] = useState<OrderTab>("all");
   const [page, setPage] = useState(1);
@@ -74,6 +75,7 @@ function OrdersContent() {
   const tabs = [
     { value: "all" as OrderTab, label: "Toutes", count: counts?.all },
     ...(canAll ? [{ value: "unassigned" as OrderTab, label: "Non assignées", count: counts?.unassigned }] : []),
+    ...(canRefund ? [{ value: "refund_pending" as OrderTab, label: "À rembourser", count: counts?.refund_pending }] : []),
     ...STATUS_TABS.map((s) => ({ value: s, label: ORDER_STATUS_LABEL[s as keyof typeof ORDER_STATUS_LABEL], count: counts?.[s] })),
   ];
   const filtered = !!(search || resellerId || dateFrom || dateTo || min || max);
@@ -112,7 +114,17 @@ function OrdersContent() {
     },
     { key: "items", header: "Articles", hideBelow: "md", cell: (o) => <Thumbs order={o} /> },
     { key: "total", header: "Total", align: "right", cell: (o) => <span className="font-bold">{formatPrice(o.totalPrice)}</span> },
-    { key: "status", header: "Statut", mobile: "hide", cell: (o) => <OrderStatusDot status={o.status} /> },
+    {
+      key: "status",
+      header: "Statut",
+      mobile: "hide",
+      cell: (o) => (
+        <div className="flex flex-col items-start gap-1">
+          <OrderStatusDot status={o.status} />
+          <RefundBadge status={o.refundStatus} />
+        </div>
+      ),
+    },
     {
       key: "reseller",
       header: "Revendeur",

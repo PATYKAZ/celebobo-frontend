@@ -8,6 +8,16 @@ export function OrderStatusDot({ status }: { status: OrderStatus }) {
   return <StatusDot tone={ORDER_STATUS_TONE[status]}>{ORDER_STATUS_LABEL[status]}</StatusDot>;
 }
 
+/** Commande payée puis annulée : remboursement à faire, ou fait. */
+export function RefundBadge({ status }: { status?: Order["refundStatus"] }) {
+  if (!status) return null;
+  return status === "due" ? (
+    <span className="rounded-full bg-danger-100 px-2 py-0.5 text-[10px] font-bold uppercase text-danger">À rembourser</span>
+  ) : (
+    <span className="rounded-full bg-primary-100 px-2 py-0.5 text-[10px] font-bold uppercase text-primary-dark">Remboursée</span>
+  );
+}
+
 const AV = {
   online: { cls: "bg-primary", label: "En ligne" },
   away: { cls: "bg-star", label: "Absent" },

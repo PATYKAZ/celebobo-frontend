@@ -12,11 +12,14 @@ import { Block } from "@/shared/ui/Block";
 import { Button } from "@/shared/ui/Button";
 import { EmptyState } from "@/shared/ui/EmptyState";
 import { Skeleton } from "@/shared/ui/Skeleton";
+import { Input } from "@/shared/ui/Form";
+import { toast } from "@/shared/ui/Toast";
+import { getErrorMessage } from "@/shared/lib/api";
 import { PermissionGuard, useCan } from "@/modules/auth/hooks/useCan";
 import { conversationsService } from "@/modules/messaging/services/conversations.service";
 import { ORDER_FINAL, shippingFeeLabel, type Order } from "@/modules/orders/types";
 import { PageHeader } from "../../ui/PageHeader";
-import { useAdminOrder, useResellerOptions } from "../hooks/useAdminOrders";
+import { useAdminOrder, useRecordRefund, useResellerOptions } from "../hooks/useAdminOrders";
 import { AssignResellerModal } from "./AssignResellerModal";
 import { StatusHistory, StatusStepper } from "./OrderProgress";
 import { AvailabilityDot, OrderStatusDot, PAYMENT_LABEL } from "./parts";
@@ -225,6 +228,8 @@ function Content({ id }: { id: number }) {
             </dl>
           </Card>
 
+          {order.refundStatus && <RefundCard order={order} />}
+
           <ResellerCard order={order} canAssign={canAssign && !closed} onAssign={() => setAssigning(order)} />
 
           {order.conversationId != null && <DiscussionCard conversationId={order.conversationId} />}
@@ -247,6 +252,49 @@ function Content({ id }: { id: number }) {
       {/* réserve la place de la barre d'actions fixe (mobile) pour que le dernier bloc reste visible */}
       <div className="h-20 lg:hidden" aria-hidden />
     </>
+  );
+}
+
+/** Commande payée puis annulée : montant à rendre sous 72 h, puis trace du remboursement. */
+function RefundCard({ order }: { order: Order }) {
+  const canRefund = useCan("orders.refund");
+  const record = useRecordRefund(order.id);
+  const [note, setNote] = useState("");
+  const amount = formatPrice(order.refundDue ?? 0);
+  return (
+    <Card title={order.refundStatus === "done" ? "Remboursée" : "Remboursement à effectuer"} icon={<Wallet3 size={17} variant="Bold" />} delay={0.05}>
+      {order.refundStatus === "done" ? (
+        <p className="text-[13px] leading-[19px] text-ink-2">
+          <strong className="text-ink">{amount}</strong> rendus au client{order.refundedAt && <> le {formatDateTime(order.refundedAt)}</>}.
+          {order.refundNote && <span className="mt-1 block">Référence : {order.refundNote}</span>}
+        </p>
+      ) : (
+        <div className="space-y-3">
+          <p className="text-[13px] leading-[19px] text-ink-2">
+            Commande annulée après paiement : <strong className="text-ink">{amount}</strong> à rendre au client sous 72 h (politique de livraison).
+          </p>
+          {canRefund && (
+            <>
+              <Input label="Référence (optionnel)" value={note} onChange={(e) => setNote(e.target.value)} placeholder="Ex. transaction Mobile Money" maxLength={200} />
+              <Button
+                size="sm"
+                upper={false}
+                fullWidth
+                loading={record.isPending}
+                onClick={() =>
+                  record.mutate(note, {
+                    onSuccess: () => toast.success("Remboursement enregistré", `Le client est prévenu (${amount}).`),
+                    onError: (e) => toast.error("Enregistrement impossible", getErrorMessage(e)),
+                  })
+                }
+              >
+                Marquer comme remboursée
+              </Button>
+            </>
+          )}
+        </div>
+      )}
+    </Card>
   );
 }
 

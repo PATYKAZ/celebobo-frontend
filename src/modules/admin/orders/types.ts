@@ -2,8 +2,8 @@ import type { ResellerAvailability } from "@/modules/auth/types";
 import type { Order, OrderStatus } from "@/modules/orders/types";
 import type { Paginated } from "@/shared/lib/api";
 
-/** Onglet de la liste : un statut, « all » ou « unassigned » (aucun revendeur). */
-export type OrderTab = OrderStatus | "all" | "unassigned";
+/** Onglet de la liste : un statut, « all », « unassigned » (aucun revendeur) ou « refund_pending » (payée puis annulée, à rembourser). */
+export type OrderTab = OrderStatus | "all" | "unassigned" | "refund_pending";
 
 export interface AdminOrderListParams {
   status?: OrderTab;

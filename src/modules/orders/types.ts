@@ -41,8 +41,8 @@ export const nextOrderStatus = (s: OrderStatus): OrderStatus | null => {
   return i >= 0 && i < ORDER_FLOW.length - 1 ? ORDER_FLOW[i + 1] : null;
 };
 
-/** Annulable par le client uniquement tant qu'elle est en attente. */
-export const isCancellableByClient = (s: OrderStatus) => s === "attente";
+/** Annulable par le client, sans frais, jusqu'au départ en livraison (remboursée si déjà payée). */
+export const isCancellableByClient = (s: OrderStatus) => s === "attente" || s === "assignee" || s === "confirmee" || s === "payee";
 
 /** Mapping de l'ancien backend. */
 export const fromLegacyStatus = (s: string): OrderStatus =>
@@ -125,6 +125,13 @@ export interface Order {
   deliveryEstimate?: string | null;
   /** Zone sur devis : frais de livraison pas encore acceptés par le client */
   awaitingShippingQuote?: boolean;
+  /** Annulée après paiement : « due » tant que le remboursement n'est pas enregistré, puis « done » */
+  refundStatus?: "due" | "done" | null;
+  /** Montant à rendre au client */
+  refundDue?: number;
+  refundedAt?: string | null;
+  /** Ex. référence de la transaction Mobile Money */
+  refundNote?: string | null;
   address?: OrderAddress | null;
   /** Transitions permises à l'utilisateur courant (ex: `annulee` pour le client tant qu'elle est en attente). */
   allowedTransitions?: OrderStatus[];

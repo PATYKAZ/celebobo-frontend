@@ -26,7 +26,7 @@ const filters = (p: AdminOrderListParams) => ({
 
 function toCounts(raw: Record<string, number> = {}): AdminOrderCounts {
   const byStatus = Object.fromEntries(STATUSES.map((s) => [s, raw[STATUS_TO_API[s]] ?? 0])) as Record<OrderStatus, number>;
-  return { ...byStatus, all: STATUSES.reduce((n, s) => n + byStatus[s], 0), unassigned: raw.unassigned ?? 0 };
+  return { ...byStatus, all: STATUSES.reduce((n, s) => n + byStatus[s], 0), unassigned: raw.unassigned ?? 0, refund_pending: raw.refundPending ?? 0 };
 }
 
 const monthStart = () => {
@@ -38,7 +38,7 @@ export const adminOrdersService = {
   /** Liste filtrée ; le montant min/max est appliqué sur la page reçue (l'API ne filtre pas les montants). */
   async list(params: AdminOrderListParams = {}): Promise<AdminOrderPage> {
     const tab = params.status ?? "all";
-    const status: ApiOrderStatus | "unassigned" | undefined = tab === "all" ? undefined : tab === "unassigned" ? "unassigned" : STATUS_TO_API[tab];
+    const status: ApiOrderStatus | "unassigned" | "refund_pending" | undefined = tab === "all" ? undefined : tab === "unassigned" || tab === "refund_pending" ? tab : STATUS_TO_API[tab];
     const month = monthStart();
     const [page, delivered] = await Promise.all([
       api.page<OrderSummaryDto, Order>(orders.list, { params: { ...filters(params), status, page: params.page, pageSize: params.pageSize } }, toOrder),
@@ -61,6 +61,11 @@ export const adminOrdersService = {
 
   async detail(id: number): Promise<Order> {
     return toOrder(await api.get<OrderDto>(orders.detail(id)));
+  },
+
+  /** Commande payée puis annulée : l'argent a été rendu au client (note : référence de la transaction). */
+  async recordRefund(id: number, note: string): Promise<Order> {
+    return toOrder(await api.post<OrderDto>(orders.refund(id), { note: note.trim() }));
   },
 
   /** Revendeurs actifs assignables, avec disponibilité et charge. */

@@ -16,6 +16,7 @@ export type Permission =
   | "orders.assign"
   | "orders.status.advance" // faire avancer SES commandes assignées
   | "orders.status.any" // tout statut, y compris l'annulation
+  | "orders.refund" // enregistrer le remboursement d'une commande payée puis annulée
   | "sales.view.own"
   | "sales.view.all"
   | "sales.create"
