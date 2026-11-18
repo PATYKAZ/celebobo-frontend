@@ -12,7 +12,8 @@ concurrency:
 jobs:
   quality:
     name: Typecheck, lint, build
-    runs-on: ubuntu-latest
+    # Version fixée : Playwright 1.56 ne sait pas installer Chromium sur ubuntu-latest (26.04).
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -29,7 +30,8 @@ jobs:
 
   e2e:
     name: Checkout (Playwright)
-    runs-on: ubuntu-latest
+    # Version fixée : Playwright 1.56 ne sait pas installer Chromium sur ubuntu-latest (26.04).
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
       # same layout as on a developer machine: the backend compose builds ../../celebobo-frontend
