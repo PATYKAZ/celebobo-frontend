@@ -28,6 +28,10 @@ export interface QuoteDto {
   /** cagnotte utilisable sur cette commande, et montant appliqué (use_cashback) */
   cashbackAvailable?: string;
   cashback?: string;
+  deliveryMethod?: "delivery" | "pickup";
+  pickupAddress?: string;
+  shippingQuoteRequired?: boolean;
+  pickupAvailable?: boolean;
 }
 
 export interface CartLineDto {
@@ -58,6 +62,10 @@ export function toQuote(dto: QuoteDto): CartQuote {
     memberFreeShipping: dto.memberFreeShipping ?? false,
     cashbackAvailable: money(dto.cashbackAvailable),
     cashback: money(dto.cashback),
+    pickup: dto.deliveryMethod === "pickup",
+    pickupAddress: dto.pickupAddress || null,
+    shippingQuoteRequired: dto.shippingQuoteRequired ?? false,
+    pickupAvailable: dto.pickupAvailable ?? false,
   };
 }
 

@@ -5,9 +5,10 @@ import { InfoCircle, TickCircle } from "@/shared/ui/icons";
 import { cn } from "@/shared/lib/cn";
 import { formatTime } from "@/shared/lib/format";
 import { Avatar } from "@/shared/ui/Avatar";
-import { isPriceProposal, isSystemMessage, type Message, type PriceProposalMeta } from "../types";
+import { isPriceProposal, isShippingQuote, isSystemMessage, type Message, type PriceProposalMeta, type ShippingQuoteMeta } from "../types";
 import { OrderSummaryCard } from "./OrderSummaryCard";
 import { PriceProposalCard } from "./PriceProposalCard";
+import { ShippingQuoteCard } from "./ShippingQuoteCard";
 
 interface Props {
   message: Message;
@@ -34,6 +35,7 @@ export function MessageBubble({ message, mine, showSender, onOpenImage, isBuyer 
   }
 
   const proposal = isPriceProposal(message) ? (message.metadata as unknown as PriceProposalMeta) : null;
+  const shippingQuote = isShippingQuote(message) ? (message.metadata as unknown as ShippingQuoteMeta) : null;
 
   return (
     <motion.div
@@ -53,6 +55,8 @@ export function MessageBubble({ message, mine, showSender, onOpenImage, isBuyer 
         )}
         {proposal ? (
           <PriceProposalCard meta={proposal} canRespond={isBuyer && !mine} mine={mine} />
+        ) : shippingQuote ? (
+          <ShippingQuoteCard meta={shippingQuote} canRespond={isBuyer && !mine} />
         ) : (
           <div className={cn("max-w-full rounded-2xl px-3.5 py-2 text-[15px] leading-[22px] sm:px-4 sm:py-2.5 sm:text-[14px] sm:leading-[21px]", mine ? "rounded-br-md bg-primary text-white" : "rounded-bl-md bg-chip text-ink", pending && "opacity-70")}>
             {message.image && (

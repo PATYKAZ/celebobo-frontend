@@ -40,6 +40,7 @@ export type Permission =
   | "conversations.moderate" // boîte de discussions de l'équipe
   | "conversations.assign" // toutes les discussions, assignation du support
   | "price.adjust" // proposer un prix final dans la discussion
+  | "shipping.quote" // proposer les frais de livraison d'une commande en zone sur devis
   | "shipping.manage"
   | "content.manage"
   | "settings.manage"

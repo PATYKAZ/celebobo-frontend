@@ -1,5 +1,5 @@
 import type { OpeningHours, SocialNetwork } from "@/modules/site/types";
-import type { AdminShippingZone, AdminSiteSettings, SettingsFormValues, ZoneFormValues } from "../types";
+import type { AdminShippingZone, AdminSiteSettings, SettingsFormValues, ZoneFormValues, ZonePricing } from "../types";
 
 /** `GET /bo/settings/` (après camelCase). */
 export interface AdminSettingsDto {
@@ -28,6 +28,8 @@ export interface ZoneDto {
   isActive: boolean;
   position: number;
   memberFreeShipping?: boolean;
+  pricing?: ZonePricing;
+  pickupAddress?: string;
 }
 
 export const toAdminSettings = (dto: AdminSettingsDto): AdminSiteSettings => ({
@@ -80,6 +82,8 @@ export const toAdminZone = (dto: ZoneDto): AdminShippingZone => ({
   isActive: dto.isActive,
   position: dto.position,
   memberFreeShipping: dto.memberFreeShipping ?? false,
+  pricing: dto.pricing ?? "flat",
+  pickupAddress: dto.pickupAddress ?? "",
 });
 
 export const zoneToForm = (z: AdminShippingZone): ZoneFormValues => ({
@@ -91,16 +95,25 @@ export const zoneToForm = (z: AdminShippingZone): ZoneFormValues => ({
   isDefault: z.isDefault,
   isActive: z.isActive,
   memberFreeShipping: z.memberFreeShipping,
+  pricing: z.pricing,
+  pickupAddress: z.pickupAddress,
 });
 
-export const toZonePayload = (v: ZoneFormValues) => ({
-  name: v.name.trim(),
-  // une ville par ligne (ou séparées par des virgules), sans doublon
-  cities: [...new Set(v.cities.split(/[\n,]/).map((c) => c.trim()).filter(Boolean))],
-  fee: Number(v.fee || 0).toFixed(2),
-  freeThreshold: v.freeThreshold.trim() ? Number(v.freeThreshold).toFixed(2) : null,
-  deliveryEstimate: v.deliveryEstimate.trim(),
-  isDefault: v.isDefault,
-  isActive: v.isActive,
-  memberFreeShipping: v.memberFreeShipping,
-});
+export const toZonePayload = (v: ZoneFormValues) => {
+  const flat = v.pricing === "flat";
+  const pickup = v.pricing === "pickup";
+  return {
+    name: v.name.trim(),
+    pricing: v.pricing,
+    // le retrait se choisit à la commande, sans ville ; sinon une ville par ligne (ou séparées par des virgules), sans doublon
+    cities: pickup ? [] : [...new Set(v.cities.split(/[\n,]/).map((c) => c.trim()).filter(Boolean))],
+    // sur devis et retrait : aucun frais à la commande
+    fee: flat ? Number(v.fee || 0).toFixed(2) : "0.00",
+    freeThreshold: flat && v.freeThreshold.trim() ? Number(v.freeThreshold).toFixed(2) : null,
+    deliveryEstimate: v.deliveryEstimate.trim(),
+    isDefault: pickup ? false : v.isDefault,
+    isActive: v.isActive,
+    memberFreeShipping: flat && v.memberFreeShipping,
+    pickupAddress: pickup ? v.pickupAddress.trim() : "",
+  };
+};

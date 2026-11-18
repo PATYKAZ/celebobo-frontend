@@ -37,6 +37,7 @@ export const ordersService = {
         addressId: input.addressId ?? null,
         address: input.addressId ? null : (input.address ?? null),
         note: input.note ?? "",
+        pickup: input.pickup ?? false,
       },
       { headers: { "Idempotency-Key": idempotencyKey } },
     );

@@ -28,6 +28,20 @@ export interface PriceProposalMeta {
   status: "pending" | "accepted" | "refused" | "superseded";
 }
 
+/** Frais de livraison proposés par le revendeur pour une zone sur devis (metadata.type === "shipping_quote"). */
+export interface ShippingQuoteMeta {
+  type: "shipping_quote";
+  proposalId: number;
+  orderId: number;
+  orderNumber: string;
+  city: string;
+  fee: number;
+  deliveryEstimate: string | null;
+  reason: string | null;
+  /** superseded : remplacée par une proposition de frais plus récente */
+  status: "pending" | "accepted" | "refused" | "superseded";
+}
+
 export interface SystemMeta {
   type: "system";
 }
@@ -48,6 +62,7 @@ export interface Message {
 }
 
 export const isPriceProposal = (m: Pick<Message, "metadata">): boolean => (m.metadata as { type?: string } | null | undefined)?.type === "price_proposal";
+export const isShippingQuote = (m: Pick<Message, "metadata">): boolean => (m.metadata as { type?: string } | null | undefined)?.type === "shipping_quote";
 export const isSystemMessage = (m: Pick<Message, "metadata">) => (m.metadata as { type?: string } | null | undefined)?.type === "system";
 
 export type ConversationKind = "order" | "support";
@@ -85,6 +100,9 @@ export interface ConversationOrder {
   totalPrice: number;
   items: { id: number; productName: string; variantLabel: string; quantity: number; unitPrice: number }[];
   resellerAvailability?: Availability;
+  /** Zone sur devis : frais de livraison à proposer / accepter */
+  awaitingShippingQuote: boolean;
+  deliveryEstimate: string | null;
 }
 
 export interface SendMessageInput {
@@ -95,6 +113,12 @@ export interface SendMessageInput {
 export interface PriceProposalInput {
   itemId: number;
   newPrice: number;
+  reason?: string;
+}
+
+export interface ShippingQuoteInput {
+  fee: number;
+  deliveryEstimate?: string;
   reason?: string;
 }
 
@@ -115,6 +139,8 @@ export type NotificationKind =
   | "conversation_assigned"
   | "price_proposed"
   | "price_answered"
+  | "shipping_quoted"
+  | "shipping_answered"
   | "membership_requested"
   | "membership_started"
   | "membership_rejected"

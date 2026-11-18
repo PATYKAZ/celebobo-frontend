@@ -63,6 +63,10 @@ export interface OrderDto extends OrderSummaryDto {
   cashbackEarned?: string | null;
   shippingZone: string;
   shippingFee: string;
+  deliveryMethod?: "delivery" | "pickup";
+  pickupAddress?: string;
+  deliveryEstimate?: string;
+  awaitingShippingQuote?: boolean;
   cancelReason: string;
   history: StatusEntryDto[];
   allowedTransitions: ApiOrderStatus[];
@@ -153,6 +157,10 @@ export function toOrder(dto: OrderSummaryDto | OrderDto): Order {
     cashbackEarned: detail?.cashbackEarned == null ? null : money(detail.cashbackEarned),
     shippingFee: detail ? money(detail.shippingFee) : undefined,
     shippingZone: detail?.shippingZone || null,
+    pickup: detail?.deliveryMethod === "pickup",
+    pickupAddress: detail?.pickupAddress || null,
+    deliveryEstimate: detail?.deliveryEstimate || null,
+    awaitingShippingQuote: detail?.awaitingShippingQuote ?? false,
     allowedTransitions: detail?.allowedTransitions.map(toStatus) ?? [],
   };
 }

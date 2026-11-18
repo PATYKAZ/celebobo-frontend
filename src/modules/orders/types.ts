@@ -117,9 +117,24 @@ export interface Order {
   cashbackEarned?: number | null;
   shippingFee?: number;
   shippingZone?: string | null;
+  /** Retrait en boutique (sinon livraison) */
+  pickup?: boolean;
+  /** Adresse du point de retrait */
+  pickupAddress?: string | null;
+  /** Délai indicatif (zone, ou devis accepté) */
+  deliveryEstimate?: string | null;
+  /** Zone sur devis : frais de livraison pas encore acceptés par le client */
+  awaitingShippingQuote?: boolean;
   address?: OrderAddress | null;
   /** Transitions permises à l'utilisateur courant (ex: `annulee` pour le client tant qu'elle est en attente). */
   allowedTransitions?: OrderStatus[];
+}
+
+/** Libellé des frais de livraison d'une commande : sur devis, retrait gratuit, offerte ou montant. */
+export function shippingFeeLabel(o: Pick<Order, "shippingFee" | "awaitingShippingQuote" | "pickup">, format: (n: number) => string): string {
+  if (o.awaitingShippingQuote) return "Sur devis";
+  if (o.pickup) return "Gratuit (retrait)";
+  return o.shippingFee ? format(o.shippingFee) : "Offerte";
 }
 
 /** Motifs d'annulation (client). */
@@ -159,6 +174,8 @@ export interface CreateOrderInput {
   /** Nouvelle adresse saisie (si pas d'adresse du carnet) */
   address?: OrderAddress | null;
   note?: string;
+  /** Retrait en boutique */
+  pickup?: boolean;
 }
 
 export type PaymentMethod = "OrangeMoney" | "AirtelMoney" | "M-Pesa" | "Cash";

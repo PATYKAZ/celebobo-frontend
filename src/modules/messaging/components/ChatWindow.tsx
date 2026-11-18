@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowDown, ArrowLeft2, ArrowRight2, CloseCircle, Gallery, Lock, Money3, More, Profile, Profile2User, Receipt2, Send2, Unlock, User } from "@/shared/ui/icons";
+import { ArrowDown, ArrowLeft2, ArrowRight2, CloseCircle, Gallery, Lock, Money3, More, Profile, Profile2User, Receipt2, Send2, TruckFast, Unlock, User } from "@/shared/ui/icons";
 import { Fragment, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { ROUTES } from "@/config/routes";
 import { cn } from "@/shared/lib/cn";
@@ -22,6 +22,7 @@ import { useResellerOptions } from "../hooks/useNotifications";
 import type { Availability, Message } from "../types";
 import { MessageBubble, TypingIndicator } from "./MessageBubble";
 import { PriceProposalModal } from "./PriceProposalModal";
+import { ShippingQuoteModal } from "./ShippingQuoteModal";
 import { ResellerSheet } from "./ResellerSheet";
 
 const dayLabel = (iso: string) => {
@@ -92,6 +93,7 @@ export function ChatWindow({ conversationId, onBack, className }: Props) {
   const [preview, setPreview] = useState<string | null>(null);
   const [lightbox, setLightbox] = useState<string | null>(null);
   const [proposal, setProposal] = useState(false);
+  const [shippingQuote, setShippingQuote] = useState(false);
   const [details, setDetails] = useState(false);
   const [actions, setActions] = useState(false);
   const [jump, setJump] = useState(false);
@@ -107,6 +109,8 @@ export function ChatWindow({ conversationId, onBack, className }: Props) {
   const concluded = !!conv?.concluded;
   const isBuyer = conv?.client?.id === myId;
   const canPropose = !!conv?.relatedOrderId && !concluded && !isBuyer && can(user, "price.adjust");
+  // zone sur devis : frais à proposer tant que le client ne les a pas acceptés
+  const canQuoteShipping = !!order?.awaitingShippingQuote && !concluded && !isBuyer && can(user, "shipping.quote");
   const canModerate = isStaff && !!conv && !isBuyer;
   const canAssign = can(user, "conversations.assign") && conv?.kind === "support" && !concluded;
   const { data: resellers = [] } = useResellerOptions(canAssign && assignOpen);
@@ -387,6 +391,11 @@ export function ChatWindow({ conversationId, onBack, className }: Props) {
                 <Money3 size={18} variant="Bold" /> Proposer un prix
               </button>
             )}
+            {canQuoteShipping && (
+              <button type="button" onClick={() => setShippingQuote(true)} aria-label="Proposer les frais de livraison" title="Proposer les frais de livraison" className="hidden h-[45px] shrink-0 items-center gap-1.5 rounded-box bg-primary-50 px-3 text-[12px] font-bold uppercase text-primary transition-colors hover:bg-primary hover:text-white sm:inline-flex">
+                <TruckFast size={18} variant="Bold" /> Frais de livraison
+              </button>
+            )}
             <textarea
               ref={area}
               value={text}
@@ -434,6 +443,17 @@ export function ChatWindow({ conversationId, onBack, className }: Props) {
               }}
             />
           )}
+          {canQuoteShipping && (
+            <SheetRow
+              icon={<TruckFast size={22} variant="Bold" />}
+              title="Proposer les frais de livraison"
+              hint="Zone sur devis : le client accepte ou annule sans frais"
+              onClick={() => {
+                setActions(false);
+                setShippingQuote(true);
+              }}
+            />
+          )}
         </div>
       </BottomSheet>
 
@@ -470,6 +490,7 @@ export function ChatWindow({ conversationId, onBack, className }: Props) {
       </BottomSheet>
 
       {conv?.relatedOrderId && canPropose && <PriceProposalModal open={proposal} onClose={() => setProposal(false)} conversation={conv} />}
+      {conv && order && canQuoteShipping && <ShippingQuoteModal open={shippingQuote} onClose={() => setShippingQuote(false)} conversation={conv} order={order} />}
       {canAssign && <ResellerSheet open={assignOpen} onClose={() => setAssignOpen(false)} options={resellers} value={resellerId} onChange={setResellerId} onConfirm={confirmAssign} loading={assign.isPending} />}
 
       <AnimatePresence>

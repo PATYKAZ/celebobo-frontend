@@ -23,7 +23,7 @@ import { useAuth } from "@/modules/auth/hooks/useAuth";
 import { orderInvoiceUrl, useCancelOrder, useOrder, orderKeys } from "../hooks/useOrders";
 import { useResellerAvailability } from "../hooks/useResellerAvailability";
 import { toStatus } from "../services/orders.mapper";
-import { CANCEL_REASONS, ORDER_STATUS_LABEL, PAYMENT_METHODS, type CancelReason } from "../types";
+import { CANCEL_REASONS, ORDER_FINAL, ORDER_STATUS_LABEL, PAYMENT_METHODS, shippingFeeLabel, type CancelReason } from "../types";
 import { AvailabilityDot } from "./AvailabilityDot";
 import { OrderStatusBadge } from "./OrderStatusBadge";
 import { OrderProgress, OrderTimeline } from "./OrderTimeline";
@@ -119,10 +119,23 @@ export function OrderDetailView({ number }: { number: string }) {
 
           <div className="mt-5 md:hidden"><OrderProgress status={order.status} /></div>
           <div className="mt-8 hidden md:block"><OrderTimeline order={order} /></div>
-          {order.status === "attente" && (
-            <p className="mt-4 rounded-md bg-star/10 px-3.5 py-3 text-[13px] leading-[19px] text-warn sm:mt-6 sm:px-4">
-              Votre commande est <strong>en attente d&apos;assignation</strong>. Vous pouvez encore l&apos;annuler tant qu&apos;un revendeur ne l&apos;a pas prise en charge.
-            </p>
+          {order.awaitingShippingQuote && !ORDER_FINAL.includes(order.status) ? (
+            <div className="mt-4 rounded-md bg-star/10 px-3.5 py-3 text-[13px] leading-[19px] text-warn sm:mt-6 sm:px-4">
+              <p>
+                Votre zone est livrée <strong>sur devis</strong> : un revendeur vous indique le coût et le délai de livraison dans la discussion. Vous ne payez rien avant d&apos;avoir accepté ces frais, et vous pouvez annuler la commande sans frais jusque-là.
+              </p>
+              {order.conversationId && (
+                <Link href={ROUTES.conversation(order.conversationId)} className="mt-1.5 inline-flex min-h-9 items-center gap-1 font-bold text-primary hover:underline">
+                  <Messages2 size={15} variant="Bold" /> Voir la discussion
+                </Link>
+              )}
+            </div>
+          ) : (
+            order.status === "attente" && (
+              <p className="mt-4 rounded-md bg-star/10 px-3.5 py-3 text-[13px] leading-[19px] text-warn sm:mt-6 sm:px-4">
+                Votre commande est <strong>en attente d&apos;assignation</strong>. Vous pouvez encore l&apos;annuler tant qu&apos;un revendeur ne l&apos;a pas prise en charge.
+              </p>
+            )
           )}
         </Block>
       </Reveal>
@@ -150,7 +163,15 @@ export function OrderDetailView({ number }: { number: string }) {
               {order.subtotal != null && <div className="flex justify-between"><dt className="text-ink-2">Sous-total</dt><dd className="font-semibold">{formatPrice(order.subtotal)}</dd></div>}
               {!!order.discount && <div className="flex justify-between"><dt className="text-ink-2">Code promo{order.couponCode ? ` (${order.couponCode})` : ""}</dt><dd className="font-semibold text-danger">-{formatPrice(order.discount)}</dd></div>}
               {!!order.cashback && <div className="flex justify-between"><dt className="text-ink-2">Cagnotte</dt><dd className="font-semibold text-danger">-{formatPrice(order.cashback)}</dd></div>}
-              {order.shippingFee != null && <div className="flex justify-between"><dt className="text-ink-2">Livraison{order.shippingZone ? ` · ${order.shippingZone}` : ""}</dt><dd className="font-semibold">{order.shippingFee > 0 ? formatPrice(order.shippingFee) : "Offerte"}</dd></div>}
+              {order.shippingFee != null && (
+                <div className="flex justify-between gap-3">
+                  <dt className="text-ink-2">{order.pickup ? "Retrait sur place" : `Livraison${order.shippingZone ? ` · ${order.shippingZone}` : ""}`}</dt>
+                  <dd className="text-right font-semibold">
+                    {shippingFeeLabel(order, formatPrice)}
+                    {order.deliveryEstimate && <span className="block text-[12px] font-normal text-ink-3">{order.deliveryEstimate}</span>}
+                  </dd>
+                </div>
+              )}
               <div className="flex items-center justify-between pt-1">
                 <dt className="text-[14px] font-semibold text-ink-2">Total</dt>
                 <dd className="text-[22px] font-bold text-primary sm:text-[24px]">{formatPrice(order.totalPrice)}</dd>
@@ -167,8 +188,13 @@ export function OrderDetailView({ number }: { number: string }) {
               <InfoRow icon={<Profile size={18} />} label="Revendeur">
                 {order.assignedRevendeur ? <span className="flex items-center gap-2">{order.assignedRevendeur.name} <AvailabilityDot value={availability} withLabel /></span> : <span className="font-normal text-ink-2">Pas encore assigné</span>}
               </InfoRow>
-              <InfoRow icon={<Location size={18} />} label="Livraison">
-                {address ? (
+              <InfoRow icon={<Location size={18} />} label={order.pickup ? "Retrait sur place" : "Livraison"}>
+                {order.pickup ? (
+                  <>
+                    {order.pickupAddress ?? "Boutique Celebobo"}
+                    {address && <span className="block font-normal text-ink-2">Contact : {address.recipient} · {address.phone}</span>}
+                  </>
+                ) : address ? (
                   <>
                     {address.recipient} · {address.phone}
                     <span className="block font-normal text-ink-2">{order.deliveryAddress}</span>

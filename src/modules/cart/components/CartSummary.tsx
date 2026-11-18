@@ -58,9 +58,21 @@ export function CartSummary({ subtotal, savings, count, quote, coupon, cashback,
         {discount > 0 && <div className="flex justify-between"><dt className="text-ink-2">Code promo{quote?.couponCode ? ` (${quote.couponCode})` : ""}</dt><dd className="font-semibold text-danger">-{formatPrice(discount)}</dd></div>}
         {!!quote?.cashback && <div className="flex justify-between"><dt className="text-ink-2">Cagnotte</dt><dd className="font-semibold text-danger">-{formatPrice(quote.cashback)}</dd></div>}
         <div className="flex justify-between gap-3">
-          <dt className="text-ink-2">Livraison{quote?.shippingZone ? ` · ${quote.shippingZone}` : ""}</dt>
+          <dt className="text-ink-2">{quote?.pickup ? "Retrait sur place" : `Livraison${quote?.shippingZone ? ` · ${quote.shippingZone}` : ""}`}</dt>
           <dd className="text-right font-semibold">
-            {!quote ? "Selon zone" : quote.memberFreeShipping ? <span className="text-primary">Offerte (Plus)</span> : shipping > 0 ? formatPrice(shipping) : "Offerte"}
+            {!quote ? (
+              "Selon zone"
+            ) : quote.pickup ? (
+              <span className="text-primary">Gratuit</span>
+            ) : quote.shippingQuoteRequired ? (
+              <span className="text-warn">Sur devis</span>
+            ) : quote.memberFreeShipping ? (
+              <span className="text-primary">Offerte (Plus)</span>
+            ) : shipping > 0 ? (
+              formatPrice(shipping)
+            ) : (
+              "Offerte"
+            )}
             {quote?.deliveryEstimate && <span className="block text-[12px] font-normal text-ink-3">{quote.deliveryEstimate}</span>}
           </dd>
         </div>

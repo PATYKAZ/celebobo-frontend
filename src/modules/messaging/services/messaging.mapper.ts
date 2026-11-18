@@ -1,7 +1,7 @@
 import { ROLE_FROM_API } from "@/modules/auth/services/auth.mapper";
 import type { OrderStatus } from "@/modules/orders/types";
 import { money } from "@/modules/products/services/products.mapper";
-import type { Availability, Conversation, ConversationOrder, Message, Notification, NotificationKind, Participant, PriceProposalMeta } from "../types";
+import type { Availability, Conversation, ConversationOrder, Message, Notification, NotificationKind, Participant, PriceProposalMeta, ShippingQuoteMeta } from "../types";
 
 /** Interlocuteur (après camelCase). */
 export interface ParticipantDto {
@@ -14,7 +14,7 @@ export interface ParticipantDto {
 export interface MessageDto {
   id: number;
   conversationId: number;
-  kind: "text" | "system" | "price_proposal";
+  kind: "text" | "system" | "price_proposal" | "shipping_quote";
   body: string;
   attachment: string;
   metadata: Record<string, unknown>;
@@ -63,6 +63,8 @@ export interface OrderDto {
   total: string;
   items: { id: number; name: string; variantLabel: string; quantity: number; unitPrice: string }[];
   reseller: { id: number; name: string; availability: Availability | null } | null;
+  awaitingShippingQuote?: boolean;
+  deliveryEstimate?: string;
 }
 
 export const ORDER_STATUS_FROM_API: Record<string, OrderStatus> = {
@@ -97,8 +99,31 @@ function toProposal(meta: Record<string, unknown>): PriceProposalMeta {
   };
 }
 
+function toShippingQuote(meta: Record<string, unknown>): ShippingQuoteMeta {
+  return {
+    type: "shipping_quote",
+    proposalId: Number(meta.proposalId),
+    orderId: Number(meta.orderId),
+    orderNumber: String(meta.orderNumber ?? ""),
+    city: String(meta.city ?? ""),
+    fee: money(meta.proposedFee as string),
+    deliveryEstimate: (meta.deliveryEstimate as string) || null,
+    reason: (meta.reason as string) || null,
+    status: (meta.status as ShippingQuoteMeta["status"]) ?? "pending",
+  };
+}
+
+const PREVIEW: Partial<Record<MessageDto["kind"], string>> = { price_proposal: "Proposition de prix", shipping_quote: "Frais de livraison proposés" };
+
+function toMetadata(dto: MessageDto): Record<string, unknown> {
+  if (dto.kind === "price_proposal") return { ...toProposal(dto.metadata) };
+  if (dto.kind === "shipping_quote") return { ...toShippingQuote(dto.metadata) };
+  if (dto.kind === "system") return { ...dto.metadata, type: "system" };
+  return dto.metadata;
+}
+
 export function toMessage(dto: MessageDto): Message {
-  const metadata = dto.kind === "price_proposal" ? { ...toProposal(dto.metadata) } : dto.kind === "system" ? { ...dto.metadata, type: "system" } : dto.metadata;
+  const metadata = toMetadata(dto);
   return {
     id: dto.id,
     conversationId: dto.conversationId,
@@ -126,7 +151,7 @@ export function toConversation(dto: ConversationDto): Conversation {
     subject: dto.subject,
     displayName: dto.kind === "order" && dto.orderNumber ? `Commande ${dto.orderNumber}` : dto.subject || `Discussion #${dto.id}`,
     participants: reseller ? [client, reseller] : [client],
-    lastMessage: last && { content: dto.lastMessage?.kind === "price_proposal" ? "Proposition de prix" : last.content, timestamp: last.timestamp, sender: last.sender, image: last.image },
+    lastMessage: last && { content: (dto.lastMessage && PREVIEW[dto.lastMessage.kind]) ?? last.content, timestamp: last.timestamp, sender: last.sender, image: last.image },
     unreadCount: dto.unreadCount,
     concluded: dto.status === "closed",
     assignedRevendeur: reseller && { id: reseller.id, name: reseller.name },
@@ -159,5 +184,7 @@ export function toConversationOrder(dto: OrderDto): ConversationOrder {
     totalPrice: money(dto.total),
     items: dto.items.map((i) => ({ id: i.id, productName: i.name, variantLabel: i.variantLabel, quantity: i.quantity, unitPrice: money(i.unitPrice) })),
     resellerAvailability: dto.reseller?.availability ?? undefined,
+    awaitingShippingQuote: dto.awaitingShippingQuote ?? false,
+    deliveryEstimate: dto.deliveryEstimate || null,
   };
 }

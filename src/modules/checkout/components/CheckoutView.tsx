@@ -51,6 +51,7 @@ const EMPTY_FORM: CheckoutForm = {
   phone: "",
   paymentMethod: "OrangeMoney",
   note: "",
+  pickup: false,
 };
 
 const PHONE = /^\+?[\d\s().-]{7,20}$/;
@@ -83,7 +84,7 @@ function Content() {
   const couponCode = cartQuote?.couponCode ?? null;
   // cagnotte : proposée quand le devis en renvoie une utilisable, appliquée par l'API (devis et commande)
   const [useCashback, setUseCashback] = useState(false);
-  const { data: quote, refetch: refetchQuote } = useCheckoutQuote(lines, form.city, couponCode, useCashback);
+  const { data: quote, refetch: refetchQuote } = useCheckoutQuote(lines, form.city, couponCode, useCashback, form.pickup);
   const cashbackAvailable = quote?.cashbackAvailable ?? 0;
   const count = cartCount(items);
   const total = cartTotal(items);
@@ -157,7 +158,7 @@ function Content() {
     const address = { recipient: form.recipient.trim(), phone: form.phone.trim(), line1: form.address.trim(), quarter: form.quarter.trim(), city: form.city.trim(), country: form.country.trim() };
     try {
       const res = await createOrder.mutateAsync({
-        input: { items: lines, paymentMethod: form.paymentMethod, couponCode, useCashback: useCashback && cashbackAvailable > 0, addressId: form.addressId, address: isNew ? address : null, note: form.note.trim() },
+        input: { items: lines, paymentMethod: form.paymentMethod, couponCode, useCashback: useCashback && cashbackAvailable > 0, addressId: form.addressId, address: isNew ? address : null, note: form.note.trim(), pickup: form.pickup },
         idempotencyKey: idempotencyKey.current,
       });
       idempotencyKey.current = newKey();
@@ -245,8 +246,20 @@ function Content() {
                   <h2 className="text-[17px] sm:text-[18px]">Vérifiez votre commande</h2>
                   <div className="grid gap-3 sm:grid-cols-2">
                     <div className="rounded-box bg-page/60 p-4 text-[14px] leading-[22px]">
-                      <p className="mb-1 text-[12px] font-bold uppercase text-ink-3">Livraison</p>
-                      {form.recipient}<br />{form.address}<br />{form.quarter}, {form.city}, {form.country}<br />{form.phone}
+                      {form.pickup ? (
+                        <>
+                          <p className="mb-1 text-[12px] font-bold uppercase text-ink-3">Retrait sur place</p>
+                          {quote?.pickupAddress}
+                          {quote?.deliveryEstimate && <span className="block text-ink-2">{quote.deliveryEstimate}</span>}
+                          <span className="block text-ink-2">Contact : {form.recipient} · {form.phone}</span>
+                        </>
+                      ) : (
+                        <>
+                          <p className="mb-1 text-[12px] font-bold uppercase text-ink-3">Livraison</p>
+                          {form.recipient}<br />{form.address}<br />{form.quarter}, {form.city}, {form.country}<br />{form.phone}
+                          {quote?.shippingQuoteRequired && <span className="mt-1 block text-[13px] text-warn">Frais sur devis : le revendeur vous les indique dans la discussion.</span>}
+                        </>
+                      )}
                       <button onClick={() => go(0)} className="mt-1 flex min-h-11 items-center text-[13px] font-semibold text-primary hover:underline">Modifier</button>
                     </div>
                     <div className="rounded-box bg-page/60 p-4 text-[14px] leading-[22px]">
