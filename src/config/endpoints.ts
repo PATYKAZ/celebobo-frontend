@@ -61,6 +61,7 @@ export const ENDPOINTS = {
     list: "/me/orders/",
     detail: (number: string) => `/me/orders/${encodeURIComponent(number)}/`,
     cancel: (number: string) => `/me/orders/${encodeURIComponent(number)}/cancel/`,
+    rating: (number: string) => `/me/orders/${encodeURIComponent(number)}/rating/`, // POST { score, comment } après livraison
     invoice: (number: string) => `/me/orders/${encodeURIComponent(number)}/invoice/`,
     receipt: (number: string) => `/me/orders/${encodeURIComponent(number)}/receipt/`, // reçu de livraison signé (PDF)
   },
@@ -247,6 +248,7 @@ export const ENDPOINTS = {
       activate: (id: number) => `/bo/resellers/${id}/activate/`,
       deactivate: (id: number) => `/bo/resellers/${id}/deactivate/`,
       invitees: (id: number) => `/bo/resellers/${id}/invitees/`,
+      ratings: (id: number) => `/bo/resellers/${id}/ratings/`, // notes des clients, les plus récentes d'abord
       assignable: "/bo/resellers/assignable/",
       stats: "/bo/resellers/stats/",
     },

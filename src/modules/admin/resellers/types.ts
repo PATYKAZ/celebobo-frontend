@@ -33,6 +33,19 @@ export interface Reseller {
   /** 0.07 = 7 % */
   commissionRate: number;
   invited: InvitedClient[];
+  /** Note moyenne des clients après livraison (null : pas encore notée) et nombre de notes */
+  ratingAverage: number | null;
+  ratingCount: number;
+  ratings: ResellerRating[];
+}
+
+/** Note d'un client après livraison. */
+export interface ResellerRating {
+  orderNumber: string;
+  clientName: string;
+  score: number;
+  comment: string;
+  createdAt: string;
 }
 
 export type ResellerOrdering = "-joined" | "joined" | "-invited" | "-sales" | "name";

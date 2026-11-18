@@ -16,6 +16,16 @@ export interface ResellerDto {
   dateJoined: string;
   invitedCount: number;
   performance: { salesCount: number; revenue: string; commissionEarned: string; commissionDue: string };
+  ratingAverage?: string | null;
+  ratingCount?: number;
+}
+
+export interface ResellerRatingDto {
+  orderNumber: string;
+  clientName: string;
+  score: number;
+  comment: string;
+  createdAt: string;
 }
 
 export interface InviteeDto {
@@ -55,6 +65,9 @@ export function toReseller(dto: ResellerDto, period?: SellerSalesDto | null, ext
     availability: dto.availability,
     commissionRate: Number(dto.commissionRate),
     invited: [],
+    ratingAverage: dto.ratingAverage == null ? null : Number(dto.ratingAverage),
+    ratingCount: dto.ratingCount ?? 0,
+    ratings: [],
     ...extra,
   };
 }

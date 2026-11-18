@@ -5,7 +5,7 @@ import { STATUS_TO_API } from "@/modules/orders/services/orders.mapper";
 import { ORDER_FINAL } from "@/modules/orders/types";
 import { PERIOD_TITLE, type PeriodKey } from "../../dashboard/lib/period";
 import type { CreateResellerInput, Reseller, ResellerListParams, ResellersResponse } from "../types";
-import { toInvitedClient, toReseller, type InviteeDto, type ResellerDto, type SellerSalesDto } from "./resellers.mapper";
+import { toInvitedClient, toReseller, type InviteeDto, type ResellerDto, type ResellerRatingDto, type SellerSalesDto } from "./resellers.mapper";
 
 const { resellers, users, analytics, orders } = ENDPOINTS.admin;
 
@@ -65,13 +65,14 @@ export const resellersService = {
   },
 
   async detail(id: number, period: PeriodKey = "30d"): Promise<Reseller> {
-    const [dto, sales, invitees, load] = await Promise.all([
+    const [dto, sales, invitees, load, ratings] = await Promise.all([
       api.get<ResellerDto>(resellers.detail(id)),
       salesBySeller(period),
       api.get<PageEnvelope<InviteeDto>>(resellers.invitees(id), { params: { pageSize: 100 } }),
       orderLoad(id),
+      api.get<PageEnvelope<ResellerRatingDto>>(resellers.ratings(id), { params: { pageSize: 20 } }),
     ]);
-    return toReseller(dto, sales.get(id), { ...load, invited: invitees.results.map(toInvitedClient) });
+    return toReseller(dto, sales.get(id), { ...load, invited: invitees.results.map(toInvitedClient), ratings: ratings.results });
   },
 
   /** Crée le compte (rôle revendeur, e-mail d'invitation envoyé par l'API) puis fixe son taux. */

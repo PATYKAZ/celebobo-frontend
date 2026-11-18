@@ -1,6 +1,7 @@
 "use client";
 
-import { Copy, Crown, People, SearchNormal1, UserAdd } from "@/shared/ui/icons";
+import { Copy, Crown, People, SearchNormal1, UserAdd } from "@/shared/ui/icons";
+import { Stars } from "@/shared/ui/Stars";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useDebounce } from "@/shared/hooks/useDebounce";
@@ -96,6 +97,12 @@ function ResellersContent() {
     },
     { key: "code", header: "Code", hideBelow: "sm", cell: (r) => <CopyCode code={r.codeRevendeur} /> },
     { key: "invited", header: "Invités", align: "center", cell: (r) => <strong>{r.invitedCount}</strong> },
+    {
+      key: "rating",
+      header: "Note clients",
+      hideBelow: "md",
+      cell: (r) => (r.ratingAverage == null ? <span className="text-[13px] text-ink-3">Pas encore notée</span> : <span className="flex items-center gap-1.5"><Stars rating={r.ratingAverage} size={13} hideCount /><span className="text-[13px] font-semibold">{r.ratingAverage.toFixed(1)}</span><span className="text-[12px] text-ink-3">({r.ratingCount})</span></span>),
+    },
     { key: "rate", header: "Commission", hideBelow: "lg", align: "center", cell: (r) => <span className="text-ink-2">{(r.commissionRate * 100).toFixed(1)}%</span> },
     { key: "sales", header: "Ventes générées", hideBelow: "md", align: "right", cell: (r) => <strong>{formatPrice(r.salesTotal)}</strong> },
     { key: "joined", header: "Inscrit le", hideBelow: "xl", mobile: "hide", cell: (r) => <span className="text-ink-2">{formatDate(r.joinedAt)}</span> },

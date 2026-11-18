@@ -50,6 +50,14 @@ export function useCancelOrder(number: string) {
   });
 }
 
+export function useRateOrder(number: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (input: { score: number; comment: string }) => ordersService.rate(number, input),
+    onSuccess: (order) => qc.setQueryData(orderKeys.detail(number), order),
+  });
+}
+
 /** Lien de téléchargement de la facture PDF. */
 export const orderInvoiceUrl = (number: string) => ordersService.invoiceUrl(number);
 export const orderReceiptUrl = (number: string) => ordersService.receiptUrl(number);

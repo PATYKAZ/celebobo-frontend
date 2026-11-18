@@ -20,6 +20,7 @@ import { Modal } from "@/shared/ui/Overlay";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { toast } from "@/shared/ui/Toast";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
+import { RateResellerCard } from "./RateResellerCard";
 import { orderInvoiceUrl, orderReceiptUrl, useCancelOrder, useOrder, orderKeys } from "../hooks/useOrders";
 import { useResellerAvailability } from "../hooks/useResellerAvailability";
 import { toStatus } from "../services/orders.mapper";
@@ -210,6 +211,7 @@ export function OrderDetailView({ number }: { number: string }) {
         </Reveal>
 
         <div className="min-w-0 space-y-3 sm:space-y-4">
+          {(order.canRate || order.rating) && <RateResellerCard order={order} />}
           <Reveal delay={0.05}>
             <Block pad="none" className="space-y-4 p-4 sm:space-y-5 sm:p-[30px]">
               <h2 className="text-[16px] uppercase sm:text-section">Informations</h2>
