@@ -1,0 +1,88 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Typecheck, lint, build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm run build
+        env:
+          NEXT_PUBLIC_API_URL: /api/v1
+          NEXT_PUBLIC_WS_URL: /ws/
+
+  e2e:
+    name: Checkout (Playwright)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      # same layout as on a developer machine: the backend compose builds ../../celebobo-frontend
+      - uses: actions/checkout@v4
+        with:
+          path: celebobo-frontend
+      - uses: actions/checkout@v4
+        with:
+          repository: go-arnold/celebobo
+          ref: main
+          path: celebobo
+
+      - name: Start the stack (production images, local data services)
+        working-directory: celebobo
+        env:
+          FRONTEND_HOST: frontend:3000
+        run: |
+          ./deploy/local.sh --profile frontend up -d --build
+          for i in $(seq 1 60); do
+            curl -sf -o /dev/null http://localhost:8080/health/live/ && curl -sf -o /dev/null http://localhost:8080/ && exit 0
+            sleep 5
+          done
+          echo "the stack did not answer within 5 minutes"; docker ps -a; exit 1
+
+      - name: Load the end-to-end data set
+        working-directory: celebobo
+        run: ./deploy/local.sh e2e
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: celebobo-frontend/package-lock.json
+      - name: Install Playwright
+        working-directory: celebobo-frontend
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+
+      - name: Run Playwright
+        working-directory: celebobo-frontend
+        run: npm run e2e
+
+      - name: Stack logs
+        if: failure()
+        run: |
+          docker ps -a
+          for service in migrate api worker frontend nginx; do
+            echo "::group::$service"; docker logs --tail 200 "celebobo-local-$service-1" 2>&1 || true; echo "::endgroup::"
+          done
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: celebobo-frontend/playwright-report
+          retention-days: 7
