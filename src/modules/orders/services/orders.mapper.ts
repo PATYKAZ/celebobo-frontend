@@ -1,6 +1,6 @@
 import { ROLE_FROM_API } from "@/modules/auth/services/auth.mapper";
 import { money } from "@/modules/products/services/products.mapper";
-import { CANCEL_REASONS, ORDER_STATUS_LABEL, type Order, type OrderAddress, type OrderItem, type OrderStatus, type OrderStatusEvent, type PaymentMethod, type ResellerAvailability } from "../types";
+import { CANCEL_REASONS, SYSTEM_CANCEL_LABEL, type DeliveryAttempt, ORDER_STATUS_LABEL, type Order, type OrderAddress, type OrderItem, type OrderStatus, type OrderStatusEvent, type PaymentMethod, type ResellerAvailability } from "../types";
 
 export type ApiOrderStatus = "pending" | "assigned" | "confirmed" | "paid" | "shipping" | "delivered" | "cancelled" | "returned";
 export type ApiPaymentMethod = "orange_money" | "airtel_money" | "mpesa" | "cash";
@@ -76,6 +76,7 @@ export interface OrderDto extends OrderSummaryDto {
   deliveryCodeLocked?: boolean;
   rating?: { score: number; comment: string; createdAt: string } | null;
   canRate?: boolean;
+  deliveryAttempts?: DeliveryAttempt[];
   cancelReason: string;
   history: StatusEntryDto[];
   allowedTransitions: ApiOrderStatus[];
@@ -131,7 +132,7 @@ function toItem(dto: OrderLineDto): OrderItem {
 
 const formatAddress = (a: OrderAddress) => [a.line1, a.quarter, a.city, a.country].filter(Boolean).join(", ");
 
-const cancelLabel = (code: string) => CANCEL_REASONS.find((r) => r.value === code)?.label ?? (code || null);
+const cancelLabel = (code: string) => CANCEL_REASONS.find((r) => r.value === code)?.label ?? SYSTEM_CANCEL_LABEL[code] ?? (code || null);
 
 /** Commande de l'API (résumé ou détail) → `Order` du front. */
 export function toOrder(dto: OrderSummaryDto | OrderDto): Order {
@@ -159,6 +160,8 @@ export function toOrder(dto: OrderSummaryDto | OrderDto): Order {
     note: detail?.note || null,
     convertedToSales: false,
     cancelReason: detail ? cancelLabel(detail.cancelReason) : null,
+    cancelReasonCode: detail?.cancelReason || null,
+    deliveryAttempts: detail?.deliveryAttempts ?? [],
     subtotal: detail ? money(detail.subtotal) : undefined,
     discount: detail ? money(detail.discount) : undefined,
     couponCode: detail?.couponCode || null,

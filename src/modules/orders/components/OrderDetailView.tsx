@@ -130,10 +130,22 @@ export function OrderDetailView({ number }: { number: string }) {
                 </>
               ) : (
                 <>
-                  <strong>Remboursement en cours</strong> : {formatPrice(order.refundDue ?? 0)} vous seront rendus sous 72 heures, par le moyen utilisé pour payer.
+                  <strong>Remboursement en cours</strong> : {formatPrice(order.refundDue ?? 0)} vous seront rendus{" "}
+                  {order.cancelReasonCode === "delivery_failed" ? "sous 5 jours ouvrables (frais de livraison déduits)" : "sous 72 heures"}, par le moyen utilisé pour payer.
                 </>
               )}
             </p>
+          )}
+          {order.status === "en_livraison" && !!order.deliveryAttempts?.length && (
+            <div className="mt-4 rounded-md bg-star/10 px-3.5 py-3 text-[13px] leading-[19px] text-warn sm:px-4">
+              <p><strong>Livraison manquée</strong> : le revendeur n&apos;a pas pu vous livrer.</p>
+              <ul className="mt-1 list-disc pl-5">
+                {order.deliveryAttempts.map((a) => (
+                  <li key={a.at}>{formatDateTime(a.at)} — {a.reasonLabel}{a.note ? ` (${a.note})` : ""}</li>
+                ))}
+              </ul>
+              <p className="mt-1">Il repassera un autre jour ouvrable. Sans livraison possible sur deux jours ouvrables, la commande sera annulée et remboursée, frais de livraison déduits.</p>
+            </div>
           )}
           {order.deliveryCode && (
             <div className="mt-4 flex flex-col gap-3 rounded-box border-2 border-dashed border-primary/40 bg-primary-50 px-4 py-3.5 sm:flex-row sm:items-center sm:gap-5">

@@ -7,6 +7,7 @@ import { channels, type UserEvent } from "@/shared/lib/realtime";
 import { can } from "@/modules/auth/permissions";
 import { useAuthStore } from "@/modules/auth/store/auth.store";
 import { adminOrdersService } from "../services/admin-orders.service";
+import type { AttemptReason } from "@/modules/orders/types";
 import type { AdminOrderListParams } from "../types";
 
 export const adminOrderKeys = {
@@ -26,6 +27,18 @@ export function useAdminOrders(params: AdminOrderListParams) {
 
 export function useAdminOrder(id: number | undefined) {
   return useQuery({ queryKey: adminOrderKeys.detail(id ?? 0), queryFn: () => adminOrdersService.detail(id as number), enabled: !!id, retry: false });
+}
+
+/** Enregistre une tentative de livraison échouée. */
+export function useRecordAttempt(id: number) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ reason, note }: { reason: AttemptReason; note: string }) => adminOrdersService.recordAttempt(id, reason, note),
+    onSuccess: (order) => {
+      qc.setQueryData(adminOrderKeys.detail(id), order);
+      qc.invalidateQueries({ queryKey: adminOrderKeys.all });
+    },
+  });
 }
 
 /** Enregistre le remboursement d'une commande payée puis annulée. */

@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { useState, type ReactNode } from "react";
-import { ArrowLeft2, Call, Convert, Location, MessageText1, Note, Sms, User, Wallet3 } from "@/shared/ui/icons";
+import { ArrowLeft2, Call, Convert, Location, MessageText1, Note, Sms, Truck, User, Wallet3 } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import { formatDateTime, formatPrice, formatRelative } from "@/shared/lib/format";
 import { Reveal } from "@/shared/animations/Reveal";
@@ -12,15 +12,15 @@ import { Block } from "@/shared/ui/Block";
 import { Button } from "@/shared/ui/Button";
 import { EmptyState } from "@/shared/ui/EmptyState";
 import { Skeleton } from "@/shared/ui/Skeleton";
-import { Input } from "@/shared/ui/Form";
+import { Input, Select } from "@/shared/ui/Form";
 import { toast } from "@/shared/ui/Toast";
 import { api, getErrorMessage } from "@/shared/lib/api";
 import { ENDPOINTS } from "@/config/endpoints";
 import { PermissionGuard, useCan } from "@/modules/auth/hooks/useCan";
 import { conversationsService } from "@/modules/messaging/services/conversations.service";
-import { ORDER_FINAL, shippingFeeLabel, type Order } from "@/modules/orders/types";
+import { ATTEMPT_REASONS, ORDER_FINAL, shippingFeeLabel, type AttemptReason, type Order } from "@/modules/orders/types";
 import { PageHeader } from "../../ui/PageHeader";
-import { useAdminOrder, useRecordRefund, useResellerOptions } from "../hooks/useAdminOrders";
+import { useAdminOrder, useRecordAttempt, useRecordRefund, useResellerOptions } from "../hooks/useAdminOrders";
 import { AssignResellerModal } from "./AssignResellerModal";
 import { StatusHistory, StatusStepper } from "./OrderProgress";
 import { AvailabilityDot, OrderStatusDot, PAYMENT_LABEL } from "./parts";
@@ -244,6 +244,8 @@ function Content({ id }: { id: number }) {
 
           {order.refundStatus && <RefundCard order={order} />}
 
+          {(order.status === "en_livraison" || !!order.deliveryAttempts?.length) && <AttemptsCard order={order} />}
+
           <ResellerCard order={order} canAssign={canAssign && !closed} onAssign={() => setAssigning(order)} />
 
           {order.conversationId != null && <DiscussionCard conversationId={order.conversationId} />}
@@ -266,6 +268,59 @@ function Content({ id }: { id: number }) {
       {/* réserve la place de la barre d'actions fixe (mobile) pour que le dernier bloc reste visible */}
       <div className="h-20 lg:hidden" aria-hidden />
     </>
+  );
+}
+
+/** Livraisons manquées : liste, et pour le revendeur en charge (ou l'équipe) l'enregistrement d'un échec. */
+function AttemptsCard({ order }: { order: Order }) {
+  const canRecord = useCan("orders.status.advance") && order.status === "en_livraison";
+  const record = useRecordAttempt(order.id);
+  const [open, setOpen] = useState(false);
+  const [reason, setReason] = useState<AttemptReason>("client_absent");
+  const [note, setNote] = useState("");
+  const attempts = order.deliveryAttempts ?? [];
+  const submit = () =>
+    record.mutate(
+      { reason, note },
+      {
+        onSuccess: (updated) => {
+          setOpen(false);
+          setNote("");
+          if (updated.status === "annulee") toast.info("Commande annulée", "Deux jours ouvrables de livraison manquée : la commande est annulée.");
+          else toast.success("Tentative enregistrée", "Le client est prévenu ; repassez un autre jour ouvrable.");
+        },
+        onError: (e) => toast.error("Enregistrement impossible", getErrorMessage(e)),
+      },
+    );
+  return (
+    <Card title="Tentatives de livraison" icon={<Truck size={17} variant="Bold" />} delay={0.05}>
+      {attempts.length === 0 ? (
+        <p className="text-[13px] text-ink-3">Aucune tentative manquée.</p>
+      ) : (
+        <ul className="space-y-1.5 text-[13px]">
+          {attempts.map((a) => (
+            <li key={a.at} className="rounded-md bg-page/60 px-3 py-2">
+              <span className="font-semibold">{a.reasonLabel}</span> · {formatDateTime(a.at)}
+              {a.note && <span className="block text-ink-2">« {a.note} »</span>}
+            </li>
+          ))}
+        </ul>
+      )}
+      <p className="mt-2 text-[12px] leading-[17px] text-ink-3">Deux jours ouvrables (lundi à samedi) de livraison manquée annulent la commande ; une commande payée est remboursée sans les frais de livraison.</p>
+      {canRecord && !open && (
+        <Button size="sm" variant="outline" upper={false} fullWidth className="mt-3" onClick={() => setOpen(true)}>Enregistrer une tentative échouée</Button>
+      )}
+      {canRecord && open && (
+        <div className="mt-3 space-y-3">
+          <Select label="Motif" value={reason} onChange={(e) => setReason(e.target.value as AttemptReason)} options={ATTEMPT_REASONS} />
+          <Input label="Note (optionnel)" value={note} onChange={(e) => setNote(e.target.value)} placeholder="Ex. : personne au domicile à 14 h" maxLength={300} />
+          <div className="grid grid-cols-2 gap-2">
+            <Button size="sm" variant="chip" upper={false} onClick={() => setOpen(false)}>Retour</Button>
+            <Button size="sm" upper={false} loading={record.isPending} onClick={submit}>Enregistrer</Button>
+          </div>
+        </div>
+      )}
+    </Card>
   );
 }
 

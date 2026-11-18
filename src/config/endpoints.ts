@@ -205,6 +205,7 @@ export const ENDPOINTS = {
       transition: (id: number) => `/bo/orders/${id}/transition/`,
       decline: (id: number) => `/bo/orders/${id}/decline/`,
       refund: (id: number) => `/bo/orders/${id}/refund/`, // { note } : remboursement effectué
+      deliveryAttempts: (id: number) => `/bo/orders/${id}/delivery-attempts/`, // POST { reason, note } : tentative échouée
       invoice: (id: number) => `/bo/orders/${id}/invoice/`,
       receipt: (id: number) => `/bo/orders/${id}/receipt/`,
       convertible: "/bo/orders/convertible/",
