@@ -3,20 +3,24 @@
 import { useState, type FormEvent } from "react";
 import { ApiError, getErrorMessage } from "@/shared/lib/api";
 import { Button } from "@/shared/ui/Button";
-import { Input, Switch, Textarea } from "@/shared/ui/Form";
+import { Input, Select, Switch, Textarea } from "@/shared/ui/Form";
 import { Modal } from "@/shared/ui/Overlay";
 import { toast } from "@/shared/ui/Toast";
 import { useSaveZone } from "../hooks/useAdminSettings";
 import { zoneToForm } from "../services/admin-settings.mapper";
-import { EMPTY_ZONE, type AdminShippingZone, type ZoneFormValues } from "../types";
+import { EMPTY_ZONE, ZONE_PRICING, type AdminShippingZone, type ZoneFormValues, type ZonePricing } from "../types";
 
 type Errors = Partial<Record<keyof ZoneFormValues, string>>;
 
 function validate(v: ZoneFormValues): Errors {
   const e: Errors = {};
   if (!v.name.trim()) e.name = "Le nom est requis.";
-  if (v.fee.trim() === "" || Number(v.fee) < 0) e.fee = "Frais requis (0 si gratuit).";
-  if (v.freeThreshold.trim() && Number(v.freeThreshold) < 0) e.freeThreshold = "Montant invalide.";
+  if (v.pricing === "pickup") {
+    if (!v.pickupAddress.trim()) e.pickupAddress = "Indiquez l'adresse du point de retrait.";
+    return e;
+  }
+  if (v.pricing === "flat" && (v.fee.trim() === "" || Number(v.fee) < 0)) e.fee = "Frais requis (0 si gratuit).";
+  if (v.pricing === "flat" && v.freeThreshold.trim() && Number(v.freeThreshold) < 0) e.freeThreshold = "Montant invalide.";
   if (!v.isDefault && !v.cities.split(/[\n,]/).some((c) => c.trim())) e.cities = "Indiquez au moins une ville (ou faites-en la zone par défaut).";
   return e;
 }
@@ -26,6 +30,8 @@ export function ZoneFormModal({ zone, nextPosition, onClose }: { zone: AdminShip
   const [v, setV] = useState<ZoneFormValues>(() => (zone ? zoneToForm(zone) : EMPTY_ZONE));
   const [errors, setErrors] = useState<Errors>({});
   const save = useSaveZone(zone, nextPosition);
+  const flat = v.pricing === "flat";
+  const pickup = v.pricing === "pickup";
   const set = <K extends keyof ZoneFormValues>(k: K, value: ZoneFormValues[K]) => {
     setV((x) => ({ ...x, [k]: value }));
     setErrors((e) => ({ ...e, [k]: undefined }));
@@ -56,6 +62,18 @@ export function ZoneFormModal({ zone, nextPosition, onClose }: { zone: AdminShip
     <Modal open onClose={onClose} title={zone ? "Modifier la zone" : "Nouvelle zone de livraison"} className="max-w-[560px]">
       <form onSubmit={submit} noValidate className="grid gap-4">
         <Input label="Nom de la zone" required value={v.name} onChange={(e) => set("name", e.target.value)} placeholder="Ex. Bukavu" error={errors.name} maxLength={80} />
+        <Select
+          label="Tarification"
+          value={v.pricing}
+          onChange={(e) => set("pricing", e.target.value as ZonePricing)}
+          options={ZONE_PRICING.map((p) => ({ value: p.value, label: p.label }))}
+          hint={ZONE_PRICING.find((p) => p.value === v.pricing)?.hint}
+          error={errors.pricing}
+        />
+        {pickup && (
+          <Input label="Adresse du point de retrait" required value={v.pickupAddress} onChange={(e) => set("pickupAddress", e.target.value)} placeholder="Ex. Avenue Mwanga n° 21, Nyalukemba, Bukavu" error={errors.pickupAddress} maxLength={255} />
+        )}
+        {!pickup && (
         <Textarea
           label="Villes desservies"
           className="min-h-[96px]"
@@ -65,22 +83,28 @@ export function ZoneFormModal({ zone, nextPosition, onClose }: { zone: AdminShip
           hint="Une ville par ligne. La ville saisie par le client à la commande détermine la zone."
           error={errors.cities}
         />
+        )}
+        {flat && (
         <div className="grid gap-4 sm:grid-cols-2">
           <Input label="Frais de livraison ($)" required type="number" inputMode="decimal" min="0" step="0.01" value={v.fee} onChange={(e) => set("fee", e.target.value)} error={errors.fee} />
           <Input label="Offerte dès ($)" type="number" inputMode="decimal" min="0" step="0.01" value={v.freeThreshold} onChange={(e) => set("freeThreshold", e.target.value)} hint="Vide : jamais offerte." error={errors.freeThreshold} />
         </div>
-        <Input label="Délai annoncé" value={v.deliveryEstimate} onChange={(e) => set("deliveryEstimate", e.target.value)} placeholder="Ex. 24 à 48 h" maxLength={60} error={errors.deliveryEstimate} />
+        )}
+        <Input label="Délai annoncé" value={v.deliveryEstimate} onChange={(e) => set("deliveryEstimate", e.target.value)} placeholder={pickup ? "Ex. Dès confirmation" : "Ex. 24 à 48 h"} maxLength={60} error={errors.deliveryEstimate} />
         <div className="grid gap-3 sm:grid-cols-2">
           <label className="flex min-h-12 cursor-pointer items-center justify-between gap-3 rounded-box border border-line px-4 active:bg-chip">
             <span className="text-[14px] font-semibold">Zone active</span>
             <Switch label="Zone active" checked={v.isActive} onChange={(x) => set("isActive", x)} />
           </label>
-          <label className="flex min-h-12 cursor-pointer items-center justify-between gap-3 rounded-box border border-line px-4 active:bg-chip">
-            <span className="text-[14px] font-semibold">Zone par défaut</span>
-            <Switch label="Zone par défaut" checked={v.isDefault} onChange={(x) => set("isDefault", x)} />
-          </label>
+          {!pickup && (
+            <label className="flex min-h-12 cursor-pointer items-center justify-between gap-3 rounded-box border border-line px-4 active:bg-chip">
+              <span className="text-[14px] font-semibold">Zone par défaut</span>
+              <Switch label="Zone par défaut" checked={v.isDefault} onChange={(x) => set("isDefault", x)} />
+            </label>
+          )}
         </div>
-        <p className="-mt-1 text-[12px] leading-[17px] text-ink-3">La zone par défaut s’applique aux villes qui ne figurent dans aucune zone (ex. « Reste du pays »).</p>
+        {!pickup && <p className="-mt-1 text-[12px] leading-[17px] text-ink-3">La zone par défaut s’applique aux villes qui ne figurent dans aucune zone (ex. « Autres localités », sur devis).</p>}
+        {flat && (
         <label className="flex min-h-14 cursor-pointer items-center justify-between gap-3 rounded-box border border-line px-4 py-3 active:bg-chip">
           <span>
             <span className="block text-[14px] font-semibold">Livraison offerte aux membres Plus</span>
@@ -88,6 +112,7 @@ export function ZoneFormModal({ zone, nextPosition, onClose }: { zone: AdminShip
           </span>
           <Switch label="Livraison offerte aux membres Plus" checked={v.memberFreeShipping} onChange={(x) => set("memberFreeShipping", x)} />
         </label>
+        )}
         <div className="mt-1 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
           <Button type="button" variant="chip" upper={false} onClick={onClose}>Annuler</Button>
           <Button type="submit" loading={save.isPending} upper={false}>{zone ? "Enregistrer" : "Créer la zone"}</Button>

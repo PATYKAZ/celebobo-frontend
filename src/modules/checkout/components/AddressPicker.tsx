@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import { Add, Call, Location, Map1, TickCircle, TruckFast, User } from "@/shared/ui/icons";
+import { Add, Call, Location, Map1, Shop, TickCircle, TruckFast, User } from "@/shared/ui/icons";
 import { cn } from "@/shared/lib/cn";
 import { formatPrice } from "@/shared/lib/format";
 import { Checkbox, Input, Select } from "@/shared/ui/Form";
@@ -30,10 +30,48 @@ interface Props {
 export function AddressPicker({ form, errors, set, onPick, cities = [], zone }: Props) {
   const { data: saved, isLoading } = useAddresses();
   const isNew = form.addressId === null;
+  const methods = [
+    { pickup: false, icon: TruckFast, title: "Livraison", hint: "À l'adresse de votre choix" },
+    { pickup: true, icon: Shop, title: "Retrait sur place", hint: "Gratuit, dès la confirmation" },
+  ];
 
   return (
     <div className="space-y-4 sm:space-y-5">
-      <h2 className="text-[17px] sm:text-[18px]">Où devons-nous livrer ?</h2>
+      {(zone?.pickupAvailable || form.pickup) && (
+        <div role="radiogroup" aria-label="Mode de livraison" className="grid grid-cols-2 gap-3">
+          {methods.map((m) => {
+            const active = form.pickup === m.pickup;
+            return (
+              <button
+                key={m.title}
+                type="button"
+                role="radio"
+                aria-checked={active}
+                onClick={() => set("pickup", m.pickup)}
+                className={cn("flex items-center gap-3 rounded-box border-2 p-3 text-left transition-all sm:p-4", active ? "border-primary bg-primary-50" : "border-line-3 hover:border-primary/50")}
+              >
+                <m.icon size={22} variant="Bold" className={cn("shrink-0", active ? "text-primary" : "text-ink-3")} />
+                <span className="min-w-0">
+                  <span className="block text-[14px] font-bold leading-[19px] sm:text-[15px]">{m.title}</span>
+                  <span className="block text-[12px] leading-[16px] text-ink-2">{m.hint}</span>
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      )}
+
+      {form.pickup && zone?.pickupAddress && (
+        <p className="flex items-start gap-2 rounded-md bg-primary-50 px-3 py-2.5 text-[13px] leading-[19px]">
+          <Shop size={18} variant="Bold" className="mt-px shrink-0 text-primary" />
+          <span>
+            À retirer : <strong>{zone.pickupAddress}</strong>
+            {zone.deliveryEstimate && <> · {zone.deliveryEstimate}</>}. Vos coordonnées ci-dessous permettent au revendeur de vous prévenir.
+          </span>
+        </p>
+      )}
+
+      <h2 className="text-[17px] sm:text-[18px]">{form.pickup ? "Vos coordonnées" : "Où devons-nous livrer ?"}</h2>
 
       <div role="radiogroup" aria-label="Adresse de livraison" className="grid gap-3 sm:grid-cols-2">
         {isLoading && (
@@ -103,12 +141,21 @@ export function AddressPicker({ form, errors, set, onPick, cities = [], zone }: 
         )}
       </AnimatePresence>
 
-      {zone?.shippingZone && (
+      {!form.pickup && zone?.shippingZone && !zone.shippingQuoteRequired && (
         <p className="flex items-center gap-2 rounded-md bg-page/60 px-3 py-2.5 text-[13px] leading-[19px]">
           <TruckFast size={18} variant="Bold" className="shrink-0 text-primary" />
           <span>
             Zone <strong>{zone.shippingZone}</strong>
             {zone.deliveryEstimate && <> · {zone.deliveryEstimate}</>} · {zone.shippingFee > 0 ? formatPrice(zone.shippingFee) : "livraison offerte"}
+          </span>
+        </p>
+      )}
+      {!form.pickup && zone?.shippingQuoteRequired && (
+        <p className="flex items-start gap-2 rounded-md bg-star/10 px-3 py-2.5 text-[13px] leading-[19px] text-warn">
+          <TruckFast size={18} variant="Bold" className="mt-px shrink-0" />
+          <span>
+            Votre ville est livrée <strong>sur devis</strong>
+            {zone.deliveryEstimate && <> ({zone.deliveryEstimate})</>}. Votre commande est enregistrée sans frais de livraison ; un revendeur vous indique le coût et le délai dans la discussion. Vous acceptez, ou vous annulez sans frais.
           </span>
         </p>
       )}

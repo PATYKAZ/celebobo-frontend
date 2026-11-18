@@ -1,7 +1,7 @@
 import { ENDPOINTS } from "@/config/endpoints";
 import { api, uploadMedia } from "@/shared/lib/api";
 import { channels, realtime, type ConversationEvent } from "@/shared/lib/realtime";
-import type { Conversation, ConversationOrder, Message, NewSupportInput, PriceProposalInput, SendMessageInput } from "../types";
+import type { Conversation, ConversationOrder, Message, NewSupportInput, PriceProposalInput, SendMessageInput, ShippingQuoteInput } from "../types";
 import { toConversation, toConversationOrder, toMessage, type ConversationDto, type MessageDto, type MessagePageDto, type OrderDto } from "./messaging.mapper";
 
 /** Messages chargés à l'ouverture d'une discussion (les plus récents). */
@@ -61,7 +61,12 @@ export const conversationsService = {
     return toMessage(await api.post<MessageDto>(ENDPOINTS.conversations.proposePrice(id), { itemId: input.itemId, newPrice: input.newPrice.toFixed(2), reason: input.reason ?? "" }));
   },
 
-  /** Client : accepter / refuser une proposition (met à jour la ligne de commande côté serveur). */
+  /** Revendeur+ : proposer les frais de livraison d'une commande en zone sur devis. */
+  async quoteShipping(id: number, input: ShippingQuoteInput): Promise<Message> {
+    return toMessage(await api.post<MessageDto>(ENDPOINTS.conversations.quoteShipping(id), { fee: input.fee.toFixed(2), deliveryEstimate: input.deliveryEstimate?.trim() ?? "", reason: input.reason?.trim() ?? "" }));
+  },
+
+  /** Client : accepter / refuser une proposition de prix ou de frais de livraison (met à jour la commande côté serveur). */
   async respondProposal(proposalId: number, accept: boolean): Promise<void> {
     await api.post(ENDPOINTS.conversations.respondProposal(proposalId), { accept });
   },

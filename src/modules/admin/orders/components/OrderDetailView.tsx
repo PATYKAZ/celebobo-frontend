@@ -14,7 +14,7 @@ import { EmptyState } from "@/shared/ui/EmptyState";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { PermissionGuard, useCan } from "@/modules/auth/hooks/useCan";
 import { conversationsService } from "@/modules/messaging/services/conversations.service";
-import { ORDER_FINAL, type Order } from "@/modules/orders/types";
+import { ORDER_FINAL, shippingFeeLabel, type Order } from "@/modules/orders/types";
 import { PageHeader } from "../../ui/PageHeader";
 import { useAdminOrder, useResellerOptions } from "../hooks/useAdminOrders";
 import { AssignResellerModal } from "./AssignResellerModal";
@@ -185,11 +185,35 @@ function Content({ id }: { id: number }) {
           </Card>
 
           <Card title="Livraison & paiement" icon={<Location size={17} variant="Bold" />} delay={0.05}>
+            {order.awaitingShippingQuote && !closed && (
+              <p className="mb-3 rounded-md bg-star/10 px-3 py-2.5 text-[13px] leading-[19px] text-warn">
+                Zone <strong>sur devis</strong> : proposez les frais de livraison dans la discussion. La commande ne peut être confirmée qu&apos;après l&apos;accord du client, qui peut annuler sans frais d&apos;ici là.
+              </p>
+            )}
             <dl className="space-y-3 text-[13px]">
-              <div>
-                <dt className="text-ink-3">Adresse de livraison</dt>
-                <dd className="mt-0.5 font-semibold">{order.deliveryAddress ?? "—"}</dd>
-              </div>
+              {order.pickup ? (
+                <div>
+                  <dt className="text-ink-3">Retrait sur place</dt>
+                  <dd className="mt-0.5 font-semibold">
+                    {order.pickupAddress ?? "—"}
+                    {order.address && <span className="block font-normal text-ink-2">Contact : {order.address.recipient} · {order.address.phone}</span>}
+                  </dd>
+                </div>
+              ) : (
+                <div>
+                  <dt className="text-ink-3">Adresse de livraison</dt>
+                  <dd className="mt-0.5 font-semibold">{order.deliveryAddress ?? "—"}</dd>
+                </div>
+              )}
+              {order.shippingFee != null && (
+                <div>
+                  <dt className="text-ink-3">Frais de livraison{order.shippingZone && !order.pickup ? ` · ${order.shippingZone}` : ""}</dt>
+                  <dd className="mt-0.5 font-semibold">
+                    {shippingFeeLabel(order, formatPrice)}
+                    {order.deliveryEstimate && <span className="font-normal text-ink-2"> · {order.deliveryEstimate}</span>}
+                  </dd>
+                </div>
+              )}
               <div>
                 <dt className="flex items-center gap-1.5 text-ink-3"><Wallet3 size={14} /> Mode de paiement choisi</dt>
                 <dd className="mt-0.5 font-semibold">{order.paymentMethod ? PAYMENT_LABEL[order.paymentMethod] : "—"}</dd>

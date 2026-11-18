@@ -43,6 +43,14 @@ export interface CartQuote {
   cashbackAvailable: number;
   /** Cagnotte appliquée au total (quand le client l'utilise) */
   cashback: number;
+  /** Retrait en boutique choisi (frais 0) */
+  pickup: boolean;
+  /** Adresse du point de retrait (devis en retrait) */
+  pickupAddress: string | null;
+  /** Zone sur devis : frais inconnus jusqu'à la proposition du revendeur */
+  shippingQuoteRequired: boolean;
+  /** La boutique propose le retrait sur place */
+  pickupAvailable: boolean;
 }
 
 export interface Cart {
@@ -65,6 +73,10 @@ export const EMPTY_QUOTE: CartQuote = {
   memberFreeShipping: false,
   cashbackAvailable: 0,
   cashback: 0,
+  pickup: false,
+  pickupAddress: null,
+  shippingQuoteRequired: false,
+  pickupAvailable: false,
 };
 
 export const EMPTY_CART: Cart = { token: null, items: [], quote: EMPTY_QUOTE };

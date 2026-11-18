@@ -53,13 +53,15 @@ export function ShippingZonesSection() {
                   <p className="flex flex-wrap items-center gap-2 text-[15px] font-bold">
                     <span className="grid size-6 place-items-center rounded-full bg-primary-100 text-[12px] text-primary-dark">{i + 1}</span>
                     {z.name}
+                    {z.pricing === "quote" && <span className="rounded-full bg-star/20 px-2 py-0.5 text-[10px] font-bold uppercase text-warn">Sur devis</span>}
+                    {z.pricing === "pickup" && <span className="rounded-full bg-primary-100 px-2 py-0.5 text-[10px] font-bold uppercase text-primary-dark">Retrait sur place</span>}
                     {z.isDefault && <span className="rounded-full bg-primary px-2 py-0.5 text-[10px] font-bold uppercase text-white">Par défaut</span>}
                     {z.memberFreeShipping && <span className="rounded-full bg-sun px-2 py-0.5 text-[10px] font-bold uppercase text-on-light">Offerte aux membres Plus</span>}
                     {!z.isActive && <span className="rounded-full bg-line-3 px-2 py-0.5 text-[10px] font-bold uppercase text-ink">Inactive</span>}
                   </p>
-                  <p className="mt-1 text-[13px] leading-[19px] text-ink-2">{z.cities.length ? z.cities.join(", ") : z.isDefault ? "Toutes les autres villes" : "Aucune ville"}</p>
+                  <p className="mt-1 text-[13px] leading-[19px] text-ink-2">{z.pricing === "pickup" ? z.pickupAddress : z.cities.length ? z.cities.join(", ") : z.isDefault ? "Toutes les autres villes" : "Aucune ville"}</p>
                   <p className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1 text-[13px] tabular-nums">
-                    <span><span className="text-ink-3">Frais </span><b>{z.fee === 0 ? "Offerte" : formatPrice(z.fee)}</b></span>
+                    <span><span className="text-ink-3">Frais </span><b>{z.pricing === "quote" ? "Proposés par le revendeur" : z.pricing === "pickup" || z.fee === 0 ? "Gratuit" : formatPrice(z.fee)}</b></span>
                     {z.freeThreshold != null && <span><span className="text-ink-3">Offerte dès </span><b>{formatPrice(z.freeThreshold)}</b></span>}
                     {z.deliveryEstimate && <span><span className="text-ink-3">Délai </span><b>{z.deliveryEstimate}</b></span>}
                   </p>

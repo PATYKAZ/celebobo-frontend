@@ -32,6 +32,15 @@ export interface SettingsFormValues {
   supportAlwaysOpen: boolean;
 }
 
+/** Tarification d'une zone : frais fixes, sur devis (le revendeur propose les frais), retrait sur place (gratuit). */
+export type ZonePricing = "flat" | "quote" | "pickup";
+
+export const ZONE_PRICING: { value: ZonePricing; label: string; hint: string }[] = [
+  { value: "flat", label: "Tarif fixe", hint: "Frais de la zone, offerts dès le seuil." },
+  { value: "quote", label: "Sur devis", hint: "Commande sans frais ; le revendeur propose les frais dans la discussion, le client accepte ou annule sans frais." },
+  { value: "pickup", label: "Retrait sur place", hint: "Gratuit ; le client choisit le retrait à la commande. Une seule zone de ce type." },
+];
+
 /** Zone de livraison (`/bo/shipping-zones/`). */
 export interface AdminShippingZone {
   id: number;
@@ -45,6 +54,9 @@ export interface AdminShippingZone {
   position: number;
   /** livraison offerte aux membres Celebobo Plus, sans minimum */
   memberFreeShipping: boolean;
+  pricing: ZonePricing;
+  /** Adresse du point de retrait (zone « retrait sur place ») */
+  pickupAddress: string;
 }
 
 export interface ZoneFormValues {
@@ -57,9 +69,11 @@ export interface ZoneFormValues {
   isDefault: boolean;
   isActive: boolean;
   memberFreeShipping: boolean;
+  pricing: ZonePricing;
+  pickupAddress: string;
 }
 
-export const EMPTY_ZONE: ZoneFormValues = { name: "", cities: "", fee: "", freeThreshold: "", deliveryEstimate: "", isDefault: false, isActive: true, memberFreeShipping: false };
+export const EMPTY_ZONE: ZoneFormValues = { name: "", cities: "", fee: "", freeThreshold: "", deliveryEstimate: "", isDefault: false, isActive: true, memberFreeShipping: false, pricing: "flat", pickupAddress: "" };
 
 export const SOCIAL_NETWORKS: { key: SocialNetwork; label: string }[] = [
   { key: "facebook", label: "Facebook" },

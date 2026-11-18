@@ -14,6 +14,8 @@ export interface CheckoutForm {
   phone: string;
   paymentMethod: PaymentMethod;
   note: string;
+  /** Retrait en boutique : l'adresse ne sert qu'aux coordonnées du client */
+  pickup: boolean;
 }
 
 export const CHECKOUT_STEPS = ["Livraison", "Paiement", "Confirmation"] as const;

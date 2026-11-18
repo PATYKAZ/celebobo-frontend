@@ -97,6 +97,7 @@ export const ENDPOINTS = {
     assign: (id: number | string) => `/conversations/${id}/assign/`, // { resellerId } (support uniquement)
     proposePrice: (id: number | string) => `/conversations/${id}/price-proposals/`,
     respondProposal: (proposalId: number | string) => `/price-proposals/${proposalId}/respond/`,
+    quoteShipping: (id: number | string) => `/conversations/${id}/shipping-quotes/`,
     clientOrder: (number: string) => `/me/orders/${encodeURIComponent(number)}/`,
     staffOrder: (orderId: number | string) => `/bo/orders/${orderId}/`,
   },

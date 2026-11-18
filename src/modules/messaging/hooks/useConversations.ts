@@ -7,7 +7,7 @@ import { useRealtime, useRealtimeConnected } from "@/shared/hooks/useRealtime";
 import { channels, type ConversationEvent, type UserEvent } from "@/shared/lib/realtime";
 import { conversationsService } from "../services/conversations.service";
 import { toMessage, type MessageDto } from "../services/messaging.mapper";
-import { MESSAGING_CHANNEL, type Conversation, type Message, type MessagingEvent, type NewSupportInput, type PriceProposalInput, type SendMessageInput } from "../types";
+import { MESSAGING_CHANNEL, type Conversation, type Message, type MessagingEvent, type NewSupportInput, type PriceProposalInput, type SendMessageInput, type ShippingQuoteInput } from "../types";
 import { useUnreadCounts } from "./useNotifications";
 
 export const messagingKeys = {
@@ -254,6 +254,15 @@ export function usePriceProposal(id: number) {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (input: PriceProposalInput) => conversationsService.proposePrice(id, input),
+    onSuccess: (msg) => qc.setQueryData<Message[]>(messagingKeys.messages(id), (cur) => (cur ? upsert(cur, msg) : cur)),
+  });
+}
+
+/** Revendeur+ : proposer les frais de livraison (zone sur devis). */
+export function useShippingQuote(id: number) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (input: ShippingQuoteInput) => conversationsService.quoteShipping(id, input),
     onSuccess: (msg) => qc.setQueryData<Message[]>(messagingKeys.messages(id), (cur) => (cur ? upsert(cur, msg) : cur)),
   });
 }
