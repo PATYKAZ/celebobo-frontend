@@ -30,7 +30,7 @@ const STATUS_TABS: OrderTab[] = ["attente", "assignee", "confirmee", "payee", "e
 
 export function OrdersView() {
   return (
-    <PermissionGuard permission="orders.view.own">
+    <PermissionGuard permission="orders.view.assigned">
       <OrdersContent />
     </PermissionGuard>
   );

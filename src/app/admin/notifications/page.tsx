@@ -6,7 +6,7 @@ export const metadata: Metadata = { title: "Notifications" };
 
 export default function Page() {
   return (
-    <PermissionGuard permission="backoffice.access">
+    <PermissionGuard permission="dashboard.view">
       <NotificationsView embedded />
     </PermissionGuard>
   );

@@ -24,7 +24,7 @@ import { StatusActionBar } from "./StatusActionBar";
 
 export function OrderDetailView({ id }: { id: number }) {
   return (
-    <PermissionGuard permission="orders.view.own">
+    <PermissionGuard permission="orders.view.assigned">
       <Content id={id} />
     </PermissionGuard>
   );

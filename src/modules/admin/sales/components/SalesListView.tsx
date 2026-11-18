@@ -43,7 +43,7 @@ function SalesListContent() {
   const canAll = useCan("sales.view.all");
   const canCreate = useCan("sales.create");
   const canConvert = useCan("sales.convert");
-  const canExport = useCan("sales.export");
+  const canExport = useCan("exports.sales");
   const canEditAll = useCan("sales.edit.all");
   const canEditOwn = useCan("sales.edit.own");
   const canRefund = useCan("sales.refund");

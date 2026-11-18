@@ -35,7 +35,7 @@ export function ConversationList({ activeId, onSelect, inbox }: Props) {
   const [filter, setFilter] = useState<InboxFilter>("all");
   const [reseller, setReseller] = useState("");
   const [filterSheet, setFilterSheet] = useState(false);
-  const seeAll = can(user, "inbox.view.all");
+  const seeAll = can(user, "conversations.assign");
 
   const resellers = useMemo(() => {
     const map = new Map<number, string>();

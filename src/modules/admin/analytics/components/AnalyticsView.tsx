@@ -33,7 +33,7 @@ export function AnalyticsView() {
 function AnalyticsContent() {
   const [filters, setFilters] = useState<AnalyticsFilters>(DEFAULT_FILTERS);
   const { data } = useAnalytics(filters);
-  const canPerf = useCan("analytics.resellers");
+  const canPerf = useCan("analytics.view");
   const { data: perf } = useResellerPerformance(filters.range, canPerf);
   const { data: categories } = useFlatCategories();
   const s = data?.summary;

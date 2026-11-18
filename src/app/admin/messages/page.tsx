@@ -6,7 +6,7 @@ export const metadata: Metadata = { title: "Messages" };
 
 export default function Page() {
   return (
-    <PermissionGuard permission="inbox.view.own">
+    <PermissionGuard permission="conversations.moderate">
       <MessagesView embedded />
     </PermissionGuard>
   );

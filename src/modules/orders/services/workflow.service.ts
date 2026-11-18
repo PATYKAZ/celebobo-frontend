@@ -5,7 +5,7 @@ import { api } from "@/shared/lib/api";
 import { ORDER_FINAL, ORDER_FLOW, type Order, type OrderStatus } from "../types";
 import { STATUS_TO_API, toOrder, type OrderDto } from "./orders.mapper";
 
-type Actor = Pick<User, "id" | "role" | "firstName" | "lastName">;
+type Actor = Pick<User, "id" | "role" | "firstName" | "lastName" | "permissions">;
 
 export interface Transition {
   ok: boolean;

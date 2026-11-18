@@ -108,7 +108,7 @@ export function ChatWindow({ conversationId, onBack, className }: Props) {
   const isBuyer = conv?.client?.id === myId;
   const canPropose = !!conv?.relatedOrderId && !concluded && !isBuyer && can(user, "price.adjust");
   const canModerate = isStaff && !!conv && !isBuyer;
-  const canAssign = can(user, "inbox.view.all") && conv?.kind === "support" && !concluded;
+  const canAssign = can(user, "conversations.assign") && conv?.kind === "support" && !concluded;
   const { data: resellers = [] } = useResellerOptions(canAssign && assignOpen);
   const orderStatus = order?.status ?? conv?.orderStatus ?? null;
   const orderLabel = conv?.orderNumber ? `Commande ${conv.orderNumber}` : `Commande #${conv?.relatedOrderId}`;
