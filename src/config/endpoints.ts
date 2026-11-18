@@ -219,6 +219,10 @@ export const ENDPOINTS = {
       reject: (id: number) => `/bo/membership/requests/${id}/reject/`, // { note }
       members: "/bo/memberships/", // GET ?status=trial|active|expired
     },
+    coupons: {
+      list: "/bo/coupons/", // GET ?search=&active= (paginé) / POST (coupons.manage)
+      detail: (id: number) => `/bo/coupons/${id}/`, // PATCH ; DELETE = désactiver (jamais d'effacement)
+    },
     deals: {
       list: "/bo/deals/", // GET ?status=live|scheduled|ended (liste simple) / POST (products.manage)
       detail: (id: number) => `/bo/deals/${id}/`, // PATCH / DELETE

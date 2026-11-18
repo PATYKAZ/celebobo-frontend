@@ -59,6 +59,7 @@ export const ROUTES = {
     banners: "/admin/bannieres",
     homeSections: "/admin/accueil",
     deals: "/admin/offres",
+    coupons: "/admin/codes-promo",
     invites: "/admin/invites",
   },
 } as const;
