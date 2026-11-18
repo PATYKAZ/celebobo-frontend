@@ -141,6 +141,10 @@ export interface Order {
   rating?: { score: number; comment: string; createdAt: string } | null;
   /** Le client peut encore noter le revendeur (livrée, pas encore notée) */
   canRate?: boolean;
+  /** Tentatives de livraison échouées (2 jours ouvrables d'échecs annulent la commande) */
+  deliveryAttempts?: DeliveryAttempt[];
+  /** Code du motif d'annulation (ex. « delivery_failed ») ; `cancelReason` en est le libellé */
+  cancelReasonCode?: string | null;
   address?: OrderAddress | null;
   /** Transitions permises à l'utilisateur courant (ex: `annulee` pour le client tant qu'elle est en attente). */
   allowedTransitions?: OrderStatus[];
@@ -152,6 +156,29 @@ export function shippingFeeLabel(o: Pick<Order, "shippingFee" | "awaitingShippin
   if (o.pickup) return "Gratuit (retrait)";
   return o.shippingFee ? format(o.shippingFee) : "Offerte";
 }
+
+export interface DeliveryAttempt {
+  at: string;
+  reason: AttemptReason;
+  reasonLabel: string;
+  note: string;
+}
+
+export type AttemptReason = "client_absent" | "unreachable" | "wrong_address" | "refused" | "other";
+
+export const ATTEMPT_REASONS: { value: AttemptReason; label: string }[] = [
+  { value: "client_absent", label: "Client absent" },
+  { value: "unreachable", label: "Client injoignable" },
+  { value: "wrong_address", label: "Adresse introuvable ou erronée" },
+  { value: "refused", label: "Colis refusé" },
+  { value: "other", label: "Autre" },
+];
+
+/** Motifs posés par le système (jamais choisis par le client). */
+export const SYSTEM_CANCEL_LABEL: Record<string, string> = {
+  expired: "Aucun revendeur assigné à temps",
+  delivery_failed: "Livraison impossible après deux jours de tentatives",
+};
 
 /** Motifs d'annulation (client). */
 export type CancelReason = "changed_mind" | "cheaper_elsewhere" | "too_slow" | "ordered_by_mistake" | "other";

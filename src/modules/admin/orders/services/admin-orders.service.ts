@@ -1,7 +1,7 @@
 import { ENDPOINTS } from "@/config/endpoints";
 import { api, type PageEnvelope } from "@/shared/lib/api";
 import { STATUS_TO_API, toOrder, type ApiOrderStatus, type OrderDto, type OrderSummaryDto } from "@/modules/orders/services/orders.mapper";
-import type { Order, OrderStatus } from "@/modules/orders/types";
+import type { AttemptReason, Order, OrderStatus } from "@/modules/orders/types";
 import type { ResellerAvailability } from "@/modules/auth/types";
 import type { AdminOrderCounts, AdminOrderListParams, AdminOrderPage, ResellerOption } from "../types";
 
@@ -61,6 +61,11 @@ export const adminOrdersService = {
 
   async detail(id: number): Promise<Order> {
     return toOrder(await api.get<OrderDto>(orders.detail(id)));
+  },
+
+  /** Livraison manquée : 2 jours ouvrables d'échecs annulent la commande (remboursée sans les frais de livraison). */
+  async recordAttempt(id: number, reason: AttemptReason, note: string): Promise<Order> {
+    return toOrder(await api.post<OrderDto>(orders.deliveryAttempts(id), { reason, note: note.trim() }));
   },
 
   /** Commande payée puis annulée : l'argent a été rendu au client (note : référence de la transaction). */
