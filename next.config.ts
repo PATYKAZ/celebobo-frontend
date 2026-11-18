@@ -20,6 +20,7 @@ const nextConfig: NextConfig = {
     formats: ["image/avif", "image/webp"],
     remotePatterns: [
       { protocol: "https", hostname: "res.cloudinary.com" },
+      { protocol: "https", hostname: "images.pexels.com" },
       ...(mediaHost
         ? [
             { protocol: "https" as const, hostname: mediaHost },
