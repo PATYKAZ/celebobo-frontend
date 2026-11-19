@@ -57,6 +57,7 @@ export const ROUTES = {
     loyalty: "/admin/fidelite",
     memberships: "/admin/abonnements",
     banners: "/admin/bannieres",
+    pages: "/admin/pages",
     homeSections: "/admin/accueil",
     deals: "/admin/offres",
     coupons: "/admin/codes-promo",

@@ -35,7 +35,16 @@ const COLUMNS = [
       ["Mes favoris", ROUTES.favorites],
       ["Questions fréquentes", ROUTES.guide],
       ["Conditions générales de vente", ROUTES.page("conditions")],
-      ["Retours et remboursements", ROUTES.page("retours")],
+    ],
+  },
+  {
+    title: "Nos politiques",
+    links: [
+      ["Livraison", ROUTES.page("politique-de-livraison")],
+      ["Garantie et retours", ROUTES.page("garantie-et-retours")],
+      ["Programme de fidélité", ROUTES.page("programme-de-fidelite")],
+      ["Confidentialité", ROUTES.page("politique-de-confidentialite")],
+      ["Revendeurs", ROUTES.page("politique-revendeurs")],
     ],
   },
   {
@@ -63,7 +72,7 @@ export function Footer() {
   return (
     <footer className="mt-6 bg-surface lg:mt-[40px]">
       <div className="container pt-8 lg:pt-[79px]">
-        <div className="grid gap-8 lg:grid-cols-[293px_repeat(4,1fr)] lg:gap-8">
+        <div className="grid gap-8 lg:grid-cols-[260px_repeat(5,1fr)] lg:gap-6">
           {/* Colonne 1 */}
           <div>
             <h2 className="text-section uppercase">Celebobo — la tech en confiance</h2>
@@ -105,7 +114,7 @@ export function Footer() {
             <h2 className="text-section uppercase">Abonnez-vous et obtenez <span className="text-danger">{site.newsletterDiscount} % de remise</span> sur votre première commande</h2>
             <div className="mt-6"><NewsletterForm /></div>
             <p className="mt-3 text-[13px] italic leading-[22px] text-ink-2">
-              En vous abonnant, vous acceptez notre <Link href={ROUTES.contact} className="text-ink underline">politique de confidentialité</Link>
+              En vous abonnant, vous acceptez notre <Link href={ROUTES.page("politique-de-confidentialite")} className="text-ink underline">politique de confidentialité</Link>
             </p>
           </div>
         </div>

@@ -31,6 +31,24 @@ export function MarkdownBlocks({ blocks }: { blocks: MdBlock[] }) {
           const H = b.level === 2 ? "h2" : "h3";
           return <H key={i} className={cn("text-ink first:mt-0", b.level === 2 ? "mt-7 text-[19px] leading-[26px] sm:text-[22px] sm:leading-[30px]" : "mt-5 text-[16px] leading-[23px] sm:text-[18px]")}><Inline text={b.text} /></H>;
         }
+        if (b.type === "table") {
+          return (
+            <div key={i} className="mt-4 overflow-x-auto rounded-box border border-line-3 first:mt-0">
+              <table className="w-full min-w-[480px] text-left text-[13px] leading-[19px] sm:text-[14px] sm:leading-[21px]">
+                <thead className="bg-page/70 text-ink">
+                  <tr>{b.head.map((cell, j) => <th key={j} scope="col" className="px-3 py-2.5 font-bold"><Inline text={cell} /></th>)}</tr>
+                </thead>
+                <tbody>
+                  {b.rows.map((row, r) => (
+                    <tr key={r} className="border-t border-line-3 align-top">
+                      {row.map((cell, j) => <td key={j} className="px-3 py-2.5"><Inline text={cell} /></td>)}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          );
+        }
         if (b.type === "list") {
           const L = b.ordered ? "ol" : "ul";
           return (
