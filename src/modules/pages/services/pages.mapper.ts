@@ -9,6 +9,8 @@ export interface PageSummaryDto {
   isPublished: boolean;
   position: number;
   updatedAt: string;
+  version?: string;
+  effectiveOn?: string | null;
 }
 
 export interface PageDto extends PageSummaryDto {
@@ -20,7 +22,7 @@ export interface FaqGroupDto {
   entries: { id: number; question: string; answer: string; category: string; position: number; isPublished: boolean }[];
 }
 
-export const toPageSummary = (dto: PageSummaryDto): CmsPageSummary => ({ slug: dto.slug, title: dto.title, summary: dto.summary, updatedAt: dto.updatedAt });
+export const toPageSummary = (dto: PageSummaryDto): CmsPageSummary => ({ slug: dto.slug, title: dto.title, summary: dto.summary, updatedAt: dto.updatedAt, version: dto.version ?? "", effectiveOn: dto.effectiveOn ?? null });
 
 export const toPage = (dto: PageDto): CmsPage => ({ ...toPageSummary(dto), body: dto.body });
 

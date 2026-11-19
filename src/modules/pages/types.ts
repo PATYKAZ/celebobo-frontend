@@ -7,6 +7,9 @@ export interface CmsPage {
   summary: string;
   body: string;
   updatedAt: string;
+  /** Politiques : version et date d'entrée en vigueur */
+  version: string;
+  effectiveOn: string | null;
 }
 
 export type CmsPageSummary = Omit<CmsPage, "body">;

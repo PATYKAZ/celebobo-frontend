@@ -41,7 +41,15 @@ export function CmsPageView({ slug }: { slug: string }) {
                 <span className="inline-block rounded-full bg-primary-50 px-4 py-1.5 text-[12px] font-bold uppercase tracking-wider text-primary">Informations</span>
                 <h1 className="mt-4 text-[26px] font-extrabold leading-[32px] sm:text-[36px] sm:leading-[44px]">{page.title}</h1>
                 {page.summary && <p className="mt-2 text-[15px] leading-[24px] text-ink-2 sm:text-[16px]">{page.summary}</p>}
-                <p className="mt-2 text-[12px] text-ink-3">Mis à jour le {formatDate(page.updatedAt)}</p>
+                {page.version || page.effectiveOn ? (
+                  <p className="mt-3 inline-block rounded-md bg-page/70 px-3 py-1.5 text-[12px] font-semibold text-ink-2">
+                    {page.version && <>Version {page.version}</>}
+                    {page.version && page.effectiveOn && " — "}
+                    {page.effectiveOn && <>en vigueur le {formatDate(page.effectiveOn)}</>}
+                  </p>
+                ) : (
+                  <p className="mt-2 text-[12px] text-ink-3">Mis à jour le {formatDate(page.updatedAt)}</p>
+                )}
                 <Markdown source={page.body} className="mt-6 border-t border-line-3 pt-6" />
               </article>
             )}

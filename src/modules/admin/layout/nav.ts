@@ -29,6 +29,7 @@ export const ADMIN_NAV: AdminNavItem[] = [
   { section: "Catalogue", label: "Codes promo", href: ROUTES.admin.coupons, icon: TicketDiscount, permission: "coupons.manage" },
   { section: "Catalogue", label: "Blocs de l'accueil", href: ROUTES.admin.homeSections, icon: RowVertical, permission: "content.manage" },
   { section: "Catalogue", label: "Bannières de l'accueil", href: ROUTES.admin.banners, icon: Gallery, permission: "content.manage" },
+  { section: "Catalogue", label: "Pages et politiques", href: ROUTES.admin.pages, icon: DocumentText, permission: "content.manage" },
   { section: "Activité", label: "Commandes", resellerLabel: "Mes commandes", href: ROUTES.admin.orders, icon: Messages2, permission: "orders.view.assigned" },
   { section: "Activité", label: "Ventes", resellerLabel: "Mes ventes", href: ROUTES.admin.sales, icon: MoneyRecive, permission: "sales.view.own" },
   { section: "Activité", label: "Abonnements Plus", href: ROUTES.admin.memberships, icon: Crown1, permission: "membership.manage" },

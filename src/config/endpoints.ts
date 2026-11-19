@@ -223,6 +223,10 @@ export const ENDPOINTS = {
       list: "/bo/coupons/", // GET ?search=&active= (paginé) / POST (coupons.manage)
       detail: (id: number) => `/bo/coupons/${id}/`, // PATCH ; DELETE = désactiver (jamais d'effacement)
     },
+    pages: {
+      list: "/bo/pages/", // GET (toutes, avec le texte) / POST (content.manage)
+      detail: (id: number) => `/bo/pages/${id}/`, // PATCH / DELETE
+    },
     deals: {
       list: "/bo/deals/", // GET ?status=live|scheduled|ended (liste simple) / POST (products.manage)
       detail: (id: number) => `/bo/deals/${id}/`, // PATCH / DELETE

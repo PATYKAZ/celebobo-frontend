@@ -1,8 +1,9 @@
-/** Sous-ensemble Markdown du back-office : titres `##`, paragraphes, listes `-` / `1.`, **gras**, *italique*, [liens](url). */
+/** Sous-ensemble Markdown du back-office : titres `##`, paragraphes, listes `-` / `1.`, tableaux `| a | b |`, **gras**, *italique*, [liens](url). */
 export type MdBlock =
   | { type: "heading"; level: 2 | 3; text: string }
   | { type: "paragraph"; text: string }
-  | { type: "list"; ordered: boolean; items: string[] };
+  | { type: "list"; ordered: boolean; items: string[] }
+  | { type: "table"; head: string[]; rows: string[][] };
 
 export interface MdSection {
   heading: string | null;
@@ -10,11 +11,21 @@ export interface MdSection {
 }
 
 const ITEM = /^\s*(?:[-*+]|(\d+)[.)])\s+(.*)$/;
+const TABLE_ROW = /^\|.*\|$/;
+const TABLE_RULE = /^\|(\s*:?-{3,}:?\s*\|)+$/;
+
+const cells = (line: string) => line.slice(1, -1).split("|").map((cell) => cell.trim());
 
 export function parseMarkdown(source: string): MdBlock[] {
   const blocks: MdBlock[] = [];
   let paragraph: string[] = [];
+  let table: string[][] = [];
+  const flushTable = () => {
+    if (table.length) blocks.push({ type: "table", head: table[0], rows: table.slice(1) });
+    table = [];
+  };
   const flush = () => {
+    flushTable();
     if (paragraph.length) blocks.push({ type: "paragraph", text: paragraph.join(" ") });
     paragraph = [];
   };
@@ -23,6 +34,13 @@ export function parseMarkdown(source: string): MdBlock[] {
     const line = raw.trim();
     const heading = line.match(/^(#{1,6})\s+(.*)$/);
     const item = line.match(ITEM);
+    if (TABLE_ROW.test(line)) {
+      if (paragraph.length) flush();
+      // la ligne de séparation `|---|---|` sépare l'en-tête des lignes
+      if (!TABLE_RULE.test(line)) table.push(cells(line));
+      continue;
+    }
+    flushTable();
     if (!line) flush();
     else if (heading) {
       flush();
