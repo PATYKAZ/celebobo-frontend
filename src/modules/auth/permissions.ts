@@ -46,7 +46,8 @@ export type Permission =
   | "content.manage"
   | "settings.manage"
   | "membership.manage"
-  | "loyalty.manage";
+  | "loyalty.manage"
+  | "coupons.manage"; // codes promo : création, conditions, activation
 
 type WithPermissions = Pick<User, "permissions"> | null | undefined;
 
