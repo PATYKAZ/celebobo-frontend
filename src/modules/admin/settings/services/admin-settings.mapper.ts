@@ -27,7 +27,6 @@ export interface ZoneDto {
   isDefault: boolean;
   isActive: boolean;
   position: number;
-  memberFreeShipping?: boolean;
   pricing?: ZonePricing;
   pickupAddress?: string;
 }
@@ -81,7 +80,6 @@ export const toAdminZone = (dto: ZoneDto): AdminShippingZone => ({
   isDefault: dto.isDefault,
   isActive: dto.isActive,
   position: dto.position,
-  memberFreeShipping: dto.memberFreeShipping ?? false,
   pricing: dto.pricing ?? "flat",
   pickupAddress: dto.pickupAddress ?? "",
 });
@@ -94,7 +92,6 @@ export const zoneToForm = (z: AdminShippingZone): ZoneFormValues => ({
   deliveryEstimate: z.deliveryEstimate,
   isDefault: z.isDefault,
   isActive: z.isActive,
-  memberFreeShipping: z.memberFreeShipping,
   pricing: z.pricing,
   pickupAddress: z.pickupAddress,
 });
@@ -113,7 +110,6 @@ export const toZonePayload = (v: ZoneFormValues) => {
     deliveryEstimate: v.deliveryEstimate.trim(),
     isDefault: pickup ? false : v.isDefault,
     isActive: v.isActive,
-    memberFreeShipping: flat && v.memberFreeShipping,
     pickupAddress: pickup ? v.pickupAddress.trim() : "",
   };
 };

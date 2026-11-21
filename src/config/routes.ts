@@ -30,7 +30,6 @@ export const ROUTES = {
   orderDetail: (number: number | string) => `/compte/commandes/${encodeURIComponent(number)}`,
   addresses: "/compte/adresses",
   settings: "/compte/parametres",
-  membership: "/compte/abonnement",
   points: "/compte/points",
 
   admin: {
@@ -56,7 +55,6 @@ export const ROUTES = {
     audit: "/admin/audit",
     settings: "/admin/reglages",
     loyalty: "/admin/fidelite",
-    memberships: "/admin/abonnements",
     banners: "/admin/bannieres",
     pages: "/admin/pages",
     homeSections: "/admin/accueil",

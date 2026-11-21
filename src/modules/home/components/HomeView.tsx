@@ -8,9 +8,9 @@ import { CategoryColumns } from "./CategoryColumns";
 import { CategoryShowcase } from "./CategoryShowcase";
 import { DealsOfTheDay } from "./DealsOfTheDay";
 import { HeroSection } from "./HeroSection";
-import { MemberBanner } from "./MemberBanner";
 import { ProductTabs } from "./ProductTabs";
 import { ProgrammesRow } from "./ProgrammesRow";
+import { ShippingBanner } from "./ShippingBanner";
 import { RecentlyViewed } from "./RecentlyViewed";
 import { SeoText } from "./SeoText";
 
@@ -27,7 +27,7 @@ export function HomeView() {
       <HeroSection content={content} />
       <BrandsAndCategories brands={content?.brands ?? undefined} />
       <DealsOfTheDay content={content} />
-      <MemberBanner />
+      <ShippingBanner />
       <ProductTabs catalog={content?.catalog ?? null} />
       <BrandNew products={content?.catalog?.newArrivals} />
       <ProgrammesRow />

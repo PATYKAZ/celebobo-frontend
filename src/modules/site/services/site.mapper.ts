@@ -21,7 +21,6 @@ export interface SiteSettingsDto {
 
 /** `programmes` (après camelCase), aussi renvoyé par `/bo/loyalty/settings/`. */
 export interface ProgrammesDto {
-  membership: { enabled: boolean; monthlyPrice: string; yearlyPrice: string; trialDays: number; reminderDays: number };
   points: { enabled: boolean; percent: string; validityMonths: number };
   appLinks: { appStore: string; playStore: string };
 }
@@ -29,7 +28,6 @@ export interface ProgrammesDto {
 export const toProgrammes = (dto: ProgrammesDto | undefined): Programmes =>
   dto
     ? {
-        membership: { ...dto.membership, monthlyPrice: Number(dto.membership.monthlyPrice), yearlyPrice: Number(dto.membership.yearlyPrice) },
         points: { ...dto.points, percent: Number(dto.points.percent) },
         appLinks: { appStore: dto.appLinks.appStore ?? "", playStore: dto.appLinks.playStore ?? "" },
       }

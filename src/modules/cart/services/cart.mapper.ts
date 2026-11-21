@@ -24,7 +24,6 @@ export interface QuoteDto {
   deliveryEstimate: string;
   couponCode: string | null;
   couponError: string | null;
-  memberFreeShipping?: boolean;
   /** points utilisables sur cette commande (solde plafonné au prix des produits), et points appliqués (`points` demandé) */
   pointsAvailable?: string;
   points?: string;
@@ -59,7 +58,6 @@ export function toQuote(dto: QuoteDto): CartQuote {
     deliveryEstimate: dto.deliveryEstimate || null,
     couponCode: dto.couponCode || null,
     couponError: dto.couponError || null,
-    memberFreeShipping: dto.memberFreeShipping ?? false,
     pointsAvailable: money(dto.pointsAvailable),
     points: money(dto.points),
     pickup: dto.deliveryMethod === "pickup",
