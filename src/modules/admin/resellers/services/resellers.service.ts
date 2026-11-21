@@ -75,18 +75,13 @@ export const resellersService = {
     return toReseller(dto, sales.get(id), { ...load, invited: invitees.results.map(toInvitedClient), ratings: ratings.results });
   },
 
-  /** Crée le compte (rôle revendeur, e-mail d'invitation envoyé par l'API) puis fixe son taux. */
+  /** Crée le compte (rôle revendeur, e-mail d'invitation envoyé par l'API) ; les commissions suivent les règles communes. */
   async create(input: CreateResellerInput): Promise<Reseller> {
     const user = await api.post<{ id: number }>(users.list, { firstName: input.firstName, lastName: input.lastName, email: input.email, phoneNumber: input.phone || null, role: "reseller" });
-    if (input.commissionRate != null) await api.patch(resellers.detail(user.id), { commissionRate: input.commissionRate.toFixed(3) });
     return toReseller(await api.get<ResellerDto>(resellers.detail(user.id)));
   },
 
   async setActive(id: number, active: boolean): Promise<Reseller> {
     return toReseller(await api.post<ResellerDto>(active ? resellers.activate(id) : resellers.deactivate(id)));
-  },
-
-  async updateRate(id: number, rate: number): Promise<Reseller> {
-    return toReseller(await api.patch<ResellerDto>(resellers.detail(id), { commissionRate: rate.toFixed(3) }));
   },
 };

@@ -6,8 +6,6 @@ export interface CommissionRow {
   avatar: string | null;
   availability: Availability;
   active: boolean;
-  /** 0.07 = 7 % */
-  rate: number;
   /** nombre de ventes valides (cumul) */
   salesCount: number;
   /** Commission gagnée (cumul depuis le début) */
@@ -19,6 +17,10 @@ export interface CommissionRow {
   due: number;
   lastPaymentAt: string | null;
 }
+
+/** Règles communes à tous les revendeurs (décidées le 16 nov. 2026, calculées par l'API). */
+export const COMMISSION_RULES_SUMMARY =
+  "10 % du montant payé, plafonnés à 50 % de la marge (produits Celebobo) ou à 20 % du gain Celebobo (produits partenaires) ; rien sur une commande payée en partie avec des points ou un coupon";
 
 export interface CommissionPayment {
   id: number;

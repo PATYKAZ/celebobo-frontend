@@ -14,7 +14,7 @@ import { ApplicationForm } from "./ApplicationForm";
 import { CommissionSimulator } from "./CommissionSimulator";
 
 const BENEFITS = [
-  { icon: Wallet3, title: "Des commissions attractives", text: "De 5 à 10 % sur chaque vente, versées régulièrement et suivies dans votre espace." },
+  { icon: Wallet3, title: "Des commissions attractives", text: "Jusqu'à 10 % de chaque vente, versées régulièrement et suivies dans votre espace." },
   { icon: Messages2, title: "Les clients viennent à vous", text: "Les commandes vous sont assignées et vous discutez directement avec l'acheteur." },
   { icon: Share, title: "Votre code, votre réseau", text: "Partagez votre code (ou QR) : chaque client invité reste rattaché à vous." },
   { icon: Chart2, title: "Un espace dédié", text: "Commandes, ventes, commissions et invités : tout est suivi en temps réel." },
@@ -30,7 +30,7 @@ const STEPS = [
 
 const FAQ = [
   { q: "Faut-il payer pour devenir revendeur ?", a: "Non. L'inscription est gratuite et sans engagement. Vous n'avancez aucun stock." },
-  { q: "Comment sont calculées mes commissions ?", a: "Un pourcentage du prix de vente final, selon votre palier mensuel (5 %, 7 % ou 10 %). Le détail est visible dans votre espace revendeur." },
+  { q: "Comment sont calculées mes commissions ?", a: "10 % de ce que le client paie, sans dépasser la moitié de la marge de Celebobo sur un produit Celebobo, ou 20 % du gain de Celebobo sur un produit partenaire. Une commande payée en partie avec des points ou un coupon ne donne pas de commission. Les mêmes règles valent pour tous les revendeurs ; le détail est visible dans votre espace revendeur." },
   { q: "Quand suis-je payé ?", a: "Les commissions dues sont réglées périodiquement par Mobile Money ou en cash. Chaque paiement apparaît dans votre historique." },
   { q: "Comment fonctionne le code d'invitation ?", a: "Vous recevez un code à 4 chiffres. Vos clients le saisissent à l'inscription ou dans leur profil : ils sont rattachés à vous." },
   { q: "Puis-je négocier le prix avec le client ?", a: "Oui : dans la discussion, vous pouvez proposer un prix final que le client accepte ou refuse." },

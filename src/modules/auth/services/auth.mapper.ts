@@ -13,7 +13,7 @@ export interface ProfileDto {
   dateJoined: string;
   invitedByCode: string | null;
   permissions: string[];
-  reseller: { referralCode: string | null; availability: ResellerAvailability; commissionRate: string; invitedCount: number } | null;
+  reseller: { referralCode: string | null; availability: ResellerAvailability; invitedCount: number } | null;
 }
 
 export const ROLE_FROM_API: Record<ProfileDto["role"], UserRole> = {

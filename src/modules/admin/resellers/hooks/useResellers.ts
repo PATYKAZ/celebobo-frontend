@@ -40,8 +40,3 @@ export function useSetResellerActive() {
   const inv = useInvalidate();
   return useMutation({ mutationFn: ({ id, active }: { id: number; active: boolean }) => resellersService.setActive(id, active), onSuccess: inv });
 }
-
-export function useUpdateResellerRate() {
-  const inv = useInvalidate();
-  return useMutation({ mutationFn: ({ id, rate }: { id: number; rate: number }) => resellersService.updateRate(id, rate), onSuccess: inv });
-}

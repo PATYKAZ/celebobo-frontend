@@ -103,7 +103,6 @@ function ResellersContent() {
       hideBelow: "md",
       cell: (r) => (r.ratingAverage == null ? <span className="text-[13px] text-ink-3">Pas encore notée</span> : <span className="flex items-center gap-1.5"><Stars rating={r.ratingAverage} size={13} hideCount /><span className="text-[13px] font-semibold">{r.ratingAverage.toFixed(1)}</span><span className="text-[12px] text-ink-3">({r.ratingCount})</span></span>),
     },
-    { key: "rate", header: "Commission", hideBelow: "lg", align: "center", cell: (r) => <span className="text-ink-2">{(r.commissionRate * 100).toFixed(1)}%</span> },
     { key: "sales", header: "Ventes générées", hideBelow: "md", align: "right", cell: (r) => <strong>{formatPrice(r.salesTotal)}</strong> },
     { key: "joined", header: "Inscrit le", hideBelow: "xl", mobile: "hide", cell: (r) => <span className="text-ink-2">{formatDate(r.joinedAt)}</span> },
     { key: "status", header: "Statut", hideBelow: "md", cell: (r) => <StatusDot tone={r.status === "actif" ? "green" : "gray"}>{r.status === "actif" ? "Actif" : "Désactivé"}</StatusDot> },

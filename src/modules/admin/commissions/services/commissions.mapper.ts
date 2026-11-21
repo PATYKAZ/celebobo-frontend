@@ -5,7 +5,6 @@ import type { CommissionPayment, CommissionRow, CommissionTotals } from "../type
 /** Commissions d'un revendeur (cumuls et mois en cours, après camelCase). */
 export interface CommissionSummaryDto {
   reseller: { id: number; name: string };
-  rate: string;
   earnedThisMonth: string;
   earnedTotal: string;
   paidTotal: string;
@@ -45,7 +44,6 @@ export function toCommissionRow(dto: CommissionSummaryDto, reseller?: ResellerDt
     avatar: reseller?.avatar || null,
     availability: reseller?.availability ?? "offline",
     active: reseller?.isActive ?? true,
-    rate: Number(dto.rate),
     salesCount: reseller?.performance.salesCount ?? 0,
     earned: money(dto.earnedTotal),
     earnedMonth: money(dto.earnedThisMonth),
