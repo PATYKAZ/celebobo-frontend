@@ -25,9 +25,9 @@ export interface QuoteDto {
   couponCode: string | null;
   couponError: string | null;
   memberFreeShipping?: boolean;
-  /** cagnotte utilisable sur cette commande, et montant appliqué (use_cashback) */
-  cashbackAvailable?: string;
-  cashback?: string;
+  /** points utilisables sur cette commande (solde plafonné au prix des produits), et points appliqués (`points` demandé) */
+  pointsAvailable?: string;
+  points?: string;
   deliveryMethod?: "delivery" | "pickup";
   pickupAddress?: string;
   shippingQuoteRequired?: boolean;
@@ -60,8 +60,8 @@ export function toQuote(dto: QuoteDto): CartQuote {
     couponCode: dto.couponCode || null,
     couponError: dto.couponError || null,
     memberFreeShipping: dto.memberFreeShipping ?? false,
-    cashbackAvailable: money(dto.cashbackAvailable),
-    cashback: money(dto.cashback),
+    pointsAvailable: money(dto.pointsAvailable),
+    points: money(dto.points),
     pickup: dto.deliveryMethod === "pickup",
     pickupAddress: dto.pickupAddress || null,
     shippingQuoteRequired: dto.shippingQuoteRequired ?? false,

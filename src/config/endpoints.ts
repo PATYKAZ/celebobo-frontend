@@ -73,13 +73,16 @@ export const ENDPOINTS = {
     device: (id: number | string) => `/me/devices/${id}/`,
     pushPublicKey: "/push/public-key/",
   },
+  /** Points de fidélité du client (1 point = 1 $) */
+  points: {
+    me: "/me/points/", // GET : { eligible, available, pending, next_expiry, orders_count, orders_total, history[] }
+  },
   /** Celebobo Plus côté client */
   membership: {
     me: "/me/membership/", // GET : statut, formule, échéance, essai disponible, demande en attente
     trial: "/me/membership/trial/", // POST : démarre l'essai (422 trial_unavailable, meta.reason)
     requests: "/me/membership/requests/", // POST { plan, payment_method } : demande en attente de paiement
     cancel: (id: number) => `/me/membership/requests/${id}/cancel/`,
-    cashback: "/me/cashback/", // GET : { eligible, available, pending, next_expiry }
   },
   uploads: {
     sign: "/uploads/sign/",

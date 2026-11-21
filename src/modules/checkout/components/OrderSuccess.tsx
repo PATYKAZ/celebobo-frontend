@@ -68,10 +68,10 @@ export function OrderSuccess({ order, conversationId }: { order: Order; conversa
               <span className="font-semibold text-danger">-{formatPrice(order.discount)}</span>
             </div>
           )}
-          {!!order.cashback && (
+          {!!order.points && (
             <div className="mt-2 flex items-center justify-between text-[13px]">
-              <span className="text-ink-2">Cagnotte</span>
-              <span className="font-semibold text-danger">-{formatPrice(order.cashback)}</span>
+              <span className="text-ink-2">Points de fidélité utilisés</span>
+              <span className="font-semibold text-danger">-{formatPrice(order.points)}</span>
             </div>
           )}
           {order.shippingFee != null && (

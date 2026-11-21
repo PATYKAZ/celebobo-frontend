@@ -14,28 +14,22 @@ export interface LoyaltyFormValues {
   membershipYearlyPrice: string;
   membershipTrialDays: string;
   membershipReminderDays: string;
-  cashbackEnabled: boolean;
-  cashbackPercent: string;
-  cashbackMaxShare: string;
-  cashbackMinBalance: string;
-  cashbackValidityMonths: string;
-  cashbackMembersOnly: boolean;
+  pointsEnabled: boolean;
+  pointsPercent: string;
+  pointsValidityMonths: string;
   appStoreUrl: string;
   playStoreUrl: string;
 }
 
-export const toLoyaltyForm = ({ membership: m, cashback: c, appLinks: a }: Programmes): LoyaltyFormValues => ({
+export const toLoyaltyForm = ({ membership: m, points: p, appLinks: a }: Programmes): LoyaltyFormValues => ({
   membershipEnabled: m.enabled,
   membershipMonthlyPrice: m.monthlyPrice.toFixed(2),
   membershipYearlyPrice: m.yearlyPrice.toFixed(2),
   membershipTrialDays: String(m.trialDays),
   membershipReminderDays: String(m.reminderDays),
-  cashbackEnabled: c.enabled,
-  cashbackPercent: String(c.percent),
-  cashbackMaxShare: String(c.maxShare),
-  cashbackMinBalance: c.minBalance.toFixed(2),
-  cashbackValidityMonths: String(c.validityMonths),
-  cashbackMembersOnly: c.membersOnly,
+  pointsEnabled: p.enabled,
+  pointsPercent: String(p.percent),
+  pointsValidityMonths: String(p.validityMonths),
   appStoreUrl: a.appStore,
   playStoreUrl: a.playStore,
 });
@@ -49,12 +43,9 @@ const toPayload = (v: LoyaltyFormValues) => ({
   membershipYearlyPrice: dec(v.membershipYearlyPrice),
   membershipTrialDays: Number(v.membershipTrialDays),
   membershipReminderDays: Number(v.membershipReminderDays),
-  cashbackEnabled: v.cashbackEnabled,
-  cashbackPercent: dec(v.cashbackPercent),
-  cashbackMaxShare: Number(v.cashbackMaxShare),
-  cashbackMinBalance: dec(v.cashbackMinBalance),
-  cashbackValidityMonths: Number(v.cashbackValidityMonths),
-  cashbackMembersOnly: v.cashbackMembersOnly,
+  pointsEnabled: v.pointsEnabled,
+  pointsPercent: dec(v.pointsPercent),
+  pointsValidityMonths: Number(v.pointsValidityMonths),
   appStoreUrl: v.appStoreUrl.trim(),
   playStoreUrl: v.playStoreUrl.trim(),
 });

@@ -9,7 +9,8 @@ import { Input, Switch } from "@/shared/ui/Form";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { toast } from "@/shared/ui/Toast";
 import { PermissionGuard } from "@/modules/auth/hooks/useCan";
-import type { Programmes } from "@/modules/site/types";
+import { useSiteSettings, type Programmes } from "@/modules/site";
+import { pointsReleaseDelay } from "@/modules/points/types";
 import { SettingsSection } from "../../settings/components/SettingsForm";
 import { PageHeader } from "../../ui/PageHeader";
 import { toLoyaltyForm, useLoyaltySettings, useSaveLoyalty, type LoyaltyFormValues } from "../loyalty";
@@ -26,11 +27,9 @@ function validate(v: LoyaltyFormValues): Errors {
   if (!(num(v.membershipYearlyPrice) >= 0.01)) e.membershipYearlyPrice = "Prix d'au moins 0,01 $.";
   if (!intIn(v.membershipTrialDays, 0, 365)) e.membershipTrialDays = "Entre 0 et 365 jours.";
   if (!intIn(v.membershipReminderDays, 0, 30)) e.membershipReminderDays = "Entre 0 et 30 jours.";
-  const p = num(v.cashbackPercent);
-  if (!(p >= 0.01 && p <= 50)) e.cashbackPercent = "Entre 0,01 et 50 %.";
-  if (!intIn(v.cashbackMaxShare, 1, 100)) e.cashbackMaxShare = "Entre 1 et 100 %.";
-  if (!(num(v.cashbackMinBalance) >= 0)) e.cashbackMinBalance = "Montant positif.";
-  if (!intIn(v.cashbackValidityMonths, 1, 60)) e.cashbackValidityMonths = "Entre 1 et 60 mois.";
+  const p = num(v.pointsPercent);
+  if (!(p >= 0.01 && p <= 50)) e.pointsPercent = "Entre 0,01 et 50 %.";
+  if (!intIn(v.pointsValidityMonths, 1, 60)) e.pointsValidityMonths = "Entre 1 et 60 mois.";
   for (const k of ["appStoreUrl", "playStoreUrl"] as const) if (v[k].trim() && !/^https?:\/\/\S+$/.test(v[k].trim())) e[k] = "Lien complet attendu (https://…).";
   return e;
 }
@@ -52,6 +51,8 @@ function Form({ initial }: { initial: Programmes }) {
   const [v, setV] = useState<LoyaltyFormValues>(() => toLoyaltyForm(initial));
   const [errors, setErrors] = useState<Errors>({});
   const save = useSaveLoyalty();
+  // délai de retour des réglages boutique : les points gagnés restent en attente jusque-là
+  const { returnDays } = useSiteSettings();
   const set = <K extends keyof LoyaltyFormValues>(k: K, value: LoyaltyFormValues[K]) => {
     setV((x) => ({ ...x, [k]: value }));
     setErrors((e) => ({ ...e, [k]: undefined }));
@@ -97,19 +98,14 @@ function Form({ initial }: { initial: Programmes }) {
         </div>
       </SettingsSection>
 
-      <SettingsSection title="Cagnotte" hint="Un pourcentage des produits payés (hors livraison) crédité après la livraison, disponible une fois le délai de retour passé. Jamais versé en espèces.">
-        <ProgrammeSwitch label="Programme actif" on={v.cashbackEnabled} onChange={(x) => set("cashbackEnabled", x)}>
-          {v.cashbackEnabled ? `L'accueil affiche « ${v.cashbackPercent || "…"} % remboursés dans votre cagnotte ».` : "Désactivé : aucun bloc cagnotte sur l'accueil."}
+      <SettingsSection title="Points de fidélité" hint={`Chaque client gagne un pourcentage de ce qu'il paie pour les produits (hors livraison), 1 point = 1 $. Les points restent en attente jusqu'à la fin du délai de retour (${pointsReleaseDelay(returnDays)}), puis le client en utilise autant qu'il veut. Jamais versés en espèces.`}>
+        <ProgrammeSwitch label="Points de fidélité actifs" on={v.pointsEnabled} onChange={(x) => set("pointsEnabled", x)}>
+          {v.pointsEnabled ? `L'accueil affiche « ${v.pointsPercent || "…"} % de vos achats en points de fidélité ».` : "Désactivé : aucun point gagné ni bloc points sur l'accueil."}
         </ProgrammeSwitch>
         <div className="grid gap-4 sm:grid-cols-2">
-          <Input label="Taux (%)" type="number" inputMode="decimal" min="0.01" max="50" step="0.01" hint="Du montant des produits, après coupons et offres." {...field("cashbackPercent")} />
-          <Input label="Part maximale d'une commande (%)" type="number" inputMode="numeric" min="1" max="100" hint="Ce que la cagnotte peut payer au plus." {...field("cashbackMaxShare")} />
-          <Input label="Solde minimum pour l'utiliser ($)" type="number" inputMode="decimal" min="0" step="0.01" {...field("cashbackMinBalance")} />
-          <Input label="Validité (mois)" type="number" inputMode="numeric" min="1" max="60" hint="Après chaque crédit." {...field("cashbackValidityMonths")} />
+          <Input label="Points gagnés (%)" type="number" inputMode="decimal" min="0.01" max="50" step="0.01" hint="De ce que le client paie pour les produits, après coupons, offres et points utilisés." {...field("pointsPercent")} />
+          <Input label="Validité (mois sans achat)" type="number" inputMode="numeric" min="1" max="60" hint="Tout le solde reste valable tant que le client achète au moins une fois dans ce délai." {...field("pointsValidityMonths")} />
         </div>
-        <ProgrammeSwitch label="Réservée aux membres Plus" on={v.cashbackMembersOnly} onChange={(x) => set("cashbackMembersOnly", x)}>
-          {v.cashbackMembersOnly ? "Seuls les membres Celebobo Plus gagnent et utilisent la cagnotte." : "Tous les clients gagnent et utilisent la cagnotte."}
-        </ProgrammeSwitch>
       </SettingsSection>
 
       <SettingsSection title="Application mobile" hint={apps.length ? `L'accueil affiche le bloc « Téléchargez notre app » avec ${apps.join(" et ")}.` : "Sans lien, le bloc « Téléchargez notre app » n'apparaît pas."}>
@@ -133,7 +129,7 @@ function Content() {
   const { data, isLoading, isError, error, refetch } = useLoyaltySettings();
   return (
     <>
-      <PageHeader title="Programmes de fidélité" description="Celebobo Plus, cagnotte et application : chaque règle se règle ici, chaque programme reste invisible tant qu'il n'est pas activé." />
+      <PageHeader title="Programmes de fidélité" description="Celebobo Plus, points de fidélité et application : chaque règle se règle ici, chaque programme reste invisible tant qu'il n'est pas activé." />
       {isLoading ? (
         <div role="status" aria-busy="true" className="grid gap-3">
           <span className="sr-only">Chargement des programmes…</span>

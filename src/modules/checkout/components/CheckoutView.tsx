@@ -23,7 +23,7 @@ import { useAuth } from "@/modules/auth/hooks/useAuth";
 import { displayName } from "@/modules/auth/types";
 import { CartSummary } from "@/modules/cart/components/CartSummary";
 import { CouponForm } from "@/modules/cart/components/CouponForm";
-import { CashbackToggle } from "./CashbackToggle";
+import { pointsKeys } from "@/modules/points/hooks/usePoints";
 import { cartKeys, useCart } from "@/modules/cart/hooks/useCart";
 import { cartTotal, cartSavings, cartCount } from "@/modules/cart/store/cart.store";
 import { unitPrice } from "@/modules/cart/types";
@@ -34,6 +34,7 @@ import { CHECKOUT_STEPS, type CheckoutForm } from "../types";
 import { AddressPicker } from "./AddressPicker";
 import { CheckoutStepper } from "./CheckoutStepper";
 import { OrderSuccess } from "./OrderSuccess";
+import { PointsAmountInput, parsePoints } from "./PointsAmountInput";
 import { PaymentMethodCards } from "./PaymentMethodCards";
 import { CartLayoutSkeleton } from "@/shared/ui/PageSkeletons";
 
@@ -82,10 +83,15 @@ function Content() {
   const items = useMemo(() => cartItems.filter((i) => i.available !== false), [cartItems]);
   const lines = useMemo(() => items.map((i) => ({ productId: i.productId, variantId: i.variantId ?? null, quantity: i.quantity })), [items]);
   const couponCode = cartQuote?.couponCode ?? null;
-  // cagnotte : proposée quand le devis en renvoie une utilisable, appliquée par l'API (devis et commande)
-  const [useCashback, setUseCashback] = useState(false);
-  const { data: quote, refetch: refetchQuote } = useCheckoutQuote(lines, form.city, couponCode, useCashback, form.pickup);
-  const cashbackAvailable = quote?.cashbackAvailable ?? 0;
+  // points de fidélité : le client choisit combien en utiliser, jusqu'aux points utilisables renvoyés par le devis
+  // (solde plafonné au prix des produits) ; le devis est recalculé après la saisie, l'API applique le montant
+  const [pointsInput, setPointsInput] = useState("");
+  const [pointsAvailable, setPointsAvailable] = useState(0);
+  const pointsWanted = Math.min(parsePoints(pointsInput), pointsAvailable);
+  const { data: quote, refetch: refetchQuote, isFetching: quoteFetching, pointsSettling } = useCheckoutQuote(lines, form.city, couponCode, pointsWanted, form.pickup);
+  const quotedAvailable = quote?.pointsAvailable ?? 0;
+  if (quote && quotedAvailable !== pointsAvailable) setPointsAvailable(quotedAvailable);
+  const pointsField = pointsAvailable > 0 ? <PointsAmountInput available={pointsAvailable} value={pointsInput} onChange={(v) => { setPointsInput(v); setSubmitError(null); }} /> : undefined;
   const count = cartCount(items);
   const total = cartTotal(items);
   const savings = cartSavings(items);
@@ -158,14 +164,14 @@ function Content() {
     const address = { recipient: form.recipient.trim(), phone: form.phone.trim(), line1: form.address.trim(), quarter: form.quarter.trim(), city: form.city.trim(), country: form.country.trim() };
     try {
       const res = await createOrder.mutateAsync({
-        input: { items: lines, paymentMethod: form.paymentMethod, couponCode, useCashback: useCashback && cashbackAvailable > 0, addressId: form.addressId, address: isNew ? address : null, note: form.note.trim(), pickup: form.pickup },
+        input: { items: lines, paymentMethod: form.paymentMethod, couponCode, points: quote?.points ?? 0, addressId: form.addressId, address: isNew ? address : null, note: form.note.trim(), pickup: form.pickup },
         idempotencyKey: idempotencyKey.current,
       });
       idempotencyKey.current = newKey();
       setDone({ order: res.order, conversationId: res.conversationId });
       // Le backend a vidé le panier du compte
       qc.invalidateQueries({ queryKey: cartKeys.all });
-      qc.invalidateQueries({ queryKey: ["cashback"] }); // solde de cagnotte entamé
+      qc.invalidateQueries({ queryKey: pointsKeys.all }); // solde de points entamé
       toast.success("Commande envoyée", `Commande ${res.order.number}`);
       // Nouvelle adresse à conserver dans le carnet (n'empêche pas la commande en cas d'échec)
       if (isNew && form.saveToBook) {
@@ -175,10 +181,13 @@ function Content() {
         );
       }
     } catch (e) {
-      // solde de cagnotte changé entre le devis et la commande : nouveau devis, le client vérifie le total
-      if (e instanceof ApiError && e.code === "cashback_unavailable") {
-        await refetchQuote();
-        setSubmitError("Votre cagnotte a changé depuis le calcul du total. Vérifiez le nouveau montant puis confirmez.");
+      // solde de points changé entre le devis et la commande : nouveau devis (points utilisables à jour), le client vérifie le montant
+      if (e instanceof ApiError && e.code === "points_unavailable") {
+        qc.invalidateQueries({ queryKey: pointsKeys.all });
+        const { data: fresh } = await refetchQuote();
+        const usable = fresh?.pointsAvailable ?? 0;
+        if (parsePoints(pointsInput) > usable) setPointsInput(usable > 0 ? String(usable) : "");
+        setSubmitError(getErrorMessage(e, "Votre solde de points a changé. Vérifiez le montant puis confirmez."));
         return;
       }
       setSubmitError(generalError(e) ?? getErrorMessage(e));
@@ -300,7 +309,7 @@ function Content() {
               {step < CHECKOUT_STEPS.length - 1 ? (
                 <Button onClick={next} rightIcon={<ArrowRight size={16} />} className="max-lg:flex-1">Continuer</Button>
               ) : (
-                <Button onClick={submit} loading={pending} size="lg" leftIcon={<Send2 size={17} variant="Bold" />} className="max-lg:flex-1">Envoyer la commande</Button>
+                <Button onClick={submit} loading={pending} disabled={quoteFetching || pointsSettling} size="lg" leftIcon={<Send2 size={17} variant="Bold" />} className="max-lg:flex-1">Envoyer la commande</Button>
               )}
             </div>
           </div>
@@ -308,12 +317,12 @@ function Content() {
       </Reveal>
 
       <Reveal delay={0.1} direction="up" className="hidden min-w-0 lg:block">
-        <CartSummary title="Votre commande" subtotal={total} savings={savings} count={count} quote={quote} coupon={<CouponForm quote={cartQuote} />} cashback={cashbackAvailable > 0 ? <CashbackToggle available={cashbackAvailable} checked={useCashback} onChange={setUseCashback} /> : undefined} />
+        <CartSummary title="Votre commande" subtotal={total} savings={savings} count={count} quote={quote} coupon={<CouponForm quote={cartQuote} />} points={pointsField} />
       </Reveal>
 
       <BottomSheet open={recap} onClose={() => setRecap(false)} title="Votre commande">
         <div className="-mx-5 pb-2">
-          <CartSummary title="Récapitulatif" subtotal={total} savings={savings} count={count} quote={quote} coupon={<CouponForm quote={cartQuote} />} cashback={cashbackAvailable > 0 ? <CashbackToggle available={cashbackAvailable} checked={useCashback} onChange={setUseCashback} /> : undefined} />
+          <CartSummary title="Récapitulatif" subtotal={total} savings={savings} count={count} quote={quote} coupon={<CouponForm quote={cartQuote} />} points={pointsField} />
         </div>
       </BottomSheet>
     </div>

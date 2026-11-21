@@ -33,15 +33,15 @@ export interface SiteSettings {
 export interface Programmes {
   /** Celebobo Plus : livraison offerte sans minimum dans les zones membres */
   membership: { enabled: boolean; monthlyPrice: number; yearlyPrice: number; trialDays: number; reminderDays: number };
-  /** Cagnotte : `percent` du montant des produits, utilisable jusqu'à `maxShare` % d'une commande dès `minBalance` */
-  cashback: { enabled: boolean; percent: number; maxShare: number; minBalance: number; validityMonths: number; /** réservée aux membres Plus */ membersOnly: boolean };
+  /** Points de fidélité : `percent` de ce que chaque client paie pour les produits (1 point = 1 $), valables tant qu'il achète au moins une fois tous les `validityMonths` mois */
+  points: { enabled: boolean; percent: number; validityMonths: number };
   /** liens des applications (vides = pas de bloc) */
   appLinks: { appStore: string; playStore: string };
 }
 
 export const NO_PROGRAMMES: Programmes = {
   membership: { enabled: false, monthlyPrice: 0, yearlyPrice: 0, trialDays: 0, reminderDays: 0 },
-  cashback: { enabled: false, percent: 0, maxShare: 0, minBalance: 0, validityMonths: 0, membersOnly: true },
+  points: { enabled: false, percent: 0, validityMonths: 0 },
   appLinks: { appStore: "", playStore: "" },
 };
 
