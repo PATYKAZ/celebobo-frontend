@@ -6,6 +6,9 @@
  *  - `priceSolde` : prix soldé (si défini et < price) => affiché en rouge, `price` barré
  *  - `soldePercent` : % de remise calculé côté backend (Product.save)
  */
+/** Origine d'un produit : vendu par Celebobo dans les deux cas, seul le calcul des commissions change. */
+export type ProductOrigin = "celebobo" | "partner";
+
 export interface Product {
   id: number;
   /** Identifiant d'URL (`/produits/{slug}`), utilisé par l'API pour la fiche produit. */
@@ -19,6 +22,10 @@ export interface Product {
   soldePercent: number | null;
   /** Prix d'achat — jamais exposé aux clients, uniquement aux endpoints /admin/. */
   pricePrimary?: number | null;
+  /** Origine (Celebobo / partenaire) — uniquement pour les rôles qui ont `products.origin` (absent sinon). */
+  origin?: ProductOrigin | null;
+  /** Gain Celebobo par unité sur un produit partenaire ($), même visibilité que `origin`. */
+  partnerGain?: number | null;
   /** Code du badge côté API (admin) */
   badgeCode?: "new" | "best_seller" | null;
   category: string;

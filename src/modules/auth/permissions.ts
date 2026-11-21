@@ -28,6 +28,7 @@ export type Permission =
   | "exports.sales"
   | "products.view"
   | "products.manage"
+  | "products.origin"
   | "imports.products"
   | "stock.adjust"
   | "categories.manage"

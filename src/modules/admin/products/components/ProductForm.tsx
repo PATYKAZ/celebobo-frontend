@@ -14,10 +14,11 @@ import { Input, Select, Switch, Textarea } from "@/shared/ui/Form";
 import { toast } from "@/shared/ui/Toast";
 import { useFlatCategories } from "@/modules/categories/hooks/useCategories";
 import { categoryOptionLabel } from "@/modules/categories/services/categories.mapper";
-import type { Product } from "@/modules/products/types";
+import type { Product, ProductOrigin } from "@/modules/products/types";
+import { useCan } from "@/modules/auth";
 import { useSaveProduct } from "../hooks/useAdminProducts";
 import {
-  BADGE_OPTIONS, countSentences, DESCRIPTION_MAX, DESCRIPTION_MIN, EMPTY_FORM, parseCare, productToForm, SEO_LIMITS, validateProductForm,
+  BADGE_OPTIONS, ORIGIN_OPTIONS, countSentences, DESCRIPTION_MAX, DESCRIPTION_MIN, EMPTY_FORM, parseCare, productToForm, SEO_LIMITS, validateProductForm,
   type FormErrors, type ImageSlotValue, type ProductBadgeCode, type ProductFormValues,
 } from "../types";
 import { ImageSlot } from "./ImageSlot";
@@ -50,6 +51,7 @@ export function ProductForm({ product }: Props) {
   const router = useAppRouter();
   const { data: categories } = useFlatCategories();
   const save = useSaveProduct(product ?? null);
+  const withOrigin = useCan("products.origin");
 
   const [v, setV] = useState<ProductFormValues>(() => (product ? productToForm(product) : EMPTY_FORM));
   const [images, setImages] = useState<ImageSlotValue[]>(() => Array.from({ length: 4 }, (_, i) => ({ url: product?.images[i] ?? null })));
@@ -84,7 +86,7 @@ export function ProductForm({ product }: Props) {
   };
 
   const submit = () => {
-    const errs = validateProductForm(v, !!images[0].url, !product);
+    const errs = validateProductForm(v, !!images[0].url, !product, withOrigin);
     setErrors(errs);
     if (Object.keys(errs).length) {
       toast.error("Formulaire incomplet", "Corrigez les champs signalés.");
@@ -92,7 +94,7 @@ export function ProductForm({ product }: Props) {
       return;
     }
     save.mutate(
-      { values: v, images },
+      { values: v, images, withOrigin },
       {
         onSuccess: () => {
           toast.success(product ? "Produit mis à jour" : "Produit créé", v.name);
@@ -100,7 +102,7 @@ export function ProductForm({ product }: Props) {
         },
         onError: (e) => {
           if (e instanceof ApiError && e.status === 400) {
-            const map: Record<string, keyof ProductFormValues | "image"> = { categoryFk: "categoryId", longDescription: "longDescription", pricePrimary: "pricePrimary", priceSolde: "priceSolde", dateWish: "dateWish", stockThreshold: "stockThreshold" };
+            const map: Record<string, keyof ProductFormValues | "image"> = { categoryFk: "categoryId", longDescription: "longDescription", pricePrimary: "pricePrimary", priceSolde: "priceSolde", partnerGain: "partnerGain", dateWish: "dateWish", stockThreshold: "stockThreshold" };
             const next: FormErrors = {};
             for (const [k, msg] of Object.entries(e.fieldErrors)) {
               const key = (map[k] ?? k) as keyof FormErrors;
@@ -155,6 +157,17 @@ export function ProductForm({ product }: Props) {
           <div className="col-span-2 rounded-box bg-page/60 p-3.5 sm:col-span-1 sm:p-4"><p className="text-[12px] text-ink-3">Marge</p><p className={cn("text-[18px] font-bold sm:text-[20px]", calc.margin < 0 ? "text-danger" : "text-primary-dark")}>{v.pricePrimary ? `${formatPrice(calc.margin)}${calc.marginPct != null ? ` · ${calc.marginPct.toFixed(0)}%` : ""}` : "—"}</p></div>
         </div>
       </Section>
+
+      {withOrigin && (
+        <Section title="Origine" hint="Un produit partenaire est vendu par Celebobo comme les autres ; seule la commission des revendeurs change. Jamais visible des revendeurs ni des clients." delay={0.03}>
+          <div className="grid gap-5 sm:grid-cols-2">
+            <Select label="Origine" value={v.origin} onChange={(e) => { set("origin", e.target.value as ProductOrigin); setErrors((x) => ({ ...x, partnerGain: undefined })); }} options={ORIGIN_OPTIONS} />
+            {v.origin === "partner" && (
+              <Input label="Gain Celebobo par unité ($)" required type="number" inputMode="decimal" min="0.01" step="0.01" value={v.partnerGain} onChange={(e) => set("partnerGain", e.target.value)} error={errors.partnerGain} hint="Ce que Celebobo gagne sur chaque unité vendue : sert au calcul des commissions." />
+            )}
+          </div>
+        </Section>
+      )}
 
       <Section title="Catégorie & badge" delay={0.03}>
         <div className="grid gap-5 sm:grid-cols-2">

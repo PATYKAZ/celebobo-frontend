@@ -1,4 +1,4 @@
-import type { Product, ProductVariant, VariantOption } from "@/modules/products/types";
+import type { Product, ProductOrigin, ProductVariant, VariantOption } from "@/modules/products/types";
 import type { Paginated, SentUpload } from "@/shared/lib/api";
 
 export type ProductStatusFilter = "active" | "trash";
@@ -24,6 +24,11 @@ export const BADGE_OPTIONS: { value: ProductBadgeCode | ""; label: string }[] = 
   { value: "", label: "Aucun" },
   { value: "new", label: "Nouveauté" },
   { value: "best_seller", label: "Best-seller" },
+];
+
+export const ORIGIN_OPTIONS: { value: ProductOrigin; label: string }[] = [
+  { value: "celebobo", label: "Celebobo" },
+  { value: "partner", label: "Partenaire" },
 ];
 
 export interface AdminProductStats {
@@ -73,6 +78,9 @@ export interface ProductFormValues {
   price: string;
   pricePrimary: string;
   priceSolde: string;
+  /** Origine et gain Celebobo par unité (rôles avec `products.origin` uniquement) */
+  origin: ProductOrigin;
+  partnerGain: string;
   categoryId: string;
   badge: ProductBadgeCode | "";
   features: string[];
@@ -110,6 +118,8 @@ export const EMPTY_FORM: ProductFormValues = {
   price: "",
   pricePrimary: "",
   priceSolde: "",
+  origin: "celebobo",
+  partnerGain: "",
   categoryId: "",
   badge: "",
   features: [],
@@ -151,6 +161,8 @@ export function productToForm(p: Product): ProductFormValues {
     price: String(p.price),
     pricePrimary: p.pricePrimary != null ? String(p.pricePrimary) : "",
     priceSolde: p.priceSolde != null ? String(p.priceSolde) : "",
+    origin: p.origin ?? "celebobo",
+    partnerGain: p.partnerGain != null ? String(p.partnerGain) : "",
     categoryId: p.categoryId != null ? String(p.categoryId) : "",
     badge: p.badgeCode ?? "",
     features: [...p.features],
@@ -172,7 +184,7 @@ export function productToForm(p: Product): ProductFormValues {
 
 export type FormErrors = Partial<Record<keyof ProductFormValues | "image", string>>;
 
-export function validateProductForm(v: ProductFormValues, hasImage: boolean, isNew: boolean): FormErrors {
+export function validateProductForm(v: ProductFormValues, hasImage: boolean, isNew: boolean, withOrigin = false): FormErrors {
   const e: FormErrors = {};
   if (!v.name.trim()) e.name = "Le nom est requis.";
   const d = v.description.trim();
@@ -185,6 +197,7 @@ export function validateProductForm(v: ProductFormValues, hasImage: boolean, isN
   if (!v.price || Number.isNaN(price) || price <= 0) e.price = "Prix invalide.";
   if (v.priceSolde && (Number(v.priceSolde) <= 0 || Number(v.priceSolde) >= price)) e.priceSolde = "Le prix soldé doit être inférieur au prix normal.";
   if (v.pricePrimary && Number(v.pricePrimary) < 0) e.pricePrimary = "Prix d'achat invalide.";
+  if (withOrigin && v.origin === "partner" && !(Number(v.partnerGain) > 0)) e.partnerGain = "Indiquez le gain de Celebobo par unité, supérieur à 0.";
   if (!v.categoryId) e.categoryId = "Choisissez une catégorie.";
   if (isNew && !hasImage) e.image = "Ajoutez au moins l'image principale.";
   if (!v.variants.length && (v.stock === "" || Number(v.stock) < 0 || !Number.isInteger(Number(v.stock)))) e.stock = "Stock invalide (entier ≥ 0).";
