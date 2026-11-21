@@ -60,8 +60,9 @@ export interface OrderDto extends OrderSummaryDto {
   subtotal: string;
   discount: string;
   couponCode: string;
-  cashback?: string;
-  cashbackEarned?: string | null;
+  /** points de fidélité utilisés (1 point = 1 $) et points gagnés une fois livrée */
+  points?: string;
+  pointsEarned?: string | null;
   shippingZone: string;
   shippingFee: string;
   deliveryMethod?: "delivery" | "pickup";
@@ -165,8 +166,8 @@ export function toOrder(dto: OrderSummaryDto | OrderDto): Order {
     subtotal: detail ? money(detail.subtotal) : undefined,
     discount: detail ? money(detail.discount) : undefined,
     couponCode: detail?.couponCode || null,
-    cashback: detail ? money(detail.cashback) : undefined,
-    cashbackEarned: detail?.cashbackEarned == null ? null : money(detail.cashbackEarned),
+    points: detail ? money(detail.points) : undefined,
+    pointsEarned: detail?.pointsEarned == null ? null : money(detail.pointsEarned),
     shippingFee: detail ? money(detail.shippingFee) : undefined,
     shippingZone: detail?.shippingZone || null,
     pickup: detail?.deliveryMethod === "pickup",

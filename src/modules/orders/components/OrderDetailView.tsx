@@ -10,6 +10,7 @@ import { Reveal } from "@/shared/animations/Reveal";
 import { useRealtime } from "@/shared/hooks/useRealtime";
 import { Breadcrumb } from "@/shared/layout/Breadcrumb";
 import { formatDateTime, formatPrice, pluralize } from "@/shared/lib/format";
+import { formatPointsEarned } from "@/modules/points/types";
 import { getErrorMessage } from "@/shared/lib/api";
 import { channels, type UserEvent } from "@/shared/lib/realtime";
 import { Block } from "@/shared/ui/Block";
@@ -203,7 +204,7 @@ export function OrderDetailView({ number }: { number: string }) {
             <dl className="mt-2 space-y-2 border-t border-line-3 pt-4 text-[14px]">
               {order.subtotal != null && <div className="flex justify-between"><dt className="text-ink-2">Sous-total</dt><dd className="font-semibold">{formatPrice(order.subtotal)}</dd></div>}
               {!!order.discount && <div className="flex justify-between"><dt className="text-ink-2">Code promo{order.couponCode ? ` (${order.couponCode})` : ""}</dt><dd className="font-semibold text-danger">-{formatPrice(order.discount)}</dd></div>}
-              {!!order.cashback && <div className="flex justify-between"><dt className="text-ink-2">Cagnotte</dt><dd className="font-semibold text-danger">-{formatPrice(order.cashback)}</dd></div>}
+              {!!order.points && <div className="flex justify-between"><dt className="text-ink-2">Points de fidélité utilisés</dt><dd className="font-semibold text-danger">-{formatPrice(order.points)}</dd></div>}
               {order.shippingFee != null && (
                 <div className="flex justify-between gap-3">
                   <dt className="text-ink-2">{order.pickup ? "Retrait sur place" : `Livraison${order.shippingZone ? ` · ${order.shippingZone}` : ""}`}</dt>
@@ -217,7 +218,7 @@ export function OrderDetailView({ number }: { number: string }) {
                 <dt className="text-[14px] font-semibold text-ink-2">Total</dt>
                 <dd className="text-[22px] font-bold text-primary sm:text-[24px]">{formatPrice(order.totalPrice)}</dd>
               </div>
-              {!!order.cashbackEarned && <p className="text-right text-[13px] font-semibold text-primary">+{formatPrice(order.cashbackEarned)} de cagnotte</p>}
+              {!!order.pointsEarned && <p className="text-right text-[13px] font-semibold text-primary">+{formatPointsEarned(order.pointsEarned)}</p>}
             </dl>
           </Block>
         </Reveal>

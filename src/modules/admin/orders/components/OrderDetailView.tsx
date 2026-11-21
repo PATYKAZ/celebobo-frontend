@@ -7,6 +7,7 @@ import { useState, type ReactNode } from "react";
 import { ArrowLeft2, Call, Convert, Location, MessageText1, Note, Sms, Truck, User, Wallet3 } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import { formatDateTime, formatPrice, formatRelative } from "@/shared/lib/format";
+import { formatPointsEarned } from "@/modules/points/types";
 import { Reveal } from "@/shared/animations/Reveal";
 import { Block } from "@/shared/ui/Block";
 import { Button } from "@/shared/ui/Button";
@@ -114,10 +115,10 @@ function Content({ id }: { id: number }) {
                   <span className="text-[13px] text-ink-2">Total de la commande</span>
                   <span className="text-[18px] font-bold text-primary">{formatPrice(order.totalPrice)}</span>
                 </li>
-                {(!!order.cashback || !!order.cashbackEarned) && (
+                {(!!order.points || !!order.pointsEarned) && (
                   <li className="px-4 pb-3.5 text-right text-[12px] text-ink-2">
-                    {!!order.cashback && <span className="block">dont cagnotte utilisée : <b className="text-danger">-{formatPrice(order.cashback)}</b></span>}
-                    {!!order.cashbackEarned && <span className="block font-semibold text-primary">+{formatPrice(order.cashbackEarned)} de cagnotte gagnés</span>}
+                    {!!order.points && <span className="block">dont points de fidélité utilisés : <b className="text-danger">-{formatPrice(order.points)}</b></span>}
+                    {!!order.pointsEarned && <span className="block font-semibold text-primary">+{formatPointsEarned(order.pointsEarned)}</span>}
                   </li>
                 )}
               </ul>
@@ -150,19 +151,19 @@ function Content({ id }: { id: number }) {
                     ))}
                   </tbody>
                   <tfoot>
-                    {!!order.cashback && (
+                    {!!order.points && (
                       <tr>
-                        <td colSpan={3} className="px-5 pt-4 text-right text-[13px] text-ink-2 sm:px-6">Cagnotte utilisée</td>
-                        <td className="px-5 pt-4 text-right font-semibold text-danger sm:px-6">-{formatPrice(order.cashback)}</td>
+                        <td colSpan={3} className="px-5 pt-4 text-right text-[13px] text-ink-2 sm:px-6">Points de fidélité utilisés</td>
+                        <td className="px-5 pt-4 text-right font-semibold text-danger sm:px-6">-{formatPrice(order.points)}</td>
                       </tr>
                     )}
                     <tr>
                       <td colSpan={3} className="px-5 py-4 text-right text-[13px] text-ink-2 sm:px-6">Total de la commande</td>
                       <td className="px-5 py-4 text-right text-[18px] font-bold text-primary sm:px-6">{formatPrice(order.totalPrice)}</td>
                     </tr>
-                    {!!order.cashbackEarned && (
+                    {!!order.pointsEarned && (
                       <tr>
-                        <td colSpan={4} className="px-5 pb-4 text-right text-[13px] font-semibold text-primary sm:px-6">+{formatPrice(order.cashbackEarned)} de cagnotte gagnés à la livraison</td>
+                        <td colSpan={4} className="px-5 pb-4 text-right text-[13px] font-semibold text-primary sm:px-6">+{formatPointsEarned(order.pointsEarned)} à la livraison</td>
                       </tr>
                     )}
                   </tfoot>

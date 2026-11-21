@@ -4,15 +4,13 @@ import Image from "next/image";
 import { Apple, GooglePlay, WalletMoney } from "@/shared/ui/icons";
 import { Float } from "@/shared/animations/MotionImage";
 import { Reveal } from "@/shared/animations/Reveal";
-import { useFormatPrice } from "@/shared/currency/CurrencyProvider";
 import { cn } from "@/shared/lib/cn";
 import { useSiteSettings, type Programmes } from "@/modules/site";
 
 const pct = (n: number) => `${n.toLocaleString("fr-FR", { maximumFractionDigits: 2 })} %`;
 
-/** Cagnotte : taux, seuil d'utilisation, part maximale d'une commande et durée de validité, tels que réglés dans l'admin. */
-function CashbackBanner({ cashback }: { cashback: Programmes["cashback"] }) {
-  const formatPrice = useFormatPrice();
+/** Points de fidélité : taux et durée de validité, tels que réglés dans l'admin. */
+function PointsBanner({ points }: { points: Programmes["points"] }) {
   return (
     <Reveal className="h-full">
       <div className="group relative flex h-full min-h-[180px] items-center overflow-hidden rounded-box bg-ink-dark">
@@ -21,12 +19,12 @@ function CashbackBanner({ cashback }: { cashback: Programmes["cashback"] }) {
         <div className="relative ml-auto w-full max-w-[340px] px-6 py-8 sm:mr-12 sm:px-0">
           <Float slow>
             <p className="flex items-center gap-2 text-[34px] font-bold leading-[42px] text-sun sm:text-[40px] sm:leading-[48px]">
-              <WalletMoney size={34} variant="Bold" aria-hidden /> {pct(cashback.percent)}
+              <WalletMoney size={34} variant="Bold" aria-hidden /> {pct(points.percent)}
             </p>
           </Float>
-          <p className="mt-1 text-[15px] font-semibold text-white">remboursés dans votre cagnotte{cashback.membersOnly ? " Plus" : ""}</p>
+          <p className="mt-1 text-[15px] font-semibold text-white">de vos achats en points de fidélité</p>
           <p className="mt-2 text-[13px] leading-[19px] text-white/85">
-            {cashback.membersOnly ? "Pour les membres Celebobo Plus, sur" : "Sur"} chaque commande livrée. À utiliser dès {formatPrice(cashback.minBalance)} sur vos prochains achats, jusqu’à {cashback.maxShare} % d’une commande. Valable {cashback.validityMonths} mois.
+            Sur chaque commande livrée, 1 point = 1 $. Utilisez-en autant que vous voulez sur vos prochains achats. Valables tant que vous achetez au moins une fois tous les {points.validityMonths} mois.
           </p>
         </div>
       </div>
@@ -68,15 +66,15 @@ function AppBanner({ links }: { links: Programmes["appLinks"] }) {
   );
 }
 
-/** Cagnotte et application : chaque bloc n'apparaît que si le programme est activé (ou un lien de store renseigné). */
+/** Points de fidélité et application : chaque bloc n'apparaît que si le programme est activé (ou un lien de store renseigné). */
 export function ProgrammesRow() {
   const { programmes } = useSiteSettings();
-  const cashback = programmes.cashback.enabled;
+  const points = programmes.points.enabled;
   const app = !!(programmes.appLinks.appStore || programmes.appLinks.playStore);
-  if (!cashback && !app) return null;
+  if (!points && !app) return null;
   return (
-    <section className={cn("grid grid-cols-[minmax(0,1fr)] gap-3 sm:gap-4", cashback && app && "lg:grid-cols-2")}>
-      {cashback && <CashbackBanner cashback={programmes.cashback} />}
+    <section className={cn("grid grid-cols-[minmax(0,1fr)] gap-3 sm:gap-4", points && app && "lg:grid-cols-2")}>
+      {points && <PointsBanner points={programmes.points} />}
       {app && <AppBanner links={programmes.appLinks} />}
     </section>
   );

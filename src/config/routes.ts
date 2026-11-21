@@ -31,6 +31,7 @@ export const ROUTES = {
   addresses: "/compte/adresses",
   settings: "/compte/parametres",
   membership: "/compte/abonnement",
+  points: "/compte/points",
 
   admin: {
     root: "/admin",
