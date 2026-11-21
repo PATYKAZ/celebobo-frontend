@@ -14,6 +14,7 @@ import { AuthGuard } from "@/modules/auth/components/AuthGuard";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
 import { PointsCard } from "@/modules/points/components/PointsCard";
 import { usePointsBalance } from "@/modules/points/hooks/usePoints";
+import { holdsPoints } from "@/modules/points/types";
 import { useProfile } from "../hooks/useAccount";
 import { useAddresses } from "../hooks/useAddressBook";
 import { addressIcon } from "./AddressBookView";
@@ -61,7 +62,7 @@ function Content() {
   }, [file]);
 
   // « Mes points » : client qui peut utiliser ses points (programme actif ou en cours de fermeture)
-  const { data: pointsBalance } = usePointsBalance(user?.role === "client");
+  const { data: pointsBalance } = usePointsBalance(holdsPoints(user?.role));
   const pointsOpen = !!pointsBalance?.eligible;
   if (!user) return null;
   return (

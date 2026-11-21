@@ -12,6 +12,8 @@ export interface LoyaltyFormValues {
   pointsEnabled: boolean;
   pointsPercent: string;
   pointsValidityMonths: string;
+  referralPercent: string;
+  referralMonths: string;
   appStoreUrl: string;
   playStoreUrl: string;
 }
@@ -20,6 +22,8 @@ export const toLoyaltyForm = ({ points: p, appLinks: a }: Programmes): LoyaltyFo
   pointsEnabled: p.enabled,
   pointsPercent: String(p.percent),
   pointsValidityMonths: String(p.validityMonths),
+  referralPercent: String(p.referralPercent),
+  referralMonths: String(p.referralMonths),
   appStoreUrl: a.appStore,
   playStoreUrl: a.playStore,
 });
@@ -31,6 +35,8 @@ const toPayload = (v: LoyaltyFormValues) => ({
   pointsEnabled: v.pointsEnabled,
   pointsPercent: dec(v.pointsPercent),
   pointsValidityMonths: Number(v.pointsValidityMonths),
+  referralPercent: dec(v.referralPercent),
+  referralMonths: Number(v.referralMonths),
   appStoreUrl: v.appStoreUrl.trim(),
   playStoreUrl: v.playStoreUrl.trim(),
 });

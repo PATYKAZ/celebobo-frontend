@@ -1,5 +1,5 @@
 /** Mouvements du compte de points (EntryKind de l'API). */
-export type PointsMovementKind = "earn" | "spend" | "refund" | "reversal" | "expiry";
+export type PointsMovementKind = "earn" | "spend" | "refund" | "reversal" | "expiry" | "referral" | "referral_reversal";
 
 export interface PointsMovement {
   kind: PointsMovementKind;
@@ -7,7 +7,7 @@ export interface PointsMovement {
   amount: number;
   at: string;
   orderNumber: string | null;
-  /** points gagnés encore en attente de la fin du délai de retour */
+  /** points gagnés (ou de parrainage) encore en attente de la fin du délai de retour */
   pending: boolean;
 }
 
@@ -32,6 +32,8 @@ export const POINTS_MOVEMENT_LABELS: Record<PointsMovementKind, string> = {
   refund: "Points restitués",
   reversal: "Points retirés (retour)",
   expiry: "Points expirés",
+  referral: "Points de parrainage",
+  referral_reversal: "Parrainage retiré (retour)",
 };
 
 export const pointsMovementLabel = (kind: string) => POINTS_MOVEMENT_LABELS[kind as PointsMovementKind] ?? "Mouvement de points";
@@ -47,3 +49,6 @@ export const formatPointsEarned = (value: number) => `${formatPoints(value)} de 
 /** Quand les points gagnés deviennent utilisables : « 7 jours après la livraison », ou « dès la livraison » sans délai de retour. */
 export const pointsReleaseDelay = (returnDays: number) =>
   returnDays > 0 ? `${returnDays} jour${returnDays > 1 ? "s" : ""} après la livraison` : "dès la livraison";
+
+/** Les clients gagnent des points sur leurs achats, les revendeurs des points de parrainage. */
+export const holdsPoints = (role: string | undefined) => role === "client" || role === "revendeur";
