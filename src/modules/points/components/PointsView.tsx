@@ -14,6 +14,7 @@ import { EmptyState } from "@/shared/ui/EmptyState";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { AccountSkeleton } from "@/shared/ui/PageSkeletons";
 import { AuthGuard } from "@/modules/auth/components/AuthGuard";
+import { useAuth } from "@/modules/auth/hooks/useAuth";
 import { useSiteSettings } from "@/modules/site";
 import { usePointsBalance } from "../hooks/usePoints";
 import { formatPoints, pointsMovementLabel, pointsReleaseDelay, type PointsBalance } from "../types";
@@ -64,6 +65,7 @@ function History({ history }: { history: PointsBalance["history"] }) {
 
 function Content() {
   const { programmes: { points }, returnDays } = useSiteSettings();
+  const { isReseller } = useAuth();
   const { data, isLoading, isError, refetch } = usePointsBalance();
   // délai réglé dans l'admin (12 mois par défaut, le temps que les réglages arrivent)
   const months = points.validityMonths || 12;
@@ -73,7 +75,7 @@ function Content() {
       <Block pad="none" className="p-4 sm:p-[30px]">
         <h1 className="text-[22px] leading-[28px] text-primary sm:text-h-page">Mes points</h1>
         <p className="mt-1 text-[13px] leading-[19px] text-ink-2 sm:text-[14px]">
-          {data?.closesAt ? "Utilisez vos points au paiement : vous choisissez combien en utiliser (1 point = 1 $)." : <>À chaque commande livrée, vous gagnez {points.percent ? `${points.percent.toLocaleString("fr-FR")} %` : "un pourcentage"} de ce que vous payez pour vos articles en points de fidélité (1 point = 1 $). Au paiement, vous choisissez combien de points utiliser.</>}
+          {data?.closesAt ? "Utilisez vos points au paiement : vous choisissez combien en utiliser (1 point = 1 $)." : <>À chaque commande livrée, vous gagnez {points.percent ? `${points.percent.toLocaleString("fr-FR")} %` : "un pourcentage"} de ce que vous payez pour vos articles en points de fidélité (1 point = 1 $). Au paiement, vous choisissez combien de points utiliser.{isReseller && points.referralPercent ? ` Vous recevez aussi ${points.referralPercent.toLocaleString("fr-FR")} % des factures de vos clients invités pendant ${points.referralMonths} mois, payées sans points ni coupon.` : null}</>}
         </p>
 
         <div className="mt-4 sm:mt-6">

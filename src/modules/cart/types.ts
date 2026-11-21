@@ -37,8 +37,6 @@ export interface CartQuote {
   couponCode: string | null;
   /** Code promo enregistré mais devenu inapplicable (minimum non atteint, expiré…). */
   couponError: string | null;
-  /** Livraison offerte au titre de l'abonnement Celebobo Plus */
-  memberFreeShipping: boolean;
   /** Points de fidélité utilisables sur cette commande (0 : rien à proposer), 1 point = 1 $ */
   pointsAvailable: number;
   /** Points appliqués au total (montant choisi par le client, plafonné par l'API) */
@@ -70,7 +68,6 @@ export const EMPTY_QUOTE: CartQuote = {
   deliveryEstimate: null,
   couponCode: null,
   couponError: null,
-  memberFreeShipping: false,
   pointsAvailable: 0,
   points: 0,
   pickup: false,

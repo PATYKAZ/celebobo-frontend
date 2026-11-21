@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { Bag2, BagHappy, Call, Crown1, DocumentText, Heart, Home2, InfoCircle, Location, Login, Logout, Messages2, Notification, People, Profile, Receipt2, Setting2, Shop, TruckFast, UserAdd, WalletMoney } from "@/shared/ui/icons";
+import { Bag2, BagHappy, Call, DocumentText, Heart, Home2, InfoCircle, Location, Login, Logout, Messages2, Notification, People, Profile, Receipt2, Setting2, Shop, TruckFast, UserAdd, WalletMoney } from "@/shared/ui/icons";
 import { useMemo, useState } from "react";
 import { ROUTES } from "@/config/routes";
 import { MoreSheet, type MoreSection } from "@/shared/ui/MoreSheet";
@@ -14,6 +14,7 @@ import { useUnreadMessagesCount } from "@/modules/messaging/hooks/useConversatio
 import { useUnreadNotificationsCount } from "@/modules/messaging/hooks/useNotifications";
 import { supportHours, supportLabel, useSiteSettings } from "@/modules/site";
 import { usePointsBalance } from "@/modules/points/hooks/usePoints";
+import { holdsPoints } from "@/modules/points/types";
 import { CurrencySwitch } from "@/shared/currency/CurrencySwitch";
 import { ThemeSwitch } from "@/shared/theme/ThemeSwitch";
 
@@ -27,7 +28,7 @@ export function ShopTabBar() {
   const pathname = usePathname();
   const { user, isAuthenticated, isStaff } = useAuth();
   // « Mes points » : client qui peut utiliser ses points (programme actif ou en cours de fermeture)
-  const { data: pointsBalance } = usePointsBalance(isAuthenticated && user?.role === "client");
+  const { data: pointsBalance } = usePointsBalance(isAuthenticated && holdsPoints(user?.role));
   const pointsOpen = !!pointsBalance?.eligible;
   const { count } = useCart();
   const site = useSiteSettings();
@@ -70,7 +71,6 @@ export function ShopTabBar() {
               { label: "Messages", href: isStaff ? ROUTES.admin.inbox : ROUTES.messages, icon: Messages2, badge: msgs || undefined },
               ...(isAuthenticated && !isStaff ? [{ label: "Notifications", href: ROUTES.notifications, icon: Notification, badge: notifs || undefined }] : []),
               ...(pointsOpen ? [{ label: "Mes points", href: ROUTES.points, icon: WalletMoney }] : []),
-              ...(isAuthenticated && !isStaff && site.programmes.membership.enabled ? [{ label: "Celebobo Plus", href: ROUTES.membership, icon: Crown1 }] : []),
               { label: "Adresses", href: ROUTES.addresses, icon: Location },
               { label: "Paramètres", href: ROUTES.settings, icon: Setting2 },
               { label: "Suivi", href: ROUTES.track, icon: TruckFast },
@@ -98,7 +98,7 @@ export function ShopTabBar() {
         ],
       },
     ],
-    [categories, isStaff, msgs, notifs, user?.role, isAuthenticated, site.programmes.membership.enabled, pointsOpen],
+    [categories, isStaff, msgs, notifs, user?.role, isAuthenticated, pointsOpen],
   );
 
   return (

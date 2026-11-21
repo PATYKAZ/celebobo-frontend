@@ -7,13 +7,13 @@ import { formatDate } from "@/shared/lib/format";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
 import { useSiteSettings } from "@/modules/site";
 import { usePointsBalance } from "../hooks/usePoints";
-import { formatPoints } from "../types";
+import { formatPoints, holdsPoints } from "../types";
 
 /** « Mes points : x points » (et ce qui attend la fin du délai de retour), lien vers la page « Mes points » ; seulement pour un client qui peut utiliser ses points (programme actif ou en cours de fermeture). */
 export function PointsCard() {
   const { user } = useAuth();
   const { points } = useSiteSettings().programmes;
-  const { data } = usePointsBalance(user?.role === "client");
+  const { data } = usePointsBalance(holdsPoints(user?.role));
   if (!data?.eligible) return null;
   return (
     <Link href={ROUTES.points} className="group flex items-center gap-3 rounded-box bg-primary-50 p-4 transition-colors hover:bg-primary-100 active:scale-[0.99]">
