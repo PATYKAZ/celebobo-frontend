@@ -12,9 +12,19 @@ export interface CommissionRow {
   earned: number;
   /** Commission gagnée sur le mois en cours */
   earnedMonth: number;
+  /** En attente : pas encore 7 jours après la livraison (ou la vente) */
+  pending: number;
+  /** Validé (payable), net des annulations */
+  validated: number;
+  /** Frais de livraison reversés (commandes livrées par le revendeur) */
+  deliveryFees: number;
   paid: number;
-  /** earned − paid */
+  /** validé + frais de livraison − payé */
   due: number;
+  /** Prochaine date de paiement (1er ou 16 du mois), ISO yyyy-mm-dd */
+  nextPayoutDate: string;
+  /** Seuil de paiement (5 $) : en dessous, reporté au paiement suivant */
+  threshold: number;
   lastPaymentAt: string | null;
 }
 
@@ -30,13 +40,50 @@ export interface CommissionPayment {
   paidAt: string;
   note: string | null;
   paidByName: string;
+  statementId: number | null;
+  payoutDate: string | null;
 }
 
 export interface CommissionTotals {
   earned: number;
   earnedMonth: number;
+  pending: number;
+  validated: number;
+  deliveryFees: number;
   paid: number;
   due: number;
+}
+
+export type StatementStatus = "prepared" | "paid" | "cancelled";
+export type StatementLineKind = "commission" | "reversal" | "delivery_fee" | "delivery_fee_reversal";
+
+/** Relevé de paiement : préparé le 1er ou le 16 pour un solde payable ≥ 5 $, puis payé par un admin. */
+export interface PayoutStatement {
+  id: number;
+  resellerId: number;
+  resellerName: string;
+  /** ISO yyyy-mm-dd */
+  payoutDate: string;
+  status: StatementStatus;
+  commissions: number;
+  deliveryFees: number;
+  total: number;
+  preparedAt: string;
+  paidAt: string | null;
+}
+
+export interface StatementLine {
+  kind: StatementLineKind;
+  title: string;
+  saleId: number | null;
+  orderNumber: string | null;
+  baseAmount: number | null;
+  amount: number;
+  at: string;
+}
+
+export interface PayoutStatementDetail extends PayoutStatement {
+  lines: StatementLine[];
 }
 
 export interface CommissionsOverview {
@@ -52,10 +99,11 @@ export interface CommissionsOverview {
   monthly?: { labels: string[]; values: number[] };
   /** Revendeur : ses paiements */
   payments?: CommissionPayment[];
+  /** Revendeur : ses relevés de paiement */
+  statements?: PayoutStatement[];
 }
 
-export interface PayCommissionInput {
-  resellerId: number;
-  amount: number;
+export interface PayStatementInput {
+  statementId: number;
   note?: string;
 }

@@ -4,10 +4,21 @@ import { formatDate } from "@/shared/lib/format";
 import { money } from "@/modules/products/services/products.mapper";
 import { monthLabel } from "../../dashboard/lib/period";
 import type { ResellerDto } from "../../resellers/services/resellers.mapper";
-import type { CommissionPayment, CommissionsOverview, PayCommissionInput } from "../types";
-import { sumRows, toCommissionRow, toPayment, type CommissionSummaryDto, type MonthlyCommissionDto, type PayoutDto } from "./commissions.mapper";
+import type { CommissionPayment, CommissionsOverview, PayoutStatement, PayoutStatementDetail, PayStatementInput, StatementStatus } from "../types";
+import {
+  sumRows,
+  toCommissionRow,
+  toPayment,
+  toStatement,
+  toStatementDetail,
+  type CommissionSummaryDto,
+  type MonthlyCommissionDto,
+  type PayoutDto,
+  type StatementDetailDto,
+  type StatementDto,
+} from "./commissions.mapper";
 
-const { commissions, payouts, resellers } = ENDPOINTS.admin;
+const { commissions, payouts, payoutStatements, resellers } = ENDPOINTS.admin;
 
 const headings = () => ({
   asOfLabel: `Cumul au ${formatDate(new Date())}`,
@@ -15,6 +26,8 @@ const headings = () => ({
 });
 
 const payoutsOf = (resellerId?: number) => api.get<PageEnvelope<PayoutDto>>(payouts, { params: { resellerId, pageSize: 100 } });
+const statementsOf = (params: { resellerId?: number; status?: StatementStatus }) =>
+  api.get<PageEnvelope<StatementDto>>(payoutStatements.list, { params: { ...params, pageSize: 100 } });
 
 export const commissionsService = {
   /** Tous les revendeurs (`all`, responsable/admin) ou uniquement soi-même (`own`, revendeur). */
@@ -31,10 +44,11 @@ export const commissionsService = {
       const rows = summaries.map((s) => toCommissionRow(s, byId.get(s.reseller.id), last.get(s.reseller.id) ?? null)).sort((a, b) => b.due - a.due);
       return { scope, ...headings(), rows, totals: sumRows(rows) };
     }
-    const [summary, series, paid] = await Promise.all([
+    const [summary, series, paid, statements] = await Promise.all([
       api.get<CommissionSummaryDto>(commissions.summary),
       api.get<MonthlyCommissionDto[]>(commissions.series),
       payoutsOf(),
+      statementsOf({}),
     ]);
     const payments = paid.results.map(toPayment);
     const row = toCommissionRow(summary, undefined, payments[0]?.paidAt ?? null);
@@ -46,6 +60,7 @@ export const commissionsService = {
       totals: sumRows([row]),
       monthly: { labels: recent.map((m) => monthLabel(new Date(m.month))), values: recent.map((m) => money(m.earned)) },
       payments,
+      statements: statements.results.filter((s) => s.status !== "cancelled").map(toStatement),
     };
   },
 
@@ -54,7 +69,17 @@ export const commissionsService = {
     return (await payoutsOf(resellerId)).results.map(toPayment);
   },
 
-  async pay(input: PayCommissionInput): Promise<CommissionPayment> {
-    return toPayment(await api.post<PayoutDto>(payouts, { resellerId: input.resellerId, amount: input.amount.toFixed(2), note: input.note ?? "" }, idempotent()));
+  /** Relevés de paiement : d'un revendeur, ou de tous (responsable/admin), filtrables par statut. */
+  async statements(params: { resellerId?: number; status?: StatementStatus } = {}): Promise<PayoutStatement[]> {
+    return (await statementsOf(params)).results.map(toStatement);
+  },
+
+  async statement(id: number): Promise<PayoutStatementDetail> {
+    return toStatementDetail(await api.get<StatementDetailDto>(payoutStatements.detail(id)));
+  },
+
+  /** Marque un relevé préparé comme payé (admin) : le paiement est le total du relevé. */
+  async pay(input: PayStatementInput): Promise<CommissionPayment> {
+    return toPayment(await api.post<PayoutDto>(payouts, { statementId: input.statementId, note: input.note ?? "" }, idempotent()));
   },
 };
