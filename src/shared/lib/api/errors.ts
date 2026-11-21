@@ -30,7 +30,7 @@ export class ApiError extends Error {
     return this.problem?.code;
   }
 
-  /** Précisions de l'erreur métier (ex. `reason` de `trial_unavailable`). */
+  /** Précisions de l'erreur métier (ex. `attempts_left` d'un code de livraison incorrect). */
   get meta(): Record<string, unknown> {
     return this.problem?.meta ?? {};
   }

@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
-import { ArrowRight2, Call, Crown1, Location, Notification, Receipt2, User } from "@/shared/ui/icons";
+import { ArrowRight2, Call, Location, Notification, Receipt2, User, WalletMoney } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import { createElement, useEffect, useState } from "react";
 import { Breadcrumb } from "@/shared/layout/Breadcrumb";
@@ -12,8 +12,9 @@ import { Tabs } from "@/shared/ui/Tabs";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { AuthGuard } from "@/modules/auth/components/AuthGuard";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
-import { useSiteSettings } from "@/modules/site";
-import { CashbackCard } from "@/modules/membership/components/CashbackCard";
+import { PointsCard } from "@/modules/points/components/PointsCard";
+import { usePointsBalance } from "@/modules/points/hooks/usePoints";
+import { holdsPoints } from "@/modules/points/types";
 import { useProfile } from "../hooks/useAccount";
 import { useAddresses } from "../hooks/useAddressBook";
 import { addressIcon } from "./AddressBookView";
@@ -60,19 +61,20 @@ function Content() {
     return () => URL.revokeObjectURL(url);
   }, [file]);
 
-  // Celebobo Plus : lien tant que le programme est ouvert
-  const plusOpen = useSiteSettings().programmes.membership.enabled;
+  // « Mes points » : client qui peut utiliser ses points (programme actif ou en cours de fermeture)
+  const { data: pointsBalance } = usePointsBalance(holdsPoints(user?.role));
+  const pointsOpen = !!pointsBalance?.eligible;
   if (!user) return null;
   return (
     <div className="grid gap-3 sm:gap-4 lg:grid-cols-[360px_minmax(0,1fr)]">
       <Reveal direction="up" className="min-w-0">
         <div className="space-y-3 sm:space-y-4">
           <ProfileSummaryCard user={user} profile={profile} previewAvatar={preview} onPickAvatar={setFile} />
-          <CashbackCard />
+          <PointsCard />
           <Block pad="sm" className="p-2!">
             {[
               { href: ROUTES.orders, label: "Mes commandes", icon: Receipt2 },
-              ...(plusOpen ? [{ href: ROUTES.membership, label: "Abonnement Celebobo Plus", icon: Crown1 }] : []),
+              ...(pointsOpen ? [{ href: ROUTES.points, label: "Mes points de fidélité", icon: WalletMoney }] : []),
               { href: ROUTES.addresses, label: "Mon carnet d'adresses", icon: Location },
               { href: ROUTES.settings, label: "Notifications & préférences", icon: Notification },
             ].map(({ href, label, icon: Icon }) => (

@@ -16,7 +16,6 @@ interface ZoneDto {
   deliveryEstimate: string;
   isDefault: boolean;
   isActive: boolean;
-  memberFreeShipping?: boolean;
 }
 
 export interface QuoteLineInput {
@@ -26,13 +25,13 @@ export interface QuoteLineInput {
 }
 
 export const checkoutService = {
-  /** Devis : sous-total, remise du code promo et frais de la zone de livraison de `city` (ou du retrait en boutique). */
-  async quote(lines: QuoteLineInput[], city?: string, couponCode?: string | null, useCashback = false, pickup = false): Promise<CartQuote> {
+  /** Devis : sous-total, remise du code promo, points de fidélité utilisés (`points`, plafonnés par l'API) et frais de la zone de livraison de `city` (ou du retrait en boutique). */
+  async quote(lines: QuoteLineInput[], city?: string, couponCode?: string | null, points = 0, pickup = false): Promise<CartQuote> {
     const dto = await api.post<QuoteDto>(ENDPOINTS.checkout.quote, {
       lines: lines.map((l) => ({ productId: l.productId, variantId: l.variantId ?? null, quantity: l.quantity })),
       city: city?.trim() || undefined,
       couponCode: couponCode || undefined,
-      useCashback,
+      points: points > 0 ? points.toFixed(2) : "0",
       pickup,
     });
     return toQuote(dto);
@@ -42,7 +41,7 @@ export const checkoutService = {
     const zones = await api.get<ZoneDto[]>(ENDPOINTS.checkout.shippingZones);
     return zones
       .filter((z) => z.isActive)
-      .map((z) => ({ id: z.id, name: z.name, cities: z.cities, fee: money(z.fee), freeThreshold: z.freeThreshold == null ? null : money(z.freeThreshold), deliveryEstimate: z.deliveryEstimate, isDefault: z.isDefault, memberFreeShipping: z.memberFreeShipping ?? false }));
+      .map((z) => ({ id: z.id, name: z.name, cities: z.cities, fee: money(z.fee), freeThreshold: z.freeThreshold == null ? null : money(z.freeThreshold), deliveryEstimate: z.deliveryEstimate, isDefault: z.isDefault }));
   },
 
   /** Modes de paiement activés (réglages publics de la boutique). */

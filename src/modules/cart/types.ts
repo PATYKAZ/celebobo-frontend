@@ -37,12 +37,10 @@ export interface CartQuote {
   couponCode: string | null;
   /** Code promo enregistré mais devenu inapplicable (minimum non atteint, expiré…). */
   couponError: string | null;
-  /** Livraison offerte au titre de l'abonnement Celebobo Plus */
-  memberFreeShipping: boolean;
-  /** Cagnotte utilisable sur cette commande (0 : rien à proposer) */
-  cashbackAvailable: number;
-  /** Cagnotte appliquée au total (quand le client l'utilise) */
-  cashback: number;
+  /** Points de fidélité utilisables sur cette commande (0 : rien à proposer), 1 point = 1 $ */
+  pointsAvailable: number;
+  /** Points appliqués au total (montant choisi par le client, plafonné par l'API) */
+  points: number;
   /** Retrait en boutique choisi (frais 0) */
   pickup: boolean;
   /** Adresse du point de retrait (devis en retrait) */
@@ -70,9 +68,8 @@ export const EMPTY_QUOTE: CartQuote = {
   deliveryEstimate: null,
   couponCode: null,
   couponError: null,
-  memberFreeShipping: false,
-  cashbackAvailable: 0,
-  cashback: 0,
+  pointsAvailable: 0,
+  points: 0,
   pickup: false,
   pickupAddress: null,
   shippingQuoteRequired: false,

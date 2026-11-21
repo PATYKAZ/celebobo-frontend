@@ -16,21 +16,21 @@ interface Props {
   quote?: CartQuote | null;
   /** Bloc code promo */
   coupon?: ReactNode;
-  /** Case « Utiliser ma cagnotte » (paiement) */
-  cashback?: ReactNode;
+  /** Montant de points de fidélité à utiliser (paiement) */
+  points?: ReactNode;
   /** Boutons d'action (CTA) */
   actions?: ReactNode;
   title?: string;
 }
 
 /** Récapitulatif de commande (panier & checkout). */
-export function CartSummary({ subtotal, savings, count, quote, coupon, cashback, actions, title = "Récapitulatif" }: Props) {
+export function CartSummary({ subtotal, savings, count, quote, coupon, points, actions, title = "Récapitulatif" }: Props) {
   const { currency, rate } = useCurrency();
   const discount = quote?.discount ?? 0;
   const shipping = quote?.shippingFee ?? 0;
-  const total = quote ? Math.max(0, subtotal - discount) + shipping : subtotal;
-  // membre Plus : livraison déjà offerte, pas de seuil à atteindre
-  const remaining = quote?.memberFreeShipping ? null : (quote?.freeShippingRemaining ?? null);
+  const pointsUsed = quote?.points ?? 0;
+  const total = quote ? Math.max(0, subtotal - discount - pointsUsed) + shipping : subtotal;
+  const remaining = quote?.freeShippingRemaining ?? null;
   const progress = remaining == null ? 0 : remaining <= 0 ? 100 : Math.min(100, (subtotal / (subtotal + remaining)) * 100);
 
   return (
@@ -50,13 +50,13 @@ export function CartSummary({ subtotal, savings, count, quote, coupon, cashback,
       )}
 
       {coupon && <div className="mt-5">{coupon}</div>}
-      {cashback && <div className="mt-3">{cashback}</div>}
+      {points && <div className="mt-3">{points}</div>}
 
       <dl className="mt-5 space-y-3 text-[14px]">
         <div className="flex justify-between"><dt className="text-ink-2">Articles ({count})</dt><dd className="font-semibold">{formatPrice(subtotal + savings)}</dd></div>
         {savings > 0 && <div className="flex justify-between"><dt className="text-ink-2">Remises</dt><dd className="font-semibold text-danger">-{formatPrice(savings)}</dd></div>}
         {discount > 0 && <div className="flex justify-between"><dt className="text-ink-2">Code promo{quote?.couponCode ? ` (${quote.couponCode})` : ""}</dt><dd className="font-semibold text-danger">-{formatPrice(discount)}</dd></div>}
-        {!!quote?.cashback && <div className="flex justify-between"><dt className="text-ink-2">Cagnotte</dt><dd className="font-semibold text-danger">-{formatPrice(quote.cashback)}</dd></div>}
+        {pointsUsed > 0 && <div className="flex justify-between"><dt className="text-ink-2">Points de fidélité utilisés</dt><dd className="font-semibold text-danger">-{formatPrice(pointsUsed)}</dd></div>}
         <div className="flex justify-between gap-3">
           <dt className="text-ink-2">{quote?.pickup ? "Retrait sur place" : `Livraison${quote?.shippingZone ? ` · ${quote.shippingZone}` : ""}`}</dt>
           <dd className="text-right font-semibold">
@@ -66,8 +66,6 @@ export function CartSummary({ subtotal, savings, count, quote, coupon, cashback,
               <span className="text-primary">Gratuit</span>
             ) : quote.shippingQuoteRequired ? (
               <span className="text-warn">Sur devis</span>
-            ) : quote.memberFreeShipping ? (
-              <span className="text-primary">Offerte (Plus)</span>
             ) : shipping > 0 ? (
               formatPrice(shipping)
             ) : (
