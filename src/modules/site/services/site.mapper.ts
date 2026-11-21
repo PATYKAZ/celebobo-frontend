@@ -21,14 +21,14 @@ export interface SiteSettingsDto {
 
 /** `programmes` (après camelCase), aussi renvoyé par `/bo/loyalty/settings/`. */
 export interface ProgrammesDto {
-  points: { enabled: boolean; percent: string; validityMonths: number };
+  points: { enabled: boolean; percent: string; validityMonths: number; referralPercent: string; referralMonths: number };
   appLinks: { appStore: string; playStore: string };
 }
 
 export const toProgrammes = (dto: ProgrammesDto | undefined): Programmes =>
   dto
     ? {
-        points: { ...dto.points, percent: Number(dto.points.percent) },
+        points: { ...dto.points, percent: Number(dto.points.percent), referralPercent: Number(dto.points.referralPercent) },
         appLinks: { appStore: dto.appLinks.appStore ?? "", playStore: dto.appLinks.playStore ?? "" },
       }
     : NO_PROGRAMMES;

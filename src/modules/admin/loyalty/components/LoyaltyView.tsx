@@ -25,6 +25,9 @@ function validate(v: LoyaltyFormValues): Errors {
   const p = num(v.pointsPercent);
   if (!(p >= 0.01 && p <= 50)) e.pointsPercent = "Entre 0,01 et 50 %.";
   if (!intIn(v.pointsValidityMonths, 1, 60)) e.pointsValidityMonths = "Entre 1 et 60 mois.";
+  const r = num(v.referralPercent);
+  if (!(r >= 0.01 && r <= 10)) e.referralPercent = "Entre 0,01 et 10 %.";
+  if (!intIn(v.referralMonths, 1, 60)) e.referralMonths = "Entre 1 et 60 mois.";
   for (const k of ["appStoreUrl", "playStoreUrl"] as const) if (v[k].trim() && !/^https?:\/\/\S+$/.test(v[k].trim())) e[k] = "Lien complet attendu (https://…).";
   return e;
 }
@@ -86,6 +89,8 @@ function Form({ initial }: { initial: Programmes }) {
         <div className="grid gap-4 sm:grid-cols-2">
           <Input label="Points gagnés (%)" type="number" inputMode="decimal" min="0.01" max="50" step="0.01" hint="De ce que le client paie pour les produits, après coupons, offres et points utilisés." {...field("pointsPercent")} />
           <Input label="Validité (mois sans achat)" type="number" inputMode="numeric" min="1" max="60" hint="Tout le solde reste valable tant que le client achète au moins une fois dans ce délai." {...field("pointsValidityMonths")} />
+          <Input label="Points de parrainage (%)" type="number" inputMode="decimal" min="0.01" max="10" step="0.01" hint="Pour le revendeur qui a invité le client, sur ses factures payées sans points ni coupon (hors livraison)." {...field("referralPercent")} />
+          <Input label="Durée du parrainage (mois)" type="number" inputMode="numeric" min="1" max="60" hint="Le client reste rattaché à son revendeur pendant ce délai après l'inscription avec son code." {...field("referralMonths")} />
         </div>
       </SettingsSection>
 

@@ -14,6 +14,7 @@ import { useUnreadMessagesCount } from "@/modules/messaging/hooks/useConversatio
 import { useUnreadNotificationsCount } from "@/modules/messaging/hooks/useNotifications";
 import { supportHours, supportLabel, useSiteSettings } from "@/modules/site";
 import { usePointsBalance } from "@/modules/points/hooks/usePoints";
+import { holdsPoints } from "@/modules/points/types";
 import { CurrencySwitch } from "@/shared/currency/CurrencySwitch";
 import { ThemeSwitch } from "@/shared/theme/ThemeSwitch";
 
@@ -27,7 +28,7 @@ export function ShopTabBar() {
   const pathname = usePathname();
   const { user, isAuthenticated, isStaff } = useAuth();
   // « Mes points » : client qui peut utiliser ses points (programme actif ou en cours de fermeture)
-  const { data: pointsBalance } = usePointsBalance(isAuthenticated && user?.role === "client");
+  const { data: pointsBalance } = usePointsBalance(isAuthenticated && holdsPoints(user?.role));
   const pointsOpen = !!pointsBalance?.eligible;
   const { count } = useCart();
   const site = useSiteSettings();
