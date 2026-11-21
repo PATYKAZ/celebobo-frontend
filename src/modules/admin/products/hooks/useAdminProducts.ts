@@ -50,7 +50,8 @@ export function useSaveProduct(product: Product | null) {
   const invalidate = useInvalidateCatalog();
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ values, images }: { values: ProductFormValues; images: ImageSlotValue[] }) => adminProductsService.save(product, values, images),
+    mutationFn: ({ values, images, withOrigin = false }: { values: ProductFormValues; images: ImageSlotValue[]; withOrigin?: boolean }) =>
+      adminProductsService.save(product, values, images, withOrigin),
     onSuccess: (saved) => {
       qc.setQueryData(adminProductKeys.detail(saved.id), saved);
       invalidate();

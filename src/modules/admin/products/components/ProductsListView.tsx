@@ -145,6 +145,7 @@ function Content() {
             <p className="flex items-center gap-1.5 text-[12px] text-ink-3">
               {p.category}
               {p.isActive === false && <span className="inline-flex items-center gap-0.5 font-semibold text-ink-2"><EyeSlash size={12} /> masqué</span>}
+              {p.origin === "partner" && <Pill tone="yellow" className="h-[18px] px-1.5">Partenaire</Pill>}
               {p.variants.length > 0 && <span>· {p.variants.length} variantes</span>}
             </p>
           </div>
