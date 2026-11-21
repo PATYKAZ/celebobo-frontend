@@ -116,7 +116,7 @@ export function ResellerDashboardView() {
           deltaLabel={`vs ${data.period.previousLabel}`}
           delay={0.1}
         />
-        <StatCard label={`Commission due (taux ${Math.round(data.commission.rate * 100)} %)`} value={data.commission.due} format={formatPrice} icon={<Wallet3 size={22} variant="Bold" />} tone="green" deltaLabel="" delay={0.15} />
+        <StatCard label="Commission due" value={data.commission.due} format={formatPrice} icon={<Wallet3 size={22} variant="Bold" />} tone="green" deltaLabel="" delay={0.15} />
       </div>
 
       <div className="grid items-start gap-3 sm:gap-4 xl:grid-cols-[1fr_390px]">

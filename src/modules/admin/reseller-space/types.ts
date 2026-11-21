@@ -35,7 +35,7 @@ export interface ResellerDashboardData {
   /** discussions dont le dernier message vient du client */
   awaitingReply: number;
   sales: { revenue: number; previousRevenue: number; delta: number | null; count: number; profit: number };
-  commission: { rate: number; earned: number; paid: number; due: number };
+  commission: { earned: number; paid: number; due: number };
   openOrders: ResellerOpenOrder[];
   recentSales: ResellerRecentSale[];
 }

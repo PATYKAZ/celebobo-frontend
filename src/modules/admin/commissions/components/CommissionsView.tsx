@@ -16,7 +16,7 @@ import { PageHeader } from "../../ui/PageHeader";
 import { StatCard } from "../../ui/StatCard";
 import { AVAILABILITY_DOT, AVAILABILITY_LABEL } from "../../resellers/types";
 import { useCommissionPayments, useCommissions } from "../hooks/useCommissions";
-import type { CommissionRow, CommissionsOverview } from "../types";
+import { COMMISSION_RULES_SUMMARY, type CommissionRow, type CommissionsOverview } from "../types";
 import { PayCommissionModal } from "./PayCommissionModal";
 import { PaymentsList } from "./PaymentsList";
 
@@ -83,7 +83,6 @@ function AllCommissions({ data }: { data?: CommissionsOverview }) {
         </div>
       ),
     },
-    { key: "rate", header: "Taux", align: "center", hideBelow: "md", cell: (r) => <span className="text-ink-2">{(r.rate * 100).toFixed(1)}%</span> },
     { key: "month", header: "Ce mois", align: "right", hideBelow: "lg", cell: (r) => <span className="text-ink-2">{formatPrice(r.earnedMonth)}</span> },
     { key: "earned", header: "Gagné (cumul)", align: "right", hideBelow: "sm", cell: (r) => <strong>{formatPrice(r.earned)}</strong> },
     { key: "paid", header: "Payé", align: "right", hideBelow: "md", cell: (r) => <span className="text-ink-2">{formatPrice(r.paid)}</span> },
@@ -131,13 +130,12 @@ function AllCommissions({ data }: { data?: CommissionsOverview }) {
 /* ───────────────── Revendeur : ses propres commissions ───────────────── */
 
 function OwnCommissions({ data }: { data: CommissionsOverview }) {
-  const row = data.rows[0];
   return (
     <>
-      <PageHeader title="Mes commissions" description={`${data.asOfLabel} · taux appliqué : ${(row.rate * 100).toFixed(1)} % de vos ventes validées`} />
+      <PageHeader title="Mes commissions" description={`${data.asOfLabel} · ${COMMISSION_RULES_SUMMARY}.`} />
       <Totals data={data} />
       <div className="grid min-w-0 gap-3 sm:gap-4 xl:grid-cols-3">
-        <ChartCard title="Commissions gagnées par mois" subtitle="6 derniers mois (ventes validées × votre taux)" className="xl:col-span-2">
+        <ChartCard title="Commissions gagnées par mois" subtitle="6 derniers mois, selon les règles de commission" className="xl:col-span-2">
           {data.monthly ? <BarChart title="Commissions par mois" format={money} data={data.monthly.labels.map((l, i) => ({ label: l, value: data.monthly!.values[i] }))} /> : <Skeleton className="h-[260px] w-full" />}
         </ChartCard>
         <ChartCard title="Mes paiements" subtitle={`${data.payments?.length ?? 0} paiement(s) reçu(s)`} delay={0.1}>

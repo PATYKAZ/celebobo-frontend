@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Copy, Wallet3 } from "@/shared/ui/icons";
 import { Stars } from "@/shared/ui/Stars";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ROUTES } from "@/config/routes";
 import { RevealGroup, RevealItem } from "@/shared/animations/Reveal";
 import { cn } from "@/shared/lib/cn";
@@ -12,36 +12,22 @@ import { getErrorMessage } from "@/shared/lib/api";
 import { Avatar } from "@/shared/ui/Avatar";
 import { StatusDot } from "@/shared/ui/Badges";
 import { Button } from "@/shared/ui/Button";
-import { Input } from "@/shared/ui/Form";
 import { Drawer } from "@/shared/ui/Overlay";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { toast } from "@/shared/ui/Toast";
 import { useCan } from "@/modules/auth/hooks/useCan";
 import { ConfirmDialog } from "../../ui/ConfirmDialog";
 import type { PeriodKey } from "../../dashboard/lib/period";
-import { useReseller, useSetResellerActive, useUpdateResellerRate } from "../hooks/useResellers";
+import { useReseller, useSetResellerActive } from "../hooks/useResellers";
 import { AVAILABILITY_DOT, AVAILABILITY_LABEL } from "../types";
 
-/** Panneau latéral : détail, actions (activer/désactiver, commission) et clients invités. */
+/** Panneau latéral : détail, actions (activer/désactiver) et clients invités. Les commissions suivent les mêmes règles pour tous. */
 export function ResellerDrawer({ id, period, onClose }: { id: number | null; period: PeriodKey; onClose: () => void }) {
   const { data: r, isLoading } = useReseller(id, period);
   const canManage = useCan("resellers.manage");
   const canCommissions = useCan("commissions.view.all");
   const setActive = useSetResellerActive();
-  const updateRate = useUpdateResellerRate();
   const [confirm, setConfirm] = useState(false);
-  const [rate, setRate] = useState("");
-
-  useEffect(() => {
-    if (r) setRate(String(+(r.commissionRate * 100).toFixed(2)));
-  }, [r]);
-
-  const saveRate = () => {
-    if (!r) return;
-    const v = Number(rate.replace(",", "."));
-    if (Number.isNaN(v) || v < 0 || v > 50) return toast.error("Taux invalide", "Entre 0 et 50 %.");
-    updateRate.mutate({ id: r.id, rate: v / 100 }, { onSuccess: () => toast.success("Taux enregistré", `${v} %`), onError: (e) => toast.error("Échec", getErrorMessage(e)) });
-  };
 
   const toggle = () => {
     if (!r) return;
@@ -94,10 +80,6 @@ export function ResellerDrawer({ id, period, onClose }: { id: number | null; per
           {canManage && (
             <div className="mt-6 rounded-box border border-line-3 p-4">
               <h4 className="text-[14px] font-bold">Actions</h4>
-              <div className="mt-3 flex items-end gap-2">
-                <Input wrapperClassName="flex-1" label="Taux de commission (%)" inputMode="decimal" value={rate} onChange={(e) => setRate(e.target.value)} />
-                <Button size="md" variant="dark" upper={false} loading={updateRate.isPending} onClick={saveRate}>Enregistrer</Button>
-              </div>
               <div className="mt-3 flex flex-wrap gap-2">
                 <Button variant={r.status === "actif" ? "danger" : "primary"} size="sm" upper={false} onClick={() => setConfirm(true)}>
                   {r.status === "actif" ? "Désactiver le compte" : "Réactiver le compte"}

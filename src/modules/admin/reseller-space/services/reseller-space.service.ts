@@ -56,7 +56,7 @@ export const resellerSpaceService = {
         count: Number(summary.salesCount.value),
         profit: money(summary.profit.value),
       },
-      commission: { rate: Number(commission.rate), earned: money(commission.earnedTotal), paid: money(commission.paidTotal), due: money(commission.due) },
+      commission: { earned: money(commission.earnedTotal), paid: money(commission.paidTotal), due: money(commission.due) },
       openOrders: list.results
         .map(toOrder)
         .filter((o) => !ORDER_FINAL.includes(o.status))

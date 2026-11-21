@@ -59,7 +59,7 @@ export function PayCommissionModal({ row, onClose }: { row: CommissionRow | null
             <div><p className="text-[11px] uppercase text-ink-3">Déjà payé</p><p className="font-bold">{formatPrice(row.paid)}</p></div>
             <div><p className="text-[11px] uppercase text-ink-3">Dû</p><p className="font-bold text-primary">{formatPrice(row.due)}</p></div>
           </div>
-          <p className="text-[14px] text-ink-2">Revendeur : <strong className="text-ink">{row.name}</strong> · taux {(row.rate * 100).toFixed(1)} %</p>
+          <p className="text-[14px] text-ink-2">Revendeur : <strong className="text-ink">{row.name}</strong></p>
           <Input label="Montant ($)" inputMode="decimal" value={amount} onChange={(e) => setAmount(e.target.value)} error={error} required />
           <Textarea label="Note (optionnel)" value={note} onChange={(e) => setNote(e.target.value)} placeholder="Ex. Paiement Orange Money du mois" className="min-h-[80px]" />
           <div className="grid grid-cols-2 gap-3">

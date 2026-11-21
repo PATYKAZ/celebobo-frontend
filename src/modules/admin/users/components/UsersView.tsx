@@ -71,7 +71,7 @@ function RoleModal({ user, onClose }: { user: UserRow | null; onClose: () => voi
           </button>
         ))}
       </div>
-      {current === "revendeur" && user?.role !== "revendeur" && <p className="mt-3 rounded-box bg-chip p-3 text-[12px] leading-[18px] text-ink-2">Un code d&apos;invitation à 4 chiffres et un taux de commission par défaut (7 %) seront attribués.</p>}
+      {current === "revendeur" && user?.role !== "revendeur" && <p className="mt-3 rounded-box bg-chip p-3 text-[12px] leading-[18px] text-ink-2">Un code d&apos;invitation à 4 chiffres sera attribué ; ses commissions suivent les règles communes à tous les revendeurs.</p>}
       <div className="mt-5 grid grid-cols-2 gap-3">
         <Button variant="chip" upper={false} onClick={onClose}>Annuler</Button>
         <Button upper={false} loading={setRoleMut.isPending} onClick={save} disabled={!user || current === user.role}>Enregistrer</Button>
