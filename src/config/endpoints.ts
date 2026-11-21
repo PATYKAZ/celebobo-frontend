@@ -77,13 +77,6 @@ export const ENDPOINTS = {
   points: {
     me: "/me/points/", // GET : { eligible, available, pending, next_expiry, orders_count, orders_total, history[] }
   },
-  /** Celebobo Plus côté client */
-  membership: {
-    me: "/me/membership/", // GET : statut, formule, échéance, essai disponible, demande en attente
-    trial: "/me/membership/trial/", // POST : démarre l'essai (422 trial_unavailable, meta.reason)
-    requests: "/me/membership/requests/", // POST { plan, payment_method } : demande en attente de paiement
-    cancel: (id: number) => `/me/membership/requests/${id}/cancel/`,
-  },
   uploads: {
     sign: "/uploads/sign/",
     complete: "/uploads/complete/",
@@ -216,12 +209,6 @@ export const ENDPOINTS = {
     },
     settings: "/bo/settings/", // GET / PATCH (admin)
     loyalty: "/bo/loyalty/settings/", // GET / PATCH (admin : loyalty.manage)
-    membership: {
-      requests: "/bo/membership/requests/", // GET ?status=pending|confirmed|rejected|cancelled (membership.manage)
-      confirm: (id: number) => `/bo/membership/requests/${id}/confirm/`,
-      reject: (id: number) => `/bo/membership/requests/${id}/reject/`, // { note }
-      members: "/bo/memberships/", // GET ?status=trial|active|expired
-    },
     coupons: {
       list: "/bo/coupons/", // GET ?search=&active= (paginé) / POST (coupons.manage)
       detail: (id: number) => `/bo/coupons/${id}/`, // PATCH ; DELETE = désactiver (jamais d'effacement)

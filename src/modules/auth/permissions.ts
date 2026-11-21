@@ -45,7 +45,6 @@ export type Permission =
   | "shipping.manage"
   | "content.manage"
   | "settings.manage"
-  | "membership.manage"
   | "loyalty.manage"
   | "coupons.manage"; // codes promo : création, conditions, activation
 

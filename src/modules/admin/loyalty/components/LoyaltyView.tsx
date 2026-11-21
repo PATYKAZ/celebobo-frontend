@@ -2,7 +2,6 @@
 
 import { useState, type FormEvent, type ReactNode } from "react";
 import { ApiError, getErrorMessage } from "@/shared/lib/api";
-import { formatPrice } from "@/shared/lib/format";
 import { Block } from "@/shared/ui/Block";
 import { Button } from "@/shared/ui/Button";
 import { Input, Switch } from "@/shared/ui/Form";
@@ -23,10 +22,6 @@ const intIn = (s: string, min: number, max: number) => s.trim() !== "" && Number
 /** Mêmes bornes que l'API (LoyaltySettingsInput). */
 function validate(v: LoyaltyFormValues): Errors {
   const e: Errors = {};
-  if (!(num(v.membershipMonthlyPrice) >= 0.01)) e.membershipMonthlyPrice = "Prix d'au moins 0,01 $.";
-  if (!(num(v.membershipYearlyPrice) >= 0.01)) e.membershipYearlyPrice = "Prix d'au moins 0,01 $.";
-  if (!intIn(v.membershipTrialDays, 0, 365)) e.membershipTrialDays = "Entre 0 et 365 jours.";
-  if (!intIn(v.membershipReminderDays, 0, 30)) e.membershipReminderDays = "Entre 0 et 30 jours.";
   const p = num(v.pointsPercent);
   if (!(p >= 0.01 && p <= 50)) e.pointsPercent = "Entre 0,01 et 50 %.";
   if (!intIn(v.pointsValidityMonths, 1, 60)) e.pointsValidityMonths = "Entre 1 et 60 mois.";
@@ -84,20 +79,6 @@ function Form({ initial }: { initial: Programmes }) {
 
   return (
     <form onSubmit={submit} noValidate className="flex flex-col gap-3 sm:gap-4">
-      <SettingsSection title="Celebobo Plus" hint="Abonnement : livraison offerte sans minimum dans les zones membres. Paiement Mobile Money ou cash, confirmé par l'équipe ; pas de renouvellement automatique.">
-        <ProgrammeSwitch label="Programme actif" on={v.membershipEnabled} onChange={(x) => set("membershipEnabled", x)}>
-          {v.membershipEnabled
-            ? `L'accueil affiche « Celebobo Plus : livraison offerte, dès ${formatPrice(num(v.membershipMonthlyPrice) || 0)} par mois ».`
-            : "Désactivé : l'accueil affiche le bandeau de livraison offerte habituel."}
-        </ProgrammeSwitch>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <Input label="Prix mensuel ($)" type="number" inputMode="decimal" min="0.01" step="0.01" {...field("membershipMonthlyPrice")} />
-          <Input label="Prix annuel ($)" type="number" inputMode="decimal" min="0.01" step="0.01" {...field("membershipYearlyPrice")} />
-          <Input label="Essai gratuit (jours)" type="number" inputMode="numeric" min="0" max="365" hint="Une fois par compte et par numéro ; 0 = pas d'essai." {...field("membershipTrialDays")} />
-          <Input label="Rappel avant la fin (jours)" type="number" inputMode="numeric" min="0" max="30" hint="Message envoyé au membre avant l'échéance." {...field("membershipReminderDays")} />
-        </div>
-      </SettingsSection>
-
       <SettingsSection title="Points de fidélité" hint={`Chaque client gagne un pourcentage de ce qu'il paie pour les produits (hors livraison), 1 point = 1 $. Les points restent en attente jusqu'à la fin du délai de retour (${pointsReleaseDelay(returnDays)}), puis le client en utilise autant qu'il veut. Jamais versés en espèces.`}>
         <ProgrammeSwitch label="Points de fidélité actifs" on={v.pointsEnabled} onChange={(x) => set("pointsEnabled", x)}>
           {v.pointsEnabled ? `L'accueil affiche « ${v.pointsPercent || "…"} % de vos achats en points de fidélité ».` : "Désactivé : aucun point gagné ni bloc points sur l'accueil."}
@@ -129,11 +110,11 @@ function Content() {
   const { data, isLoading, isError, error, refetch } = useLoyaltySettings();
   return (
     <>
-      <PageHeader title="Programmes de fidélité" description="Celebobo Plus, points de fidélité et application : chaque règle se règle ici, chaque programme reste invisible tant qu'il n'est pas activé." />
+      <PageHeader title="Programmes de fidélité" description="Points de fidélité et application : chaque règle se règle ici, chaque programme reste invisible tant qu'il n'est pas activé." />
       {isLoading ? (
         <div role="status" aria-busy="true" className="grid gap-3">
           <span className="sr-only">Chargement des programmes…</span>
-          {[0, 1, 2].map((i) => <Skeleton key={i} className="h-[220px] rounded-box!" />)}
+          {[0, 1].map((i) => <Skeleton key={i} className="h-[220px] rounded-box!" />)}
         </div>
       ) : isError || !data ? (
         <Block className="text-center">

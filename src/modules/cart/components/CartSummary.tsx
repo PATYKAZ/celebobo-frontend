@@ -30,8 +30,7 @@ export function CartSummary({ subtotal, savings, count, quote, coupon, points, a
   const shipping = quote?.shippingFee ?? 0;
   const pointsUsed = quote?.points ?? 0;
   const total = quote ? Math.max(0, subtotal - discount - pointsUsed) + shipping : subtotal;
-  // membre Plus : livraison déjà offerte, pas de seuil à atteindre
-  const remaining = quote?.memberFreeShipping ? null : (quote?.freeShippingRemaining ?? null);
+  const remaining = quote?.freeShippingRemaining ?? null;
   const progress = remaining == null ? 0 : remaining <= 0 ? 100 : Math.min(100, (subtotal / (subtotal + remaining)) * 100);
 
   return (
@@ -67,8 +66,6 @@ export function CartSummary({ subtotal, savings, count, quote, coupon, points, a
               <span className="text-primary">Gratuit</span>
             ) : quote.shippingQuoteRequired ? (
               <span className="text-warn">Sur devis</span>
-            ) : quote.memberFreeShipping ? (
-              <span className="text-primary">Offerte (Plus)</span>
             ) : shipping > 0 ? (
               formatPrice(shipping)
             ) : (
