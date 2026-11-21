@@ -1,10 +1,11 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import { SearchNormal1, TickCircle } from "@/shared/ui/icons";
+import { SearchNormal1, TickCircle, UserTick } from "@/shared/ui/icons";
 import { useEffect, useMemo, useState } from "react";
 import { cn } from "@/shared/lib/cn";
 import { getErrorMessage } from "@/shared/lib/api";
+import { formatDate } from "@/shared/lib/format";
 import { Avatar } from "@/shared/ui/Avatar";
 import { Button } from "@/shared/ui/Button";
 import { Input, Textarea } from "@/shared/ui/Form";
@@ -24,7 +25,7 @@ interface Props {
   onClose: () => void;
 }
 
-/** Assignation / réassignation : tous les revendeurs, recherche, disponibilité, charge, inactifs désactivés. */
+/** Assignation / réassignation : le revendeur qui a invité le client en premier (suggéré), puis tous les revendeurs, recherche, disponibilité, charge, inactifs désactivés. */
 export function AssignResellerModal({ order, onClose }: Props) {
   const open = !!order;
   const { data, isLoading } = useResellerOptions(open);
@@ -33,28 +34,30 @@ export function AssignResellerModal({ order, onClose }: Props) {
   const [picked, setPicked] = useState<number | null>(null);
   const [note, setNote] = useState("");
   const reassign = !!order?.assignedRevendeur;
+  // l'API ne renvoie la suggestion que si l'inviteur est un revendeur actif
+  const suggested = order?.suggestedReseller && order.suggestedReseller.id !== order.assignedRevendeur?.id ? order.suggestedReseller : null;
 
   useEffect(() => {
     if (open) {
       setQ("");
-      setPicked(null);
+      setPicked(suggested?.id ?? null);
       setNote("");
     }
-  }, [open, order?.id]);
+  }, [open, order?.id, suggested?.id]);
 
   const list = useMemo(() => {
     const s = q.trim().toLowerCase();
     return (data ?? [])
       .filter((r) => !s || `${r.name} ${r.code}`.toLowerCase().includes(s))
-      .sort((a, b) => Number(b.active) - Number(a.active) || RANK[a.availability] - RANK[b.availability] || a.openOrders - b.openOrders || a.name.localeCompare(b.name));
-  }, [data, q]);
+      .sort((a, b) => Number(b.id === suggested?.id) - Number(a.id === suggested?.id) || Number(b.active) - Number(a.active) || RANK[a.availability] - RANK[b.availability] || a.openOrders - b.openOrders || a.name.localeCompare(b.name));
+  }, [data, q, suggested?.id]);
 
   const disabledReason = (r: ResellerOption) => (!r.active ? "Compte désactivé" : r.id === order?.assignedRevendeur?.id ? "Déjà assigné" : null);
 
-  const submit = () => {
-    if (!order || picked == null) return;
+  const submit = (resellerId = picked) => {
+    if (!order || resellerId == null) return;
     assign.mutate(
-      { orderId: order.id, resellerId: picked, note: note.trim() || undefined },
+      { orderId: order.id, resellerId, note: note.trim() || undefined },
       {
         onSuccess: () => {
           toast.success(reassign ? "Commande réassignée" : "Commande assignée", `Commande #${order.id}`);
@@ -67,6 +70,16 @@ export function AssignResellerModal({ order, onClose }: Props) {
 
   return (
     <Modal open={open} onClose={onClose} title={order ? `${reassign ? "Réassigner" : "Assigner"} la commande #${order.id}` : undefined} className="max-w-[560px]">
+      {suggested && (
+        <div className="mb-3 flex items-center gap-3 rounded-box border border-primary bg-primary-50 p-3">
+          <span className="grid size-9 shrink-0 place-items-center rounded-full bg-primary text-white"><UserTick size={18} variant="Bold" /></span>
+          <span className="min-w-0 flex-1 text-[13px]">
+            <span className="block font-semibold">Invité par {suggested.name} — suggéré</span>
+            <span className="block text-ink-3">{suggested.invitedAt ? `Client invité le ${formatDate(suggested.invitedAt)}` : "Revendeur qui a invité ce client"}</span>
+          </span>
+          <Button size="sm" upper={false} disabled={assign.isPending} onClick={() => submit(suggested.id)}>{reassign ? "Réassigner" : "Assigner"}</Button>
+        </div>
+      )}
       <Input placeholder="Rechercher par nom ou code…" inputMode="search" value={q} onChange={(e) => setQ(e.target.value)} leftIcon={<SearchNormal1 size={16} />} aria-label="Rechercher un revendeur" />
       <p className="mt-3 text-[12px] text-ink-3">{data ? `${data.filter((r) => r.active).length} revendeurs actifs sur ${data.length}` : "Chargement…"} · triés par disponibilité puis par charge</p>
 
@@ -90,6 +103,7 @@ export function AssignResellerModal({ order, onClose }: Props) {
                   <span className="flex items-center gap-2">
                     <span className="truncate text-[14px] font-semibold">{r.name}</span>
                     <span className="rounded-sm bg-chip px-1.5 text-[11px] font-bold tracking-wider text-ink-2">{r.code}</span>
+                    {r.id === suggested?.id && <span className="rounded-sm bg-primary-50 px-1.5 text-[11px] font-bold text-primary">Suggéré</span>}
                   </span>
                   <span className="flex items-center gap-3 text-[12px] text-ink-3">
                     <AvailabilityDot value={r.availability} withLabel />
@@ -108,7 +122,7 @@ export function AssignResellerModal({ order, onClose }: Props) {
       <Textarea label="Note (optionnel)" value={note} onChange={(e) => setNote(e.target.value)} className="mt-4 min-h-[70px]" placeholder="Consigne pour le revendeur…" />
       <div className="sticky bottom-0 -mx-5 mt-4 grid grid-cols-[1fr_1.5fr] gap-3 border-t border-line-3 bg-surface px-5 py-3 sm:static sm:mx-0 sm:mt-5 sm:grid-cols-2 sm:border-0 sm:p-0">
         <Button variant="chip" upper={false} onClick={onClose}>Annuler</Button>
-        <Button upper={false} disabled={picked == null} loading={assign.isPending} onClick={submit}>{reassign ? "Réassigner" : "Assigner"}</Button>
+        <Button upper={false} disabled={picked == null} loading={assign.isPending} onClick={() => submit()}>{reassign ? "Réassigner" : "Assigner"}</Button>
       </div>
     </Modal>
   );

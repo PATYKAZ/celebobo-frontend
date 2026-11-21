@@ -83,6 +83,14 @@ export interface OrderAddress {
 
 export type ResellerAvailability = "online" | "away" | "offline";
 
+/** Revendeur suggéré à l'assignation : celui qui a invité le client. */
+export interface SuggestedReseller {
+  id: number;
+  name: string;
+  /** date de l'invitation (null pour les invitations antérieures à son enregistrement) */
+  invitedAt: string | null;
+}
+
 export interface Order {
   id: number;
   /** Numéro public (ex: CB-7KQ2-M9XA) : identifiant des URLs client, du suivi et des notifications. */
@@ -93,6 +101,8 @@ export interface Order {
   items: OrderItem[];
   user: { id: number; name: string; email?: string; phone?: string | null };
   assignedRevendeur: { id: number; name: string; availability?: ResellerAvailability | null } | null;
+  /** Back-office (assignation) : revendeur actif qui a invité le client, quelle que soit la date de l'invitation. */
+  suggestedReseller?: SuggestedReseller | null;
   /** Discussion liée (conversation créée à la commande). */
   conversationId: number | null;
   statusHistory: OrderStatusEvent[];

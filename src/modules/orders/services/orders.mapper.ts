@@ -18,6 +18,8 @@ export interface OrderSummaryDto {
   clientName: string;
   resellerName: string | null;
   refundStatus?: "due" | "done" | null;
+  /** Back-office, personnel qui assigne uniquement : revendeur actif qui a invité le client. */
+  suggestedReseller?: { id: number; name: string; reason: string; invitedAt: string | null } | null;
 }
 
 export interface OrderLineDto {
@@ -152,6 +154,7 @@ export function toOrder(dto: OrderSummaryDto | OrderDto): Order {
     user: detail?.client
       ? { id: detail.client.id, name: detail.client.name, email: detail.client.email, phone: detail.client.phone ?? null }
       : { id: 0, name: dto.clientName },
+    suggestedReseller: dto.suggestedReseller ? { id: dto.suggestedReseller.id, name: dto.suggestedReseller.name, invitedAt: dto.suggestedReseller.invitedAt } : null,
     assignedRevendeur: reseller ? { id: reseller.id, name: reseller.name, availability: reseller.availability } : dto.resellerName ? { id: 0, name: dto.resellerName } : null,
     conversationId: detail?.conversationId ?? null,
     statusHistory: detail?.history.map(toEvent) ?? [],
