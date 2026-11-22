@@ -146,7 +146,9 @@ export type NotificationKind =
   | "delivery_code"
   | "delivery_code_locked"
   | "payout_statement"
-  | "payout_paid";
+  | "payout_paid"
+  | "claim_submitted"
+  | "claim_update";
 
 export interface Notification {
   id: number;

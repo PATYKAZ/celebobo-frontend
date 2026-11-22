@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft2, CloseCircle, DocumentDownload, Location, Messages2, Note1, Profile, Wallet3 } from "@/shared/ui/icons";
+import { ArrowLeft2, CloseCircle, DocumentDownload, Location, Messages2, Note1, Profile, ShieldTick, Wallet3 } from "@/shared/ui/icons";
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { ROUTES } from "@/config/routes";
@@ -117,6 +117,9 @@ export function OrderDetailView({ number }: { number: string }) {
               <Button href={orderInvoiceUrl(number)} target="_blank" variant="chip" upper={false} leftIcon={<DocumentDownload size={16} />} className="max-sm:flex-1">Facture</Button>
               {(order.status === "livree" || order.status === "retournee") && (
                 <Button href={orderReceiptUrl(number)} target="_blank" variant="chip" upper={false} leftIcon={<DocumentDownload size={16} />} className="max-sm:flex-1">Reçu de livraison</Button>
+              )}
+              {order.status === "livree" && (
+                <Button href={ROUTES.newClaim(order.id)} variant="chip" upper={false} leftIcon={<ShieldTick size={16} />} className="max-sm:flex-1">Faire une réclamation</Button>
               )}
               {canCancel && <Button variant="danger" upper={false} onClick={() => setCancelOpen(true)} className="max-sm:flex-1">Annuler la commande</Button>}
             </div>

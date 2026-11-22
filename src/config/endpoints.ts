@@ -76,6 +76,15 @@ export const ENDPOINTS = {
     dataExport: "/me/data-export/",
     dataExportDownload: (id: string) => `/me/data-export/${id}/download/`, // ZIP (JSON + HTML), lien valable 48 h
   },
+  /** Réclamations (politique de garantie) : le client sur ses commandes livrées, l'équipe les traite */
+  claims: {
+    claimable: (orderId: number) => `/me/orders/${orderId}/claimable/`, // GET : ce que chaque article peut encore réclamer
+    mine: "/me/claims/", // GET (liste) / POST (nouvelle réclamation, Idempotency-Key)
+    mineDetail: (id: number | string) => `/me/claims/${id}/`,
+    list: "/bo/claims/", // GET ?status=
+    detail: (id: number | string) => `/bo/claims/${id}/`,
+    step: (id: number | string, action: "answer" | "receive" | "diagnose" | "repaired") => `/bo/claims/${id}/${action}/`,
+  },
   /** Consentements (version et date acceptées, retrait en un clic) */
   consents: {
     list: "/me/consents/", // GET (état + historique) / POST { kinds }
