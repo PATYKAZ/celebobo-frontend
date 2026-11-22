@@ -193,6 +193,8 @@ function Content({ id }: { id: number }) {
               {order.user.email && <li className="flex items-center gap-2"><Sms size={15} /> {order.user.email}</li>}
               {order.user.phone && <li className="flex items-center gap-2"><Call size={15} /> {order.user.phone}</li>}
               {contactHidden && <li className="flex items-center gap-2 text-ink-3"><EyeSlash size={15} /> {contactHidden}</li>}
+              {/* la discussion close après la commande n'est plus accessible au revendeur : elle peut contenir le téléphone ou l'adresse */}
+              {contactHidden && order.conversationId == null && <li className="flex items-center gap-2 text-ink-3"><MessageText1 size={15} /> Discussion de la commande close : plus accessible</li>}
             </ul>
           </Card>
 

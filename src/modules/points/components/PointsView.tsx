@@ -17,7 +17,7 @@ import { AuthGuard } from "@/modules/auth/components/AuthGuard";
 import { useAuth } from "@/modules/auth/hooks/useAuth";
 import { useSiteSettings } from "@/modules/site";
 import { usePointsBalance } from "../hooks/usePoints";
-import { formatPoints, pointsMovementLabel, pointsReleaseDelay, type PointsBalance } from "../types";
+import { formatPoints, isReferral, pointsMovementLabel, pointsReleaseDelay, type PointsBalance } from "../types";
 
 const longDate = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "long", year: "numeric" });
 
@@ -46,11 +46,13 @@ function History({ history }: { history: PointsBalance["history"] }) {
             </p>
             <p className="text-[12px] text-ink-3">
               {formatDate(m.at)}
-              {m.orderNumber && (
+              {m.orderNumber ? (
                 <>
                   {" · "}
                   <Link href={ROUTES.orderDetail(m.orderNumber)} className="font-semibold text-primary hover:underline">Commande {m.orderNumber}</Link>
                 </>
+              ) : (
+                isReferral(m.kind) && " · Commande d'un invité"
               )}
             </p>
           </div>
