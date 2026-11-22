@@ -3,8 +3,8 @@ import { api } from "./client";
 import { ApiError } from "./errors";
 
 export type JobStatus = "pending" | "running" | "done" | "failed";
-export type JobKind = "sales_export" | "products_export" | "products_import" | "analytics_report";
-export type JobFormat = "csv" | "xlsx" | "pdf";
+export type JobKind = "sales_export" | "products_export" | "products_import" | "analytics_report" | "personal_data";
+export type JobFormat = "csv" | "xlsx" | "pdf" | "zip";
 
 /** Tâche asynchrone de l'API (exports, imports, rapports PDF) — renvoyée en 202 puis suivie via `GET /jobs/{id}/`. */
 export interface Job<S = Record<string, unknown>> {

@@ -34,7 +34,7 @@ const COLUMNS = [
       ["Mes messages", ROUTES.messages],
       ["Mes favoris", ROUTES.favorites],
       ["Questions fréquentes", ROUTES.guide],
-      ["Conditions générales de vente", ROUTES.page("conditions")],
+      ["Conditions générales de vente", ROUTES.page("conditions-de-vente")],
     ],
   },
   {

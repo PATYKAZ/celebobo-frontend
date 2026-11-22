@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { Call, Logout, ShieldTick, Trash } from "@/shared/ui/icons";
@@ -124,7 +125,13 @@ function Content() {
         </form>
       )}
       <div className="mt-6 space-y-3 border-t border-line-3 pt-5 text-[13px] leading-[20px] text-ink-2">
-        <p>Vous ne souhaitez pas continuer ? Sans ces informations, votre compte ne peut pas être utilisé.</p>
+        <p>
+          Vous ne souhaitez pas continuer ? Sans ces informations, votre compte ne peut pas être utilisé. Vous pouvez d&apos;abord{" "}
+          <Link href={ROUTES.myData} className="font-semibold text-primary underline">
+            télécharger vos données
+          </Link>
+          .
+        </p>
         <div className="flex flex-col gap-2 sm:flex-row">
           <Button variant="ghost" upper={false} leftIcon={<Logout size={15} />} loading={logout.isPending} onClick={() => logout.mutate()}>Se déconnecter</Button>
           {user.role === "client" ? (

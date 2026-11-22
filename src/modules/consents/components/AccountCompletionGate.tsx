@@ -8,11 +8,13 @@ import { needsCompletion } from "@/modules/auth/types";
 
 /**
  * Pages accessibles tant que le compte n'est pas complété : l'étape elle-même, les politiques (pour lire ce
- * qu'on accepte) et les pages de session. L'API refuse le reste (`account_incomplete`).
+ * qu'on accepte), « Mes données » (le droit d'accès n'attend pas : on peut emporter ses données avant de
+ * fermer son compte) et les pages de session. L'API refuse le reste (`account_incomplete`).
  */
 const OPEN_PATHS = [
   ROUTES.completeAccount(),
   "/pages/",
+  ROUTES.myData,
   ROUTES.login(),
   ROUTES.register,
   ROUTES.googleCallback,

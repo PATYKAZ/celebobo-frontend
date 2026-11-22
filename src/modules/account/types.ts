@@ -1,3 +1,5 @@
+import type { Job } from "@/shared/lib/api";
+
 /** @deprecated L'API n'a pas d'adresse sur le profil : utiliser le carnet d'adresses (`useAddresses`). */
 export interface Address {
   line1: string;
@@ -83,4 +85,18 @@ export interface PushDevice {
   userAgent: string;
   createdAt: string;
   lastUsedAt: string | null;
+}
+
+/** Export « Mes données » (`GET /me/data-export/`) : tâche de fond qui produit un ZIP (JSON + HTML). */
+export interface DataExportJob extends Job {
+  /** Fin de validité du lien de téléchargement (48 h après la génération). */
+  expiresAt: string | null;
+  expired: boolean;
+}
+
+export interface DataExportStatus {
+  /** Dernier export demandé, ou `null`. */
+  job: DataExportJob | null;
+  /** Prochaine demande possible (1 par heure, 10 min après un échec) ; `null` : tout de suite. */
+  availableAt: string | null;
 }

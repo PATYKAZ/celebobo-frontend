@@ -31,6 +31,7 @@ export const ROUTES = {
   addresses: "/compte/adresses",
   settings: "/compte/parametres",
   points: "/compte/points",
+  myData: "/compte/donnees",
   consents: "/compte/consentements",
   /** Étape de complétion du compte (consentements obligatoires manquants) */
   completeAccount: (next?: string) => (next ? `/compte/finaliser?next=${encodeURIComponent(next)}` : "/compte/finaliser"),
