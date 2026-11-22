@@ -7,16 +7,31 @@ import type { DataExportStatus } from "../types";
 
 const dataExportKey = (uid?: number) => ["account", "data-export", uid] as const;
 
-const inProgress = (status?: DataExportStatus) => status?.job?.status === "pending" || status?.job?.status === "running";
+const MINUTE = 60_000;
+/** Au-delà, le serveur considère l'export comme perdu (échec) : on arrête d'interroger. */
+const GIVE_UP_AFTER = 31 * MINUTE;
 
-/** Statut du dernier export ; interrogé toutes les 3 s tant que le fichier est en préparation. */
+/**
+ * Délai avant la prochaine interrogation tant que le fichier est en préparation, de plus en plus long
+ * avec l'âge de la demande : 3 s la première minute, 10 s jusqu'à 5 min, puis 30 s ; plus rien après 31 min.
+ */
+function pollDelay(status?: DataExportStatus): number | false {
+  const job = status?.job;
+  if (job?.status !== "pending" && job?.status !== "running") return false;
+  const age = Date.now() - new Date(job.createdAt).getTime();
+  if (age < MINUTE) return 3000;
+  if (age < 5 * MINUTE) return 10_000;
+  return age < GIVE_UP_AFTER ? 30_000 : false;
+}
+
+/** Statut du dernier export ; interrogé tant que le fichier est en préparation (voir `pollDelay`). */
 export function useDataExport() {
   const uid = useAuthStore((s) => s.user?.id);
   return useQuery({
     queryKey: dataExportKey(uid),
     queryFn: dataExportService.status,
     enabled: !!uid,
-    refetchInterval: (query) => (inProgress(query.state.data) ? 3000 : false),
+    refetchInterval: (query) => pollDelay(query.state.data),
   });
 }
 

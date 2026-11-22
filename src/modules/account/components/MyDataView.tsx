@@ -48,7 +48,7 @@ function ExportState({ job }: { job: DataExportJob }) {
       </div>
     );
   if (job.status === "failed")
-    return <p className="rounded-box bg-danger-50 p-3.5 text-[13px] leading-[19px] text-danger sm:p-4 sm:text-[14px]">La préparation de votre fichier a échoué. Vous pouvez relancer la demande.</p>;
+    return <p className="rounded-box bg-danger-50 p-3.5 text-[13px] leading-[19px] text-danger sm:p-4 sm:text-[14px]">La préparation de votre fichier a échoué. Vous pourrez relancer la demande dans quelques minutes.</p>;
   if (!job.downloadable)
     return <p className="rounded-box bg-chip p-3.5 text-[13px] leading-[19px] text-ink-2 sm:p-4 sm:text-[14px]">Le lien de votre dernier fichier a expiré. Demandez un nouvel export.</p>;
   return (
@@ -95,7 +95,7 @@ function Content() {
               <li key={line}>{line}</li>
             ))}
           </ul>
-          <p className="mt-3 text-[12px] leading-[18px] text-ink-3 sm:text-[13px]">Les coordonnées des autres personnes (revendeurs, autres clients) n&apos;y figurent pas. Le lien de téléchargement reste valable 48 heures ; vous pouvez demander un nouvel export une fois par heure.</p>
+          <p className="mt-3 text-[12px] leading-[18px] text-ink-3 sm:text-[13px]">Les coordonnées des autres personnes (revendeurs, autres clients) n&apos;y figurent pas. Le lien de téléchargement reste valable 48 heures ; vous pouvez demander un nouvel export une fois par heure (10 minutes après un échec).</p>
         </div>
 
         <div className="mt-4 space-y-3 sm:mt-6">

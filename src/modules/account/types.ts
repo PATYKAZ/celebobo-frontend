@@ -95,6 +95,6 @@ export interface DataExportJob extends Job {
 export interface DataExportStatus {
   /** Dernier export demandé, ou `null`. */
   job: DataExportJob | null;
-  /** Prochaine demande possible (1 par heure) ; `null` : tout de suite. */
+  /** Prochaine demande possible (1 par heure, 10 min après un échec) ; `null` : tout de suite. */
   availableAt: string | null;
 }
