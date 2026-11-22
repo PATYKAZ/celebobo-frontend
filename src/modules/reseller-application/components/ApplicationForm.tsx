@@ -1,6 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
+import { PHONE_HINT, PHONE_PLACEHOLDER, phoneError } from "@/shared/lib/phone";
 import { Call, Location, Sms, TickCircle, User } from "@/shared/ui/icons";
 import { useState, type FormEvent } from "react";
 import { ROUTES } from "@/config/routes";
@@ -39,7 +40,8 @@ export function ApplicationForm() {
     const er: Errors = {};
     if (!form.firstName.trim()) er.firstName = "Entrez votre prénom.";
     if (!form.lastName.trim()) er.lastName = "Entrez votre nom.";
-    if (!/^\+?[\d\s().-]{7,20}$/.test(form.phone.trim())) er.phone = "Numéro de téléphone invalide.";
+    const phone = phoneError(form.phone);
+    if (phone) er.phone = phone;
     if (!/^\S+@\S+\.\S+$/.test(form.email)) er.email = "Adresse e-mail invalide.";
     if (!form.city.trim()) er.city = "Indiquez votre ville.";
     if (form.motivation.trim().length < 20) er.motivation = "Décrivez votre projet en quelques phrases (20 caractères minimum).";
@@ -71,7 +73,7 @@ export function ApplicationForm() {
         <motion.form key="form" onSubmit={onSubmit} noValidate initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="grid gap-4 sm:grid-cols-2">
           <Input label="Prénom" required value={form.firstName} onChange={(e) => set("firstName", e.target.value)} error={errors.firstName} leftIcon={<User size={17} />} autoComplete="given-name" />
           <Input label="Nom" required value={form.lastName} onChange={(e) => set("lastName", e.target.value)} error={errors.lastName} leftIcon={<User size={17} />} autoComplete="family-name" />
-          <Input label="Téléphone" required value={form.phone} onChange={(e) => set("phone", e.target.value)} error={errors.phone} leftIcon={<Call size={17} />} placeholder="+243 …" autoComplete="tel" inputMode="tel" enterKeyHint="next" />
+          <Input label="Téléphone" required value={form.phone} onChange={(e) => set("phone", e.target.value)} error={errors.phone} leftIcon={<Call size={17} />} placeholder={PHONE_PLACEHOLDER} hint={PHONE_HINT} autoComplete="tel" inputMode="tel" enterKeyHint="next" />
           <Input label="E-mail" type="email" required value={form.email} onChange={(e) => set("email", e.target.value)} error={errors.email} leftIcon={<Sms size={17} />} autoComplete="email" inputMode="email" autoCapitalize="none" enterKeyHint="next" />
           <Input label="Ville" required value={form.city} onChange={(e) => set("city", e.target.value)} placeholder="Ex. Bukavu, Goma" error={errors.city} leftIcon={<Location size={17} />} wrapperClassName="sm:col-span-2" />
           <Textarea label="Parlez-nous de votre projet" required value={form.motivation} onChange={(e) => set("motivation", e.target.value)} error={errors.motivation} placeholder="Votre expérience de la vente, votre réseau, vos objectifs…" wrapperClassName="sm:col-span-2" rows={5} maxLength={2000} />

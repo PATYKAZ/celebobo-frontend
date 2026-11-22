@@ -15,6 +15,7 @@ export interface ProfileDto {
   invitedByCode: string | null;
   permissions: string[];
   missingConsents: ConsentKind[];
+  phoneRequired: boolean;
   reseller: { referralCode: string | null; availability: ResellerAvailability; invitedCount: number } | null;
 }
 
@@ -47,5 +48,6 @@ export function toUser(dto: ProfileDto): User {
     permissions: dto.permissions,
     availability: dto.reseller?.availability,
     missingConsents: dto.missingConsents ?? [],
+    phoneRequired: !!dto.phoneRequired,
   };
 }

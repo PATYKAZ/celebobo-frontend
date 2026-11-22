@@ -22,6 +22,11 @@ export const accountService = {
     return toProfile(dto);
   },
 
+  /** Numéro seul (étape de complétion) : l'API le normalise en +243… */
+  async updatePhone(phoneNumber: string): Promise<Profile> {
+    return toProfile(await api.patch<ProfileDto>(ENDPOINTS.profile.me, { phoneNumber: phoneNumber.trim() }));
+  },
+
   async changePassword(input: ChangePasswordInput): Promise<void> {
     await api.post(ENDPOINTS.auth.changePassword, {
       oldPassword: input.oldPassword,

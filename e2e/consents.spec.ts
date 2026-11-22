@@ -30,6 +30,22 @@ test("l'inscription exige deux cases distinctes, les offres ne sont jamais préc
 
   await expect(form.getByText(/accepter les conditions générales de vente/)).toBeVisible();
   await expect(form.getByText(/accepter l'hébergement de vos données hors de RDC/)).toBeVisible();
+  await expect(form.getByText("Le numéro de téléphone est obligatoire.")).toBeVisible();
+});
+
+test("le téléphone doit être un mobile congolais", async ({ page }) => {
+  await page.goto("/inscription");
+  const form = page
+    .locator("form")
+    .filter({ has: page.getByRole("button", { name: "Créer mon compte" }) });
+
+  await form.getByLabel(/^Téléphone/).fill("12345");
+  await form.getByRole("button", { name: "Créer mon compte" }).click();
+  await expect(form.getByText(/Numéro invalide : saisissez un numéro mobile congolais/)).toBeVisible();
+
+  await form.getByLabel(/^Téléphone/).fill("081 234 5678");
+  await form.getByRole("button", { name: "Créer mon compte" }).click();
+  await expect(form.getByText(/Numéro invalide/)).toHaveCount(0);
 });
 
 test("les offres commerciales se donnent et se retirent en un clic", async ({ page }) => {
