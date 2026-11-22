@@ -6,6 +6,8 @@ import { Button } from "@/shared/ui/Button";
 import { Input } from "@/shared/ui/Form";
 import { toast } from "@/shared/ui/Toast";
 import { fieldError, generalError } from "@/modules/auth/components/fieldErrors";
+import { useAuth } from "@/modules/auth/hooks/useAuth";
+import { PHONE_HINT, PHONE_PLACEHOLDER, phoneError } from "@/shared/lib/phone";
 import { useUpdateProfile } from "../hooks/useAccount";
 import type { Profile } from "../types";
 
@@ -17,6 +19,9 @@ interface Props {
 
 export function PersonalInfoForm({ profile, avatarFile, onSaved }: Props) {
   const mutation = useUpdateProfile();
+  // obligatoire pour les clients et les revendeurs (livraison, paiement, WhatsApp)
+  const { user } = useAuth();
+  const phoneRequired = user?.role === "client" || user?.role === "revendeur";
   const [form, setForm] = useState({ firstName: "", lastName: "", phoneNumber: "", revendeurCode: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -34,7 +39,8 @@ export function PersonalInfoForm({ profile, avatarFile, onSaved }: Props) {
     const err: Record<string, string> = {};
     if (!form.firstName.trim()) err.firstName = "Le prénom est requis.";
     if (!form.lastName.trim()) err.lastName = "Le nom est requis.";
-    if (form.phoneNumber && !/^\+?[\d\s().-]{7,20}$/.test(form.phoneNumber.trim())) err.phoneNumber = "Numéro de téléphone invalide.";
+    const phone = phoneError(form.phoneNumber, { required: phoneRequired });
+    if (phone) err.phoneNumber = phone;
     if (!referralLocked && form.revendeurCode && !/^\d{4}$/.test(form.revendeurCode)) err.revendeurCode = "Le code revendeur comporte 4 chiffres.";
     setErrors(err);
     if (Object.keys(err).length) return;
@@ -59,7 +65,7 @@ export function PersonalInfoForm({ profile, avatarFile, onSaved }: Props) {
         <Input label="Nom" required value={form.lastName} onChange={set("lastName")} error={err("lastName")} leftIcon={<ProfileIcon size={17} />} autoComplete="family-name" />
       </div>
       <div className="grid gap-4 sm:grid-cols-2 sm:gap-5">
-        <Input label="Téléphone" value={form.phoneNumber} onChange={set("phoneNumber")} error={err("phoneNumber")} leftIcon={<Call size={17} />} placeholder="+243 …" autoComplete="tel" inputMode="tel" enterKeyHint="next" />
+        <Input label="Téléphone" required={phoneRequired} value={form.phoneNumber} onChange={set("phoneNumber")} error={err("phoneNumber")} leftIcon={<Call size={17} />} placeholder={PHONE_PLACEHOLDER} hint={PHONE_HINT} autoComplete="tel" inputMode="tel" enterKeyHint="next" />
         <Input label="E-mail" value={profile?.email ?? ""} disabled readOnly leftIcon={<Lock size={17} />} hint="Non modifiable." />
       </div>
       <Input
