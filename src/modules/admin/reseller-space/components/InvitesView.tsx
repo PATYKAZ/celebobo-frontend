@@ -1,10 +1,11 @@
 "use client";
 
-import { InfoCircle, People, ShoppingBag } from "@/shared/ui/icons";
+import { InfoCircle, People, TickCircle } from "@/shared/ui/icons";
 import { useMemo, useState } from "react";
 import { Reveal } from "@/shared/animations/Reveal";
-import { formatDate, formatPrice } from "@/shared/lib/format";
+import { formatDate } from "@/shared/lib/format";
 import { Avatar } from "@/shared/ui/Avatar";
+import { StatusDot } from "@/shared/ui/Badges";
 import { Block } from "@/shared/ui/Block";
 import { EmptyState } from "@/shared/ui/EmptyState";
 import { DataTable, type Column } from "@/modules/admin/ui/DataTable";
@@ -37,16 +38,22 @@ function Inner() {
         cell: (c) => (
           <div className="flex items-center gap-3">
             <Avatar name={c.name} size={36} />
-            <div className="min-w-0">
-              <p className="truncate font-semibold leading-[18px]">{c.name}</p>
-              <p className="truncate text-[12px] text-ink-3">{c.email}</p>
-            </div>
+            <p className="min-w-0 truncate font-semibold leading-[18px]">{c.name}</p>
           </div>
         ),
       },
       { key: "joined", header: "Inscrit le", hideBelow: "sm", cell: (c) => formatDate(c.joinedAt) },
-      { key: "orders", header: "Commandes", align: "right", cell: (c) => c.ordersCount },
-      { key: "total", header: "Montant commandé", align: "right", cell: (c) => <strong>{formatPrice(c.ordersTotal)}</strong> },
+      {
+        key: "referral",
+        header: "Parrainage",
+        align: "right",
+        cell: (c) =>
+          c.referralActive ? (
+            <StatusDot tone="green">{c.referralEndsAt ? `Actif jusqu'au ${formatDate(c.referralEndsAt)}` : "Actif"}</StatusDot>
+          ) : (
+            <StatusDot tone="gray">{c.referralEndsAt ? `Terminé le ${formatDate(c.referralEndsAt)}` : "Terminé"}</StatusDot>
+          ),
+      },
     ],
     [],
   );
@@ -64,13 +71,13 @@ function Inner() {
 
   return (
     <>
-      <PageHeader title="Mes invités" description="Les clients inscrits avec votre code d'invitation." />
+      <PageHeader title="Mes invités" description="Les clients inscrits avec votre code d'invitation. Leurs achats vous rapportent des points de parrainage pendant 12 mois ; leurs coordonnées et leurs achats restent confidentiels." />
 
       <div className="grid items-start gap-3 sm:gap-4 xl:grid-cols-[1fr_390px]">
         <div className="flex min-w-0 flex-col gap-3 sm:gap-4">
           <div className="grid grid-cols-2 gap-3 sm:gap-4">
             <StatCard label="Clients invités" value={data?.invitedCount ?? 0} icon={<People size={22} variant="Bold" />} />
-            <StatCard label="Commandes générées" value={data?.ordersTotal ?? 0} format={formatPrice} icon={<ShoppingBag size={22} variant="Bold" />} tone="blue" delay={0.05} />
+            <StatCard label="Parrainages actifs" value={data?.activeCount ?? 0} icon={<TickCircle size={22} variant="Bold" />} tone="blue" delay={0.05} />
           </div>
           <Reveal>
             <Block pad="none" className="overflow-hidden">

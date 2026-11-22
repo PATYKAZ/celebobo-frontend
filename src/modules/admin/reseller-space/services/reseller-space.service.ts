@@ -10,8 +10,7 @@ import { availableTransitions } from "@/modules/orders/services/workflow.service
 import { nextOrderStatus, ORDER_FINAL, type OrderStatus } from "@/modules/orders/types";
 import { periodLabels, type RecentSaleDto, type SummaryDto } from "../../dashboard/services/dashboard.mapper";
 import type { CommissionSummaryDto } from "../../commissions/services/commissions.mapper";
-import type { InviteeDto } from "../../resellers/services/resellers.mapper";
-import type { MyInvitesData, MyResellerStats, ResellerDashboardData } from "../types";
+import type { InvitedClientRow, MyInvitesData, MyResellerStats, ResellerDashboardData } from "../types";
 
 const { dashboard, orders, commissions, me } = ENDPOINTS.admin;
 const OPEN_ORDERS_SHOWN = 8;
@@ -91,10 +90,11 @@ export const resellerSpaceService = {
   async invites(): Promise<MyInvitesData> {
     const [referral, page] = await Promise.all([
       api.get<{ code: string }>(me.referral),
-      api.get<PageEnvelope<InviteeDto>>(me.invitees, { params: { pageSize: 100 } }),
+      // l'API ne renvoie au revendeur ni l'e-mail ni les achats de ses invités
+      api.get<PageEnvelope<InvitedClientRow>>(me.invitees, { params: { pageSize: 100 } }),
     ]);
-    const invited = page.results.map((i) => ({ id: i.id, name: i.name, email: i.email, joinedAt: i.joinedAt, ordersCount: i.ordersCount, ordersTotal: money(i.ordersTotal) }));
-    return { code: referral.code, invitedCount: page.meta.count, ordersTotal: invited.reduce((n, r) => n + r.ordersTotal, 0), invited };
+    const invited = page.results.map((i) => ({ id: i.id, name: i.name, joinedAt: i.joinedAt, referralEndsAt: i.referralEndsAt, referralActive: i.referralActive }));
+    return { code: referral.code, invitedCount: page.meta.count, activeCount: invited.filter((i) => i.referralActive).length, invited };
   },
 
   /** Disponibilité (en ligne / absent / hors ligne) — diffusée en temps réel par l'API (canal presence). */

@@ -6,6 +6,7 @@ export interface PointsMovement {
   /** signé : positif = crédit, négatif = débit (1 point = 1 $) */
   amount: number;
   at: string;
+  /** null sur les points de parrainage : le numéro de commande de l'invité n'est jamais donné au revendeur (politique de confidentialité, §4) */
   orderNumber: string | null;
   /** points gagnés (ou de parrainage) encore en attente de la fin du délai de retour */
   pending: boolean;
@@ -35,6 +36,9 @@ export const POINTS_MOVEMENT_LABELS: Record<PointsMovementKind, string> = {
   referral: "Points de parrainage",
   referral_reversal: "Parrainage retiré (retour)",
 };
+
+/** Points de parrainage (et leur retrait) : liés à la commande d'un invité, sans son numéro. */
+export const isReferral = (kind: PointsMovementKind) => kind === "referral" || kind === "referral_reversal";
 
 export const pointsMovementLabel = (kind: string) => POINTS_MOVEMENT_LABELS[kind as PointsMovementKind] ?? "Mouvement de points";
 

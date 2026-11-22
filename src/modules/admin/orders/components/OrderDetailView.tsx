@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { useState, type ReactNode } from "react";
-import { ArrowLeft2, Call, Convert, Location, MessageText1, Note, Sms, Truck, User, Wallet3 } from "@/shared/ui/icons";
+import { ArrowLeft2, Call, Convert, EyeSlash, Location, MessageText1, Note, Sms, Truck, User, Wallet3 } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import { formatDateTime, formatPrice, formatRelative } from "@/shared/lib/format";
 import { formatPointsEarned } from "@/modules/points/types";
@@ -73,6 +73,12 @@ function Content({ id }: { id: number }) {
   }
 
   const closed = ORDER_FINAL.includes(order.status);
+  // le revendeur perd le téléphone, l'adresse et la note du client (politique de confidentialité)
+  const contactHidden = order.contactHidden
+    ? order.status === "annulee"
+      ? "Coordonnées masquées — commande annulée"
+      : "Coordonnées masquées — 7 jours après la livraison"
+    : null;
   const convertBlock = order.convertedToSales ? "Cette commande a déjà été convertie en ventes." : order.status === "annulee" ? "Une commande annulée ne peut pas être convertie." : order.status === "attente" ? "Assignez puis traitez la commande avant de la convertir." : null;
 
   return (
@@ -186,6 +192,9 @@ function Content({ id }: { id: number }) {
             <ul className="mt-2 space-y-1.5 text-[13px] text-ink-2">
               {order.user.email && <li className="flex items-center gap-2"><Sms size={15} /> {order.user.email}</li>}
               {order.user.phone && <li className="flex items-center gap-2"><Call size={15} /> {order.user.phone}</li>}
+              {contactHidden && <li className="flex items-center gap-2 text-ink-3"><EyeSlash size={15} /> {contactHidden}</li>}
+              {/* la discussion close après la commande n'est plus accessible au revendeur : elle peut contenir le téléphone ou l'adresse */}
+              {contactHidden && order.conversationId == null && <li className="flex items-center gap-2 text-ink-3"><MessageText1 size={15} /> Discussion de la commande close : plus accessible</li>}
             </ul>
           </Card>
 
@@ -206,13 +215,20 @@ function Content({ id }: { id: number }) {
                   <dt className="text-ink-3">Retrait sur place</dt>
                   <dd className="mt-0.5 font-semibold">
                     {order.pickupAddress ?? "—"}
-                    {order.address && <span className="block font-normal text-ink-2">Contact : {order.address.recipient} · {order.address.phone}</span>}
+                    {contactHidden ? (
+                      <span className="block font-normal text-ink-3">{contactHidden}</span>
+                    ) : (
+                      order.address && <span className="block font-normal text-ink-2">Contact : {order.address.recipient} · {order.address.phone}</span>
+                    )}
                   </dd>
                 </div>
               ) : (
                 <div>
                   <dt className="text-ink-3">Adresse de livraison</dt>
-                  <dd className="mt-0.5 font-semibold">{order.deliveryAddress ?? "—"}</dd>
+                  <dd className="mt-0.5 font-semibold">
+                    {order.deliveryAddress ?? "—"}
+                    {contactHidden && <span className="block font-normal text-ink-3">{contactHidden}</span>}
+                  </dd>
                 </div>
               )}
               {order.shippingFee != null && (
@@ -238,7 +254,7 @@ function Content({ id }: { id: number }) {
               )}
               <div>
                 <dt className="text-ink-3">Note du client</dt>
-                <dd className="mt-0.5 rounded-md bg-page/60 px-3 py-2 italic text-ink-2">{order.note ?? "Aucune note."}</dd>
+                <dd className="mt-0.5 rounded-md bg-page/60 px-3 py-2 italic text-ink-2">{contactHidden ?? order.note ?? "Aucune note."}</dd>
               </div>
             </dl>
           </Card>
