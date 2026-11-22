@@ -47,6 +47,7 @@ export interface AdminProductDetailDto extends AdminProductRowDto {
   deliveryPolicySecondary: string;
   freeShipping: boolean;
   shippingFee: string | null;
+  serialRequired?: boolean;
   seoTitle?: string;
   seoDescription?: string;
   sellBy: string | null;
@@ -125,6 +126,7 @@ export function toAdminProduct(dto: AdminProductRowDto | AdminProductDetailDto):
     deletedAt: dto.status === "trash" ? dto.updatedAt : null,
     isActive: dto.status === "active",
     freeShipping: detail?.freeShipping ?? false,
+    serialRequired: detail?.serialRequired ?? false,
     shippingFee: orNull(detail?.shippingFee),
     seoTitle: detail?.seoTitle || null,
     seoDescription: detail?.seoDescription || null,
@@ -174,6 +176,7 @@ export function toProductPayload(v: ProductFormValues, withOrigin = false) {
     deliveryPolicySecondary: v.deliveryPolicyPhase2.trim(),
     freeShipping: v.freeShipping,
     shippingFee: v.freeShipping ? null : orEmpty(v.shippingFee),
+    serialRequired: v.serialRequired,
     seoTitle: v.seoTitle.trim(),
     seoDescription: v.seoDescription.trim(),
     stockThreshold: Number(v.stockThreshold),

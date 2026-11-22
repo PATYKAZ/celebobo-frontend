@@ -65,6 +65,8 @@ export interface Product {
   /** Visible en boutique */
   isActive?: boolean;
   freeShipping: boolean;
+  /** Admin : chaque unité vendue reçoit son numéro de série ou IMEI (absent côté boutique). */
+  serialRequired?: boolean;
   shippingFee: number | null;
   /** Nombre de ventes (tri « meilleures ventes »). */
   salesCount?: number;

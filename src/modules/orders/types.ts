@@ -61,6 +61,10 @@ export interface OrderItem {
   unitPrice: number;
   /** Variante choisie (ex: "Noir / 256 Go") */
   variantLabel?: string | null;
+  /** Chaque unité reçoit son numéro de série ou IMEI avant de partir (politique de garantie). */
+  serialRequired?: boolean;
+  /** Numéros de série / IMEI saisis, imprimés sur la facture et le reçu. */
+  serials?: string[];
 }
 
 /** Entrée d'historique de statut (qui, quand). */

@@ -89,6 +89,7 @@ export interface ProductFormValues {
   deliveryPolicyPhase2: string;
   freeShipping: boolean;
   shippingFee: string;
+  serialRequired: boolean;
   seoTitle: string;
   seoDescription: string;
   /** Stock global (ignoré s'il y a des variantes : somme des variantes) */
@@ -128,6 +129,7 @@ export const EMPTY_FORM: ProductFormValues = {
   deliveryPolicyPhase2: "",
   freeShipping: false,
   shippingFee: "",
+  serialRequired: false,
   seoTitle: "",
   seoDescription: "",
   stock: "10",
@@ -170,6 +172,7 @@ export function productToForm(p: Product): ProductFormValues {
     deliveryPolicyPhase1: p.deliveryPolicyPhase1 ?? "",
     deliveryPolicyPhase2: p.deliveryPolicyPhase2 ?? "",
     freeShipping: p.freeShipping,
+    serialRequired: p.serialRequired ?? false,
     shippingFee: p.shippingFee != null ? String(p.shippingFee) : "",
     seoTitle: p.seoTitle ?? "",
     seoDescription: p.seoDescription ?? "",

@@ -210,6 +210,7 @@ export const ENDPOINTS = {
       decline: (id: number) => `/bo/orders/${id}/decline/`,
       refund: (id: number) => `/bo/orders/${id}/refund/`, // { note } : remboursement effectué
       deliveryAttempts: (id: number) => `/bo/orders/${id}/delivery-attempts/`, // POST { reason, note } : tentative échouée
+      itemSerials: (id: number, itemId: number) => `/bo/orders/${id}/items/${itemId}/serials/`, // PUT { serials } : n° de série / IMEI de la ligne
       invoice: (id: number) => `/bo/orders/${id}/invoice/`,
       receipt: (id: number) => `/bo/orders/${id}/receipt/`,
       convertible: "/bo/orders/convertible/",
