@@ -73,6 +73,11 @@ export const ENDPOINTS = {
     device: (id: number | string) => `/me/devices/${id}/`,
     pushPublicKey: "/push/public-key/",
   },
+  /** Consentements (version et date acceptées, retrait en un clic) */
+  consents: {
+    list: "/me/consents/", // GET (état + historique) / POST { kinds }
+    detail: (kind: string) => `/me/consents/${encodeURIComponent(kind)}/`, // DELETE : retrait
+  },
   /** Points de fidélité du client (1 point = 1 $) */
   points: {
     me: "/me/points/", // GET : { eligible, available, pending, next_expiry, orders_count, orders_total, history[] }
