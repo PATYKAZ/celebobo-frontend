@@ -1,3 +1,4 @@
+import type { ConsentKind } from "@/modules/consents/types";
 import type { ResellerAvailability, User, UserRole } from "../types";
 
 /** Profil renvoyé par `GET /me/` (après camelCase). */
@@ -13,6 +14,8 @@ export interface ProfileDto {
   dateJoined: string;
   invitedByCode: string | null;
   permissions: string[];
+  missingConsents: ConsentKind[];
+  phoneRequired: boolean;
   reseller: { referralCode: string | null; availability: ResellerAvailability; invitedCount: number } | null;
 }
 
@@ -44,5 +47,7 @@ export function toUser(dto: ProfileDto): User {
     emailVerified: dto.emailVerified,
     permissions: dto.permissions,
     availability: dto.reseller?.availability,
+    missingConsents: dto.missingConsents ?? [],
+    phoneRequired: !!dto.phoneRequired,
   };
 }

@@ -27,6 +27,9 @@ export const authService = {
       password: input.password,
       phoneNumber: input.phoneNumber,
       referralCode: input.codeRevendeur,
+      acceptTerms: input.acceptTerms,
+      acceptHostingAbroad: input.acceptHostingAbroad,
+      acceptMarketing: input.acceptMarketing,
     });
   },
 

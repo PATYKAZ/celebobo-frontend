@@ -8,6 +8,7 @@ export function toProfile(dto: ProfileDto): Profile {
     lastName: dto.lastName,
     email: dto.email,
     phoneNumber: dto.phoneNumber,
+    phoneRequired: !!dto.phoneRequired,
     avatar: dto.avatar || null,
     emailVerified: dto.emailVerified,
     dateJoined: dto.dateJoined,

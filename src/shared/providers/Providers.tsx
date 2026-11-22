@@ -9,6 +9,8 @@ import { ApiError } from "@/shared/lib/api";
 import { Toaster } from "@/shared/ui/Toast";
 import { CartOwnerSync } from "@/modules/cart/components/CartOwnerSync";
 import { NavigationProgress } from "@/shared/layout/NavigationProgress";
+import { AccountCompletionGate } from "@/modules/consents/components/AccountCompletionGate";
+import { needsCompletion } from "@/modules/auth/types";
 
 /**
  * Une seule nouvelle tentative, et seulement si le service se dit momentanément indisponible (503) :
@@ -19,7 +21,9 @@ const retryDelay = (attempt: number) => Math.min(1000 * 2 ** attempt, 8000);
 
 function SessionSync() {
   useSessionSync();
-  useRealtimeSession(useAuth().user?.id ?? null);
+  const { user } = useAuth();
+  // pas de temps réel tant que le compte n'est pas complété (l'API refuse le ticket)
+  useRealtimeSession(user && !needsCompletion(user) ? user.id : null);
   return null;
 }
 
@@ -40,6 +44,9 @@ export function Providers({ children }: { children: ReactNode }) {
           <NavigationProgress />
         </Suspense>
         <SessionSync />
+        <Suspense fallback={null}>
+          <AccountCompletionGate />
+        </Suspense>
         <CartOwnerSync />
         {children}
         <Toaster />
