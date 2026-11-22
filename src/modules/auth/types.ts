@@ -1,3 +1,5 @@
+import type { ConsentKind } from "@/modules/consents/types";
+
 /**
  * Rôles métier (groupes Django) :
  *  - client    : acheteur
@@ -22,6 +24,10 @@ export interface User {
   /** Permissions accordées par l'API : seule source des droits affichés (`can()` dans `permissions.ts`). */
   permissions?: string[];
   availability?: ResellerAvailability;
+  /** Consentements obligatoires à donner avant d'utiliser le compte (étape de complétion). */
+  missingConsents?: ConsentKind[];
+  /** Client ou revendeur sans numéro de téléphone : demandé à l'étape de complétion. */
+  phoneRequired?: boolean;
 }
 
 export type ResellerAvailability = "online" | "away" | "offline";
@@ -37,11 +43,16 @@ export interface RegisterInput {
   firstName: string;
   lastName: string;
   email: string;
-  phoneNumber?: string;
+  /** Obligatoire : un compte par numéro (normalisé en +243… par l'API). */
+  phoneNumber: string;
   password: string;
   passwordConfirm: string;
   /** Code du revendeur invitant (optionnel) */
   codeRevendeur?: string;
+  /** Cases distinctes : CGV et données (obligatoire), hébergement hors RDC (obligatoire), offres (facultatif). */
+  acceptTerms: boolean;
+  acceptHostingAbroad: boolean;
+  acceptMarketing: boolean;
 }
 
 /** Résultat d'inscription : l'API exige la vérification de l'e-mail avant la première connexion. */
@@ -59,6 +70,9 @@ export interface ResetPasswordInput {
 
 export const displayName = (u: Pick<User, "firstName" | "lastName" | "username">) =>
   [u.firstName, u.lastName].filter(Boolean).join(" ") || u.username;
+
+/** Le compte doit passer par l'étape de complétion avant d'être utilisé. */
+export const needsCompletion = (u?: Pick<User, "missingConsents" | "phoneRequired"> | null) => !!u?.missingConsents?.length || !!u?.phoneRequired;
 
 export const isStaff = (u?: Pick<User, "role"> | null) =>
   !!u && (u.role === "admin" || u.role === "mukubwa" || u.role === "revendeur");

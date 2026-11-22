@@ -16,6 +16,8 @@ import { useRegister, useResendVerification } from "../hooks/useAuth";
 import { AuthLayoutCard } from "./AuthLayoutCard";
 import { fieldError, generalError } from "./fieldErrors";
 import { useAuthRedirect } from "./useAuthRedirect";
+import { ConsentLabel } from "@/modules/consents/components/ConsentLabel";
+import { PHONE_HINT, PHONE_PLACEHOLDER, phoneError } from "@/shared/lib/phone";
 
 const INITIAL = { firstName: "", lastName: "", email: "", phoneNumber: "", password: "", passwordConfirm: "", codeRevendeur: "" };
 type Form = typeof INITIAL;
@@ -28,8 +30,14 @@ export function RegisterView() {
   const params = useSearchParams();
   const ref = params.get("ref") ?? params.get("code");
   const [form, setForm] = useState<Form>({ ...INITIAL, codeRevendeur: ref && /^\d{4}$/.test(ref) ? ref : "" });
-  const [terms, setTerms] = useState(false);
-  const [errors, setErrors] = useState<Partial<Record<keyof Form | "terms", string>>>({});
+  // trois cases distinctes ; les offres commerciales ne sont jamais précochées (politique §8)
+  const [consents, setConsents] = useState({ acceptTerms: false, acceptHostingAbroad: false, acceptMarketing: false });
+  const [errors, setErrors] = useState<Partial<Record<keyof Form | "acceptTerms" | "acceptHostingAbroad", string>>>({});
+
+  const toggle = (k: keyof typeof consents) => (ev: { target: { checked: boolean } }) => {
+    setConsents((c) => ({ ...c, [k]: ev.target.checked }));
+    setErrors((er) => ({ ...er, [k]: undefined }));
+  };
 
   const set = (k: keyof Form) => (e: { target: { value: string } }) => {
     setForm((f) => ({ ...f, [k]: e.target.value }));
@@ -42,15 +50,17 @@ export function RegisterView() {
     if (!form.firstName.trim()) err.firstName = "Le prénom est requis.";
     if (!form.lastName.trim()) err.lastName = "Le nom est requis.";
     if (!/^\S+@\S+\.\S+$/.test(form.email)) err.email = "Adresse e-mail invalide.";
-    if (form.phoneNumber && !/^[+\d][\d\s().-]{6,}$/.test(form.phoneNumber)) err.phoneNumber = "Numéro invalide.";
+    const phone = phoneError(form.phoneNumber);
+    if (phone) err.phoneNumber = phone;
     if (form.password.length < 8) err.password = "Au moins 8 caractères.";
     if (form.passwordConfirm !== form.password) err.passwordConfirm = "Les mots de passe ne correspondent pas.";
     if (form.codeRevendeur && !/^\d{4}$/.test(form.codeRevendeur)) err.codeRevendeur = "Le code revendeur comporte 4 chiffres.";
-    if (!terms) err.terms = "Vous devez accepter les conditions.";
+    if (!consents.acceptTerms) err.acceptTerms = "Vous devez accepter les conditions générales de vente et le traitement de vos données personnelles.";
+    if (!consents.acceptHostingAbroad) err.acceptHostingAbroad = "Vous devez accepter l'hébergement de vos données hors de RDC.";
     setErrors(err);
     if (Object.keys(err).length) return;
     register.mutate(
-      { ...form, phoneNumber: form.phoneNumber || undefined, codeRevendeur: form.codeRevendeur || undefined },
+      { ...form, ...consents, codeRevendeur: form.codeRevendeur || undefined },
       {
         onSuccess: (r) => {
           if (!r.verificationRequired) redirect();
@@ -60,6 +70,7 @@ export function RegisterView() {
   };
 
   const e = (k: keyof Form, ...api: string[]) => errors[k] ?? fieldError(register.error, k, ...api);
+  const consentError = (k: "acceptTerms" | "acceptHostingAbroad") => errors[k] ?? fieldError(register.error, k);
   const general = generalError(register.error);
 
   const resendLink = () =>
@@ -94,20 +105,27 @@ export function RegisterView() {
                 <Input label="Nom" required value={form.lastName} onChange={set("lastName")} error={e("lastName")} leftIcon={<Profile size={17} />} autoComplete="family-name" />
               </div>
               <Input label="E-mail" required type="email" value={form.email} onChange={set("email")} error={e("email")} leftIcon={<Sms size={17} />} autoComplete="email" inputMode="email" autoCapitalize="none" enterKeyHint="next" />
-              <Input label="Téléphone" value={form.phoneNumber} onChange={set("phoneNumber")} error={e("phoneNumber")} leftIcon={<Call size={17} />} placeholder="+243 …" autoComplete="tel" inputMode="tel" enterKeyHint="next" />
+              <Input label="Téléphone" required value={form.phoneNumber} onChange={set("phoneNumber")} error={e("phoneNumber")} leftIcon={<Call size={17} />} placeholder={PHONE_PLACEHOLDER} hint={PHONE_HINT} autoComplete="tel" inputMode="tel" enterKeyHint="next" />
               <div className="grid gap-4 sm:grid-cols-2">
                 <Input label="Mot de passe" required type="password" value={form.password} onChange={set("password")} error={e("password")} leftIcon={<Lock size={17} />} autoComplete="new-password" />
                 <Input label="Confirmation" required type="password" value={form.passwordConfirm} onChange={set("passwordConfirm")} error={e("passwordConfirm")} leftIcon={<Lock size={17} />} autoComplete="new-password" enterKeyHint="next" />
               </div>
               <Input label="Code revendeur (optionnel)" value={form.codeRevendeur} onChange={set("codeRevendeur")} error={e("codeRevendeur", "referralCode")} inputMode="numeric" pattern="[0-9]*" maxLength={4} enterKeyHint="go" placeholder="Ex. 4821" leftIcon={<UserTick size={17} />} hint="Si un revendeur vous a invité, saisissez son code." />
-              <div>
-                <Checkbox checked={terms} onChange={(ev) => { setTerms(ev.target.checked); setErrors((er) => ({ ...er, terms: undefined })); }} label={<>J&apos;accepte les <Link href={ROUTES.guide} className="font-semibold text-ink underline">conditions d&apos;utilisation</Link> et la politique de confidentialité.</>} />
-                {errors.terms && <p role="alert" className="mt-1 text-[12px] text-danger">{errors.terms}</p>}
-              </div>
+              <fieldset className="space-y-3">
+                <legend className="sr-only">Consentements</legend>
+                {(["acceptTerms", "acceptHostingAbroad"] as const).map((k) => (
+                  <div key={k}>
+                    <Checkbox checked={consents[k]} onChange={toggle(k)} label={<ConsentLabel kind={k === "acceptTerms" ? "terms" : "hosting_abroad"} />} />
+                    {consentError(k) && <p role="alert" className="mt-1 text-[12px] text-danger">{consentError(k)}</p>}
+                  </div>
+                ))}
+                <Checkbox checked={consents.acceptMarketing} onChange={toggle("acceptMarketing")} label={<ConsentLabel kind="marketing" />} />
+              </fieldset>
               {general && <p role="alert" className="rounded-md bg-danger-50 px-3 py-2 text-[13px] text-danger">{general}</p>}
               <Button type="submit" size="lg" fullWidth loading={register.isPending}>Créer mon compte</Button>
             </form>
             <GoogleButton next={next} label="S'inscrire avec Google" />
+            <p className="mt-2 text-center text-[12px] text-ink-3">Avec Google, les conditions vous seront demandées juste après la connexion.</p>
           </>
         )}
       </AuthLayoutCard>

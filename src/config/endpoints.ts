@@ -76,6 +76,11 @@ export const ENDPOINTS = {
     dataExport: "/me/data-export/",
     dataExportDownload: (id: string) => `/me/data-export/${id}/download/`, // ZIP (JSON + HTML), lien valable 48 h
   },
+  /** Consentements (version et date acceptées, retrait en un clic) */
+  consents: {
+    list: "/me/consents/", // GET (état + historique) / POST { kinds }
+    detail: (kind: string) => `/me/consents/${encodeURIComponent(kind)}/`, // DELETE : retrait
+  },
   /** Points de fidélité du client (1 point = 1 $) */
   points: {
     me: "/me/points/", // GET : { eligible, available, pending, next_expiry, orders_count, orders_total, history[] }

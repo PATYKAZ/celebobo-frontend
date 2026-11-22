@@ -86,6 +86,8 @@ export interface OrderDto extends OrderSummaryDto {
   client?: PersonDto;
   reseller: PersonDto | null;
   conversationId: number | null;
+  /** Back-office (revendeur) : téléphone, adresse et note du client masqués (7 jours après la livraison, ou commande annulée) */
+  contactHidden?: boolean;
 }
 
 export const STATUS_FROM_API: Record<ApiOrderStatus, OrderStatus> = {
@@ -184,6 +186,7 @@ export function toOrder(dto: OrderSummaryDto | OrderDto): Order {
     deliveryCode: detail?.deliveryCode || null,
     deliveryCodeAttempts: detail?.deliveryCodeAttempts ?? 0,
     deliveryCodeLocked: detail?.deliveryCodeLocked ?? false,
+    contactHidden: detail?.contactHidden ?? false,
     rating: detail?.rating ?? null,
     canRate: detail?.canRate ?? false,
     allowedTransitions: detail?.allowedTransitions.map(toStatus) ?? [],

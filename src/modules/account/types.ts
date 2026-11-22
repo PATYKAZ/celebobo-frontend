@@ -15,6 +15,8 @@ export interface Profile {
   lastName: string;
   email: string;
   phoneNumber: string | null;
+  /** Client ou revendeur sans numéro (étape de complétion). */
+  phoneRequired: boolean;
   avatar: string | null;
   emailVerified: boolean;
   dateJoined: string;

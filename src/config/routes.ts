@@ -32,6 +32,9 @@ export const ROUTES = {
   settings: "/compte/parametres",
   points: "/compte/points",
   myData: "/compte/donnees",
+  consents: "/compte/consentements",
+  /** Étape de complétion du compte (consentements obligatoires manquants) */
+  completeAccount: (next?: string) => (next ? `/compte/finaliser?next=${encodeURIComponent(next)}` : "/compte/finaliser"),
 
   admin: {
     root: "/admin",

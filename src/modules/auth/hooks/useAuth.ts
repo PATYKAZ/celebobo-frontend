@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ROUTES } from "@/config/routes";
-import { setSessionProbe, setUnauthorizedHandler } from "@/shared/lib/api";
+import { setIncompleteHandler, setSessionProbe, setUnauthorizedHandler } from "@/shared/lib/api";
 import { authService } from "../services/auth.service";
 import { useAuthStore } from "../store/auth.store";
 import type { LoginInput, RegisterInput, ResetPasswordInput, UserRole } from "../types";
@@ -33,12 +33,18 @@ export function useSessionSync() {
   const setUser = useAuthStore((s) => s.setUser);
   const ready = useAuthStore((s) => s.ready);
   const known = useAuthStore((s) => !!s.user);
+  const qc = useQueryClient();
 
   useEffect(() => {
     setUnauthorizedHandler(() => useAuthStore.getState().setUser(null));
     setSessionProbe(() => !!useAuthStore.getState().user);
-    return () => setUnauthorizedHandler(null);
-  }, []);
+    // nouvelle version de la politique ou consentement retiré ailleurs : `/me/` ramène l'étape de complétion
+    setIncompleteHandler(() => qc.invalidateQueries({ queryKey: ["auth", "me"] }));
+    return () => {
+      setUnauthorizedHandler(null);
+      setIncompleteHandler(null);
+    };
+  }, [qc]);
 
   useQuery({
     queryKey: ["auth", "me"],

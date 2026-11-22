@@ -27,6 +27,12 @@ export const setUnauthorizedHandler = (fn: (() => void) | null) => {
   onUnauthorized = fn;
 };
 
+/** Hook global : l'API signale un compte à compléter (`account_incomplete`) — le module `auth` resynchronise `/me/`. */
+let onIncomplete: (() => void) | null = null;
+export const setIncompleteHandler = (fn: (() => void) | null) => {
+  onIncomplete = fn;
+};
+
 /** Une session est-elle connue ? Sans session (visiteur anonyme), un 401 ne déclenche aucun rafraîchissement. */
 let hasSession: () => boolean = () => true;
 export const setSessionProbe = (fn: () => boolean) => {
@@ -136,6 +142,7 @@ async function request<T>(method: string, path: string, body?: unknown, opts: Re
 
   if (!res.ok) {
     if (res.status === 401 && refreshable) onUnauthorized?.();
+    if (res.status === 403 && (parsed as Problem | undefined)?.code === "account_incomplete") onIncomplete?.();
     const detail = (parsed as Problem | undefined)?.detail;
     throw new ApiError(res.status, detail ?? res.statusText ?? "Erreur API", parsed);
   }

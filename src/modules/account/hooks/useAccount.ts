@@ -21,13 +21,14 @@ function useProfileMutation<T>(fn: (input: T) => Promise<Profile>) {
     mutationFn: fn,
     onSuccess: (p) => {
       qc.setQueryData([...accountKeys.profile, p.userId], p);
-      useAuthStore.getState().patchUser({ firstName: p.firstName, lastName: p.lastName, phoneNumber: p.phoneNumber, avatar: p.avatar });
+      useAuthStore.getState().patchUser({ firstName: p.firstName, lastName: p.lastName, phoneNumber: p.phoneNumber, avatar: p.avatar, phoneRequired: p.phoneRequired });
       qc.invalidateQueries({ queryKey: ["auth", "me"] });
     },
   });
 }
 
 export const useUpdateProfile = () => useProfileMutation<UpdatePersonalInput>(accountService.updatePersonal);
+export const useUpdatePhone = () => useProfileMutation<string>(accountService.updatePhone);
 
 export function useChangePassword() {
   return useMutation({ mutationFn: (input: ChangePasswordInput) => accountService.changePassword(input) });

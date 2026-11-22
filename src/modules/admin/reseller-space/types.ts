@@ -40,20 +40,23 @@ export interface ResellerDashboardData {
   recentSales: ResellerRecentSale[];
 }
 
+/** Un client invité, vu par son revendeur : ni e-mail ni achats (politique de confidentialité §4). */
 export interface InvitedClientRow {
   id: number;
   name: string;
-  email: string;
   joinedAt: string;
-  ordersCount: number;
-  ordersTotal: number;
+  /** Fin des 12 mois de parrainage (null si la date d'invitation est inconnue). */
+  referralEndsAt: string | null;
+  /** Ses achats rapportent encore des points de parrainage. */
+  referralActive: boolean;
 }
 
-/** GET /me/invites/ */
+/** GET /bo/me/invitees/ */
 export interface MyInvitesData {
   code: string;
   invitedCount: number;
-  ordersTotal: number;
+  /** Invités encore dans leurs 12 mois de parrainage (parmi ceux chargés). */
+  activeCount: number;
   invited: InvitedClientRow[];
 }
 
