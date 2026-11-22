@@ -67,6 +67,8 @@ export interface Product {
   freeShipping: boolean;
   /** Admin : chaque unité vendue reçoit son numéro de série ou IMEI (absent côté boutique). */
   serialRequired?: boolean;
+  /** Admin : repris pour un changement d'avis uniquement sous scellé (écouteurs intra-auriculaires). */
+  sealedReturnOnly?: boolean;
   shippingFee: number | null;
   /** Nombre de ventes (tri « meilleures ventes »). */
   salesCount?: number;

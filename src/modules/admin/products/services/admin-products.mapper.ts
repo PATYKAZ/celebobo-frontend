@@ -48,6 +48,7 @@ export interface AdminProductDetailDto extends AdminProductRowDto {
   freeShipping: boolean;
   shippingFee: string | null;
   serialRequired?: boolean;
+  sealedReturnOnly?: boolean;
   seoTitle?: string;
   seoDescription?: string;
   sellBy: string | null;
@@ -127,6 +128,7 @@ export function toAdminProduct(dto: AdminProductRowDto | AdminProductDetailDto):
     isActive: dto.status === "active",
     freeShipping: detail?.freeShipping ?? false,
     serialRequired: detail?.serialRequired ?? false,
+    sealedReturnOnly: detail?.sealedReturnOnly ?? false,
     shippingFee: orNull(detail?.shippingFee),
     seoTitle: detail?.seoTitle || null,
     seoDescription: detail?.seoDescription || null,
@@ -177,6 +179,7 @@ export function toProductPayload(v: ProductFormValues, withOrigin = false) {
     freeShipping: v.freeShipping,
     shippingFee: v.freeShipping ? null : orEmpty(v.shippingFee),
     serialRequired: v.serialRequired,
+    sealedReturnOnly: v.sealedReturnOnly,
     seoTitle: v.seoTitle.trim(),
     seoDescription: v.seoDescription.trim(),
     stockThreshold: Number(v.stockThreshold),

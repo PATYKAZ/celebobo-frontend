@@ -1,4 +1,4 @@
-import { Box, Category2, Chart2, DocumentText, Element3, Flash, Gallery, RowVertical, Messages2, MoneyRecive, Notification, People, Profile2User, Setting2, Share, TicketDiscount, TicketStar, Wallet3, type Icon } from "@/shared/ui/icons";
+import { Box, Category2, Chart2, DocumentText, Element3, Flash, Gallery, RowVertical, Messages2, MoneyRecive, Notification, People, Profile2User, Setting2, Share, ShieldTick, TicketDiscount, TicketStar, Wallet3, type Icon } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import type { Permission } from "@/modules/auth/permissions";
 import type { UserRole } from "@/modules/auth/types";
@@ -31,6 +31,7 @@ export const ADMIN_NAV: AdminNavItem[] = [
   { section: "Catalogue", label: "Bannières de l'accueil", href: ROUTES.admin.banners, icon: Gallery, permission: "content.manage" },
   { section: "Catalogue", label: "Pages et politiques", href: ROUTES.admin.pages, icon: DocumentText, permission: "content.manage" },
   { section: "Activité", label: "Commandes", resellerLabel: "Mes commandes", href: ROUTES.admin.orders, icon: Messages2, permission: "orders.view.assigned" },
+  { section: "Activité", label: "Réclamations", href: ROUTES.admin.claims, icon: ShieldTick, permission: "claims.manage" },
   { section: "Activité", label: "Ventes", resellerLabel: "Mes ventes", href: ROUTES.admin.sales, icon: MoneyRecive, permission: "sales.view.own" },
   { section: "Activité", label: "Messages", resellerLabel: "Mes discussions", href: ROUTES.admin.inbox, icon: Messages2, permission: "conversations.moderate", badge: "messages" },
   { section: "Activité", label: "Notifications", href: ROUTES.admin.notifications, icon: Notification, permission: "dashboard.view", badge: "notifications" },

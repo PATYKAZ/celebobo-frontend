@@ -74,6 +74,7 @@ function Content() {
           <Block pad="sm" className="p-2!">
             {[
               { href: ROUTES.orders, label: "Mes commandes", icon: Receipt2 },
+              { href: ROUTES.myClaims, label: "Mes réclamations", icon: ShieldTick },
               ...(pointsOpen ? [{ href: ROUTES.points, label: "Mes points de fidélité", icon: WalletMoney }] : []),
               { href: ROUTES.addresses, label: "Mon carnet d'adresses", icon: Location },
               { href: ROUTES.settings, label: "Notifications & préférences", icon: Notification },

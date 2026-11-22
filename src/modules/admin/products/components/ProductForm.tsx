@@ -224,6 +224,13 @@ export function ProductForm({ product }: Props) {
           </span>
           <Switch label="Numéro de série / IMEI requis" checked={v.serialRequired} onChange={(x) => set("serialRequired", x)} />
         </label>
+        <label className="flex min-h-12 cursor-pointer items-center justify-between gap-3 rounded-box border border-line px-4 py-2 active:bg-chip">
+          <span>
+            <span className="block text-[14px] font-semibold">Repris sous scellé uniquement</span>
+            <span className="block text-[12px] leading-[17px] text-ink-3">Écouteurs intra-auriculaires… : pour un changement d&apos;avis, le produit n&apos;est repris que si le scellé est intact. Les défauts restent couverts.</span>
+          </span>
+          <Switch label="Repris sous scellé uniquement" checked={v.sealedReturnOnly} onChange={(x) => set("sealedReturnOnly", x)} />
+        </label>
       </Section>
 
       <Section title="Référencement" hint="Titre et description affichés par Google et sur les réseaux sociaux. Laissés vides, le nom et la description courte sont utilisés." delay={0.03}>

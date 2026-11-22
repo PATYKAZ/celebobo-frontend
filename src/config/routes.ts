@@ -32,6 +32,9 @@ export const ROUTES = {
   settings: "/compte/parametres",
   points: "/compte/points",
   myData: "/compte/donnees",
+  myClaims: "/compte/reclamations",
+  myClaim: (id: number | string) => `/compte/reclamations/${id}`,
+  newClaim: (orderId: number | string) => `/compte/reclamations/nouvelle?commande=${orderId}`,
   consents: "/compte/consentements",
   /** Étape de complétion du compte (consentements obligatoires manquants) */
   completeAccount: (next?: string) => (next ? `/compte/finaliser?next=${encodeURIComponent(next)}` : "/compte/finaliser"),
@@ -65,5 +68,7 @@ export const ROUTES = {
     deals: "/admin/offres",
     coupons: "/admin/codes-promo",
     invites: "/admin/invites",
+    claims: "/admin/reclamations",
+    claim: (id: number | string) => `/admin/reclamations/${id}`,
   },
 } as const;
