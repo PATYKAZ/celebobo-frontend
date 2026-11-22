@@ -10,7 +10,6 @@ export interface ResellerDto {
   phoneNumber: string | null;
   avatar: string;
   referralCode: string | null;
-  commissionRate: string;
   availability: ResellerAvailability;
   isActive: boolean;
   dateJoined: string;
@@ -63,7 +62,6 @@ export function toReseller(dto: ResellerDto, period?: SellerSalesDto | null, ext
     joinedAt: dto.dateJoined,
     status: dto.isActive ? "actif" : "inactif",
     availability: dto.availability,
-    commissionRate: Number(dto.commissionRate),
     invited: [],
     ratingAverage: dto.ratingAverage == null ? null : Number(dto.ratingAverage),
     ratingCount: dto.ratingCount ?? 0,

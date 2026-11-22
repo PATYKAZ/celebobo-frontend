@@ -1,5 +1,5 @@
 import { BADGE_LABEL, money } from "@/modules/products/services/products.mapper";
-import type { Product } from "@/modules/products/types";
+import type { Product, ProductOrigin } from "@/modules/products/types";
 import { parseCare, type AdminProductStats, type ProductFormValues, type StockMovement } from "../types";
 
 /** Ligne de la liste du back-office (après camelCase). */
@@ -14,6 +14,9 @@ export interface AdminProductRowDto {
   costPrice: string | null;
   currentPrice: string;
   marginPercent: string | null;
+  /** Absents pour les rôles sans `products.origin`. */
+  origin?: ProductOrigin;
+  partnerGain?: string | null;
   stock: number;
   stockThreshold: number;
   lowStock: boolean;
@@ -94,6 +97,8 @@ export function toAdminProduct(dto: AdminProductRowDto | AdminProductDetailDto):
     priceSolde: sale,
     soldePercent: sale != null && price > 0 ? Math.round(((price - sale) / price) * 10000) / 100 : null,
     pricePrimary: orNull(dto.costPrice),
+    origin: dto.origin ?? null,
+    partnerGain: orNull(dto.partnerGain),
     category: dto.category.name,
     categoryId: dto.category.id,
     categorySlug: dto.category.slug,
@@ -148,9 +153,13 @@ export const toStockMovement = (dto: StockMovementDto): StockMovement => ({
   balanceAfter: dto.balanceAfter,
 });
 
-/** Corps commun création / modification (le stock et les variantes passent par leurs propres routes). */
-export function toProductPayload(v: ProductFormValues) {
+/**
+ * Corps commun création / modification (le stock et les variantes passent par leurs propres routes).
+ * L'origine et le gain ne sont envoyés que par les rôles qui ont `products.origin` (l'API refuse sinon).
+ */
+export function toProductPayload(v: ProductFormValues, withOrigin = false) {
   return {
+    ...(withOrigin ? { origin: v.origin, partnerGain: v.origin === "partner" ? orEmpty(v.partnerGain) : null } : {}),
     name: v.name.trim(),
     description: v.description.trim(),
     longDescription: v.longDescription.trim(),

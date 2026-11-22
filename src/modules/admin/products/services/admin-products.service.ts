@@ -89,11 +89,11 @@ export const adminProductsService = {
    * Création / modification en un seul appel : champs, galerie, variantes et stock. Un produit à variantes
    * n'envoie pas de stock global (l'API refuse : `variants_manage_stock`) ; la réponse est la fiche complète.
    */
-  async save(before: Product | null, values: ProductFormValues, images: ImageSlotValue[]): Promise<Product> {
+  async save(before: Product | null, values: ProductFormValues, images: ImageSlotValue[], withOrigin = false): Promise<Product> {
     const ids = await imageIds(images, before?.images ?? []);
     const variants = variantPayload(values.variants, before?.variants ?? []);
     const stock = variants.length ? {} : { stock: Number(values.stock) };
-    const body = { ...toProductPayload(values), ...(ids ? { imageIds: ids } : {}), ...stock };
+    const body = { ...toProductPayload(values, withOrigin), ...(ids ? { imageIds: ids } : {}), ...stock };
     if (!before) return toAdminProduct(await api.post<AdminProductDetailDto>(products.list, variants.length ? { ...body, variants } : body));
     const sync = variants.length || before.variants.length ? { variants } : {};
     return toAdminProduct(await api.patch<AdminProductDetailDto>(products.detail(before.id), { ...body, ...sync }));

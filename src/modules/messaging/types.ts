@@ -144,7 +144,9 @@ export type NotificationKind =
   | "refund_due"
   | "order_refunded"
   | "delivery_code"
-  | "delivery_code_locked";
+  | "delivery_code_locked"
+  | "payout_statement"
+  | "payout_paid";
 
 export interface Notification {
   id: number;

@@ -20,7 +20,7 @@ Ce qui reste concerne des **fonctions de l'API sans écran** : à créer côté 
 | `/admin/contenu/faq` | `GET/POST /bo/faq/`, `PATCH/DELETE /bo/faq/{id}/` | responsable | Questions fréquentes par catégorie |
 | `/admin/codes-promo` | `GET/POST /bo/coupons/`, `GET/PATCH/DELETE /bo/coupons/{id}/` | responsable | Codes promo : % ou montant, plafond, minimum, dates, limites d'utilisation, livraison offerte |
 | `/admin/livraison` | `GET/POST /bo/shipping-zones/`, `PATCH/DELETE /bo/shipping-zones/{id}/` | responsable | Zones de livraison : villes, frais, seuil de gratuité, délai, zone par défaut |
-| `/admin/candidatures` | `GET /bo/reseller-applications/` (+ `/{id}/`), `POST …/{id}/approve/`, `POST …/{id}/reject/` | responsable | Examiner les demandes « Devenir revendeur » : valider (taux, responsable) ou refuser (motif) |
+| `/admin/candidatures` | `GET /bo/reseller-applications/` (+ `/{id}/`), `POST …/{id}/approve/`, `POST …/{id}/reject/` | responsable | Examiner les demandes « Devenir revendeur » : valider (responsable ; pas de taux de commission, règles communes depuis le 16 nov. 2026) ou refuser (motif) |
 | `/admin/contact` | `GET /bo/contact-messages/`, `GET/PATCH /bo/contact-messages/{id}/` | responsable | Boîte des messages du formulaire de contact : traité / spam, note interne |
 | `/admin/newsletter` | `GET /bo/newsletter/subscribers/`, `GET …/export/` (CSV) | responsable | Abonnés (actifs / désinscrits, recherche) et export |
 | `/admin/avis` | `GET /bo/reviews/`, `PATCH /bo/reviews/{id}/` | responsable | Modération des avis : masquer / republier (la fiche produit admin ne fait que les lister) |

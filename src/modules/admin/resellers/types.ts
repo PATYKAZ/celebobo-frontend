@@ -30,8 +30,6 @@ export interface Reseller {
   joinedAt: string;
   status: "actif" | "inactif";
   availability: Availability;
-  /** 0.07 = 7 % */
-  commissionRate: number;
   invited: InvitedClient[];
   /** Note moyenne des clients après livraison (null : pas encore notée) et nombre de notes */
   ratingAverage: number | null;
@@ -70,8 +68,6 @@ export interface CreateResellerInput {
   lastName: string;
   email: string;
   phone?: string;
-  /** 0.07 = 7 % (défaut 7 %) */
-  commissionRate?: number;
 }
 
 export const AVAILABILITY_LABEL: Record<Availability, string> = { online: "En ligne", away: "Absent", offline: "Hors ligne" };

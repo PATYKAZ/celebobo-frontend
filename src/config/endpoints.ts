@@ -263,6 +263,10 @@ export const ENDPOINTS = {
       series: "/bo/commissions/series/",
     },
     payouts: "/bo/payouts/",
+    payoutStatements: {
+      list: "/bo/payout-statements/",
+      detail: (id: number) => `/bo/payout-statements/${id}/`,
+    },
     users: {
       list: "/bo/users/",
       detail: (id: number) => `/bo/users/${id}/`,
