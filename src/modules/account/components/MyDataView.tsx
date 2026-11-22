@@ -115,7 +115,11 @@ function Content() {
             <Link href={ROUTES.page("politique-de-confidentialite")} className="font-semibold text-primary underline">
               politique de confidentialité
             </Link>
-            .
+            . Écrivez à{" "}
+            <a href="mailto:celestinbahiga@gmail.com" className="font-semibold text-primary underline">
+              celestinbahiga@gmail.com
+            </a>{" "}
+            avec « Données personnelles » en objet.
           </p>
         </div>
         <p className="mt-3 flex items-center gap-2 text-[12px] text-ink-3">
