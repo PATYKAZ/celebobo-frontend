@@ -72,6 +72,9 @@ export const ENDPOINTS = {
     devices: "/me/devices/",
     device: (id: number | string) => `/me/devices/${id}/`,
     pushPublicKey: "/push/public-key/",
+    // « Télécharger mes données » (politique de confidentialité, art. 211) : GET statut / POST nouvel export (1 par heure)
+    dataExport: "/me/data-export/",
+    dataExportDownload: (id: string) => `/me/data-export/${id}/download/`, // ZIP (JSON + HTML), lien valable 48 h
   },
   /** Points de fidélité du client (1 point = 1 $) */
   points: {

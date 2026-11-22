@@ -10,3 +10,6 @@ export { addressBookService } from "./services/address-book.service";
 export { NotificationSettingsView } from "./components/NotificationSettingsView";
 export { useNotificationPreferences, useSavePreferences, usePushPermission, usePushDevices, useRemoveDevice } from "./hooks/usePreferences";
 export { preferencesService } from "./services/preferences.service";
+export { MyDataView } from "./components/MyDataView";
+export { useDataExport, useRequestDataExport } from "./hooks/useDataExport";
+export { dataExportService } from "./services/data-export.service";

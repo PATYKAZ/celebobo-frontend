@@ -31,6 +31,7 @@ export const ROUTES = {
   addresses: "/compte/adresses",
   settings: "/compte/parametres",
   points: "/compte/points",
+  myData: "/compte/donnees",
 
   admin: {
     root: "/admin",
