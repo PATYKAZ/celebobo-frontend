@@ -35,6 +35,9 @@ export interface OrderLineDto {
   quantity: number;
   unitPrice: string;
   total: string;
+  /** Numéro de série ou IMEI exigé pour chaque unité (politique de garantie). */
+  serialRequired?: boolean;
+  serials?: string[];
 }
 
 export interface StatusEntryDto {
@@ -132,6 +135,8 @@ function toItem(dto: OrderLineDto): OrderItem {
     quantity: dto.quantity,
     unitPrice: money(dto.unitPrice),
     variantLabel: dto.variantLabel || null,
+    serialRequired: dto.serialRequired ?? false,
+    serials: dto.serials ?? [],
   };
 }
 

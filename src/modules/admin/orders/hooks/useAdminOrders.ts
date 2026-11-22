@@ -41,6 +41,18 @@ export function useRecordAttempt(id: number) {
   });
 }
 
+/** Enregistre les numéros de série / IMEI d'une ligne. */
+export function useRecordSerials(id: number) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ itemId, serials }: { itemId: number; serials: string[] }) => adminOrdersService.recordSerials(id, itemId, serials),
+    onSuccess: (order) => {
+      qc.setQueryData(adminOrderKeys.detail(id), order);
+      qc.invalidateQueries({ queryKey: adminOrderKeys.all });
+    },
+  });
+}
+
 /** Enregistre le remboursement d'une commande payée puis annulée. */
 export function useRecordRefund(id: number) {
   const qc = useQueryClient();

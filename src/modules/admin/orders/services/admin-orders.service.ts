@@ -68,6 +68,11 @@ export const adminOrdersService = {
     return toOrder(await api.post<OrderDto>(orders.deliveryAttempts(id), { reason, note: note.trim() }));
   },
 
+  /** Numéros de série / IMEI d'une ligne (la liste complète : ceux retirés sont supprimés). */
+  async recordSerials(id: number, itemId: number, serials: string[]): Promise<Order> {
+    return toOrder(await api.put<OrderDto>(orders.itemSerials(id, itemId), { serials }));
+  },
+
   /** Commande payée puis annulée : l'argent a été rendu au client (note : référence de la transaction). */
   async recordRefund(id: number, note: string): Promise<Order> {
     return toOrder(await api.post<OrderDto>(orders.refund(id), { note: note.trim() }));

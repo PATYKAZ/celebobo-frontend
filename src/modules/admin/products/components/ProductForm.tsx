@@ -217,6 +217,13 @@ export function ProductForm({ product }: Props) {
           <Input label="Frais de livraison ($)" type="number" inputMode="decimal" min="0" step="0.01" value={v.shippingFee} onChange={(e) => set("shippingFee", e.target.value)} disabled={v.freeShipping} />
           <label className="flex min-h-12 cursor-pointer items-center justify-between gap-3 rounded-box border border-line px-4 active:bg-chip"><span className="text-[14px] font-semibold">Livraison offerte</span><Switch label="Livraison offerte" checked={v.freeShipping} onChange={(x) => set("freeShipping", x)} /></label>
         </div>
+        <label className="flex min-h-12 cursor-pointer items-center justify-between gap-3 rounded-box border border-line px-4 py-2 active:bg-chip">
+          <span>
+            <span className="block text-[14px] font-semibold">Numéro de série / IMEI requis</span>
+            <span className="block text-[12px] leading-[17px] text-ink-3">Téléphones, ordinateurs… : chaque unité reçoit son numéro avant la livraison ; il est imprimé sur la facture.</span>
+          </span>
+          <Switch label="Numéro de série / IMEI requis" checked={v.serialRequired} onChange={(x) => set("serialRequired", x)} />
+        </label>
       </Section>
 
       <Section title="Référencement" hint="Titre et description affichés par Google et sur les réseaux sociaux. Laissés vides, le nom et la description courte sont utilisés." delay={0.03}>

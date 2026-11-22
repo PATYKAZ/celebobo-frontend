@@ -25,6 +25,7 @@ import { useAdminOrder, useRecordAttempt, useRecordRefund, useResellerOptions } 
 import { AssignResellerModal } from "./AssignResellerModal";
 import { StatusHistory, StatusStepper } from "./OrderProgress";
 import { AvailabilityDot, OrderStatusDot, PAYMENT_LABEL } from "./parts";
+import { SerialNumbersCard } from "./SerialNumbersCard";
 import { StatusActionBar } from "./StatusActionBar";
 
 export function OrderDetailView({ id }: { id: number }) {
@@ -177,6 +178,9 @@ function Content({ id }: { id: number }) {
               </div>
             </Block>
           </Reveal>
+
+          {/* remonte les champs à chaque nouvelle version des numéros enregistrés */}
+          <SerialNumbersCard key={order.items.map((it) => (it.serials ?? []).join(",")).join("|")} order={order} />
 
           <Reveal delay={0.05}>
             <Block>
