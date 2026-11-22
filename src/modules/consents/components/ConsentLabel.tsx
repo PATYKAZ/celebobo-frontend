@@ -19,7 +19,7 @@ export function ConsentLabel({ kind }: { kind: ConsentKind }) {
     case "terms":
       return (
         <>
-          J&apos;accepte les <Doc slug="conditions">conditions générales de vente</Doc> et le traitement de mes données personnelles décrit dans la{" "}
+          J&apos;accepte les <Doc slug="conditions-de-vente">conditions générales de vente</Doc> et le traitement de mes données personnelles décrit dans la{" "}
           <Doc slug="politique-de-confidentialite">politique de confidentialité</Doc>.
         </>
       );
