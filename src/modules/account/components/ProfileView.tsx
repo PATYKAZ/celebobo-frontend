@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
-import { ArrowRight2, Call, Location, Notification, Receipt2, User, WalletMoney } from "@/shared/ui/icons";
+import { ArrowRight2, Call, Location, Notification, Receipt2, ShieldTick, User, WalletMoney } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import { createElement, useEffect, useState } from "react";
 import { Breadcrumb } from "@/shared/layout/Breadcrumb";
@@ -77,6 +77,7 @@ function Content() {
               ...(pointsOpen ? [{ href: ROUTES.points, label: "Mes points de fidélité", icon: WalletMoney }] : []),
               { href: ROUTES.addresses, label: "Mon carnet d'adresses", icon: Location },
               { href: ROUTES.settings, label: "Notifications & préférences", icon: Notification },
+              { href: ROUTES.consents, label: "Mes consentements", icon: ShieldTick },
             ].map(({ href, label, icon: Icon }) => (
               <Link key={href} href={href} className="group flex min-h-12 items-center gap-3 rounded-box px-3 py-2 text-[14px] font-semibold transition-colors hover:bg-chip active:bg-chip">
                 <span className="grid size-9 place-items-center rounded-full bg-chip transition-colors group-hover:bg-primary group-hover:text-white"><Icon size={17} /></span>
