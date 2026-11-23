@@ -29,6 +29,9 @@ interface Props {
 export function CartSummary({ subtotal, savings, count, quote, coupon, points, credit, actions, title = "Récapitulatif" }: Props) {
   const { currency, rate } = useCurrency();
   const discount = quote?.discount ?? 0;
+  const campaignDiscount = quote?.campaignDiscount ?? 0;
+  const couponDiscount = Math.max(0, discount - campaignDiscount);
+  const advantage = quote?.campaignAdvantage ?? 0;
   const shipping = quote?.shippingFee ?? 0;
   const pointsUsed = quote?.points ?? 0;
   const creditUsed = quote?.storeCredit ?? 0;
@@ -59,7 +62,8 @@ export function CartSummary({ subtotal, savings, count, quote, coupon, points, c
       <dl className="mt-5 space-y-3 text-[14px]">
         <div className="flex justify-between"><dt className="text-ink-2">Articles ({count})</dt><dd className="font-semibold">{formatPrice(subtotal + savings)}</dd></div>
         {savings > 0 && <div className="flex justify-between"><dt className="text-ink-2">Remises</dt><dd className="font-semibold text-danger">-{formatPrice(savings)}</dd></div>}
-        {discount > 0 && <div className="flex justify-between"><dt className="text-ink-2">Code promo{quote?.couponCode ? ` (${quote.couponCode})` : ""}</dt><dd className="font-semibold text-danger">-{formatPrice(discount)}</dd></div>}
+        {campaignDiscount > 0 && <div className="flex justify-between gap-3"><dt className="text-ink-2">Remise Cagnotte · {quote?.campaignName}</dt><dd className="font-semibold text-danger">-{formatPrice(campaignDiscount)}</dd></div>}
+        {couponDiscount > 0 && <div className="flex justify-between"><dt className="text-ink-2">Code promo{quote?.couponCode ? ` (${quote.couponCode})` : ""}</dt><dd className="font-semibold text-danger">-{formatPrice(couponDiscount)}</dd></div>}
         {pointsUsed > 0 && <div className="flex justify-between"><dt className="text-ink-2">Points de fidélité utilisés</dt><dd className="font-semibold text-danger">-{formatPrice(pointsUsed)}</dd></div>}
         {creditUsed > 0 && <div className="flex justify-between"><dt className="text-ink-2">Avoir utilisé</dt><dd className="font-semibold text-danger">-{formatPrice(creditUsed)}</dd></div>}
         <div className="flex justify-between gap-3">
@@ -87,6 +91,14 @@ export function CartSummary({ subtotal, savings, count, quote, coupon, points, c
         {currency === "CDF" && rate > 0 && (
           <p className="-mt-1 text-right text-[12px] leading-[17px] text-ink-2">
             ≈ <span className="font-semibold tabular-nums">{formatPrice(total, { currency: "CDF", rate })}</span> · paiement calculé en USD au taux du jour
+          </p>
+        )}
+        {advantage > 0 && (
+          <p className="flex items-start gap-2 rounded-box bg-primary-50 p-3 text-[13px] leading-[19px] text-primary-dark">
+            <Gift size={18} variant="Bold" className="mt-0.5 shrink-0 text-primary" />
+            <span>
+              Cagnotte · {quote?.campaignName} : environ <b>{quote?.campaignKind === "cashback" ? `${formatPrice(advantage)} de cashback` : `${advantage.toLocaleString("fr-FR")} points en plus`}</b> après la livraison et le délai d&apos;essai, en plus de vos points.
+            </span>
           </p>
         )}
       </dl>

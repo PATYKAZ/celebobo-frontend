@@ -159,6 +159,12 @@ function Content({ id }: { id: number }) {
                     ))}
                   </tbody>
                   <tfoot>
+                    {!!order.campaignDiscount && (
+                      <tr>
+                        <td colSpan={3} className="px-5 pt-4 text-right text-[13px] text-ink-2 sm:px-6">Remise Cagnotte{order.campaignName ? ` · ${order.campaignName}` : ""} (pas de commission)</td>
+                        <td className="px-5 pt-4 text-right font-semibold text-danger sm:px-6">-{formatPrice(order.campaignDiscount)}</td>
+                      </tr>
+                    )}
                     {!!order.points && (
                       <tr>
                         <td colSpan={3} className="px-5 pt-4 text-right text-[13px] text-ink-2 sm:px-6">Points de fidélité utilisés</td>

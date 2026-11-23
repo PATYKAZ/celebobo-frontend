@@ -82,6 +82,16 @@ export const ENDPOINTS = {
     summary: "/bo/cash/summary/", // GET ?reseller_id= (équipe) ; le revendeur voit le sien
     remittances: "/bo/cash/remittances/", // POST { resellerId, amount, reference, receivedAt } (Idempotency-Key)
   },
+  /** Opérations Cagnotte (programme de fidélité) : en plus des points, une seule à la fois */
+  cagnotte: {
+    current: "/cagnotte/current/", // GET public : { campaign } en cours, ou null
+    mine: "/me/cagnotte/", // GET : mes avantages Cagnotte
+    campaigns: "/bo/campaigns/", // GET, POST (admin, Idempotency-Key)
+    campaign: (id: number) => `/bo/campaigns/${id}/`, // GET, PUT, DELETE (avant le début)
+    end: (id: number) => `/bo/campaigns/${id}/end/`, // POST : y mettre fin maintenant
+    rewards: "/bo/cagnotte/rewards/", // GET ?due=true : cashbacks Mobile Money à verser
+    pay: (id: number) => `/bo/cagnotte/rewards/${id}/pay/`, // POST { reference }
+  },
   /** Niveaux des revendeurs et sanctions (politique revendeurs, 9 et 10) */
   standing: {
     detail: "/bo/standing/", // GET ?reseller_id= (équipe) ; le revendeur voit le sien

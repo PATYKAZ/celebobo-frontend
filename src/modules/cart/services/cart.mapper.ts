@@ -33,6 +33,11 @@ export interface QuoteDto {
   pickupAddress?: string;
   shippingQuoteRequired?: boolean;
   pickupAvailable?: boolean;
+  campaignName?: string;
+  campaignKind?: string;
+  campaignPercent?: string | null;
+  campaignDiscount?: string;
+  campaignAdvantage?: string;
 }
 
 export interface CartLineDto {
@@ -68,6 +73,11 @@ export function toQuote(dto: QuoteDto): CartQuote {
     pickupAddress: dto.pickupAddress || null,
     shippingQuoteRequired: dto.shippingQuoteRequired ?? false,
     pickupAvailable: dto.pickupAvailable ?? false,
+    campaignName: dto.campaignName || null,
+    campaignKind: (dto.campaignKind || null) as CartQuote["campaignKind"],
+    campaignPercent: dto.campaignPercent == null ? null : money(dto.campaignPercent),
+    campaignDiscount: money(dto.campaignDiscount),
+    campaignAdvantage: money(dto.campaignAdvantage),
   };
 }
 

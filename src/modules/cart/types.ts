@@ -26,7 +26,7 @@ export interface CartItem {
 /** Totaux calculés par l'API (panier et devis de commande). */
 export interface CartQuote {
   subtotal: number;
-  /** Remise du code promo */
+  /** Remise : code promo + remise Cagnotte (`campaignDiscount`) */
   discount: number;
   shippingFee: number;
   total: number;
@@ -52,7 +52,15 @@ export interface CartQuote {
   shippingQuoteRequired: boolean;
   /** La boutique propose le retrait sur place */
   pickupAvailable: boolean;
+  /** Opération Cagnotte en cours : sa remise est comprise dans `discount` ; `campaignAdvantage` estime son cashback ou ses points majorés */
+  campaignName: string | null;
+  campaignKind: CampaignKind | null;
+  campaignPercent: number | null;
+  campaignDiscount: number;
+  campaignAdvantage: number;
 }
+
+export type CampaignKind = "discount" | "cashback" | "boosted_points";
 
 export interface Cart {
   /** Jeton du panier invité (null pour un panier de compte). */
@@ -75,6 +83,11 @@ export const EMPTY_QUOTE: CartQuote = {
   points: 0,
   storeCreditAvailable: 0,
   storeCredit: 0,
+  campaignName: null,
+  campaignKind: null,
+  campaignPercent: null,
+  campaignDiscount: 0,
+  campaignAdvantage: 0,
   pickup: false,
   pickupAddress: null,
   shippingQuoteRequired: false,
