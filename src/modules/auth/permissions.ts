@@ -54,7 +54,10 @@ export type Permission =
   | "cash.view.own" // l'argent encaissé à reverser (revendeur)
   | "cash.manage" // enregistrer les reversements des revendeurs
   | "standing.view.own" // son niveau et ses sanctions, s'expliquer sous 48 h (revendeur)
-  | "standing.manage"; // revoir les niveaux, ouvrir et décider les sanctions
+  | "standing.manage" // revoir les niveaux, ouvrir et décider les sanctions
+  | "cagnotte.view.own" // ses avantages Cagnotte (client)
+  | "cagnotte.pay" // verser les cashbacks Cagnotte par Mobile Money
+  | "cagnotte.manage"; // créer les opérations Cagnotte (admin)
 
 type WithPermissions = Pick<User, "permissions"> | null | undefined;
 

@@ -1,5 +1,5 @@
 /** Mouvements du compte de points (EntryKind de l'API). */
-export type PointsMovementKind = "earn" | "spend" | "refund" | "reversal" | "expiry" | "referral" | "referral_reversal";
+export type PointsMovementKind = "earn" | "spend" | "refund" | "reversal" | "expiry" | "referral" | "referral_reversal" | "cagnotte" | "cagnotte_reversal";
 
 export interface PointsMovement {
   kind: PointsMovementKind;
@@ -35,6 +35,8 @@ export const POINTS_MOVEMENT_LABELS: Record<PointsMovementKind, string> = {
   expiry: "Points expirés",
   referral: "Points de parrainage",
   referral_reversal: "Parrainage retiré (retour)",
+  cagnotte: "Points Cagnotte",
+  cagnotte_reversal: "Points Cagnotte retirés (retour)",
 };
 
 /** Points de parrainage (et leur retrait) : liés à la commande d'un invité, sans son numéro. */

@@ -122,9 +122,12 @@ export interface Order {
   previewName?: string | null;
   previewImage?: string | null;
   subtotal?: number;
-  /** Remise du code promo */
+  /** Remise : code promo + remise Cagnotte (`campaignDiscount`) */
   discount?: number;
   couponCode?: string | null;
+  /** Opération Cagnotte en cours à la commande, et sa remise (comprise dans `discount`) */
+  campaignName?: string | null;
+  campaignDiscount?: number;
   /** Points de fidélité utilisés sur la commande (1 point = 1 $) */
   points?: number;
   /** Avoir utilisé sur la commande ($, livraison comprise) */

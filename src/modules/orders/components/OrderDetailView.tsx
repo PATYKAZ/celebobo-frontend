@@ -207,7 +207,8 @@ export function OrderDetailView({ number }: { number: string }) {
             </ul>
             <dl className="mt-2 space-y-2 border-t border-line-3 pt-4 text-[14px]">
               {order.subtotal != null && <div className="flex justify-between"><dt className="text-ink-2">Sous-total</dt><dd className="font-semibold">{formatPrice(order.subtotal)}</dd></div>}
-              {!!order.discount && <div className="flex justify-between"><dt className="text-ink-2">Code promo{order.couponCode ? ` (${order.couponCode})` : ""}</dt><dd className="font-semibold text-danger">-{formatPrice(order.discount)}</dd></div>}
+              {!!order.campaignDiscount && <div className="flex justify-between gap-3"><dt className="text-ink-2">Remise Cagnotte{order.campaignName ? ` · ${order.campaignName}` : ""}</dt><dd className="font-semibold text-danger">-{formatPrice(order.campaignDiscount)}</dd></div>}
+              {(order.discount ?? 0) - (order.campaignDiscount ?? 0) > 0 && <div className="flex justify-between"><dt className="text-ink-2">Code promo{order.couponCode ? ` (${order.couponCode})` : ""}</dt><dd className="font-semibold text-danger">-{formatPrice((order.discount ?? 0) - (order.campaignDiscount ?? 0))}</dd></div>}
               {!!order.points && <div className="flex justify-between"><dt className="text-ink-2">Points de fidélité utilisés</dt><dd className="font-semibold text-danger">-{formatPrice(order.points)}</dd></div>}
               {!!order.storeCredit && <div className="flex justify-between"><dt className="text-ink-2">Avoir utilisé</dt><dd className="font-semibold text-danger">-{formatPrice(order.storeCredit)}</dd></div>}
               {order.shippingFee != null && (

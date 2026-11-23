@@ -1,5 +1,6 @@
 "use client";
 
+import { CagnotteBanner } from "@/modules/cagnotte/CagnotteBanner";
 import { returnPeriod, useSiteSettings } from "@/modules/site";
 import { useHomeContent } from "../hooks/useHomeContent";
 import { BrandNew } from "./BrandNew";
@@ -25,6 +26,7 @@ export function HomeView() {
       {/* titre principal de la page (lecteurs d'écran, moteurs de recherche) ; le visuel commence par le carrousel */}
       <h1 className="sr-only">Celebobo — boutique high-tech : smartphones, ordinateurs, audio et gaming</h1>
       <HeroSection content={content} />
+      <CagnotteBanner />
       <BrandsAndCategories brands={content?.brands ?? undefined} />
       <DealsOfTheDay content={content} />
       <ShippingBanner />

@@ -1,5 +1,6 @@
 "use client";
 
+import { MyRewards } from "@/modules/cagnotte/MyRewards";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { Clock, InfoCircle, Receipt2, WalletMoney } from "@/shared/ui/icons";
@@ -120,6 +121,8 @@ function Content() {
                 <h2 className="mb-3 flex items-center gap-2 text-[16px] font-bold"><Receipt2 size={18} /> Historique</h2>
                 <History history={data.history} />
               </section>
+
+              <MyRewards />
             </div>
           )}
         </div>
