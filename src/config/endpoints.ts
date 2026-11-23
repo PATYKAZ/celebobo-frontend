@@ -82,6 +82,14 @@ export const ENDPOINTS = {
     summary: "/bo/cash/summary/", // GET ?reseller_id= (équipe) ; le revendeur voit le sien
     remittances: "/bo/cash/remittances/", // POST { resellerId, amount, reference, receivedAt } (Idempotency-Key)
   },
+  /** Niveaux des revendeurs et sanctions (politique revendeurs, 9 et 10) */
+  standing: {
+    detail: "/bo/standing/", // GET ?reseller_id= (équipe) ; le revendeur voit le sien
+    review: "/bo/standing/review/", // POST (équipe) : revoir les niveaux maintenant
+    sanctions: "/bo/sanctions/", // GET ?reseller_id=&status= ; POST { resellerId, kind, reason, days, urgent } (Idempotency-Key)
+    explain: (id: number) => `/bo/sanctions/${id}/explain/`, // POST { explanation } (le revendeur, sous 48 h)
+    decide: (id: number) => `/bo/sanctions/${id}/decide/`, // POST { apply, note }
+  },
   /** Avoir (dollars, 6 mois, livraison comprise) : solde, prochaine expiration, mouvements */
   storeCredit: "/me/store-credit/",
   /** Réclamations (politique de garantie) : le client sur ses commandes livrées, l'équipe les traite */

@@ -20,6 +20,10 @@ import { AvailabilityDot } from "./parts";
 
 const RANK = { online: 0, away: 1, offline: 2 } as const;
 
+/** Pourquoi ce revendeur ne peut pas recevoir de nouvelle commande (sanction ou argent à reverser). */
+const blockedReason = (r: ResellerOption): string | null =>
+  r.suspendedUntil ? `Suspendu jusqu'au ${formatDate(r.suspendedUntil)}` : r.cashBlocked ? `Argent à reverser : ${r.cashBlocked}` : null;
+
 interface Props {
   order: Order | null;
   onClose: () => void;
@@ -37,8 +41,9 @@ export function AssignResellerModal({ order, onClose }: Props) {
   // l'API ne renvoie la suggestion que si l'inviteur est un revendeur actif
   const suggested = order?.suggestedReseller && order.suggestedReseller.id !== order.assignedRevendeur?.id ? order.suggestedReseller : null;
 
-  // un revendeur qui doit d'abord reverser l'argent encaissé ne reçoit pas de nouvelle commande
-  const suggestedBlocked = suggested ? (data ?? []).find((r) => r.id === suggested.id)?.cashBlocked ?? null : null;
+  // un revendeur suspendu, ou qui doit d'abord reverser l'argent encaissé, ne reçoit pas de nouvelle commande
+  const suggestedOption = suggested ? (data ?? []).find((r) => r.id === suggested.id) : undefined;
+  const suggestedBlocked = suggestedOption ? blockedReason(suggestedOption) : null;
 
   useEffect(() => {
     if (open) {
@@ -55,7 +60,7 @@ export function AssignResellerModal({ order, onClose }: Props) {
       .sort((a, b) => Number(b.id === suggested?.id) - Number(a.id === suggested?.id) || Number(b.active) - Number(a.active) || RANK[a.availability] - RANK[b.availability] || a.openOrders - b.openOrders || a.name.localeCompare(b.name));
   }, [data, q, suggested?.id]);
 
-  const disabledReason = (r: ResellerOption) => (!r.active ? "Compte désactivé" : r.id === order?.assignedRevendeur?.id ? "Déjà assigné" : r.cashBlocked ? `Argent à reverser : ${r.cashBlocked}` : null);
+  const disabledReason = (r: ResellerOption) => (!r.active ? "Compte désactivé" : r.id === order?.assignedRevendeur?.id ? "Déjà assigné" : blockedReason(r));
 
   const submit = (resellerId = picked) => {
     if (!order || resellerId == null) return;
@@ -79,7 +84,7 @@ export function AssignResellerModal({ order, onClose }: Props) {
           <span className="min-w-0 flex-1 text-[13px]">
             <span className="block font-semibold">Invité par {suggested.name} — suggéré</span>
             <span className="block text-ink-3">{suggested.invitedAt ? `Client invité le ${formatDate(suggested.invitedAt)}` : "Revendeur qui a invité ce client"}</span>
-            {suggestedBlocked && <span className="block text-danger">Argent à reverser : {suggestedBlocked}</span>}
+            {suggestedBlocked && <span className="block text-danger">{suggestedBlocked}</span>}
           </span>
           {!suggestedBlocked && <Button size="sm" upper={false} disabled={assign.isPending} onClick={() => submit(suggested.id)}>{reassign ? "Réassigner" : "Assigner"}</Button>}
         </div>

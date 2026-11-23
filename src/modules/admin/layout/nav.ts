@@ -1,4 +1,4 @@
-import { Box, Category2, Chart2, DocumentText, Element3, Flash, Gallery, RowVertical, Messages2, MoneyRecive, Notification, People, Profile2User, Setting2, Share, ShieldTick, TicketDiscount, TicketStar, Wallet3, type Icon } from "@/shared/ui/icons";
+import { Award, Box, Category2, Chart2, DocumentText, Element3, Flash, Gallery, RowVertical, Messages2, MoneyRecive, Notification, People, Profile2User, Setting2, Share, ShieldTick, TicketDiscount, TicketStar, Wallet3, type Icon } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import type { Permission } from "@/modules/auth/permissions";
 import type { UserRole } from "@/modules/auth/types";
@@ -38,6 +38,7 @@ export const ADMIN_NAV: AdminNavItem[] = [
   { section: "Équipe", label: "Revendeurs", href: ROUTES.admin.resellers, icon: People, permission: "resellers.view" },
   { section: "Équipe", label: "Commissions", resellerLabel: "Mes commissions", href: ROUTES.admin.commissions, icon: Wallet3, permission: "commissions.view.own" },
   { section: "Équipe", label: "Encaissements", resellerLabel: "Argent à reverser", href: ROUTES.admin.cash, icon: MoneyRecive, permission: "cash.view.own" },
+  { section: "Équipe", label: "Niveaux et sanctions", resellerLabel: "Mon niveau", href: ROUTES.admin.standing, icon: Award, permission: "standing.view.own" },
   { section: "Équipe", label: "Mes invités", href: ROUTES.admin.invites, icon: Share, permission: "commissions.view.own", onlyRoles: ["revendeur"] },
   { section: "Système", label: "Utilisateurs & rôles", href: ROUTES.admin.users, icon: Profile2User, permission: "users.manage" },
   { section: "Système", label: "Journal d'audit", href: ROUTES.admin.audit, icon: DocumentText, permission: "audit.view" },
