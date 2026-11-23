@@ -39,14 +39,14 @@ export function ProductToolbar({ total, loading, ordering, onOrderingChange, vie
 
   return (
     <div className="border-b border-line-3 pb-3 sm:pb-5">
-      <p className="mb-2 text-[13px] text-ink-2 sm:hidden" aria-live="polite">{count}</p>
+      <p className="mb-2 text-sm text-ink-2 sm:hidden" aria-live="polite">{count}</p>
 
       <div className="flex items-center gap-2 max-sm:sticky max-sm:top-[61px] max-sm:z-30 max-sm:-mx-3 max-sm:bg-surface/95 max-sm:px-3 max-sm:py-2 max-sm:backdrop-blur-md sm:flex-wrap sm:gap-3 sm:max-lg:gap-3">
-        <p className="mr-auto hidden text-[14px] text-ink-2 sm:block" aria-live="polite">{count}</p>
+        <p className="mr-auto hidden text-sm text-ink-2 sm:block" aria-live="polite">{count}</p>
 
-        <button onClick={onOpenFilters} className="relative flex h-11 shrink-0 items-center gap-2 rounded-box bg-chip px-4 text-[13px] font-bold active:scale-[0.97] sm:h-[45px] lg:hidden">
+        <button onClick={onOpenFilters} className="relative flex h-11 shrink-0 items-center gap-2 rounded-box bg-chip px-4 text-sm font-bold active:scale-[0.97] sm:h-[45px] lg:hidden">
           <Filter size={18} /> Filtres
-          {activeFilters > 0 && <span className="grid size-5 place-items-center rounded-full bg-primary text-[11px] text-white">{activeFilters}</span>}
+          {activeFilters > 0 && <span className="grid size-5 place-items-center rounded-full bg-primary text-xs text-white">{activeFilters}</span>}
         </button>
 
         {/* mobile : sélecteur natif compact (feuille système) ; ≥ sm : Select du design */}
@@ -56,7 +56,7 @@ export function ProductToolbar({ total, loading, ordering, onOrderingChange, vie
             aria-label="Trier par"
             value={ordering}
             onChange={(e) => onOrderingChange(e.target.value as ProductOrdering)}
-            className="h-11 w-full appearance-none truncate rounded-box bg-chip pl-9 pr-8 text-[16px] font-semibold outline-hidden focus:ring-2 focus:ring-primary"
+            className="h-11 w-full appearance-none truncate rounded-box bg-chip pl-9 pr-8 text-base font-semibold outline-hidden focus:ring-2 focus:ring-primary"
           >
             {SORTS.map((s) => (
               <option key={s.value} value={s.value}>{s.label}</option>

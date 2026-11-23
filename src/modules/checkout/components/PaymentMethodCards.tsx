@@ -38,8 +38,8 @@ export function PaymentMethodCards({ value, onChange, methods }: Props) {
               {b.icon === "mobile" ? <Mobile size={20} variant="Bold" /> : <Money size={20} variant="Bold" />}
             </span>
             <span className="min-w-0 pr-7">
-              <span className="block text-[15px] font-bold leading-[20px]">{m.label}</span>
-              <span className="block text-[12px] leading-[17px] text-ink-3">{b.hint}</span>
+              <span className="block text-sm font-bold">{m.label}</span>
+              <span className="block text-xs text-ink-3">{b.hint}</span>
             </span>
             {selected && (
               <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 500, damping: 18 }} className="absolute right-3 top-3 text-primary">

@@ -42,12 +42,12 @@ export function ProductCombobox({ value, onChange, error, label, compact }: Prop
         <>
           <span className="relative size-11 shrink-0 overflow-hidden rounded-md bg-page sm:size-10">{p.image && <Image src={p.image} alt="" fill sizes="44px" className="object-cover" />}</span>
           <span className="min-w-0 flex-1">
-            <span className="block truncate text-[13px] font-bold">{p.name}</span>
-            <span className="text-[12px] text-ink-3">
+            <span className="block truncate text-sm font-bold">{p.name}</span>
+            <span className="text-xs text-ink-3">
               {p.category} · <span className={p.stock <= 0 ? "text-danger" : p.stock <= p.stockThreshold ? "text-warn" : ""}>stock {p.stock}</span>
             </span>
           </span>
-          <span className="text-[13px] font-semibold text-primary">{formatPrice(getPricing(p).current)}</span>
+          <span className="text-sm font-semibold text-primary">{formatPrice(getPricing(p).current)}</span>
         </>
       )}
       trigger={

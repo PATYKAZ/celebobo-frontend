@@ -87,15 +87,15 @@ function Content() {
                       {c.image && <Image src={c.image} alt="" fill sizes="64px" className="object-cover" />}
                     </span>
                     <div className="min-w-0 flex-1">
-                      <p className="flex items-center gap-2 text-[15px] font-bold">
+                      <p className="flex items-center gap-2 text-sm font-bold">
                         <CategoryIcon name={c.icon} size={17} className="shrink-0 text-primary" />
                         {c.parent && <span aria-hidden className="text-ink-3">↳</span>}
                         <span className="truncate">{c.name}</span>
                         {!c.active && <EyeSlash size={15} className="shrink-0 text-ink-3" />}
                       </p>
-                      {c.parent && <p className="text-[12px] font-semibold text-ink-3">Sous-catégorie de {c.parent.name}</p>}
-                      <p className="line-clamp-1 text-[13px] text-ink-2">{c.description || "—"}</p>
-                      <p className="mt-0.5 text-[12px] font-semibold text-ink-3 sm:hidden">{c.productsCount} produit{c.productsCount > 1 ? "s" : ""}</p>
+                      {c.parent && <p className="text-xs font-semibold text-ink-3">Sous-catégorie de {c.parent.name}</p>}
+                      <p className="line-clamp-1 text-sm text-ink-2">{c.description || "—"}</p>
+                      <p className="mt-0.5 text-xs font-semibold text-ink-3 sm:hidden">{c.productsCount} produit{c.productsCount > 1 ? "s" : ""}</p>
                     </div>
                   </div>
                   <Pill tone={c.productsCount ? "green" : "gray"} className="hidden sm:inline-flex">{c.productsCount} produit{c.productsCount > 1 ? "s" : ""}</Pill>
@@ -106,7 +106,7 @@ function Content() {
                         <button aria-label="Monter" disabled={isFirst(c) || move.isPending} onClick={() => move.mutate({ id: c.id, dir: "up" })} className="grid size-11 place-items-center rounded-full bg-chip transition-colors active:scale-90 disabled:opacity-30"><ArrowUp2 size={18} variant="Bold" /></button>
                         <button aria-label="Descendre" disabled={isLast(c) || move.isPending} onClick={() => move.mutate({ id: c.id, dir: "down" })} className="grid size-11 place-items-center rounded-full bg-chip transition-colors active:scale-90 disabled:opacity-30"><ArrowDown2 size={18} variant="Bold" /></button>
                       </div>
-                      <label className="flex min-h-11 items-center gap-2 text-[13px] font-semibold sm:min-h-0">
+                      <label className="flex min-h-11 items-center gap-2 text-sm font-semibold sm:min-h-0">
                         <span className="sm:hidden">Visible</span>
                         <Switch label={`${c.name} visible`} checked={c.active} onChange={(a) => toggle(c, a)} />
                       </label>

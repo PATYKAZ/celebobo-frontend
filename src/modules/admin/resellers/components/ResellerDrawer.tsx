@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Copy, Wallet3 } from "@/shared/ui/icons";
+import { Copy, Wallet3 } from "@/shared/ui/icons";
 import { Stars } from "@/shared/ui/Stars";
 import { useState } from "react";
 import { ROUTES } from "@/config/routes";
@@ -52,16 +52,16 @@ export function ResellerDrawer({ id, period, onClose }: { id: number | null; per
           <div className="flex items-center gap-4">
             <span className="relative">
               <Avatar src={r.avatar} name={r.name} size={64} />
-              <span title={AVAILABILITY_LABEL[r.availability]} className={cn("absolute bottom-0 right-0 size-4 rounded-full ring-2 ring-white", AVAILABILITY_DOT[r.availability])} />
+              <span title={AVAILABILITY_LABEL[r.availability]} className={cn("absolute bottom-0 right-0 size-4 rounded-full ring-2 ring-surface", AVAILABILITY_DOT[r.availability])} />
             </span>
             <div className="min-w-0">
-              <p className="truncate text-[18px] font-bold leading-[24px]">{r.name}</p>
-              <p className="truncate text-[13px] text-ink-3">{r.email}</p>
+              <p className="truncate text-lg font-bold">{r.name}</p>
+              <p className="truncate text-sm text-ink-3">{r.email}</p>
               <div className="mt-1 flex flex-wrap items-center gap-2">
                 <StatusDot tone={r.status === "actif" ? "green" : "gray"}>{r.status === "actif" ? "Actif" : "Désactivé"}</StatusDot>
                 <button
                   onClick={() => navigator.clipboard?.writeText(r.codeRevendeur).then(() => toast.success("Code copié", r.codeRevendeur), () => toast.error("Copie impossible"))}
-                  className="inline-flex items-center gap-1.5 rounded-md bg-chip px-2 py-0.5 text-[12px] font-bold tracking-widest hover:bg-primary hover:text-white"
+                  className="inline-flex items-center gap-1.5 rounded-md bg-chip px-2 py-0.5 text-xs font-bold hover:bg-primary hover:text-white"
                   aria-label={`Copier le code ${r.codeRevendeur}`}
                 >
                   {r.codeRevendeur} <Copy size={12} />
@@ -71,67 +71,67 @@ export function ResellerDrawer({ id, period, onClose }: { id: number | null; per
           </div>
 
           <div className="mt-5 grid grid-cols-2 gap-3">
-            <div className="rounded-box bg-chip p-3"><p className="text-[12px] text-ink-3">Clients invités</p><p className="text-[20px] font-bold">{r.invitedCount}</p></div>
-            <div className="rounded-box bg-primary-50 p-3"><p className="text-[12px] text-ink-3">Ventes (période sélectionnée)</p><p className="text-[20px] font-bold text-primary">{formatPrice(r.salesTotal)}</p></div>
-            <div className="rounded-box bg-chip p-3"><p className="text-[12px] text-ink-3">Commandes assignées</p><p className="text-[20px] font-bold">{r.ordersAssigned} <span className="text-[12px] font-medium text-ink-3">({r.ordersOpen} en cours)</span></p></div>
-            <div className="rounded-box bg-chip p-3"><p className="text-[12px] text-ink-3">Conversion commande → vente</p><p className="text-[20px] font-bold">{r.conversionRate.toFixed(0)}%</p></div>
+            <div className="rounded-box bg-chip p-3"><p className="text-xs text-ink-3">Clients invités</p><p className="text-lg font-bold">{r.invitedCount}</p></div>
+            <div className="rounded-box bg-primary-50 p-3"><p className="text-xs text-ink-3">Ventes (période sélectionnée)</p><p className="text-lg font-bold text-primary">{formatPrice(r.salesTotal)}</p></div>
+            <div className="rounded-box bg-chip p-3"><p className="text-xs text-ink-3">Commandes assignées</p><p className="text-lg font-bold">{r.ordersAssigned} <span className="text-xs font-medium text-ink-3">({r.ordersOpen} en cours)</span></p></div>
+            <div className="rounded-box bg-chip p-3"><p className="text-xs text-ink-3">Conversion commande → vente</p><p className="text-lg font-bold">{r.conversionRate.toFixed(0)}%</p></div>
           </div>
 
           {canManage && (
             <div className="mt-6 rounded-box border border-line-3 p-4">
-              <h4 className="text-[14px] font-bold">Actions</h4>
+              <h4 className="text-sm font-bold">Actions</h4>
               <div className="mt-3 flex flex-wrap gap-2">
                 <Button variant={r.status === "actif" ? "danger" : "primary"} size="sm" upper={false} onClick={() => setConfirm(true)}>
                   {r.status === "actif" ? "Désactiver le compte" : "Réactiver le compte"}
                 </Button>
                 {canCommissions && (
-                  <Button href={`${ROUTES.admin.commissions}?reseller=${r.id}`} variant="outline" size="sm" upper={false} leftIcon={<Wallet3 size={15} />}>Voir les commissions</Button>
+                  <Button href={`${ROUTES.admin.commissions}?reseller=${r.id}`} variant="secondary" size="sm" upper={false} leftIcon={<Wallet3 size={15} />}>Voir les commissions</Button>
                 )}
               </div>
-              {r.status !== "actif" && <p className="mt-3 text-[12px] leading-[18px] text-danger">Compte désactivé : ne peut plus recevoir de commandes.</p>}
+              {r.status !== "actif" && <p className="mt-3 text-xs text-danger">Compte désactivé : ne peut plus recevoir de commandes.</p>}
             </div>
           )}
 
-          <h4 className="mb-3 mt-6 flex flex-wrap items-center gap-2 text-[15px] font-bold">
+          <h4 className="mb-3 mt-6 flex flex-wrap items-center gap-2 text-sm font-bold">
             Note des clients
             {r.ratingAverage != null && (
-              <span className="flex items-center gap-1.5 text-[13px] font-semibold text-ink-2"><Stars rating={r.ratingAverage} size={14} hideCount /> {r.ratingAverage.toFixed(1)}/5 · {pluralize(r.ratingCount, "note")}</span>
+              <span className="flex items-center gap-1.5 text-sm font-semibold text-ink-2"><Stars rating={r.ratingAverage} size={14} hideCount /> {r.ratingAverage.toFixed(1)}/5 · {pluralize(r.ratingCount, "note")}</span>
             )}
           </h4>
           {r.ratings.length === 0 ? (
-            <p className="rounded-box bg-chip p-6 text-center text-[13px] text-ink-3">Aucune note pour le moment : les clients notent leur revendeur après la livraison.</p>
+            <p className="rounded-box bg-chip p-6 text-center text-sm text-ink-3">Aucune note pour le moment : les clients notent leur revendeur après la livraison.</p>
           ) : (
             <ul className="flex flex-col gap-2">
               {r.ratings.map((rating) => (
                 <li key={rating.orderNumber} className="rounded-box border border-line-3 p-3">
-                  <div className="flex flex-wrap items-center gap-2 text-[12px] text-ink-3">
+                  <div className="flex flex-wrap items-center gap-2 text-xs text-ink-3">
                     <Stars rating={rating.score} size={13} hideCount />
                     <span className="font-semibold text-ink">{rating.clientName}</span> · commande {rating.orderNumber} · {formatDate(rating.createdAt)}
                   </div>
-                  {rating.comment && <p className="mt-1.5 text-[13px] leading-[19px] text-ink-2">« {rating.comment} »</p>}
+                  {rating.comment && <p className="mt-1.5 text-sm text-ink-2">« {rating.comment} »</p>}
                 </li>
               ))}
             </ul>
           )}
 
-          <h4 className="mb-3 mt-6 text-[15px] font-bold">Clients invités ({r.invited.length})</h4>
+          <h4 className="mb-3 mt-6 text-sm font-bold">Clients invités ({r.invited.length})</h4>
           {r.invited.length === 0 ? (
-            <p className="rounded-box bg-chip p-6 text-center text-[13px] text-ink-3">Aucun client invité pour le moment.</p>
+            <p className="rounded-box bg-chip p-6 text-center text-sm text-ink-3">Aucun client invité pour le moment.</p>
           ) : (
             <RevealGroup stagger={0.04} className="flex flex-col gap-2">
               {r.invited.slice(0, 40).map((c) => (
                 <RevealItem key={c.id} className="flex items-center gap-3 rounded-box border border-line-3 p-2.5">
                   <Avatar name={c.name} size={36} />
                   <span className="min-w-0 flex-1">
-                    <span className="block truncate text-[13px] font-semibold leading-[18px]">{c.name}</span>
-                    <span className="text-[12px] text-ink-3">Inscrit le {formatDate(c.joinedAt)}</span>
+                    <span className="block truncate text-sm font-semibold">{c.name}</span>
+                    <span className="text-xs text-ink-3">Inscrit le {formatDate(c.joinedAt)}</span>
                   </span>
-                  <span className="text-[12px] font-semibold text-ink-2">{pluralize(c.ordersCount, "commande")}</span>
+                  <span className="text-xs font-semibold text-ink-2">{pluralize(c.ordersCount, "commande")}</span>
                 </RevealItem>
               ))}
             </RevealGroup>
           )}
-          <p className="mt-6 text-center text-[12px] text-ink-3">
+          <p className="mt-6 text-center text-xs text-ink-3">
             <Link href={ROUTES.admin.orders} className="underline hover:text-primary">Voir les commandes</Link>
           </p>
           <ConfirmDialog

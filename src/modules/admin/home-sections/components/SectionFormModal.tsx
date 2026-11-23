@@ -51,9 +51,9 @@ export function SectionFormModal({ section, onClose }: { section: HomeSection | 
     <Modal open onClose={onClose} title={section ? "Modifier le bloc" : "Nouveau bloc catégorie"} className="max-w-[560px]">
       <form onSubmit={submit} noValidate className="grid gap-4">
         <div className="grid gap-2">
-          <p className="text-[13px] font-semibold">Présentation</p>
+          <p className="text-sm font-semibold">Présentation</p>
           <SegmentedControl aria-label="Présentation" value={v.kind} onChange={(k) => set("kind", k)} options={SECTION_KINDS} fullWidth size="sm" />
-          <p className="text-[12px] leading-[17px] text-ink-3">{SECTION_KINDS.find((k) => k.value === v.kind)?.hint}</p>
+          <p className="text-xs text-ink-3">{SECTION_KINDS.find((k) => k.value === v.kind)?.hint}</p>
         </div>
         <Select
           label="Catégorie"
@@ -66,11 +66,11 @@ export function SectionFormModal({ section, onClose }: { section: HomeSection | 
         />
         <Input label="Titre" value={v.title} onChange={(e) => set("title", e.target.value)} maxLength={80} placeholder={category?.name ?? "Nom de la catégorie"} hint="Vide : nom de la catégorie." error={errors.title} />
         <label className="flex min-h-12 cursor-pointer items-center justify-between gap-3 rounded-box border border-line px-4 active:bg-chip">
-          <span className="text-[14px] font-semibold">Affiché sur l’accueil</span>
+          <span className="text-sm font-semibold">Affiché sur l’accueil</span>
           <Switch label="Affiché sur l'accueil" checked={v.isActive} onChange={(x) => set("isActive", x)} />
         </label>
         <div className="mt-1 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-          <Button type="button" variant="chip" upper={false} onClick={onClose}>Annuler</Button>
+          <Button type="button" variant="secondary" upper={false} onClick={onClose}>Annuler</Button>
           <Button type="submit" loading={save.isPending} upper={false}>{section ? "Enregistrer" : "Ajouter le bloc"}</Button>
         </div>
       </form>

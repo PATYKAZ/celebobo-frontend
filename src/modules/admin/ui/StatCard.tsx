@@ -40,15 +40,15 @@ export function StatCard({ label, value, format, icon, tone = "green", delta, de
       {/* mobile : l'icône flotte en haut à droite → le montant dispose de toute la largeur de la carte */}
       <div className="flex items-start justify-between gap-2 sm:gap-3">
         <div className="min-w-0 flex-1">
-          <p className="line-clamp-2 min-h-[32px] pr-10 text-[12px] leading-[16px] text-ink-2 sm:min-h-0 sm:pr-0 sm:text-[13px] sm:leading-[19.5px]">{label}</p>
-          <p className="mt-1 whitespace-nowrap text-[clamp(17px,5.4vw,22px)] font-bold leading-[26px] sm:mt-2 sm:truncate sm:text-[26px] sm:leading-[32px]">
+          <p className="line-clamp-2 min-h-[32px] pr-10 text-xs text-ink-2 sm:min-h-0 sm:pr-0 sm:text-sm">{label}</p>
+          <p className="mt-1 whitespace-nowrap text-[clamp(17px,5.4vw,22px)] font-bold sm:mt-2 sm:truncate sm:text-xl">
             <CountUp to={value} format={format} />
           </p>
         </div>
         <span className={cn("absolute right-3 top-3 grid size-9 shrink-0 place-items-center rounded-full transition-transform duration-500 group-hover:rotate-12 group-hover:scale-110 sm:static sm:size-11 [&_svg]:size-[18px] sm:[&_svg]:size-5", TONE[tone])}>{icon}</span>
       </div>
       {delta != null && (
-        <p className="mt-2 flex flex-wrap items-center gap-1.5 text-[12px] leading-[18px] sm:mt-3">
+        <p className="mt-2 flex flex-wrap items-center gap-1.5 text-xs sm:mt-3">
           <span className={cn("inline-flex items-center gap-0.5 rounded-full px-1.5 py-0.5 font-bold", up ? "bg-primary-100 text-primary-dark" : "bg-danger-100 text-danger")}>
             {up ? <ArrowUp size={11} variant="Bold" /> : <ArrowDown size={11} variant="Bold" />}
             {Math.abs(delta).toFixed(1)}%

@@ -35,30 +35,30 @@ export function ConversationItem({ conversation: c, active, myId, onSelect, staf
       {active && <span className="absolute inset-y-3 left-0 w-[3px] rounded-full bg-primary" />}
       <span className="relative shrink-0">
         <Avatar src={lead?.avatar} name={lead?.name ?? "Celebobo"} size={48} />
-        {presence && !c.concluded && <span className={cn("absolute -bottom-0.5 -right-0.5 size-3.5 rounded-full ring-2 ring-white", DOT[presence])} />}
+        {presence && !c.concluded && <span className={cn("absolute -bottom-0.5 -right-0.5 size-3.5 rounded-full ring-2 ring-surface", DOT[presence])} />}
       </span>
       <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between gap-2">
-          <span className={cn("truncate text-[15px] leading-[20px] lg:text-[14px]", unread ? "font-extrabold" : "font-bold")}>{lead?.name ?? "Équipe Celebobo"}</span>
-          {last && <span className={cn("shrink-0 text-[11px]", unread ? "font-bold text-primary" : "text-ink-3")}>{formatRelative(last.timestamp)}</span>}
+          <span className={cn("truncate text-sm lg:text-sm", unread ? "font-bold" : "font-bold")}>{lead?.name ?? "Équipe Celebobo"}</span>
+          {last && <span className={cn("shrink-0 text-xs", unread ? "font-bold text-primary" : "text-ink-3")}>{formatRelative(last.timestamp)}</span>}
         </div>
-        <p className={cn("mt-0.5 flex items-center gap-1 truncate text-[13px] leading-[19px]", unread ? "font-semibold text-ink" : "text-ink-2")}>
+        <p className={cn("mt-0.5 flex items-center gap-1 truncate text-sm", unread ? "font-semibold text-ink" : "text-ink-2")}>
           {last?.image && !last.content && <Gallery size={13} />}
           <span className="truncate">{last ? (last.content ? last.content.replace(/\n+/g, " ") : "Image") : "Aucun message"}</span>
         </p>
         <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
           {c.relatedOrderId ? (
-            <span className="inline-flex items-center gap-1 rounded-sm bg-chip px-1.5 py-0.5 text-[10px] font-bold uppercase text-ink-2"><Receipt2 size={11} variant="Bold" /> {c.orderNumber ?? `Commande #${c.relatedOrderId}`}</span>
+            <span className="inline-flex items-center gap-1 rounded-sm bg-chip px-1.5 py-0.5 text-xs font-bold text-ink-2"><Receipt2 size={11} variant="Bold" /> {c.orderNumber ?? `Commande #${c.relatedOrderId}`}</span>
           ) : (
-            <span className="rounded-sm bg-chip px-1.5 py-0.5 text-[10px] font-bold uppercase text-ink-2">Support</span>
+            <span className="rounded-sm bg-chip px-1.5 py-0.5 text-xs font-bold text-ink-2">Support</span>
           )}
-          {c.concluded && <span className="rounded-sm bg-ink-dark/10 px-1.5 py-0.5 text-[10px] font-bold uppercase text-ink-dark">Clôturée</span>}
-          {staff && unassigned && <span className="rounded-sm bg-danger-100 px-1.5 py-0.5 text-[10px] font-bold uppercase text-danger">Non assignée</span>}
-          {staff && c.assignedRevendeur && <span className="truncate rounded-sm bg-primary-50 px-1.5 py-0.5 text-[10px] font-bold text-primary-dark">{c.assignedRevendeur.name}</span>}
-          {staff && c.awaitingReply && <span className="rounded-sm bg-star/15 px-1.5 py-0.5 text-[10px] font-bold uppercase text-warn">Réponse attendue</span>}
+          {c.concluded && <span className="rounded-sm bg-ink-dark/10 px-1.5 py-0.5 text-xs font-bold text-ink-dark">Clôturée</span>}
+          {staff && unassigned && <span className="rounded-sm bg-danger-100 px-1.5 py-0.5 text-xs font-bold text-danger">Non assignée</span>}
+          {staff && c.assignedRevendeur && <span className="truncate rounded-sm bg-primary-50 px-1.5 py-0.5 text-xs font-bold text-primary-dark">{c.assignedRevendeur.name}</span>}
+          {staff && c.awaitingReply && <span className="rounded-sm bg-star/15 px-1.5 py-0.5 text-xs font-bold text-warn">Réponse attendue</span>}
         </div>
       </div>
-      {unread && <span className="mt-1 grid min-w-6 shrink-0 place-items-center rounded-full bg-primary px-1.5 text-[12px] font-bold leading-6 text-white">{c.unreadCount}</span>}
+      {unread && <span className="mt-1 grid min-w-6 shrink-0 place-items-center rounded-full bg-primary px-1.5 text-xs font-bold leading-6 text-white">{c.unreadCount}</span>}
     </button>
   );
 }

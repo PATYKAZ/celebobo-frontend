@@ -39,14 +39,14 @@ function Content() {
       <PageHeader
         title="Newsletter"
         description="Les adresses inscrites à la newsletter. L'export CSV reprend les filtres choisis."
-        actions={<a href={exportUrl} className="inline-flex min-h-11 items-center rounded-full bg-primary px-5 text-[14px] font-semibold text-white hover:bg-primary-dark">Exporter en CSV</a>}
+        actions={<a href={exportUrl} className="inline-flex min-h-11 items-center rounded-full bg-primary px-5 text-sm font-semibold text-white hover:bg-primary-dark">Exporter en CSV</a>}
       />
       <Block pad="none" className="overflow-hidden">
         <div className="flex flex-wrap items-center justify-between gap-2 px-4 pt-4 sm:px-6">
           <SegmentedControl size="sm" aria-label="Abonnés" value={filter} onChange={(v) => { setFilter(v); setPage(1); }} options={[{ value: "active", label: "Inscrits" }, { value: "inactive", label: "Désinscrits" }, { value: "all", label: "Tous" }]} />
           <Input aria-label="Rechercher" placeholder="Adresse e-mail…" wrapperClassName="w-full sm:w-64" value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} />
         </div>
-        {data && <p className="px-4 pt-3 text-[13px] text-ink-3 sm:px-6">{data.meta.count} adresse{data.meta.count > 1 ? "s" : ""}</p>}
+        {data && <p className="px-4 pt-3 text-sm text-ink-3 sm:px-6">{data.meta.count} adresse{data.meta.count > 1 ? "s" : ""}</p>}
         {isLoading || !data ? (
           <Skeleton className="m-4 h-40 rounded-box!" />
         ) : data.results.length === 0 ? (
@@ -54,7 +54,7 @@ function Content() {
         ) : (
           <ul className="divide-y divide-line-3">
             {data.results.map((s) => (
-              <li key={s.id} className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 text-[13px] sm:px-6">
+              <li key={s.id} className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 text-sm sm:px-6">
                 <span className="min-w-0 break-all font-semibold">{s.email}</span>
                 <span className="flex items-center gap-2 text-ink-3">
                   {s.source && <span>{s.source}</span>}

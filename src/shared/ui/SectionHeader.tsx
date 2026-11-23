@@ -14,16 +14,16 @@ interface Props {
   className?: string;
 }
 
-/** Titre de section (18/21.6 uppercase) + lien « Voir tout › ». */
+/** Titre de section (20/28, gras) + lien « Voir tout › ». */
 export function SectionHeader({ title, viewAllHref, viewAllLabel = "Voir tout", right, onPrimary, className }: Props) {
   return (
     <div className={cn("flex items-center justify-between gap-4", className)}>
       <div className="flex min-w-0 flex-1 items-center gap-3 sm:gap-6">
-        <h2 className={cn("line-clamp-2 text-[16px] leading-[20px] text-section uppercase sm:truncate sm:text-section", onPrimary && "text-white")}>{title}</h2>
+        <h2 className={cn("line-clamp-2 text-base font-bold sm:truncate sm:text-section", onPrimary && "text-white")}>{title}</h2>
         {viewAllHref && (
           <Link
             href={viewAllHref}
-            className={cn("group touch-target relative inline-flex shrink-0 items-center gap-0.5 text-link capitalize", onPrimary ? "text-white" : "text-ink-2 hover:text-primary")}
+            className={cn("group touch-target relative inline-flex shrink-0 items-center gap-0.5 text-link", onPrimary ? "text-white" : "text-ink-2 hover:text-primary")}
           >
             {viewAllLabel}
             <ArrowRight2 size={13} variant="Bold" className="transition-transform group-hover:translate-x-1" />

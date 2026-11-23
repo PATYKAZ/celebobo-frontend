@@ -60,26 +60,26 @@ export function ProductInfo({ product, selection, qty, onQtyChange }: { product:
 
   return (
     <div className="flex min-w-0 flex-col">
-      <p className="text-[12px] font-bold uppercase tracking-wider text-primary">{product.category}</p>
-      <h1 className="mt-1.5 text-[22px] leading-[28px] sm:mt-2 sm:text-[28px] sm:leading-[34px]">{product.name}</h1>
+      <p className="text-xs font-bold text-primary">{product.category}</p>
+      <h1 className="mt-1.5 text-xl sm:mt-2 sm:text-2xl">{product.name}</h1>
 
       <div className="mt-3 flex flex-wrap items-center gap-3">
         <Stars rating={product.rating} count={product.reviewsCount} size={15} />
-        <a href="#avis" className="touch-target relative text-[13px] text-ink-2 underline-offset-2 hover:text-primary hover:underline">Voir les avis</a>
+        <a href="#avis" className="touch-target relative text-sm text-ink-2 underline-offset-2 hover:text-primary hover:underline">Voir les avis</a>
       </div>
 
       <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 border-y border-line-3 py-4 sm:mt-5 sm:py-5">
-        <Price current={current} original={original} size="xl" className="max-sm:[&>span:first-child]:text-[26px]" />
-        {base.onSale && <Pill tone="red" className="h-[26px] text-[12px]">-{base.percent}%</Pill>}
-        {base.onSale && <span className="text-[13px] font-semibold text-primary">Vous économisez {formatPrice(base.saving)}</span>}
+        <Price current={current} original={original} size="xl" className="max-sm:[&>span:first-child]:text-xl" />
+        {base.onSale && <Pill tone="red" className="h-[26px] text-xs">-{base.percent}%</Pill>}
+        {base.onSale && <span className="text-sm font-semibold text-primary">Vous économisez {formatPrice(base.saving)}</span>}
       </div>
 
-      <p className="mt-4 text-[14px] leading-[23px] text-ink-2 sm:mt-5 sm:leading-[24px]">{product.description}</p>
+      <p className="mt-4 text-sm text-ink-2 sm:mt-5">{product.description}</p>
 
       {product.features.length > 0 && (
         <ul className="mt-4 flex flex-col gap-2">
           {product.features.slice(0, 5).map((f) => (
-            <li key={f} className="flex items-center gap-3 text-[13px] leading-[21.6px]">
+            <li key={f} className="flex items-center gap-3 text-sm">
               <span className="size-1.5 shrink-0 rounded-full bg-ink-2" /> {f}
             </li>
           ))}
@@ -91,7 +91,7 @@ export function ProductInfo({ product, selection, qty, onQtyChange }: { product:
         <div className="mt-6 space-y-4">
           {options.map((o) => (
             <fieldset key={o.name}>
-              <legend className="mb-2 text-[13px] font-bold">
+              <legend className="mb-2 text-sm font-bold">
                 {o.name} : <span className="font-normal text-ink-2">{selected[o.name]}</span>
               </legend>
               <div className="flex flex-wrap gap-2" role="radiogroup" aria-label={o.name}>
@@ -108,7 +108,7 @@ export function ProductInfo({ product, selection, qty, onQtyChange }: { product:
                       disabled={!available && !active}
                       onClick={() => select(o.name, val)}
                       className={cn(
-                        "relative flex h-12 min-w-12 items-center justify-center gap-2 rounded-box border-2 px-4 text-[14px] font-semibold transition-all active:scale-95 sm:h-10 sm:min-w-0 sm:rounded-md sm:px-3.5 sm:text-[13px]",
+                        "relative flex h-12 min-w-12 items-center justify-center gap-2 rounded-box border-2 px-4 text-sm font-semibold transition-all active:scale-95 sm:h-10 sm:min-w-0 sm:rounded-md sm:px-3.5 sm:text-sm",
                         active ? "border-primary bg-primary-50 text-primary-dark" : "border-line-3 hover:border-primary/50",
                         !available && "cursor-not-allowed opacity-45 line-through",
                       )}
@@ -125,7 +125,7 @@ export function ProductInfo({ product, selection, qty, onQtyChange }: { product:
       )}
 
       <div className="mt-5 flex flex-wrap items-center gap-2">
-        <span className={cn("flex items-center gap-1.5 text-[13px] font-semibold", inStock ? (stock <= product.stockThreshold ? "text-warn" : "text-primary") : "text-danger")}>
+        <span className={cn("flex items-center gap-1.5 text-sm font-semibold", inStock ? (stock <= product.stockThreshold ? "text-warn" : "text-primary") : "text-danger")}>
           {inStock ? <TickCircle size={16} variant="Bold" /> : <CloseCircle size={16} variant="Bold" />}
           {stockLabel(stock, product.stockThreshold)}
         </span>
@@ -139,7 +139,7 @@ export function ProductInfo({ product, selection, qty, onQtyChange }: { product:
           Ajouter au panier
         </Button>
         <Button
-          variant="dark"
+          variant="secondary"
           disabled={!inStock}
           onClick={() => {
             addToCart(true);
@@ -164,9 +164,9 @@ export function ProductInfo({ product, selection, qty, onQtyChange }: { product:
         {trust.map(({ icon: Icon, title, text }) => (
           <div key={title} className="flex flex-col items-center gap-1.5 rounded-box bg-page/60 p-2.5 text-center sm:flex-row sm:gap-3 sm:p-3 sm:text-left">
             <span className="grid size-10 shrink-0 place-items-center rounded-full bg-surface text-primary"><Icon size={20} variant="Bold" /></span>
-            <span className="leading-[16px] sm:leading-[18px]">
-              <span className="block text-[12px] font-bold sm:text-[13px]">{title}</span>
-              <span className="hidden text-[12px] text-ink-2 sm:inline">{text}</span>
+            <span className="leading-[16px]">
+              <span className="block text-xs font-bold sm:text-sm">{title}</span>
+              <span className="hidden text-xs text-ink-2 sm:inline">{text}</span>
             </span>
           </div>
         ))}

@@ -15,7 +15,7 @@ import { MethodBadge } from "./MethodBadge";
 
 function Row({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <div className="flex items-start justify-between gap-3 border-b border-line-3/70 py-2.5 text-[14px]">
+    <div className="flex items-start justify-between gap-3 border-b border-line-3/70 py-2.5 text-sm">
       <dt className="text-ink-2">{label}</dt>
       <dd className="text-right font-semibold">{children}</dd>
     </div>
@@ -41,8 +41,8 @@ export function SaleDetailDrawer({ sale, onClose, canEdit, canRefund, canDelete,
           <div className="flex items-center gap-4">
             <span className="relative size-20 shrink-0 overflow-hidden rounded-box bg-page">{sale.productImage && <Image src={sale.productImage} alt="" fill sizes="80px" className="object-cover" />}</span>
             <div className="min-w-0">
-              <p className="text-[16px] font-bold leading-[22px]">{sale.productName}</p>
-              <p className="text-[13px] text-ink-3">{sale.category}</p>
+              <p className="text-base font-bold">{sale.productName}</p>
+              <p className="text-sm text-ink-3">{sale.category}</p>
               <div className="mt-2"><StatusDot tone={sale.status === "valide" ? "green" : sale.status === "remboursée" ? "orange" : "gray"}>{SALE_STATUS_LABEL[sale.status]}</StatusDot></div>
             </div>
           </div>
@@ -61,16 +61,16 @@ export function SaleDetailDrawer({ sale, onClose, canEdit, canRefund, canDelete,
           </dl>
 
           {sale.refund && (
-            <div className="rounded-box border border-star/40 bg-star/10 p-4 text-[13px]">
+            <div className="rounded-box border border-star/40 bg-star/10 p-4 text-sm">
               <p className="font-bold text-warn">{sale.status === "retournée" ? "Retour produit" : "Remboursement"} — {formatPrice(sale.refund.amount)}</p>
               <p className="mt-1 text-ink-2">« {sale.refund.reason} »</p>
-              <p className="mt-1 text-[12px] text-ink-3">{formatDateTime(sale.refund.at)} · par {sale.refund.by}</p>
+              <p className="mt-1 text-xs text-ink-3">{formatDateTime(sale.refund.at)} · par {sale.refund.by}</p>
             </div>
           )}
 
           <div className="grid gap-2 pt-1 sm:flex sm:flex-wrap">
-            {canEdit && <Button href={ROUTES.admin.saleEdit(sale.id)} variant="chip" upper={false} leftIcon={<Edit2 size={16} />}>Modifier</Button>}
-            {canRefund && <Button variant="chip" upper={false} leftIcon={<Refresh2 size={16} />} onClick={() => onRefund(sale)}>Rembourser / retour</Button>}
+            {canEdit && <Button href={ROUTES.admin.saleEdit(sale.id)} variant="secondary" upper={false} leftIcon={<Edit2 size={16} />}>Modifier</Button>}
+            {canRefund && <Button variant="secondary" upper={false} leftIcon={<Refresh2 size={16} />} onClick={() => onRefund(sale)}>Rembourser / retour</Button>}
             {canDelete && <Button variant="danger" upper={false} leftIcon={<Trash size={16} />} onClick={() => onDelete(sale)}>Supprimer</Button>}
           </div>
         </div>

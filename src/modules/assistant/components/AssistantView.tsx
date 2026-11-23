@@ -22,7 +22,7 @@ export function BotAvatar() {
   return (
     <span className="relative grid size-9 shrink-0 place-items-center rounded-full bg-primary text-white">
       <BagHappy size={18} variant="Bold" />
-      <span className="absolute -bottom-0.5 -right-0.5 size-2.5 rounded-full bg-sun ring-2 ring-white" />
+      <span className="absolute -bottom-0.5 -right-0.5 size-2.5 rounded-full bg-sun ring-2 ring-surface" />
     </span>
   );
 }
@@ -34,10 +34,10 @@ export function ProductSuggestion({ product, index }: { product: Product; index:
       <Link href={ROUTES.product(product.slug)} className="group flex w-[200px] shrink-0 flex-col overflow-hidden rounded-box border border-line-3 bg-surface transition-all hover:-translate-y-1 hover:border-primary">
         <span className="relative block aspect-4/3 overflow-hidden bg-page">
           {product.image && <Image src={product.image} alt={product.name} fill sizes="200px" className="object-cover transition-transform duration-500 group-hover:scale-110" />}
-          {pr.onSale && <span className="absolute left-2 top-2 rounded-sm bg-danger px-1.5 py-0.5 text-[10px] font-bold text-white">-{pr.percent}%</span>}
+          {pr.onSale && <span className="absolute left-2 top-2 rounded-sm bg-danger px-1.5 py-0.5 text-xs font-bold text-white">-{pr.percent}%</span>}
         </span>
         <span className="p-3">
-          <span className="line-clamp-2 block min-h-[34px] text-[13px] font-bold leading-[17px]">{product.name}</span>
+          <span className="line-clamp-2 block min-h-[34px] text-sm font-bold">{product.name}</span>
           <Price current={pr.current} original={pr.original} size="sm" className="mt-1.5" />
         </span>
       </Link>
@@ -117,8 +117,8 @@ export function AssistantView() {
               <span className="absolute inset-0 animate-pulse-ring rounded-full bg-white/30" />
             </span>
             <div className="min-w-0 flex-1">
-              <h1 className="text-[17px] leading-[22px] sm:text-[18px] sm:leading-[24px]">Assistant Celebobo</h1>
-              <p className="truncate text-[12px] text-white/80">Conseils produits · Commande · Livraison</p>
+              <h1 className="text-base sm:text-lg">Assistant Celebobo</h1>
+              <p className="truncate text-xs text-white/80">Conseils produits · Commande · Livraison</p>
             </div>
             <button onClick={reset} aria-label="Nouvelle conversation" title="Nouvelle conversation" className="grid size-10 place-items-center rounded-full bg-white/15 transition-colors hover:bg-white/30 active:scale-90 sm:size-9">
               <Refresh2 size={18} />
@@ -132,11 +132,11 @@ export function AssistantView() {
                 <motion.div key={m.id} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} className={cn("flex items-start gap-3", mine && "justify-end")}>
                   {!mine && <BotAvatar />}
                   <div className={cn("flex min-w-0 max-w-[88%] flex-col gap-3 sm:max-w-[72%]", mine && "items-end")}>
-                    <div className={cn("rounded-2xl px-4 py-3 text-[14px] leading-[22px]", mine ? "rounded-br-md bg-primary text-white" : "rounded-bl-md bg-chip")}>
+                    <div className={cn("rounded-lg px-4 py-3 text-sm", mine ? "rounded-br-md bg-primary text-white" : "rounded-bl-md bg-chip")}>
                       {mine ? m.content : <StreamedText text={m.content} animate={m.animate} onTick={scroll} />}
                     </div>
                     {m.retry && (
-                      <button type="button" onClick={() => retry(m)} disabled={loading} className="inline-flex min-h-11 items-center gap-1.5 self-start rounded-full px-3 text-[13px] font-semibold text-primary hover:bg-primary-50 disabled:opacity-50">
+                      <button type="button" onClick={() => retry(m)} disabled={loading} className="inline-flex min-h-11 items-center gap-1.5 self-start rounded-full px-3 text-sm font-semibold text-primary hover:bg-primary-50 disabled:opacity-50">
                         <Refresh2 size={15} /> Réessayer
                       </button>
                     )}
@@ -154,7 +154,7 @@ export function AssistantView() {
               {loading && (
                 <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="flex items-center gap-3">
                   <BotAvatar />
-                  <div className="flex gap-1 rounded-2xl rounded-bl-md bg-chip px-4 py-3.5" aria-label="L'assistant écrit">
+                  <div className="flex gap-1 rounded-lg rounded-bl-md bg-chip px-4 py-3.5" aria-label="L'assistant écrit">
                     {[0, 1, 2].map((i) => <span key={i} className="size-1.5 animate-typing-dot rounded-full bg-ink-3" style={{ animationDelay: `${i * 0.15}s` }} />)}
                   </div>
                 </motion.div>
@@ -164,7 +164,7 @@ export function AssistantView() {
             {onlyWelcome && !loading && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} className="hidden flex-wrap gap-2 pl-12 sm:flex">
                 {SUGGESTIONS.map((s, i) => (
-                  <motion.button key={s} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.5 + i * 0.08 }} onClick={() => send(s)} className="rounded-full border border-primary/40 bg-surface px-4 py-2 text-[13px] font-semibold text-primary transition-colors hover:bg-primary hover:text-white">
+                  <motion.button key={s} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.5 + i * 0.08 }} onClick={() => send(s)} className="rounded-full border border-primary/40 bg-surface px-4 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-white">
                     {s}
                   </motion.button>
                 ))}
@@ -177,7 +177,7 @@ export function AssistantView() {
           {onlyWelcome && !loading && (
             <div className="snap-row no-scrollbar border-t border-line-3 bg-surface px-3 py-2.5 sm:hidden">
               {SUGGESTIONS.map((s) => (
-                <button key={s} onClick={() => send(s)} className="min-h-10 whitespace-nowrap rounded-full border border-primary/40 bg-surface px-4 text-[13px] font-semibold text-primary active:bg-primary active:text-white">
+                <button key={s} onClick={() => send(s)} className="min-h-10 whitespace-nowrap rounded-full border border-primary/40 bg-surface px-4 text-sm font-semibold text-primary active:bg-primary active:text-white">
                   {s}
                 </button>
               ))}

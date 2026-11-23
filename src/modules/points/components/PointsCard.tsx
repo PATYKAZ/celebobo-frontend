@@ -18,8 +18,8 @@ export function PointsCard() {
   return (
     <Link href={ROUTES.points} className="group flex items-center gap-3 rounded-box bg-primary-50 p-4 transition-colors hover:bg-primary-100 active:scale-[0.99]">
       <span className="grid size-11 shrink-0 place-items-center rounded-full bg-primary text-white"><WalletMoney size={22} variant="Bold" /></span>
-      <div className="min-w-0 flex-1 text-[13px] leading-[19px]">
-        <p className="text-[15px] font-bold">Mes points : {formatPoints(data.available)}</p>
+      <div className="min-w-0 flex-1 text-sm">
+        <p className="text-sm font-bold">Mes points : {formatPoints(data.available)}</p>
         {data.pending > 0 && <p className="text-ink-2">{formatPoints(data.pending)} en attente (après le délai de retour)</p>}
         {data.closesAt && <p className="text-warn">Utilisables jusqu’au {formatDate(data.closesAt)}</p>}
         {!data.closesAt && data.available === 0 && data.pending === 0 && <p className="text-ink-3">{points.percent.toLocaleString("fr-FR")} % de vos achats livrés en points de fidélité.</p>}

@@ -11,10 +11,10 @@ import { CategorySidebar } from "./CategorySidebar";
 import { HeroSlider } from "./HeroSlider";
 import { PhotoBanner } from "./PhotoBanner";
 
-const CTA_LINK = "mt-2 inline-block text-[12px] font-medium uppercase underline underline-offset-4";
+const CTA_LINK = "mt-2 inline-block text-xs font-medium underline underline-offset-4";
 
 /** Rangée défilante (snap) sur mobile, grille dès sm. */
-const ROW = "max-sm:snap-row max-sm:mx-[-15px] max-sm:scroll-px-[15px] max-sm:px-[15px] max-sm:pb-1 sm:grid sm:grid-cols-2 sm:gap-4";
+const ROW = "max-sm:snap-row max-sm:mx-[-15px] max-sm:scroll-px-[15px] max-sm:px-4 max-sm:pb-1 sm:grid sm:grid-cols-2 sm:gap-4";
 
 /** Carrousel, 2 mini-bannières dessous et 2 cartes à droite : bannières de l'admin (`hero_mini`, `hero_side`), sinon vrais produits. */
 export function HeroSection({ content }: { content?: HomeContent }) {
@@ -33,12 +33,12 @@ export function HeroSection({ content }: { content?: HomeContent }) {
                 return (
                   <Reveal key={b.key} delay={0.1 + i * 0.1} className="h-[120px] max-sm:w-[78%]">
                     <PhotoBanner image={b.image} href={b.href} label={b.title} overlay={t.overlay} className="h-full" sizes="(min-width:640px) 317px, 80vw" contentClassName="flex flex-col justify-center px-5">
-                      {b.eyebrow && !b.product && <p className={cn("text-[10px] uppercase tracking-[0.2em]", t.muted)}>{b.eyebrow}</p>}
-                      <p className={cn("line-clamp-2 max-w-[70%] whitespace-pre-line text-[15px] font-medium leading-[18px]", t.text)}>{b.title}</p>
+                      {b.eyebrow && !b.product && <p className={cn("text-xs", t.muted)}>{b.eyebrow}</p>}
+                      <p className={cn("line-clamp-2 max-w-[70%] whitespace-pre-line text-sm font-medium", t.text)}>{b.title}</p>
                       {b.product ? (
-                        <p className="mt-1"><BannerPrice product={b.product} className={cn("text-[20px] leading-[24px]", t.price)} strikeClassName={t.strike} /></p>
+                        <p className="mt-1"><BannerPrice product={b.product} className={cn("text-lg", t.price)} strikeClassName={t.strike} /></p>
                       ) : (
-                        b.subtitle && <p className={cn("mt-1 line-clamp-1 max-w-[75%] text-[12px]", t.muted)}>{b.subtitle}</p>
+                        b.subtitle && <p className={cn("mt-1 line-clamp-1 max-w-[75%] text-xs", t.muted)}>{b.subtitle}</p>
                       )}
                       <span className={cn(CTA_LINK, t.text)}>{b.cta}</span>
                     </PhotoBanner>
@@ -59,17 +59,17 @@ export function HeroSection({ content }: { content?: HomeContent }) {
                   <TiltCard className="h-full overflow-hidden rounded-box">
                     <PhotoBanner image={b.image} href={b.href} label={b.title} overlay={t.overlay} className="h-full" sizes="(min-width:1280px) 309px, 80vw" contentClassName="flex flex-col justify-center px-6">
                       <Float slow>
-                        {b.eyebrow && <p className={cn("text-[10px] uppercase tracking-[0.2em]", t.muted)}>{b.eyebrow}</p>}
-                        <p className={cn("mt-1 line-clamp-2 max-w-[75%] whitespace-pre-line text-[19px] font-semibold leading-[23px]", t.text)}>{b.title}</p>
+                        {b.eyebrow && <p className={cn("text-xs", t.muted)}>{b.eyebrow}</p>}
+                        <p className={cn("mt-1 line-clamp-2 max-w-[75%] whitespace-pre-line text-lg font-semibold", t.text)}>{b.title}</p>
                         {b.product ? (
                           <>
-                            <p className={cn("mt-2 text-[10px] uppercase", t.muted)}>{getPricing(b.product).onSale ? "En promotion" : "Prix"}</p>
-                            <BannerPrice product={b.product} className={cn("text-[24px] font-normal leading-[29px]", t.price)} strikeClassName={t.strike} />
+                            <p className={cn("mt-2 text-xs", t.muted)}>{getPricing(b.product).onSale ? "En promotion" : "Prix"}</p>
+                            <BannerPrice product={b.product} className={cn("text-xl font-normal", t.price)} strikeClassName={t.strike} />
                           </>
                         ) : (
-                          b.subtitle && <p className={cn("mt-2 line-clamp-2 max-w-[75%] text-[12px] leading-[17px]", t.muted)}>{b.subtitle}</p>
+                          b.subtitle && <p className={cn("mt-2 line-clamp-2 max-w-[75%] text-xs", t.muted)}>{b.subtitle}</p>
                         )}
-                        <span className="mt-2 inline-flex h-9 items-center rounded-box bg-primary px-4 text-[11px] font-medium uppercase text-white sm:mt-3 sm:h-[33px]">{b.cta}</span>
+                        <span className="mt-2 inline-flex h-9 items-center rounded-box bg-primary px-4 text-xs font-medium text-white sm:mt-3 sm:h-[33px]">{b.cta}</span>
                       </Float>
                     </PhotoBanner>
                   </TiltCard>

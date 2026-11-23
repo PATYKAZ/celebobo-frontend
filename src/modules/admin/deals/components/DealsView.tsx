@@ -61,16 +61,16 @@ function DealRow({ deal, onEdit, onDelete }: { deal: AdminDeal; onEdit: () => vo
         </span>
         <div className="min-w-0 flex-1">
           <p className="flex flex-wrap items-center gap-2">
-            <span className="text-[15px] font-bold leading-[19px]">{name}</span>
-            <span className={cn("rounded-full px-2 py-0.5 text-[10px] font-bold uppercase", status.className)}>{status.label}</span>
-            {!deal.isActive && <span className="rounded-full bg-line-3 px-2 py-0.5 text-[10px] font-bold uppercase text-ink">Désactivée</span>}
+            <span className="text-sm font-bold">{name}</span>
+            <span className={cn("rounded-full px-2 py-0.5 text-xs font-bold", status.className)}>{status.label}</span>
+            {!deal.isActive && <span className="rounded-full bg-line-3 px-2 py-0.5 text-xs font-bold text-ink">Désactivée</span>}
           </p>
-          <p className="mt-1 text-[14px]">
+          <p className="mt-1 text-sm">
             <strong className="text-primary">{formatPrice(deal.dealPrice)}</strong>
-            <span className="ml-2 text-[12px] text-ink-3 line-through">{formatPrice(deal.regularPrice)}</span>
-            {percent > 0 && <span className="ml-2 text-[12px] font-bold text-danger">−{percent} %</span>}
+            <span className="ml-2 text-xs text-ink-3 line-through">{formatPrice(deal.regularPrice)}</span>
+            {percent > 0 && <span className="ml-2 text-xs font-bold text-danger">−{percent} %</span>}
           </p>
-          <p className="mt-1 text-[12px] text-ink-3">
+          <p className="mt-1 text-xs text-ink-3">
             Du {dateFmt.format(new Date(deal.startsAt))} au {dateFmt.format(new Date(deal.endsAt))}
             {deal.giftLabel && <> · Cadeau : {deal.giftLabel}</>}
           </p>
@@ -80,10 +80,10 @@ function DealRow({ deal, onEdit, onDelete }: { deal: AdminDeal; onEdit: () => vo
                 <div className="h-1.5 overflow-hidden rounded-full bg-page" role="progressbar" aria-label="Unités vendues" aria-valuemin={0} aria-valuemax={deal.quantity} aria-valuenow={deal.sold}>
                   <div className="h-full rounded-full bg-primary" style={{ width: `${pct}%` }} />
                 </div>
-                <p className="mt-1 text-[12px] text-ink-2">{deal.sold} vendu{deal.sold > 1 ? "s" : ""} sur {deal.quantity}</p>
+                <p className="mt-1 text-xs text-ink-2">{deal.sold} vendu{deal.sold > 1 ? "s" : ""} sur {deal.quantity}</p>
               </>
             ) : (
-              <p className="text-[12px] text-ink-2">{deal.sold} vendu{deal.sold > 1 ? "s" : ""} · sans limite de quantité</p>
+              <p className="text-xs text-ink-2">{deal.sold} vendu{deal.sold > 1 ? "s" : ""} · sans limite de quantité</p>
             )}
           </div>
         </div>
@@ -129,8 +129,8 @@ function Content() {
         </div>
       ) : isError ? (
         <Block className="text-center">
-          <p className="text-[14px] text-ink-2">{getErrorMessage(error, "Impossible de charger les offres.")}</p>
-          <Button className="mt-4" variant="chip" upper={false} onClick={() => refetch()}>Réessayer</Button>
+          <p className="text-sm text-ink-2">{getErrorMessage(error, "Impossible de charger les offres.")}</p>
+          <Button className="mt-4" variant="secondary" upper={false} onClick={() => refetch()}>Réessayer</Button>
         </Block>
       ) : list.length === 0 ? (
         <Block>

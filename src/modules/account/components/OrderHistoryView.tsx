@@ -38,11 +38,11 @@ function Content() {
   const countOf = (f: Filter) => (data?.results ?? []).filter((o) => f === "all" || GROUPS[f].includes(o.status)).length;
 
   return (
-    <Block pad="none" className="p-4 sm:p-[30px]">
+    <Block pad="none" className="p-4 sm:p-8">
       <div className="flex flex-wrap items-center justify-between gap-3 sm:gap-4">
         <div className="min-w-0">
-          <h1 className="text-[22px] leading-[28px] text-primary sm:text-h-page">Mes commandes</h1>
-          <p className="mt-1 text-[13px] leading-[19px] text-ink-2 sm:text-[14px]">Suivez l&apos;avancement de vos commandes et échangez avec votre revendeur.</p>
+          <h1 className="text-xl text-primary sm:text-h-page">Mes commandes</h1>
+          <p className="mt-1 text-sm text-ink-2 sm:text-sm">Suivez l&apos;avancement de vos commandes et échangez avec votre revendeur.</p>
         </div>
         <Tabs
           className="w-full min-w-0 lg:w-auto"

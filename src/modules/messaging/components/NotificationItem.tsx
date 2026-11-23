@@ -58,31 +58,31 @@ export function NotificationItem({ notification: n, role, resellers }: Props) {
       <div className="flex items-start gap-3 sm:gap-4">
         <span className={cn("relative grid size-11 shrink-0 place-items-center rounded-full", n.type === "order" ? "bg-primary-100 text-primary-dark" : "bg-info/10 text-info")}>
           <Icon size={22} variant="Bold" />
-          {!n.isRead && <span className="absolute -right-0.5 -top-0.5 size-3 rounded-full bg-danger ring-2 ring-white sm:hidden" aria-label="Non lue" />}
+          {!n.isRead && <span className="absolute -right-0.5 -top-0.5 size-3 rounded-full bg-danger ring-2 ring-surface sm:hidden" aria-label="Non lue" />}
         </span>
         <div className="min-w-0 flex-1">
           <div className="flex flex-col gap-0.5 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-3 sm:gap-y-1">
-            <h3 className="text-[15px] leading-[21px]">{n.title}</h3>
+            <h3 className="text-sm">{n.title}</h3>
             {!n.isRead && <span className="hidden size-2 rounded-full bg-danger sm:block" aria-label="Non lue" />}
-            <span className="text-[12px] text-ink-3 sm:ml-auto">{formatRelative(n.createdAt)}</span>
+            <span className="text-xs text-ink-3 sm:ml-auto">{formatRelative(n.createdAt)}</span>
           </div>
-          <p className="mt-1.5 text-[14px] leading-[21px] text-ink-2 sm:mt-1">{n.body}</p>
+          <p className="mt-1.5 text-sm text-ink-2 sm:mt-1">{n.body}</p>
 
         </div>
       </div>
 
       {/* Actions : pleine largeur sur mobile (cibles 48 px), alignées sous le texte sur desktop */}
-      <div className="mt-3.5 flex flex-col gap-2 sm:mt-3 sm:pl-[60px]">
+      <div className="mt-3.5 flex flex-col gap-2 sm:mt-3 sm:pl-15">
         <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
           <Link
             href={n.link || ROUTES.notifications}
             onClick={() => !n.isRead && markRead.mutate(n.id)}
-            className="group inline-flex min-h-12 w-full items-center justify-center gap-1.5 rounded-box bg-surface text-[14px] font-bold text-primary ring-1 ring-primary/30 transition-all active:scale-[0.98] sm:min-h-0 sm:w-auto sm:bg-transparent sm:text-[13px] sm:ring-0"
+            className="group inline-flex min-h-12 w-full items-center justify-center gap-1.5 rounded-box bg-surface text-sm font-bold text-primary ring-1 ring-primary/30 transition-all active:scale-[0.98] sm:min-h-0 sm:w-auto sm:bg-transparent sm:text-sm sm:ring-0"
           >
             {n.conversationId ? "Ouvrir la discussion" : "Voir la commande"} <ArrowRight2 size={15} className="transition-transform group-hover:translate-x-1" />
           </Link>
           {!n.isRead && !canAssign && !canReply && (
-            <button onClick={() => markRead.mutate(n.id)} className="min-h-11 w-full rounded-box text-[13px] font-semibold text-ink-3 active:bg-chip sm:ml-3 sm:min-h-0 sm:w-auto sm:rounded-none sm:text-[12px] sm:hover:text-ink">
+            <button onClick={() => markRead.mutate(n.id)} className="min-h-11 w-full rounded-box text-sm font-semibold text-ink-3 active:bg-chip sm:ml-3 sm:min-h-0 sm:w-auto sm:rounded-none sm:text-xs sm:hover:text-ink">
               Marquer comme lue
             </button>
           )}
@@ -107,7 +107,7 @@ export function NotificationItem({ notification: n, role, resellers }: Props) {
             </motion.div>
           )}
           {done && (
-            <motion.div key="done" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-4 py-3 text-[13px] font-bold text-white sm:w-auto sm:justify-start sm:py-2">
+            <motion.div key="done" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-4 py-3 text-sm font-bold text-white sm:w-auto sm:justify-start sm:py-2">
               <motion.span initial={{ rotate: -90, scale: 0 }} animate={{ rotate: 0, scale: 1 }} transition={{ type: "spring", stiffness: 400, damping: 12 }}><TickCircle size={18} variant="Bold" /></motion.span>
               {discussion ? "Discussion assignée avec succès" : "Commande assignée avec succès"}
             </motion.div>
@@ -115,7 +115,7 @@ export function NotificationItem({ notification: n, role, resellers }: Props) {
           {canReply && (
             <motion.div key="reply" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
               <Button size="sm" leftIcon={<TickCircle size={16} variant="Bold" />} loading={reply.isPending} upper={false} onClick={() => reply.mutate({ notification: n, accept: true }, { onSuccess: () => toast.success("Commande acceptée"), onError: (e) => toast.error("Action impossible", getErrorMessage(e)) })}>Accepter</Button>
-              <Button size="sm" variant="chip" leftIcon={<CloseCircle size={16} variant="Bold" />} upper={false} onClick={() => reply.mutate({ notification: n, accept: false }, { onSuccess: () => toast.info("Commande déclinée"), onError: (e) => toast.error("Action impossible", getErrorMessage(e)) })}>Décliner</Button>
+              <Button size="sm" variant="secondary" leftIcon={<CloseCircle size={16} variant="Bold" />} upper={false} onClick={() => reply.mutate({ notification: n, accept: false }, { onSuccess: () => toast.info("Commande déclinée"), onError: (e) => toast.error("Action impossible", getErrorMessage(e)) })}>Décliner</Button>
             </motion.div>
           )}
         </AnimatePresence>

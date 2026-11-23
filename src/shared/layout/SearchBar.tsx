@@ -126,14 +126,14 @@ export function SearchBar({ className, compact }: { className?: string; compact?
 
   return (
     <form ref={box} onSubmit={submit} role="search" className={cn("relative scroll-mt-20", className)}>
-      <div className="flex h-[48px] overflow-hidden rounded-pill bg-surface sm:h-[45px]">
+      <div className="flex h-[48px] overflow-hidden rounded-full bg-surface sm:h-[45px]">
         {!compact && (
           <div className="relative hidden w-[143px] shrink-0 sm:block">
             <select
               aria-label="Catégorie"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="h-full w-full appearance-none rounded-l-[4px] bg-surface pl-3 pr-8 text-[13px] font-bold leading-[19.5px] text-ink outline-hidden"
+              className="h-full w-full appearance-none rounded-l-sm bg-surface pl-3 pr-8 text-sm font-bold text-ink outline-hidden"
             >
               <option value="">Catégories</option>
               {categories?.map((c) => (
@@ -162,7 +162,7 @@ export function SearchBar({ className, compact }: { className?: string; compact?
           aria-autocomplete="list"
           aria-activedescendant={active >= 0 ? `${uid}-${options[active]?.id}` : undefined}
           autoComplete="off"
-          className="min-w-0 flex-1 bg-surface px-4 text-[16px] text-ink outline-hidden placeholder:text-ink-3 sm:border-l sm:border-line-3 sm:px-3 sm:text-[13px]"
+          className="min-w-0 flex-1 bg-surface px-4 text-base text-ink outline-hidden placeholder:text-ink-3 sm:border-l sm:border-line-3 sm:px-3 sm:text-sm"
         />
         {q && (
           <button
@@ -194,18 +194,18 @@ export function SearchBar({ className, compact }: { className?: string; compact?
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 6 }}
             transition={{ duration: 0.15 }}
-            className="absolute inset-x-0 top-full z-50 mt-2 max-h-[420px] overflow-y-auto rounded-box border border-line-3 bg-surface p-2 shadow-[0_12px_40px_rgba(0,0,0,.14)]"
+            className="absolute inset-x-0 top-full z-50 mt-2 max-h-[420px] overflow-y-auto rounded-box border border-line-3 bg-surface p-2 shadow-lg"
           >
             {!typing && (
-              <li role="presentation" className="flex items-center justify-between px-3 pb-1 pt-1 text-[11px] font-bold uppercase tracking-wider text-ink-3">
+              <li role="presentation" className="flex items-center justify-between px-3 pb-1 pt-1 text-xs font-bold text-ink-3">
                 Recherches récentes
                 <button type="button" onClick={recent.clear} className="flex items-center gap-1 normal-case tracking-normal text-ink-3 hover:text-danger">
                   <Trash size={12} /> Tout effacer
                 </button>
               </li>
             )}
-            {typing && !suggestions && isFetching && <li role="presentation" className="px-3 py-4 text-[13px] text-ink-3">Recherche…</li>}
-            {typing && suggestions && suggestions.length === 0 && !options.some((o) => o.kind === "category") && <li role="presentation" className="px-3 py-3 text-[13px] text-ink-3">Aucun produit pour « {term} »</li>}
+            {typing && !suggestions && isFetching && <li role="presentation" className="px-3 py-4 text-sm text-ink-3">Recherche…</li>}
+            {typing && suggestions && suggestions.length === 0 && !options.some((o) => o.kind === "category") && <li role="presentation" className="px-3 py-3 text-sm text-ink-3">Aucun produit pour « {term} »</li>}
 
             {options.map((o, i) => {
               const isActive = i === active;
@@ -219,11 +219,11 @@ export function SearchBar({ className, compact }: { className?: string; compact?
                   : null;
               return (
                 <Fragment key={o.id}>
-                  {heading && <li role="presentation" className="px-3 pb-1 pt-2 text-[11px] font-bold uppercase tracking-wider text-ink-3">{heading}</li>}
+                  {heading && <li role="presentation" className="px-3 pb-1 pt-2 text-xs font-bold text-ink-3">{heading}</li>}
                   <li id={`${uid}-${o.id}`} role="option" aria-selected={isActive} onMouseEnter={() => setActive(i)}>
                     {o.kind === "recent" && (
                       <div className={cn(base, "justify-between")}>
-                        <button type="button" onClick={() => choose(o)} className="flex min-w-0 flex-1 items-center gap-3 text-[13px] font-semibold">
+                        <button type="button" onClick={() => choose(o)} className="flex min-w-0 flex-1 items-center gap-3 text-sm font-semibold">
                           <Clock size={16} className="shrink-0 text-ink-3" /> <span className="truncate">{o.label}</span>
                         </button>
                         <button type="button" aria-label={`Retirer « ${o.label} »`} onClick={() => recent.remove(o.label)} className="text-ink-3 hover:text-danger">
@@ -234,22 +234,22 @@ export function SearchBar({ className, compact }: { className?: string; compact?
                     {o.kind === "category" && (
                       <button type="button" onClick={() => choose(o)} className={base}>
                         <span className="grid size-11 shrink-0 place-items-center rounded-md bg-chip"><Category2 size={18} variant="Bold" /></span>
-                        <span className="min-w-0 flex-1 text-[13px] font-bold"><Highlight text={o.label} q={term} /></span>
-                        <span className="text-[12px] text-ink-3">{o.count} produits</span>
+                        <span className="min-w-0 flex-1 text-sm font-bold"><Highlight text={o.label} q={term} /></span>
+                        <span className="text-xs text-ink-3">{o.count} produits</span>
                       </button>
                     )}
                     {o.kind === "product" && (
                       <button type="button" onClick={() => choose(o)} className={base}>
                         <span className="relative size-11 shrink-0 overflow-hidden rounded-md bg-page">{o.image && <Image src={o.image} alt="" fill sizes="44px" className="object-cover" />}</span>
                         <span className="min-w-0 flex-1">
-                          <span className="block truncate text-[13px] font-bold leading-[18px]"><Highlight text={o.label} q={term} /></span>
-                          <span className="text-[12px] text-ink-3">{o.category}</span>
+                          <span className="block truncate text-sm font-bold"><Highlight text={o.label} q={term} /></span>
+                          <span className="text-xs text-ink-3">{o.category}</span>
                         </span>
-                        <span className="text-[13px] font-semibold text-primary">{formatPrice(o.price)}</span>
+                        <span className="text-sm font-semibold text-primary">{formatPrice(o.price)}</span>
                       </button>
                     )}
                     {o.kind === "all" && (
-                      <button type="button" onClick={() => choose(o)} className={cn(base, "mt-1 justify-center text-[13px] font-semibold text-primary")}>
+                      <button type="button" onClick={() => choose(o)} className={cn(base, "mt-1 justify-center text-sm font-semibold text-primary")}>
                         <SearchNormal1 size={14} /> Voir tous les résultats pour « {o.label} »
                       </button>
                     )}

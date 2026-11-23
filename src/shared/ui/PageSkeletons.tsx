@@ -22,7 +22,7 @@ export function SkeletonRoot({ label = "Chargement de la page", className, child
 /** Même gabarit que <Breadcrumb>. */
 export function BreadcrumbSkeleton() {
   return (
-    <Block pad="none" className="flex min-h-[44px] items-center px-4 sm:min-h-[81px] sm:px-[30px]">
+    <Block pad="none" className="flex min-h-[44px] items-center px-4 sm:min-h-[81px] sm:px-8">
       <Skeleton className="h-4 w-44 max-w-full" />
     </Block>
   );
@@ -31,7 +31,7 @@ export function BreadcrumbSkeleton() {
 /** Bloc titre + description (en-tête de liste, page de contenu). */
 export function TitleBlockSkeleton({ description = true }: { description?: boolean }) {
   return (
-    <Block pad="none" className="p-4 sm:px-[30px] sm:py-6">
+    <Block pad="none" className="p-4 sm:px-8 sm:py-6">
       <Skeleton className="h-7 w-56 max-w-full sm:h-8" />
       {description && <Skeleton className="mt-3 h-4 w-96 max-w-full" />}
     </Block>
@@ -52,7 +52,7 @@ export function ProductListSkeleton({ header = true }: { header?: boolean }) {
     <SkeletonRoot label="Chargement des produits">
       <BreadcrumbSkeleton />
       {header && <TitleBlockSkeleton />}
-      <Block pad="none" className="grid grid-cols-[minmax(0,1fr)] gap-0 p-3 sm:p-[30px] lg:grid-cols-[250px_minmax(0,1fr)] lg:gap-8">
+      <Block pad="none" className="grid grid-cols-[minmax(0,1fr)] gap-0 p-3 sm:p-8 lg:grid-cols-[250px_minmax(0,1fr)] lg:gap-8">
         <div className="hidden flex-col gap-3 lg:flex">
           <Skeleton className="h-5 w-28" />
           {Array.from({ length: 7 }, (_, i) => <Skeleton key={i} className="h-7 w-full" />)}
@@ -79,7 +79,7 @@ export function ProductDetailSkeleton() {
   return (
     <SkeletonRoot label="Chargement du produit">
       <BreadcrumbSkeleton />
-      <Block pad="none" className="grid grid-cols-[minmax(0,1fr)] gap-5 p-3 sm:gap-8 sm:p-[30px] lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-12">
+      <Block pad="none" className="grid grid-cols-[minmax(0,1fr)] gap-5 p-3 sm:gap-8 sm:p-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-12">
         <Skeleton className="aspect-4/3 w-full rounded-box md:aspect-square" />
         <div className="flex flex-col gap-4 px-1 sm:px-0">
           <Skeleton className="h-3.5 w-20" />
@@ -100,7 +100,7 @@ export function ProductDetailSkeleton() {
           </div>
         </div>
       </Block>
-      <Block pad="none" className="p-4 sm:p-[30px]">
+      <Block pad="none" className="p-4 sm:p-8">
         <div className="flex gap-6 border-b border-line-3 pb-3">
           {Array.from({ length: 4 }, (_, i) => <Skeleton key={i} className="h-5 w-24" />)}
         </div>
@@ -117,7 +117,7 @@ export function CartLayoutSkeleton({ label = "Chargement du panier", lines = 3, 
     <SkeletonRoot label={label}>
       {breadcrumb && <BreadcrumbSkeleton />}
       <div className="grid gap-3 sm:gap-4 lg:grid-cols-[1fr_380px]">
-        <Block pad="none" className="p-4 sm:p-[30px]">
+        <Block pad="none" className="p-4 sm:p-8">
           <Skeleton className="h-7 w-44" />
           <div className="mt-4 divide-y divide-line-3">
             {Array.from({ length: lines }, (_, i) => (
@@ -135,7 +135,7 @@ export function CartLayoutSkeleton({ label = "Chargement du panier", lines = 3, 
             ))}
           </div>
         </Block>
-        <Block pad="none" className="flex flex-col gap-3 p-4 sm:p-[30px]">
+        <Block pad="none" className="flex flex-col gap-3 p-4 sm:p-8">
           <Skeleton className="h-6 w-32" />
           <Skeleton className="h-4 w-full" />
           <Skeleton className="h-4 w-full" />
@@ -162,7 +162,7 @@ export function AccountSkeleton({ breadcrumb = true }: { breadcrumb?: boolean })
             </div>
           ))}
         </Block>
-        <Block pad="none" className="p-4 sm:p-[30px]">
+        <Block pad="none" className="p-4 sm:p-8">
           <Skeleton className="h-7 w-48" />
           <div className="mt-5 grid gap-4 sm:mt-6 sm:grid-cols-2">
             {Array.from({ length: 4 }, (_, i) => (
@@ -184,7 +184,7 @@ export function ListPageSkeleton({ label = "Chargement", rows = 5, breadcrumb = 
   return (
     <SkeletonRoot label={label}>
       {breadcrumb && <BreadcrumbSkeleton />}
-      <Block pad="none" className="p-4 sm:p-[30px]">
+      <Block pad="none" className="p-4 sm:p-8">
         <Skeleton className="h-7 w-52" />
         <div className="mt-5 flex flex-col gap-3">
           {Array.from({ length: rows }, (_, i) => (
@@ -237,7 +237,7 @@ export function ContentPageSkeleton({ breadcrumb = true }: { breadcrumb?: boolea
   return (
     <SkeletonRoot>
       {breadcrumb && <BreadcrumbSkeleton />}
-      <Block pad="none" className="p-4 sm:p-[30px]">
+      <Block pad="none" className="p-4 sm:p-8">
         <Skeleton className="h-8 w-64 max-w-full" />
         <Skeleton className="mt-6 h-44 w-full rounded-box sm:h-64" />
         <div className="mt-6 flex flex-col gap-2.5">
@@ -276,7 +276,7 @@ export function HomeSkeleton() {
     <SkeletonRoot label="Chargement de l'accueil">
       {/* même grille que HeroSection : menu 309 px | carrousel | bannières 309 px (xl) */}
       <div className="grid grid-cols-[minmax(0,1fr)] gap-3 sm:gap-4 lg:grid-cols-[309px_minmax(0,1fr)] xl:grid-cols-[309px_minmax(0,1fr)_309px]">
-        <Block pad="none" className="hidden flex-col gap-4 p-[30px] lg:flex">
+        <Block pad="none" className="hidden flex-col gap-4 p-8 lg:flex">
           {Array.from({ length: 9 }, (_, i) => <Skeleton key={i} className="h-4 w-full" />)}
         </Block>
         <Skeleton className="aspect-[16/10] w-full rounded-box! sm:aspect-[21/9] lg:aspect-auto lg:min-h-[310px]" />
@@ -285,7 +285,7 @@ export function HomeSkeleton() {
           <Skeleton className="h-[148px] w-full rounded-box!" />
         </div>
       </div>
-      <Block pad="none" className="flex gap-4 overflow-hidden p-4 sm:p-[30px]">
+      <Block pad="none" className="flex gap-4 overflow-hidden p-4 sm:p-8">
         {Array.from({ length: 6 }, (_, i) => (
           <div key={i} className="flex shrink-0 flex-col items-center gap-2">
             <Skeleton className="size-16 rounded-full sm:size-20" />
@@ -293,7 +293,7 @@ export function HomeSkeleton() {
           </div>
         ))}
       </Block>
-      <Block pad="none" className="p-3 sm:p-[30px]">
+      <Block pad="none" className="p-3 sm:p-8">
         <Skeleton className="mb-3 h-6 w-48" />
         <ProductGridSkeleton count={10} columns={5} />
       </Block>

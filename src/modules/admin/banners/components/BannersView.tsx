@@ -92,7 +92,7 @@ function Content() {
             return { value: x.value, label: n ? `${x.label} (${n})` : x.label };
           })}
         />
-        <p className="text-[12px] leading-[17px] text-ink-2 sm:pb-3">
+        <p className="text-xs text-ink-2 sm:pb-3">
           {slot.where} {slot.shown ? (slot.shown === 1 ? "Une bannière affichée." : `${slot.shown} bannières affichées.`) : "Toutes les bannières en ligne défilent."} Image conseillée : {slot.size}.
         </p>
       </Block>
@@ -104,8 +104,8 @@ function Content() {
         </div>
       ) : isError ? (
         <Block className="text-center">
-          <p className="text-[14px] text-ink-2">{getErrorMessage(error, "Impossible de charger les bannières.")}</p>
-          <Button className="mt-4" variant="chip" upper={false} onClick={() => refetch()}>Réessayer</Button>
+          <p className="text-sm text-ink-2">{getErrorMessage(error, "Impossible de charger les bannières.")}</p>
+          <Button className="mt-4" variant="secondary" upper={false} onClick={() => refetch()}>Réessayer</Button>
         </Block>
       ) : list.length === 0 ? (
         <Block>
@@ -118,7 +118,7 @@ function Content() {
         </Block>
       ) : (
         <Block pad="none" className="p-3 sm:p-5">
-          <p className="mb-3 px-1 text-[13px] text-ink-2">{live} en ligne sur {list.length}</p>
+          <p className="mb-3 px-1 text-sm text-ink-2">{live} en ligne sur {list.length}</p>
           <ol className="grid gap-2.5">
             {list.map((b, i) => {
               const state = bannerStatus(b);
@@ -128,19 +128,19 @@ function Content() {
                 <li key={b.id} className={cn("flex flex-col gap-3 rounded-box border border-line-3 p-3 sm:flex-row sm:items-center sm:p-4", status.label !== "En ligne" && "bg-chip/50")}>
                   <div className={cn("relative w-full shrink-0 overflow-hidden rounded-md bg-page sm:w-[200px]", slot.aspect)}>
                     {b.image && <Image src={b.image} alt="" fill sizes="(min-width:640px) 200px, 100vw" className="object-cover" />}
-                    <span className="absolute left-2 top-2 grid size-6 place-items-center rounded-full bg-surface text-[12px] font-bold text-primary-dark shadow-sm">{i + 1}</span>
+                    <span className="absolute left-2 top-2 grid size-6 place-items-center rounded-full bg-surface text-xs font-bold text-primary-dark shadow-sm">{i + 1}</span>
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="flex flex-wrap items-center gap-2">
-                      <span className="whitespace-pre-line text-[15px] font-bold leading-[19px]">{b.title}</span>
-                      <span className={cn("rounded-full px-2 py-0.5 text-[10px] font-bold uppercase", status.className)}>{status.label}</span>
+                      <span className="whitespace-pre-line text-sm font-bold">{b.title}</span>
+                      <span className={cn("rounded-full px-2 py-0.5 text-xs font-bold", status.className)}>{status.label}</span>
                     </p>
-                    {b.eyebrow && <p className="mt-0.5 text-[11px] font-semibold uppercase tracking-[0.15em] text-ink-3">{b.eyebrow}</p>}
-                    {b.subtitle && <p className="mt-1 text-[13px] leading-[18px] text-ink-2">{b.subtitle}</p>}
-                    <p className="mt-1.5 break-all text-[12px] text-ink-3">
+                    {b.eyebrow && <p className="mt-0.5 text-xs font-semibold text-ink-3">{b.eyebrow}</p>}
+                    {b.subtitle && <p className="mt-1 text-sm text-ink-2">{b.subtitle}</p>}
+                    <p className="mt-1.5 break-all text-xs text-ink-3">
                       {b.linkLabel || (b.product ? "Acheter" : "Découvrir")} → {b.product ? `${b.product.name} (prix réel affiché)` : b.linkUrl || "aucun lien"} · {b.tone === "light" ? "image claire" : "image sombre"} · {period(b)}
                     </p>
-                    {waiting && <p className="mt-1 text-[12px] text-ink-2">Pas affichée : l’emplacement montre seulement {slot.shown === 1 ? "la première" : `les ${slot.shown} premières`}.</p>}
+                    {waiting && <p className="mt-1 text-xs text-ink-2">Pas affichée : l’emplacement montre seulement {slot.shown === 1 ? "la première" : `les ${slot.shown} premières`}.</p>}
                   </div>
                   <div className="flex shrink-0 items-center gap-2">
                     <Switch

@@ -30,18 +30,18 @@ function DefaultAddress() {
   const { data, isLoading } = useAddresses();
   const a = data?.find((x) => x.isDefault) ?? data?.[0];
   if (isLoading) return <Skeleton className="h-[120px] rounded-box!" />;
-  if (!a) return <p className="rounded-box bg-page/60 p-4 text-[14px] text-ink-2">Aucune adresse enregistrée pour le moment.</p>;
+  if (!a) return <p className="rounded-box bg-page/60 p-4 text-sm text-ink-2">Aucune adresse enregistrée pour le moment.</p>;
   return (
     <div className="flex items-start gap-3 rounded-box border-2 border-primary bg-primary-50 p-4 sm:p-5">
       <span className="grid size-11 shrink-0 place-items-center rounded-full bg-primary text-white">{createElement(addressIcon(a.label), { size: 20, variant: "Bold" })}</span>
       <div className="min-w-0 flex-1">
-        <p className="flex flex-wrap items-center gap-2 text-[16px] font-bold">
+        <p className="flex flex-wrap items-center gap-2 text-base font-bold">
           {a.label}
-          {a.isDefault && <span className="rounded-full bg-primary px-2 py-0.5 text-[10px] font-bold uppercase text-white">Par défaut</span>}
+          {a.isDefault && <span className="rounded-full bg-primary px-2 py-0.5 text-xs font-bold text-white">Par défaut</span>}
         </p>
-        <p className="mt-2 flex items-center gap-2 text-[13px] text-ink-2"><User size={14} /> {a.recipient}</p>
-        <p className="mt-1 flex items-center gap-2 text-[13px] text-ink-2"><Call size={14} /> {a.phone}</p>
-        <p className="mt-1 flex items-start gap-2 text-[13px] leading-[19px] text-ink-2"><Location size={14} className="mt-0.5 shrink-0" /> {a.line1}, {a.quarter}, {a.city}, {a.country}</p>
+        <p className="mt-2 flex items-center gap-2 text-sm text-ink-2"><User size={14} /> {a.recipient}</p>
+        <p className="mt-1 flex items-center gap-2 text-sm text-ink-2"><Call size={14} /> {a.phone}</p>
+        <p className="mt-1 flex items-start gap-2 text-sm text-ink-2"><Location size={14} className="mt-0.5 shrink-0" /> {a.line1}, {a.quarter}, {a.city}, {a.country}</p>
       </div>
     </div>
   );
@@ -82,7 +82,7 @@ function Content() {
               { href: ROUTES.myData, label: "Mes données", icon: DocumentDownload },
               { href: ROUTES.consents, label: "Mes consentements", icon: ShieldTick },
             ].map(({ href, label, icon: Icon }) => (
-              <Link key={href} href={href} className="group flex min-h-12 items-center gap-3 rounded-box px-3 py-2 text-[14px] font-semibold transition-colors hover:bg-chip active:bg-chip">
+              <Link key={href} href={href} className="group flex min-h-12 items-center gap-3 rounded-box px-3 py-2 text-sm font-semibold transition-colors hover:bg-chip active:bg-chip">
                 <span className="grid size-9 place-items-center rounded-full bg-chip transition-colors group-hover:bg-primary group-hover:text-white"><Icon size={17} /></span>
                 <span className="flex-1">{label}</span>
                 <ArrowRight2 size={14} className="text-ink-3 transition-transform group-hover:translate-x-1" />
@@ -92,9 +92,9 @@ function Content() {
         </div>
       </Reveal>
       <Reveal delay={0.1} className="min-w-0">
-        <Block pad="none" className="p-4 sm:p-[30px]">
-          <h1 className="text-[22px] leading-[28px] text-primary sm:text-h-page">Mon profil</h1>
-          <p className="mb-4 mt-1 text-[13px] leading-[19px] text-ink-2 sm:mb-6 sm:text-[14px]">Gérez vos informations personnelles et vos adresses de livraison.</p>
+        <Block pad="none" className="p-4 sm:p-8">
+          <h1 className="text-xl text-primary sm:text-h-page">Mon profil</h1>
+          <p className="mb-4 mt-1 text-sm text-ink-2 sm:mb-6 sm:text-sm">Gérez vos informations personnelles et vos adresses de livraison.</p>
           <Tabs
             variant="pill"
             value={tab}
@@ -118,7 +118,7 @@ function Content() {
                   {tab === "info" && <PersonalInfoForm profile={profile} avatarFile={file} onSaved={() => setFile(null)} />}
                   {tab === "addresses" && (
                     <div className="space-y-6">
-                      <Link href={ROUTES.addresses} className="flex min-h-14 items-center gap-3 rounded-box bg-primary-50 p-3.5 text-[14px] font-semibold text-primary-dark transition-colors hover:bg-primary-100 active:scale-[0.99] sm:p-4">
+                      <Link href={ROUTES.addresses} className="flex min-h-14 items-center gap-3 rounded-box bg-primary-50 p-3.5 text-sm font-semibold text-primary-dark transition-colors hover:bg-primary-100 active:scale-[0.99] sm:p-4">
                         <Location size={20} variant="Bold" className="shrink-0" /> <span className="min-w-0 flex-1">Gérer mon carnet d&apos;adresses <span className="hidden sm:inline">(plusieurs adresses, adresse par défaut)</span></span> <ArrowRight2 size={14} className="shrink-0" />
                       </Link>
                       <DefaultAddress />

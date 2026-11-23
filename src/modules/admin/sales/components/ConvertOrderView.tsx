@@ -60,8 +60,8 @@ function ConvertPanel({ co, onDone }: { co: ConvertibleOrder; onDone: () => void
     <motion.form onSubmit={submit} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} className="min-w-0 space-y-4 sm:space-y-5">
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div className="min-w-0">
-          <h3 className="text-[17px] leading-[24px] sm:text-[18px]">Commande {o.number ?? `#${o.id}`} — {o.user.name}</h3>
-          <p className="text-[13px] text-ink-3">Passée le {formatDate(o.createdAt)}{o.assignedRevendeur ? ` · revendeur : ${o.assignedRevendeur.name}` : ""}</p>
+          <h3 className="text-base sm:text-lg">Commande {o.number ?? `#${o.id}`} — {o.user.name}</h3>
+          <p className="text-sm text-ink-3">Passée le {formatDate(o.createdAt)}{o.assignedRevendeur ? ` · revendeur : ${o.assignedRevendeur.name}` : ""}</p>
         </div>
         <StatusDot tone={ORDER_STATUS_TONE[o.status]}>{ORDER_STATUS_LABEL[o.status]}</StatusDot>
       </div>
@@ -73,14 +73,14 @@ function ConvertPanel({ co, onDone }: { co: ConvertibleOrder; onDone: () => void
             <li key={i.id} className="grid grid-cols-[56px_minmax(0,1fr)] items-center gap-x-3 gap-y-3 p-3 sm:grid-cols-[56px_minmax(0,1fr)_140px_90px] sm:gap-4">
               <span className="relative size-14 shrink-0 overflow-hidden rounded-md bg-page">{i.productImage && <Image src={i.productImage} alt="" fill sizes="56px" className="object-cover" />}</span>
               <div className="min-w-0">
-                <p className="line-clamp-2 text-[14px] font-bold leading-[19px]">{i.productName}</p>
-                <p className="text-[12px] text-ink-3">Quantité {i.quantity} · prix commande {formatPrice(i.unitPrice)}</p>
+                <p className="line-clamp-2 text-sm font-bold">{i.productName}</p>
+                <p className="text-xs text-ink-3">Quantité {i.quantity} · prix commande {formatPrice(i.unitPrice)}</p>
               </div>
               <div className="col-span-2 flex items-end justify-between gap-3 sm:contents">
                 <div className="min-w-0 flex-1 sm:w-[140px] sm:flex-none">
                   <Input label="Prix final unitaire ($)" type="number" inputMode="decimal" min={0} step="0.01" value={prices[i.id]} onChange={(e) => setPrices((p) => ({ ...p, [i.id]: e.target.value }))} />
                 </div>
-                <p className="pb-3 text-right text-[16px] font-bold sm:w-[90px] sm:pb-0 sm:text-[15px]">{formatPrice(price * i.quantity)}</p>
+                <p className="pb-3 text-right text-base font-bold sm:w-[90px] sm:pb-0 sm:text-sm">{formatPrice(price * i.quantity)}</p>
               </div>
             </li>
           );
@@ -94,9 +94,9 @@ function ConvertPanel({ co, onDone }: { co: ConvertibleOrder; onDone: () => void
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-box bg-page/60 p-4">
-        <p className="text-[14px] text-ink-2">
-          Total des ventes <strong className="ml-1 text-[20px] text-primary">{formatPrice(total)}</strong>
-          {diff !== 0 && <span className={cn("block text-[12px] font-semibold sm:ml-2 sm:inline", diff < 0 ? "text-danger" : "text-primary-dark")}>({diff > 0 ? "+" : ""}{formatPrice(diff)} vs commande {formatPrice(o.totalPrice)})</span>}
+        <p className="text-sm text-ink-2">
+          Total des ventes <strong className="ml-1 text-lg text-primary">{formatPrice(total)}</strong>
+          {diff !== 0 && <span className={cn("block text-xs font-semibold sm:ml-2 sm:inline", diff < 0 ? "text-danger" : "text-primary-dark")}>({diff > 0 ? "+" : ""}{formatPrice(diff)} vs commande {formatPrice(o.totalPrice)})</span>}
         </p>
         <Button type="submit" loading={convert.isPending} upper={false} leftIcon={<TickCircle size={18} variant="Bold" />} className="hidden sm:inline-flex">Convertir en ventes</Button>
       </div>
@@ -104,13 +104,13 @@ function ConvertPanel({ co, onDone }: { co: ConvertibleOrder; onDone: () => void
       <div className="h-20 sm:hidden" aria-hidden />
       <div className="fixed inset-x-0 bottom-[max(var(--tabbar-h),env(safe-area-inset-bottom))] z-40 flex items-center gap-3 border-t border-line-3 bg-surface/95 px-4 py-3 backdrop-blur-xl sm:hidden">
         <div className="min-w-0 flex-1">
-          <p className="text-[11px] font-semibold uppercase tracking-wide text-ink-3">Total des ventes</p>
-          <p className="truncate text-[20px] font-bold leading-[24px] text-primary">{formatPrice(total)}</p>
+          <p className="text-xs font-semibold text-ink-3">Total des ventes</p>
+          <p className="truncate text-lg font-bold text-primary">{formatPrice(total)}</p>
         </div>
         <Button type="submit" loading={convert.isPending} upper={false} leftIcon={<TickCircle size={18} variant="Bold" />}>Convertir</Button>
       </div>
-      <p className="flex items-start gap-2 text-[12px] text-ink-3"><InfoCircle size={15} className="mt-0.5 shrink-0" /> La commande passera au statut « Livrée » et ne pourra plus être convertie une seconde fois. Le stock est mis à jour.</p>
-      {error && <p role="alert" className="text-[13px] text-danger">{error}</p>}
+      <p className="flex items-start gap-2 text-xs text-ink-3"><InfoCircle size={15} className="mt-0.5 shrink-0" /> La commande passera au statut « Livrée » et ne pourra plus être convertie une seconde fois. Le stock est mis à jour.</p>
+      {error && <p role="alert" className="text-sm text-danger">{error}</p>}
     </motion.form>
   );
 }
@@ -129,15 +129,15 @@ function ResultCard({ co, active, onSelect }: { co: ConvertibleOrder; active: bo
         active ? "border-primary bg-primary-50" : "border-line-3",
       )}
     >
-      <span className="grid size-10 shrink-0 place-items-center rounded-full bg-chip text-[11px] font-bold">{o.number?.slice(-4) ?? `#${o.id}`}</span>
+      <span className="grid size-10 shrink-0 place-items-center rounded-full bg-chip text-xs font-bold">{o.number?.slice(-4) ?? `#${o.id}`}</span>
       <span className="min-w-0 flex-1">
-        <span className="block truncate text-[14px] font-bold">{o.user.name}</span>
-        <span className="block truncate text-[12px] text-ink-3">{o.items.length ? o.items.map((i) => i.productName).join(", ") : `${o.itemsCount ?? 0} article${(o.itemsCount ?? 0) > 1 ? "s" : ""}`}</span>
-        {co.blockedReason && <span className="mt-1 inline-flex items-center gap-1 text-[12px] font-semibold text-danger"><Lock size={12} variant="Bold" /> {co.blockedReason}</span>}
+        <span className="block truncate text-sm font-bold">{o.user.name}</span>
+        <span className="block truncate text-xs text-ink-3">{o.items.length ? o.items.map((i) => i.productName).join(", ") : `${o.itemsCount ?? 0} article${(o.itemsCount ?? 0) > 1 ? "s" : ""}`}</span>
+        {co.blockedReason && <span className="mt-1 inline-flex items-center gap-1 text-xs font-semibold text-danger"><Lock size={12} variant="Bold" /> {co.blockedReason}</span>}
       </span>
       <span className="shrink-0 text-right">
-        <span className="block text-[14px] font-bold">{formatPrice(o.totalPrice)}</span>
-        <span className="text-[11px] text-ink-3">{formatDate(o.createdAt)}</span>
+        <span className="block text-sm font-bold">{formatPrice(o.totalPrice)}</span>
+        <span className="text-xs text-ink-3">{formatDate(o.createdAt)}</span>
       </span>
     </button>
   );
@@ -173,17 +173,17 @@ function ConvertOrderContent() {
     <>
       <PageHeader title="Convertir une commande en ventes" description="Retrouvez la commande d'un client, ajustez les prix finaux, puis enregistrez les ventes en une fois." />
       <div className="grid grid-cols-1 gap-3 sm:gap-4 xl:grid-cols-[400px_minmax(0,1fr)]">
-        <Block pad="none" className="min-w-0 space-y-4 p-4 sm:p-[30px]">
+        <Block pad="none" className="min-w-0 space-y-4 p-4 sm:p-8">
           <div className="relative">
             <SearchNormal1 size={16} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-ink-3" />
             <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Nom, e-mail du client ou n° de commande…" aria-label="Rechercher une commande" className="field pl-10" />
           </div>
-          <p className="text-[12px] font-semibold uppercase tracking-wide text-ink-3">{q.trim() ? "Résultats" : "Commandes à convertir"}</p>
+          <p className="text-xs font-semibold text-ink-3">{q.trim() ? "Résultats" : "Commandes à convertir"}</p>
           <div className="space-y-2">
             {!results ? (
               Array.from({ length: 4 }, (_, i) => <Skeleton key={i} className="h-[72px]" />)
             ) : results.length === 0 ? (
-              <p className="py-8 text-center text-[14px] text-ink-3">{isFetching ? "Recherche…" : "Aucune commande trouvée."}</p>
+              <p className="py-8 text-center text-sm text-ink-3">{isFetching ? "Recherche…" : "Aucune commande trouvée."}</p>
             ) : (
               <AnimatePresence initial={false}>
                 {results.map((co) => (
@@ -196,7 +196,7 @@ function ConvertOrderContent() {
           </div>
         </Block>
 
-        <Block pad="none" className="min-w-0 scroll-mt-4 p-4 sm:p-[30px]">
+        <Block pad="none" className="min-w-0 scroll-mt-4 p-4 sm:p-8">
           <div ref={panel} className="scroll-mt-4" />
           {current ? (
             <ConvertPanel key={current.order.id} co={current} onDone={() => router.push(ROUTES.admin.sales)} />
@@ -204,8 +204,8 @@ function ConvertOrderContent() {
             <div className="grid min-h-[320px] place-items-center text-center">
               <div className="max-w-[360px]">
                 <span className="mx-auto grid size-16 place-items-center rounded-full bg-primary-50 text-primary"><TickCircle size={30} variant="Bulk" /></span>
-                <h3 className="mt-4 text-[18px]">{blockedPreset ? `Commande #${blockedPreset.order.id} non convertible` : "Choisissez une commande"}</h3>
-                <p className="mt-2 text-[14px] text-ink-2">{blockedPreset ? blockedPreset.blockedReason : "Les lignes de la commande seront préremplies : produit, quantité et prix de la commande."}</p>
+                <h3 className="mt-4 text-lg">{blockedPreset ? `Commande #${blockedPreset.order.id} non convertible` : "Choisissez une commande"}</h3>
+                <p className="mt-2 text-sm text-ink-2">{blockedPreset ? blockedPreset.blockedReason : "Les lignes de la commande seront préremplies : produit, quantité et prix de la commande."}</p>
               </div>
             </div>
           )}

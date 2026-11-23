@@ -15,7 +15,7 @@ export function Stars({ rating, size = 13, count, className, hideCount }: Props)
   const value = Math.max(0, Math.min(5, rating ?? 0));
   return (
     <div className={cn("flex items-center gap-1", className)} aria-label={rating != null ? `Note ${rating} sur 5` : "Pas encore noté"}>
-      <div className="flex gap-[2px]">
+      <div className="flex gap-0.5">
         {Array.from({ length: 5 }, (_, i) => {
           const fill = Math.max(0, Math.min(1, value - i));
           return (
@@ -30,7 +30,7 @@ export function Stars({ rating, size = 13, count, className, hideCount }: Props)
           );
         })}
       </div>
-      {!hideCount && count != null && <span className="text-[13px] leading-[19.5px] text-ink-2">({count})</span>}
+      {!hideCount && count != null && <span className="text-sm text-ink-2">({count})</span>}
     </div>
   );
 }

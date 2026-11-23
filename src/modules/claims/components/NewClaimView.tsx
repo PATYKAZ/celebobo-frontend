@@ -82,19 +82,19 @@ function Content() {
       )}
       {line && (
         <>
-          <p className="rounded-box bg-primary-50 p-3.5 text-[13px] leading-[19px] text-primary-dark">
+          <p className="rounded-box bg-primary-50 p-3.5 text-sm text-primary-dark">
             <b>{line.name}</b>
             {line.trialUntil && <> — délai d&apos;essai jusqu&apos;au {formatDate(line.trialUntil)}</>}
             {line.warrantyUntil && <>, garantie CeLE BoBO jusqu&apos;au {formatDate(line.warrantyUntil)}</>}.
           </p>
           <fieldset className="space-y-2">
-            <legend className="mb-1 text-[14px] font-semibold">Quel est le problème ?</legend>
+            <legend className="mb-1 text-sm font-semibold">Quel est le problème ?</legend>
             {line.kinds.map((k) => (
               <label key={k} className="flex cursor-pointer gap-3 rounded-box border border-line p-3 has-checked:border-primary has-checked:bg-primary-50/40">
                 <input type="radio" name="kind" className="mt-1" checked={kind === k} onChange={() => setKind(k)} />
                 <span>
-                  <span className="block text-[14px] font-semibold">{KIND_LABEL[k]}</span>
-                  <span className="block text-[12px] leading-[17px] text-ink-3">{KIND_HINT[k]}</span>
+                  <span className="block text-sm font-semibold">{KIND_LABEL[k]}</span>
+                  <span className="block text-xs text-ink-3">{KIND_HINT[k]}</span>
                 </span>
               </label>
             ))}
@@ -104,7 +104,7 @@ function Content() {
           )}
           <Textarea label="Décrivez le problème" value={description} onChange={(e) => setDescription(e.target.value)} maxLength={2000} placeholder="Depuis quand, ce qui se passe, ce que vous avez essayé…" className="min-h-[110px]" />
           <div>
-            <p className="mb-2 text-[14px] font-semibold">Photos du défaut <span className="font-normal text-ink-3">(jusqu&apos;à {MAX_PHOTOS})</span></p>
+            <p className="mb-2 text-sm font-semibold">Photos du défaut <span className="font-normal text-ink-3">(jusqu&apos;à {MAX_PHOTOS})</span></p>
             <div className="flex flex-wrap gap-2">
               {photos.map((url) => (
                 <span key={url} className="relative size-20 overflow-hidden rounded-md bg-page">
@@ -122,7 +122,7 @@ function Content() {
           <Button fullWidth upper={false} disabled={!kind || description.trim().length < 5 || uploading || (line.serials.length > 1 && !serial)} loading={submit.isPending} onClick={send}>
             Envoyer la réclamation
           </Button>
-          <p className="text-[12px] leading-[17px] text-ink-3">Nous vous répondons sous 72 heures et vous indiquons comment rendre le produit : dépôt à la boutique ou reprise par votre revendeur. Gardez votre facture : le numéro de série doit être le même.</p>
+          <p className="text-xs text-ink-3">Nous vous répondons sous 72 heures et vous indiquons comment rendre le produit : dépôt à la boutique ou reprise par votre revendeur. Gardez votre facture : le numéro de série doit être le même.</p>
         </>
       )}
     </div>
@@ -135,8 +135,8 @@ export function NewClaimView() {
       <Breadcrumb items={[{ label: "Mon compte", href: ROUTES.profile }, { label: "Mes réclamations", href: ROUTES.myClaims }, { label: "Nouvelle réclamation" }]} />
       <AuthGuard fallback={<AccountSkeleton breadcrumb={false} />}>
         <Reveal>
-          <Block pad="none" className="p-4 sm:p-[30px]">
-            <h1 className="mb-4 text-[22px] leading-[28px] text-primary sm:text-h-page">Faire une réclamation</h1>
+          <Block pad="none" className="p-4 sm:p-8">
+            <h1 className="mb-4 text-xl text-primary sm:text-h-page">Faire une réclamation</h1>
             <Content />
           </Block>
         </Reveal>

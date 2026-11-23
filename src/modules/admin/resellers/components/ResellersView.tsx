@@ -1,6 +1,6 @@
 "use client";
 
-import { Copy, Crown, People, SearchNormal1, UserAdd } from "@/shared/ui/icons";
+import { Copy, Crown, People, SearchNormal1, UserAdd } from "@/shared/ui/icons";
 import { Stars } from "@/shared/ui/Stars";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
@@ -49,7 +49,7 @@ function CopyCode({ code }: { code: string }) {
         navigator.clipboard?.writeText(code).then(() => toast.success("Code copié", code), () => toast.error("Copie impossible"));
       }}
       aria-label={`Copier le code ${code}`}
-      className="group inline-flex items-center gap-1.5 rounded-md bg-chip px-2.5 py-1 text-[13px] font-bold tracking-widest transition-colors hover:bg-primary hover:text-white max-md:min-h-10 max-md:px-3"
+      className="group inline-flex items-center gap-1.5 rounded-md bg-chip px-2.5 py-1 text-sm font-bold transition-colors hover:bg-primary hover:text-white max-md:min-h-10 max-md:px-3"
     >
       {code}
       <Copy size={14} className="transition-transform group-hover:scale-110" />
@@ -86,11 +86,11 @@ function ResellersContent() {
         <div className="flex items-center gap-3">
           <span className="relative">
             <Avatar src={r.avatar} name={r.name} size={38} />
-            <span title={AVAILABILITY_LABEL[r.availability]} className={cn("absolute bottom-0 right-0 size-3 rounded-full ring-2 ring-white", AVAILABILITY_DOT[r.availability])} />
+            <span title={AVAILABILITY_LABEL[r.availability]} className={cn("absolute bottom-0 right-0 size-3 rounded-full ring-2 ring-surface", AVAILABILITY_DOT[r.availability])} />
           </span>
           <div className="min-w-0">
-            <p className="truncate font-semibold leading-[18px]">{r.name}</p>
-            <p className="truncate text-[12px] text-ink-3">{r.email}</p>
+            <p className="truncate font-semibold">{r.name}</p>
+            <p className="truncate text-xs text-ink-3">{r.email}</p>
           </div>
         </div>
       ),
@@ -101,7 +101,7 @@ function ResellersContent() {
       key: "rating",
       header: "Note clients",
       hideBelow: "md",
-      cell: (r) => (r.ratingAverage == null ? <span className="text-[13px] text-ink-3">Pas encore notée</span> : <span className="flex items-center gap-1.5"><Stars rating={r.ratingAverage} size={13} hideCount /><span className="text-[13px] font-semibold">{r.ratingAverage.toFixed(1)}</span><span className="text-[12px] text-ink-3">({r.ratingCount})</span></span>),
+      cell: (r) => (r.ratingAverage == null ? <span className="text-sm text-ink-3">Pas encore notée</span> : <span className="flex items-center gap-1.5"><Stars rating={r.ratingAverage} size={13} hideCount /><span className="text-sm font-semibold">{r.ratingAverage.toFixed(1)}</span><span className="text-xs text-ink-3">({r.ratingCount})</span></span>),
     },
     { key: "sales", header: "Ventes générées", hideBelow: "md", align: "right", cell: (r) => <strong>{formatPrice(r.salesTotal)}</strong> },
     { key: "joined", header: "Inscrit le", hideBelow: "xl", mobile: "hide", cell: (r) => <span className="text-ink-2">{formatDate(r.joinedAt)}</span> },
@@ -136,7 +136,7 @@ function ResellersContent() {
       </section>
 
       <Block pad="none">
-        <div className="flex flex-col gap-3 p-3 sm:flex-row sm:flex-wrap sm:items-end sm:gap-4 sm:p-5 sm:px-[30px]">
+        <div className="flex flex-col gap-3 p-3 sm:flex-row sm:flex-wrap sm:items-end sm:gap-4 sm:p-5 sm:px-8">
           <Input wrapperClassName="sm:min-w-[240px] sm:flex-1" placeholder="Rechercher un nom, e-mail ou code…" aria-label="Rechercher" leftIcon={<SearchNormal1 size={16} />} value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} />
           <Select wrapperClassName="sm:w-[190px]" aria-label="Trier par" value={ordering} onChange={(e) => { setOrdering(e.target.value as ResellerOrdering); setPage(1); }} options={ORDERINGS} />
           <Tabs variant="pill" tabs={STATUSES.map((s) => ({ value: s.value, label: s.label }))} value={status} onChange={(s) => { setStatus(s); setPage(1); }} />
@@ -151,7 +151,7 @@ function ResellersContent() {
           pageCount={data ? Math.ceil(data.count / PAGE_SIZE) : 1}
           onPageChange={setPage}
           skeletonRows={PAGE_SIZE}
-          empty={<p className="py-14 text-center text-[14px] text-ink-3">Aucun revendeur ne correspond à votre recherche.</p>}
+          empty={<p className="py-14 text-center text-sm text-ink-3">Aucun revendeur ne correspond à votre recherche.</p>}
         />
       </Block>
 

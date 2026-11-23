@@ -31,7 +31,7 @@ export function UnsubscribeView() {
             action={
               <div className="flex flex-col gap-2.5 sm:flex-row sm:justify-center">
                 <Button loading={unsubscribe.isPending} onClick={() => unsubscribe.mutate(token)}>Me désabonner</Button>
-                <Button href={ROUTES.home} variant="chip" upper={false}>Rester abonné(e)</Button>
+                <Button href={ROUTES.home} variant="secondary" upper={false}>Rester abonné(e)</Button>
               </div>
             }
           />

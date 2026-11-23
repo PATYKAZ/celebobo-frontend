@@ -45,7 +45,7 @@ function Content({ id }: { id: number }) {
   if (isError || !p) {
     return (
       <Block className="py-16 text-center">
-        <h2 className="text-[20px]">Produit introuvable</h2>
+        <h2 className="text-lg">Produit introuvable</h2>
         <Button href={ROUTES.admin.products} className="mt-6">Retour aux produits</Button>
       </Block>
     );
@@ -66,7 +66,7 @@ function Content({ id }: { id: number }) {
           ["Marge unitaire", p.pricePrimary != null ? formatPrice(pr.current - p.pricePrimary) : "—"],
         ] as [string, ReactNode][])
       : []),
-    ["Stock", <span key="s" className="inline-flex items-center gap-2"><StockPill product={p} /><span className="text-[12px] font-normal text-ink-3">seuil {p.stockThreshold}</span></span>],
+    ["Stock", <span key="s" className="inline-flex items-center gap-2"><StockPill product={p} /><span className="text-xs font-normal text-ink-3">seuil {p.stockThreshold}</span></span>],
     ["Livraison", p.freeShipping ? "Offerte" : p.shippingFee != null ? formatPrice(p.shippingFee) : "—"],
     ["Badge", p.currentBadge || "—"],
     ["Visibilité", p.isActive === false ? <Pill key="v" tone="gray">Masqué en boutique</Pill> : <Pill key="v" tone="green">Visible</Pill>],
@@ -80,7 +80,7 @@ function Content({ id }: { id: number }) {
         description={p.description}
         actions={
           <>
-            {!trashed && <Button href={ROUTES.product(p.slug)} variant="chip" upper={false} leftIcon={<Shop size={17} />}>Voir en boutique</Button>}
+            {!trashed && <Button href={ROUTES.product(p.slug)} variant="secondary" upper={false} leftIcon={<Shop size={17} />}>Voir en boutique</Button>}
             {canManage && !trashed && <Button href={ROUTES.admin.productEdit(p.id)} upper={false} leftIcon={<Edit2 size={17} />}>Modifier</Button>}
             {canManage && trashed && (
               <Button upper={false} leftIcon={<Refresh2 size={17} />} loading={restore.isPending} onClick={() => restore.mutate([p.id], { onSuccess: () => toast.success("Produit restauré", p.name), onError: (e) => toast.error("Restauration impossible", getErrorMessage(e)) })}>Restaurer</Button>
@@ -92,7 +92,7 @@ function Content({ id }: { id: number }) {
 
       {trashed && (
         <Reveal>
-          <div className="rounded-box border border-danger/30 bg-danger-50 px-5 py-4 text-[14px] text-danger">Ce produit est dans la corbeille depuis le {formatDate(p.deletedAt as string)} : il n&apos;est plus visible en boutique.</div>
+          <div className="rounded-box border border-danger/30 bg-danger-50 px-5 py-4 text-sm text-danger">Ce produit est dans la corbeille depuis le {formatDate(p.deletedAt as string)} : il n&apos;est plus visible en boutique.</div>
         </Reveal>
       )}
 
@@ -124,19 +124,19 @@ function Content({ id }: { id: number }) {
           <Reveal>
             <Block>
               <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-2">
-                <h2 className="text-[18px]">Informations clés</h2>
+                <h2 className="text-lg">Informations clés</h2>
                 <div className="grid grid-cols-2 gap-2 sm:flex">
-                  <Button size="sm" variant="chip" upper={false} leftIcon={<Clock size={14} />} onClick={() => setHistory(true)}>Historique</Button>
+                  <Button size="sm" variant="secondary" upper={false} leftIcon={<Clock size={14} />} onClick={() => setHistory(true)}>Historique</Button>
                   {canStock && !trashed && <Button size="sm" upper={false} leftIcon={<ArrowSwapVertical size={14} />} onClick={() => setAdjust(true)}>Ajuster le stock</Button>}
                 </div>
               </div>
               <dl className="mt-4 divide-y divide-line-3">
                 {facts.map(([k, val]) => (
-                  <div key={k} className="flex items-center justify-between gap-4 py-3 text-[14px]"><dt className="text-ink-2">{k}</dt><dd className="text-right font-semibold">{val}</dd></div>
+                  <div key={k} className="flex items-center justify-between gap-4 py-3 text-sm"><dt className="text-ink-2">{k}</dt><dd className="text-right font-semibold">{val}</dd></div>
                 ))}
               </dl>
               {p.dateWish && canManage && (
-                <p className={cn("mt-3 rounded-box px-4 py-3 text-[13px] leading-[20px]", dl.state === "overdue" ? "bg-danger-50 text-danger" : dl.state === "near" ? "bg-star/15 text-warn" : "bg-page/60 text-ink-2")}>
+                <p className={cn("mt-3 rounded-box px-4 py-3 text-sm", dl.state === "overdue" ? "bg-danger-50 text-danger" : dl.state === "near" ? "bg-star/15 text-warn" : "bg-page/60 text-ink-2")}>
                   Produit ajouté depuis le {formatDate(p.dateAdded)}, il devrait être vendu avant le <strong>{formatDate(p.dateWish)}</strong>
                   {p.pricePrimary != null && <>. Il a été acheté à <strong>{formatPrice(p.pricePrimary)}</strong></>}.{" "}
                   <DeadlineBadge dateWish={p.dateWish} />
@@ -147,8 +147,8 @@ function Content({ id }: { id: number }) {
           {p.features.length > 0 && (
             <Reveal delay={0.05}>
               <Block>
-                <h2 className="text-[18px]">Caractéristiques</h2>
-                <ul className="mt-4 flex flex-wrap gap-2">{p.features.map((f) => <li key={f} className="rounded-full bg-primary-50 px-3.5 py-1.5 text-[13px] font-medium text-primary-dark">{f}</li>)}</ul>
+                <h2 className="text-lg">Caractéristiques</h2>
+                <ul className="mt-4 flex flex-wrap gap-2">{p.features.map((f) => <li key={f} className="rounded-full bg-primary-50 px-3.5 py-1.5 text-sm font-medium text-primary-dark">{f}</li>)}</ul>
               </Block>
             </Reveal>
           )}
@@ -158,32 +158,32 @@ function Content({ id }: { id: number }) {
       {p.variants.length > 0 && (
         <Reveal>
           <Block>
-            <h2 className="text-[18px]">Variantes <span className="text-ink-3">({p.variants.length})</span></h2>
+            <h2 className="text-lg">Variantes <span className="text-ink-3">({p.variants.length})</span></h2>
             <ul className="mt-4 grid gap-2.5 sm:hidden">
               {p.variants.map((v) => (
                 <li key={v.id} className="flex items-center justify-between gap-3 rounded-box border border-line p-3.5">
                   <div className="min-w-0">
-                    <p className="truncate text-[14px] font-bold">{v.label}</p>
-                    <p className="mt-0.5 font-mono text-[11px] text-ink-3">{v.sku ?? "—"}</p>
+                    <p className="truncate text-sm font-bold">{v.label}</p>
+                    <p className="mt-0.5 font-mono text-xs text-ink-3">{v.sku ?? "—"}</p>
                   </div>
                   <div className="shrink-0 text-right">
-                    <p className="text-[14px] font-bold">{formatPrice(v.price ?? p.price)}</p>
+                    <p className="text-sm font-bold">{formatPrice(v.price ?? p.price)}</p>
                     <div className="mt-1"><StockPill product={{ stock: v.stock, stockThreshold: p.stockThreshold }} /></div>
                   </div>
                 </li>
               ))}
             </ul>
             <div className="mt-4 hidden overflow-x-auto rounded-box border border-line sm:block">
-              <table className="w-full min-w-[520px] text-[14px]">
-                <thead className="bg-page/60 text-left text-[11px] uppercase tracking-wide text-ink-3">
+              <table className="w-full min-w-[520px] text-sm">
+                <thead className="bg-page/60 text-left text-xs text-ink-3">
                   <tr><th className="px-4 py-2.5">Variante</th><th className="px-4 py-2.5">SKU</th><th className="px-4 py-2.5 text-right">Prix</th><th className="px-4 py-2.5 text-right">Stock</th></tr>
                 </thead>
                 <tbody>
                   {p.variants.map((v) => (
                     <tr key={v.id} className="border-t border-line-3">
                       <td className="px-4 py-3 font-semibold">{v.label}</td>
-                      <td className="px-4 py-3 font-mono text-[12px] text-ink-2">{v.sku ?? "—"}</td>
-                      <td className="px-4 py-3 text-right">{formatPrice(v.price ?? p.price)}{v.price != null && v.price !== p.price && <span className="ml-1 text-[11px] text-ink-3">(spécifique)</span>}</td>
+                      <td className="px-4 py-3 font-mono text-xs text-ink-2">{v.sku ?? "—"}</td>
+                      <td className="px-4 py-3 text-right">{formatPrice(v.price ?? p.price)}{v.price != null && v.price !== p.price && <span className="ml-1 text-xs text-ink-3">(spécifique)</span>}</td>
                       <td className="px-4 py-3 text-right"><StockPill product={{ stock: v.stock, stockThreshold: p.stockThreshold }} /></td>
                     </tr>
                   ))}
@@ -196,18 +196,18 @@ function Content({ id }: { id: number }) {
 
       <Reveal>
         <Block>
-          <h2 className="text-[18px]">Avis clients</h2>
+          <h2 className="text-lg">Avis clients</h2>
           {totalR === 0 ? (
             <p className="mt-4 text-ink-3">Aucun avis pour le moment.</p>
           ) : (
             <div className="mt-5 grid gap-6 sm:grid-cols-[200px_1fr] sm:items-center">
               <div className="text-center">
-                <p className="text-[44px] font-bold leading-none">{p.rating?.toFixed(1) ?? "—"}</p>
+                <p className="text-2xl font-bold leading-none">{p.rating?.toFixed(1) ?? "—"}</p>
                 <Stars rating={p.rating} count={p.reviewsCount} className="mt-2 justify-center" />
               </div>
               <ul className="space-y-2">
                 {dist.map((d) => (
-                  <li key={d.n} className="flex items-center gap-3 text-[13px]">
+                  <li key={d.n} className="flex items-center gap-3 text-sm">
                     <span className="w-6 text-ink-2">{d.n}★</span>
                     <span className="h-2 flex-1 overflow-hidden rounded-full bg-page"><motion.span className="block h-full rounded-full bg-star" initial={{ width: 0 }} whileInView={{ width: `${totalR ? (d.c / totalR) * 100 : 0}%` }} viewport={{ once: true }} transition={{ duration: 0.8, ease: "easeOut" }} /></span>
                     <span className="w-6 text-right text-ink-3">{d.c}</span>

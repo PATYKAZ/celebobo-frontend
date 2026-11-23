@@ -77,22 +77,22 @@ function LevelCard({ s }: { s: Standing }) {
     <div className="space-y-4">
       <div className="grid gap-3 sm:grid-cols-3">
         <div className="rounded-box bg-primary-50 p-3.5">
-          <p className="text-[12px] text-primary-dark">Niveau</p>
-          <p className="text-[22px] font-bold text-primary">{s.levelLabel}</p>
+          <p className="text-xs text-primary-dark">Niveau</p>
+          <p className="text-xl font-bold text-primary">{s.levelLabel}</p>
         </div>
         <div className="rounded-box bg-page/70 p-3.5">
-          <p className="text-[12px] text-ink-3">Ventes validées (3 mois)</p>
-          <p className="text-[22px] font-bold">{formatPrice(Number(s.sales))}</p>
+          <p className="text-xs text-ink-3">Ventes validées (3 mois)</p>
+          <p className="text-xl font-bold">{formatPrice(Number(s.sales))}</p>
         </div>
         <div className="rounded-box bg-page/70 p-3.5">
-          <p className="text-[12px] text-ink-3">Note des clients</p>
-          <p className="text-[22px] font-bold">{s.rating ? `${s.rating} / 5` : "—"}</p>
+          <p className="text-xs text-ink-3">Note des clients</p>
+          <p className="text-xl font-bold">{s.rating ? `${s.rating} / 5` : "—"}</p>
         </div>
       </div>
-      <p className="text-[13px] text-ink-2"><b>Avantages :</b> {s.advantages}.</p>
+      <p className="text-sm text-ink-2"><b>Avantages :</b> {s.advantages}.</p>
       {s.nextLevel && s.nextSales && (
         <div>
-          <p className="mb-1.5 text-[13px] text-ink-2">
+          <p className="mb-1.5 text-sm text-ink-2">
             Pour passer <b>{LEVEL[s.nextLevel] ?? s.nextLevel}</b> : {formatPrice(Number(s.nextSales))} de ventes validées sur 3 mois et une note d&apos;au moins {s.nextRating}.
           </p>
           <div className="h-2 overflow-hidden rounded-full bg-line-3" role="progressbar" aria-valuenow={Math.round(salesShare)} aria-valuemin={0} aria-valuemax={100} aria-label="Progression des ventes">
@@ -100,9 +100,9 @@ function LevelCard({ s }: { s: Standing }) {
           </div>
         </div>
       )}
-      <p className="text-[12px] text-ink-3">{s.reviewedAt ? `Dernière révision le ${formatDate(s.reviewedAt)}.` : "Pas encore révisé."} Les niveaux sont revus le 1er janvier, avril, juillet et octobre.</p>
+      <p className="text-xs text-ink-3">{s.reviewedAt ? `Dernière révision le ${formatDate(s.reviewedAt)}.` : "Pas encore révisé."} Les niveaux sont revus le 1er janvier, avril, juillet et octobre.</p>
       {s.suspendedUntil && (
-        <p className="flex items-start gap-2 rounded-box bg-danger-100 p-3 text-[13px] text-danger">
+        <p className="flex items-start gap-2 rounded-box bg-danger-100 p-3 text-sm text-danger">
           <InfoCircle size={18} className="mt-0.5 shrink-0" /> Suspendu jusqu&apos;au {formatDate(s.suspendedUntil)} : pas de nouvelles commandes.
         </p>
       )}
@@ -135,7 +135,7 @@ function SanctionItem({ s, mine, canDecide }: { s: Sanction; mine: boolean; canD
   const status = STATUS[s.status];
   const open = s.status === "notified";
   return (
-    <li className="space-y-2 p-3.5 text-[13px]">
+    <li className="space-y-2 p-3.5 text-sm">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <span>
           <b>{s.kindLabel}{s.days ? ` · ${s.days} jours` : ""}</b>
@@ -145,7 +145,7 @@ function SanctionItem({ s, mine, canDecide }: { s: Sanction; mine: boolean; canD
         <Pill tone={status.tone}>{status.label}</Pill>
       </div>
       <p className="text-ink-2">Motif : {s.reason}</p>
-      <p className="text-[12px] text-ink-3">
+      <p className="text-xs text-ink-3">
         Ouverte le {formatDateTime(s.createdAt)}
         {open && s.explainUntil ? ` · explication possible jusqu'au ${formatDateTime(s.explainUntil)}` : ""}
         {s.endsAt ? ` · jusqu'au ${formatDate(s.endsAt)}` : ""}
@@ -163,9 +163,9 @@ function SanctionItem({ s, mine, canDecide }: { s: Sanction; mine: boolean; canD
           <Input aria-label="Note de décision" placeholder="Note de décision (facultatif)" value={text} onChange={(e) => setText(e.target.value)} />
           <div className="flex flex-wrap gap-2">
             <Button size="sm" variant="danger" upper={false} disabled={waiting(s)} title={waiting(s) ? "Le revendeur peut encore s'expliquer" : undefined} loading={decide.isPending && decide.variables} onClick={() => decide.mutate(true)}>Appliquer</Button>
-            <Button size="sm" variant="outline" upper={false} loading={decide.isPending && !decide.variables} onClick={() => decide.mutate(false)}>Abandonner</Button>
+            <Button size="sm" variant="secondary" upper={false} loading={decide.isPending && !decide.variables} onClick={() => decide.mutate(false)}>Abandonner</Button>
           </div>
-          {waiting(s) && <p className="text-[12px] text-ink-3">Le revendeur peut s&apos;expliquer jusqu&apos;au {formatDateTime(s.explainUntil!)}.</p>}
+          {waiting(s) && <p className="text-xs text-ink-3">Le revendeur peut s&apos;expliquer jusqu&apos;au {formatDateTime(s.explainUntil!)}.</p>}
         </div>
       )}
     </li>
@@ -179,9 +179,9 @@ function Mine() {
     <div className="space-y-3 sm:space-y-4">
       <Block><LevelCard s={data} /></Block>
       <Block pad="none" className="overflow-hidden">
-        <h3 className="px-4 pt-4 text-[14px] font-semibold">Sanctions</h3>
+        <h3 className="px-4 pt-4 text-sm font-semibold">Sanctions</h3>
         {data.sanctions.length === 0 ? (
-          <p className="p-4 text-[13px] text-ink-3">Aucune sanction.</p>
+          <p className="p-4 text-sm text-ink-3">Aucune sanction.</p>
         ) : (
           <ul className="divide-y divide-line-3">{data.sanctions.map((s) => <SanctionItem key={s.id} s={s} mine canDecide={false} />)}</ul>
         )}
@@ -211,7 +211,7 @@ function OpenSanction() {
   });
   return (
     <Block>
-      <h3 className="mb-3 text-[14px] font-semibold">Ouvrir une sanction</h3>
+      <h3 className="mb-3 text-sm font-semibold">Ouvrir une sanction</h3>
       <div className="space-y-2.5">
         <Select aria-label="Revendeur" value={resellerId} onChange={(e) => setResellerId(e.target.value)} options={[{ value: "", label: "Choisir un revendeur" }, ...(resellers.data ?? []).map((r) => ({ value: r.id, label: r.name }))]} />
         <div className="grid gap-2 sm:grid-cols-[1fr_140px]">
@@ -247,7 +247,7 @@ function Team() {
     <div className="grid grid-cols-1 gap-3 sm:gap-4 xl:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
       <Block pad="none" className="overflow-hidden">
         <div className="flex flex-wrap items-center justify-between gap-2 px-4 pt-4">
-          <h3 className="text-[14px] font-semibold">Sanctions</h3>
+          <h3 className="text-sm font-semibold">Sanctions</h3>
           <Select aria-label="Filtrer" wrapperClassName="w-56" value={status} onChange={(e) => setStatus(e.target.value as Status | "")} options={[{ value: "notified", label: "En attente d'explication" }, { value: "applied", label: "Appliquées" }, { value: "dropped", label: "Abandonnées" }, { value: "", label: "Toutes" }]} />
         </div>
         {isLoading || !data ? (
@@ -260,9 +260,9 @@ function Team() {
       </Block>
       <div className="space-y-3 sm:space-y-4">
         <Block>
-          <h3 className="mb-1 text-[14px] font-semibold">Niveaux</h3>
-          <p className="mb-3 text-[13px] text-ink-2">Revus automatiquement le premier jour de chaque trimestre, d&apos;après les ventes validées des 3 derniers mois et la note. Débutant → Confirmé : 1 000 $ et 4,0 ; Ambassadeur : 3 000 $ et 4,5.</p>
-          <Button upper={false} variant="outline" loading={review.isPending} onClick={() => review.mutate()}>Revoir les niveaux maintenant</Button>
+          <h3 className="mb-1 text-sm font-semibold">Niveaux</h3>
+          <p className="mb-3 text-sm text-ink-2">Revus automatiquement le premier jour de chaque trimestre, d&apos;après les ventes validées des 3 derniers mois et la note. Débutant → Confirmé : 1 000 $ et 4,0 ; Ambassadeur : 3 000 $ et 4,5.</p>
+          <Button upper={false} variant="secondary" loading={review.isPending} onClick={() => review.mutate()}>Revoir les niveaux maintenant</Button>
         </Block>
         <OpenSanction />
       </div>

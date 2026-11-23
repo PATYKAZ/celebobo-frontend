@@ -60,11 +60,11 @@ function NavList() {
             <button
               onClick={() => setClosed((c) => ({ ...c, [s.title]: open }))}
               aria-expanded={open}
-              className="flex w-full items-center gap-2 px-4 pb-1 pt-3 text-left text-[11px] font-bold uppercase tracking-[0.14em] text-ink-3 transition-colors hover:text-ink"
+              className="flex w-full items-center gap-2 px-4 pb-1 pt-3 text-left text-xs font-bold text-ink-3 transition-colors hover:text-ink"
             >
               <ArrowDown2 size={12} className={cn("transition-transform", !open && "-rotate-90")} />
               <span className="flex-1">{s.title}</span>
-              <span className={cn("grid min-w-5 place-items-center rounded-full px-1.5 text-[10px] leading-[18px]", unread ? "bg-danger-100 text-danger" : "bg-chip text-ink-2")}>{unread || s.items.length}</span>
+              <span className={cn("grid min-w-5 place-items-center rounded-full px-1.5 text-xs", unread ? "bg-danger-100 text-danger" : "bg-chip text-ink-2")}>{unread || s.items.length}</span>
             </button>
             <AnimatePresence initial={false}>
               {open && (
@@ -78,12 +78,12 @@ function NavList() {
                         <Link
                           key={item.href}
                           href={item.href}
-                          className={cn("group relative flex items-center gap-3 rounded-box px-4 py-2.5 text-[14px] font-semibold transition-colors", active ? "text-white" : "text-ink-2 hover:bg-chip hover:text-ink")}
+                          className={cn("group relative flex items-center gap-3 rounded-box px-4 py-2.5 text-sm font-semibold transition-colors", active ? "text-white" : "text-ink-2 hover:bg-chip hover:text-ink")}
                         >
                           {active && <motion.span layoutId="admin-nav-active" className="absolute inset-0 rounded-box bg-primary" transition={{ type: "spring", stiffness: 400, damping: 34 }} />}
                           <Icon size={19} variant={active ? "Bold" : "Linear"} className="relative transition-transform duration-300 group-hover:scale-110" />
                           <span className="relative flex-1">{item.label}</span>
-                          {n > 0 && <span className={cn("relative grid min-w-5 place-items-center rounded-full px-1.5 text-[11px] font-bold leading-5", active ? "bg-surface text-primary" : "bg-danger text-white")}>{n}</span>}
+                          {n > 0 && <span className={cn("relative grid min-w-5 place-items-center rounded-full px-1.5 text-xs font-bold leading-5", active ? "bg-surface text-primary" : "bg-danger text-white")}>{n}</span>}
                         </Link>
                       );
                     })}
@@ -106,15 +106,15 @@ function SidebarBody() {
       <div className="px-5 pb-4 pt-6"><Logo /></div>
       <div className="flex-1 overflow-y-auto px-3 pb-3"><NavList /></div>
       <div className="space-y-2 border-t border-line-3 p-3">
-        <Link href={ROUTES.home} className="flex items-center gap-2 rounded-box bg-primary-50 px-4 py-3 text-[13px] font-bold text-primary transition-colors hover:bg-primary hover:text-white">
+        <Link href={ROUTES.home} className="flex items-center gap-2 rounded-box bg-primary-50 px-4 py-3 text-sm font-bold text-primary transition-colors hover:bg-primary hover:text-white">
           <ArrowLeft2 size={16} /> Retour à la boutique
         </Link>
         {user && (
           <div className="flex items-center gap-3 rounded-box bg-chip p-3">
             <Avatar src={user.avatar} name={displayName(user)} size={38} />
             <div className="min-w-0 flex-1">
-              <p className="truncate text-[13px] font-bold leading-[18px]">{displayName(user)}</p>
-              <p className="text-[11px] text-ink-3">{ROLE_LABEL[user.role]}</p>
+              <p className="truncate text-sm font-bold">{displayName(user)}</p>
+              <p className="text-xs text-ink-3">{ROLE_LABEL[user.role]}</p>
             </div>
             <button onClick={() => logout.mutate()} aria-label="Déconnexion" className="text-ink-3 transition-colors hover:text-danger"><Logout size={18} /></button>
           </div>
@@ -137,7 +137,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
   const nNotifs = useUnreadNotificationsCount();
 
   const circle = "relative grid size-10 shrink-0 place-items-center rounded-full bg-chip transition-colors hover:bg-primary hover:text-white active:scale-90";
-  const dot = "absolute -right-1 -top-1 grid min-w-[18px] place-items-center rounded-full bg-danger px-1 text-[10px] leading-[18px] text-white ring-2 ring-white";
+  const dot = "absolute -right-1 -top-1 grid min-w-[18px] place-items-center rounded-full bg-danger px-1 text-xs text-white ring-2 ring-surface";
 
   return (
     <div className="flex min-h-[calc(var(--dvh)*100)] w-full gap-4 p-3 pb-[calc(var(--tabbar-h)+12px)] sm:p-4 sm:pb-[calc(var(--tabbar-h)+16px)]">
@@ -149,8 +149,8 @@ export function AdminShell({ children }: { children: ReactNode }) {
         <header className="flex items-center gap-2.5 rounded-box bg-surface px-3 py-2.5 sm:gap-3 sm:px-6 sm:py-3">
           <span className="lg:hidden"><Logo compact /></span>
           <div className="min-w-0 flex-1">
-            <p className="truncate text-[10.5px] uppercase leading-[14px] tracking-wide text-ink-3 sm:text-[12px] sm:leading-[16px]">{user?.role === "revendeur" ? "Espace revendeur" : "Back-office"}</p>
-            <p className="truncate text-[15px] font-bold leading-[20px] sm:text-[16px] sm:leading-[22px]">{current?.label ?? "Administration"}</p>
+            <p className="truncate text-xs text-ink-3 sm:text-xs">{user?.role === "revendeur" ? "Espace revendeur" : "Back-office"}</p>
+            <p className="truncate text-sm font-bold sm:text-base">{current?.label ?? "Administration"}</p>
           </div>
           <div className="flex shrink-0 items-center gap-2 sm:gap-3">
             {/* la messagerie a son onglet dans la barre mobile */}

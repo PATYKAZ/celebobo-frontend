@@ -29,15 +29,15 @@ export function StatementDrawer({ id, onClose, onPay }: { id: number | null; onC
         ) : (
           <>
             <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-              <p className="text-[14px] text-ink-2"><strong className="text-ink">{data.resellerName}</strong></p>
+              <p className="text-sm text-ink-2"><strong className="text-ink">{data.resellerName}</strong></p>
               {status && <StatusDot tone={status.tone}>{status.label}</StatusDot>}
             </div>
             <div className="mb-5 grid grid-cols-3 gap-3 text-center">
-              <div className="rounded-box bg-chip p-3"><p className="text-[11px] uppercase text-ink-3">Commissions</p><p className="font-bold">{formatPrice(data.commissions)}</p></div>
-              <div className="rounded-box bg-chip p-3"><p className="text-[11px] uppercase text-ink-3">Livraisons</p><p className="font-bold">{formatPrice(data.deliveryFees)}</p></div>
-              <div className="rounded-box bg-primary-50 p-3"><p className="text-[11px] uppercase text-ink-3">Total</p><p className="font-bold text-primary">{formatPrice(data.total)}</p></div>
+              <div className="rounded-box bg-chip p-3"><p className="text-xs text-ink-3">Commissions</p><p className="font-bold">{formatPrice(data.commissions)}</p></div>
+              <div className="rounded-box bg-chip p-3"><p className="text-xs text-ink-3">Livraisons</p><p className="font-bold">{formatPrice(data.deliveryFees)}</p></div>
+              <div className="rounded-box bg-primary-50 p-3"><p className="text-xs text-ink-3">Total</p><p className="font-bold text-primary">{formatPrice(data.total)}</p></div>
             </div>
-            <p className="mb-3 text-[12px] text-ink-3">
+            <p className="mb-3 text-xs text-ink-3">
               Préparé le {formatDateTime(data.preparedAt)}
               {data.paidAt ? ` · payé le ${formatDate(data.paidAt)}` : ""}
             </p>
@@ -45,18 +45,18 @@ export function StatementDrawer({ id, onClose, onPay }: { id: number | null; onC
               {data.lines.map((line, index) => (
                 <li key={index} className="flex items-start gap-3 p-3">
                   <span className="min-w-0 flex-1">
-                    <span className="block text-[13px] font-semibold leading-[18px]">{line.title}</span>
-                    <span className="block text-[12px] text-ink-3">
+                    <span className="block text-sm font-semibold">{line.title}</span>
+                    <span className="block text-xs text-ink-3">
                       {LINE_LABEL[line.kind]}
                       {line.orderNumber ? ` · commande ${line.orderNumber}` : ""}
                       {line.baseAmount != null && line.kind === "commission" ? ` · sur ${formatPrice(line.baseAmount)}` : ""}
                       {` · ${formatDate(line.at)}`}
                     </span>
                   </span>
-                  <strong className={cn("text-[14px]", line.amount < 0 ? "text-danger" : "text-ink")}>{formatPrice(line.amount)}</strong>
+                  <strong className={cn("text-sm", line.amount < 0 ? "text-danger" : "text-ink")}>{formatPrice(line.amount)}</strong>
                 </li>
               ))}
-              {data.lines.length === 0 && <li className="p-4 text-center text-[13px] text-ink-3">Ce relevé a été remplacé par un relevé plus récent.</li>}
+              {data.lines.length === 0 && <li className="p-4 text-center text-sm text-ink-3">Ce relevé a été remplacé par un relevé plus récent.</li>}
             </ul>
             {onPay && data.status === "prepared" && (
               <Button className="mt-5" fullWidth upper={false} onClick={() => onPay(data)}>Marquer comme payé</Button>

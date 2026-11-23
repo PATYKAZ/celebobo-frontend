@@ -10,8 +10,8 @@ export function SeoText({ title, paragraphs }: { title: string; paragraphs: stri
   const [open, setOpen] = useState(false);
   return (
     <Reveal>
-      <Block pad="none" className="px-4 py-5 sm:px-[30px] sm:py-[30px]">
-        <h2 className="text-[16px] leading-[21.6px] sm:text-section">{title}</h2>
+      <Block pad="none" className="px-4 py-5 sm:px-8 sm:py-8">
+        <h2 className="text-base sm:text-section">{title}</h2>
         <motion.div initial={false} animate={{ height: open ? "auto" : 112 }} transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }} className="relative mt-4 overflow-hidden">
           <div className="space-y-4 text-body-lg text-ink-2">
             {paragraphs.map((p) => (

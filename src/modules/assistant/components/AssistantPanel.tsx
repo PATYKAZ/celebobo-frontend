@@ -47,8 +47,8 @@ export function AssistantPanel({ showHeader, onClose, onNavigate, className }: P
             <span className="absolute inset-0 animate-pulse-ring rounded-full bg-white/30" />
           </span>
           <div className="min-w-0 flex-1">
-            <p className="text-[15px] font-bold leading-[20px]">Assistant Celebobo</p>
-            <p className="truncate text-[12px] text-white/80">En ligne · répond en quelques secondes</p>
+            <p className="text-sm font-bold">Assistant Celebobo</p>
+            <p className="truncate text-xs text-white/80">En ligne · répond en quelques secondes</p>
           </div>
           <Link href={ROUTES.assistant} onClick={onNavigate} aria-label="Ouvrir en plein écran" title="Plein écran" className="grid size-9 place-items-center rounded-full bg-white/15 transition-colors hover:bg-white/30">
             <Maximize4 size={17} />
@@ -57,7 +57,7 @@ export function AssistantPanel({ showHeader, onClose, onNavigate, className }: P
             <Refresh2 size={17} />
           </button>
           {onClose && (
-            <button onClick={onClose} aria-label="Fermer" className="grid size-9 place-items-center rounded-full bg-white/15 text-[20px] leading-none transition-colors hover:bg-white/30">
+            <button onClick={onClose} aria-label="Fermer" className="grid size-9 place-items-center rounded-full bg-white/15 text-lg leading-none transition-colors hover:bg-white/30">
               ×
             </button>
           )}
@@ -71,11 +71,11 @@ export function AssistantPanel({ showHeader, onClose, onNavigate, className }: P
             <motion.div key={m.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className={cn("flex items-start gap-2.5", mine && "justify-end")}>
               {!mine && <BotAvatar />}
               <div className={cn("flex min-w-0 max-w-[86%] flex-col gap-2.5", mine && "items-end")}>
-                <div className={cn("rounded-2xl px-3.5 py-2.5 text-[14px] leading-[21px]", mine ? "rounded-br-md bg-primary text-white" : "rounded-bl-md bg-chip")}>
+                <div className={cn("rounded-lg px-3.5 py-2.5 text-sm", mine ? "rounded-br-md bg-primary text-white" : "rounded-bl-md bg-chip")}>
                   {mine ? m.content : <StreamedText text={m.content} animate={m.animate} onTick={scroll} />}
                 </div>
                 {m.retry && (
-                  <button type="button" onClick={() => retry(m)} disabled={loading} className="inline-flex min-h-11 items-center gap-1.5 self-start rounded-full px-3 text-[13px] font-semibold text-primary hover:bg-primary-50 disabled:opacity-50">
+                  <button type="button" onClick={() => retry(m)} disabled={loading} className="inline-flex min-h-11 items-center gap-1.5 self-start rounded-full px-3 text-sm font-semibold text-primary hover:bg-primary-50 disabled:opacity-50">
                     <Refresh2 size={15} /> Réessayer
                   </button>
                 )}
@@ -93,7 +93,7 @@ export function AssistantPanel({ showHeader, onClose, onNavigate, className }: P
           {loading && (
             <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="flex items-center gap-2.5">
               <BotAvatar />
-              <div className="flex gap-1 rounded-2xl rounded-bl-md bg-chip px-4 py-3.5" aria-label="L'assistant écrit">
+              <div className="flex gap-1 rounded-lg rounded-bl-md bg-chip px-4 py-3.5" aria-label="L'assistant écrit">
                 {[0, 1, 2].map((i) => <span key={i} className="size-1.5 animate-typing-dot rounded-full bg-ink-3" style={{ animationDelay: `${i * 0.15}s` }} />)}
               </div>
             </motion.div>
@@ -105,7 +105,7 @@ export function AssistantPanel({ showHeader, onClose, onNavigate, className }: P
       {onlyWelcome && !loading && (
         <div className="snap-row no-scrollbar border-t border-line-3 bg-surface px-3 py-2.5">
           {SUGGESTIONS.map((s) => (
-            <button key={s} onClick={() => send(s)} className="min-h-10 whitespace-nowrap rounded-full border border-primary/40 bg-surface px-4 text-[13px] font-semibold text-primary transition-colors active:bg-primary active:text-white">
+            <button key={s} onClick={() => send(s)} className="min-h-10 whitespace-nowrap rounded-full border border-primary/40 bg-surface px-4 text-sm font-semibold text-primary transition-colors active:bg-primary active:text-white">
               {s}
             </button>
           ))}

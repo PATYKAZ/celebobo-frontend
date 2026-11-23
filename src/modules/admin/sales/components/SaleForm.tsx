@@ -75,7 +75,7 @@ export function SaleForm({ sale }: { sale?: Sale }) {
 
   return (
     <form onSubmit={submit} className="grid grid-cols-1 gap-3 sm:gap-4 xl:grid-cols-[minmax(0,1fr)_340px]">
-      <Block pad="none" className="min-w-0 space-y-4 p-4 sm:space-y-5 sm:p-[30px]">
+      <Block pad="none" className="min-w-0 space-y-4 p-4 sm:space-y-5 sm:p-8">
         <ProductCombobox value={product} onChange={pick} error={errors.productId} label="Produit" />
         <div className="grid gap-4 sm:grid-cols-2 sm:gap-5">
           <FormField label="Quantité" required error={errors.quantity} hint={available != null ? `Stock disponible : ${available}` : undefined}>
@@ -88,18 +88,18 @@ export function SaleForm({ sale }: { sale?: Sale }) {
         <Input label="Vendu à" value={venduA} onChange={(e) => setVenduA(e.target.value)} maxLength={50} placeholder="Nom du client (facultatif)" />
       </Block>
 
-      <Block pad="none" className="h-fit min-w-0 space-y-4 p-4 sm:p-[30px] xl:sticky xl:top-4">
-        <h3 className="text-[16px]">Récapitulatif</h3>
-        <dl className="space-y-2.5 text-[14px]">
+      <Block pad="none" className="h-fit min-w-0 space-y-4 p-4 sm:p-8 xl:sticky xl:top-4">
+        <h3 className="text-base">Récapitulatif</h3>
+        <dl className="space-y-2.5 text-sm">
           <div className="flex justify-between"><dt className="text-ink-2">Prix unitaire</dt><dd className="font-semibold">{formatPrice(unit)}</dd></div>
           <div className="flex justify-between"><dt className="text-ink-2">Quantité</dt><dd className="font-semibold">× {quantity}</dd></div>
-          <div className="flex justify-between border-t border-line-3 pt-3 text-[16px]"><dt className="font-bold">Total</dt><dd className="font-bold text-primary">{formatPrice(total)}</dd></div>
+          <div className="flex justify-between border-t border-line-3 pt-3 text-base"><dt className="font-bold">Total</dt><dd className="font-bold text-primary">{formatPrice(total)}</dd></div>
           {cost != null && (
             <div className="flex justify-between"><dt className="text-ink-2">Bénéfice estimé</dt><dd className={`font-semibold ${total - cost < 0 ? "text-danger" : "text-primary-dark"}`}>{formatPrice(total - cost)}</dd></div>
           )}
         </dl>
         <div className="hidden gap-2 pt-2 xl:flex">
-          <Button variant="chip" upper={false} href={ROUTES.admin.sales} className="flex-1">Annuler</Button>
+          <Button variant="secondary" upper={false} href={ROUTES.admin.sales} className="flex-1">Annuler</Button>
           <Button type="submit" loading={save.isPending} upper={false} className="flex-1">{sale ? "Enregistrer" : "Valider la vente"}</Button>
         </div>
       </Block>
@@ -108,10 +108,10 @@ export function SaleForm({ sale }: { sale?: Sale }) {
       <div className="h-20 xl:hidden" aria-hidden />
       <div className="fixed inset-x-0 bottom-[max(var(--tabbar-h),env(safe-area-inset-bottom))] z-40 flex items-center gap-3 border-t border-line-3 bg-surface/95 px-4 py-3 backdrop-blur-xl xl:hidden">
         <div className="min-w-0 flex-1">
-          <p className="text-[11px] font-semibold uppercase tracking-wide text-ink-3">Total</p>
-          <p className="truncate text-[20px] font-bold leading-[24px] text-primary">{formatPrice(total)}</p>
+          <p className="text-xs font-semibold text-ink-3">Total</p>
+          <p className="truncate text-lg font-bold text-primary">{formatPrice(total)}</p>
         </div>
-        <Button variant="chip" upper={false} href={ROUTES.admin.sales}>Annuler</Button>
+        <Button variant="secondary" upper={false} href={ROUTES.admin.sales}>Annuler</Button>
         <Button type="submit" loading={save.isPending} upper={false} className="min-w-[132px]">{sale ? "Enregistrer" : "Valider"}</Button>
       </div>
     </form>

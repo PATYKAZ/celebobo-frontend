@@ -21,7 +21,7 @@ export function SlowMoversCard({ data }: { data?: AnalyticsData }) {
       cell: (r) => (
         <div className="flex items-center gap-3">
           <span className="relative size-10 shrink-0 overflow-hidden rounded-md bg-page">{r.image && <Image src={r.image} alt="" fill sizes="40px" className="object-cover" />}</span>
-          <p className="line-clamp-1 max-w-[220px] min-w-0 font-semibold leading-[18px]">{r.name}</p>
+          <p className="line-clamp-1 max-w-[220px] min-w-0 font-semibold">{r.name}</p>
         </div>
       ),
     },
@@ -41,7 +41,7 @@ export function SlowMoversCard({ data }: { data?: AnalyticsData }) {
       className="xl:col-span-3"
     >
       <div className="-mx-5 -mb-5 sm:mx-[-26px] sm:mb-[-26px]">
-        <DataTable columns={columns} rows={data?.slowMovers.rows} loading={!data} rowKey={(r) => r.id} skeletonRows={5} empty={<p className="py-12 text-center text-[14px] text-ink-3">Aucun produit à rotation lente. 🎉</p>} />
+        <DataTable columns={columns} rows={data?.slowMovers.rows} loading={!data} rowKey={(r) => r.id} skeletonRows={5} empty={<p className="py-12 text-center text-sm text-ink-3">Aucun produit à rotation lente. 🎉</p>} />
       </div>
     </ChartCard>
   );
@@ -53,7 +53,7 @@ function DataBar({ value, max, color, label }: { value: number; max: number; col
       <span className="h-2 min-w-[70px] flex-1 overflow-hidden rounded-full bg-chip">
         <motion.span initial={{ width: 0 }} whileInView={{ width: `${max > 0 ? Math.max(3, (value / max) * 100) : 0}%` }} viewport={{ once: true }} transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }} className="block h-full rounded-full" style={{ background: color }} />
       </span>
-      <span className="w-[64px] text-right text-[13px] font-semibold tabular-nums">{label}</span>
+      <span className="w-[64px] text-right text-sm font-semibold tabular-nums">{label}</span>
     </div>
   );
 }
@@ -69,7 +69,7 @@ export function ResellerPerformanceCard({ perf }: { perf?: ResellerPerformance }
       cell: (r) => (
         <div className="flex items-center gap-3">
           <Avatar src={null} name={r.name} size={34} />
-          <span className="block min-w-0 truncate font-semibold leading-[18px]">{r.name}</span>
+          <span className="block min-w-0 truncate font-semibold">{r.name}</span>
         </div>
       ),
     },
@@ -83,7 +83,7 @@ export function ResellerPerformanceCard({ perf }: { perf?: ResellerPerformance }
       <div className="-mx-5 -mb-5 sm:mx-[-26px] sm:mb-[-26px]">
         <DataTable columns={columns} rows={perf?.rows.slice(0, 12)} loading={!perf} rowKey={(r) => r.id} skeletonRows={6} />
       </div>
-      {perf && perf.rows.length > 12 && <p className="mt-6 text-center text-[12px] text-ink-3">Top 12 sur {perf.rows.length} vendeurs.</p>}
+      {perf && perf.rows.length > 12 && <p className="mt-6 text-center text-xs text-ink-3">Top 12 sur {perf.rows.length} vendeurs.</p>}
     </ChartCard>
   );
 }

@@ -39,24 +39,24 @@ function OrderRow({ o }: { o: ResellerOpenOrder }) {
       <div className="min-w-0 flex-1">
         <div className="flex items-start justify-between gap-3 sm:block">
           <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
-            <Link prefetch={false} href={ROUTES.admin.order(o.id)} className="inline-flex min-h-9 items-center text-[16px] font-bold hover:text-primary sm:min-h-0 sm:text-[15px]">Commande #{o.id}</Link>
+            <Link prefetch={false} href={ROUTES.admin.order(o.id)} className="inline-flex min-h-9 items-center text-base font-bold hover:text-primary sm:min-h-0 sm:text-sm">Commande #{o.id}</Link>
             <StatusDot tone={ORDER_STATUS_TONE[o.status]}>{ORDER_STATUS_LABEL[o.status]}</StatusDot>
-            <span className="text-[12px] text-ink-3">{formatRelative(o.createdAt)}</span>
+            <span className="text-xs text-ink-3">{formatRelative(o.createdAt)}</span>
           </div>
-          <span className="shrink-0 text-[17px] font-bold sm:hidden">{formatPrice(o.total)}</span>
+          <span className="shrink-0 text-base font-bold sm:hidden">{formatPrice(o.total)}</span>
         </div>
-        <p className="mt-1 line-clamp-2 text-[13px] leading-[19px] text-ink-2 sm:truncate"><strong className="text-ink">{o.clientName}</strong> · {o.itemsSummary}</p>
+        <p className="mt-1 line-clamp-2 text-sm text-ink-2 sm:truncate"><strong className="text-ink">{o.clientName}</strong> · {o.itemsSummary}</p>
       </div>
       <div className="mt-3.5 flex items-center gap-2 sm:mt-0 sm:shrink-0 sm:justify-end">
-        <span className="mr-1 hidden text-[16px] font-bold sm:inline">{formatPrice(o.total)}</span>
+        <span className="mr-1 hidden text-base font-bold sm:inline">{formatPrice(o.total)}</span>
         {o.conversationId != null && (
-          <Link prefetch={false} href={ROUTES.admin.conversation(o.conversationId)} className="relative inline-flex h-12 flex-1 items-center justify-center gap-1.5 rounded-box bg-chip px-3 text-[13px] font-bold transition-all hover:bg-primary hover:text-white active:scale-95 sm:h-9 sm:flex-none sm:rounded-md sm:text-[12px]">
+          <Link prefetch={false} href={ROUTES.admin.conversation(o.conversationId)} className="relative inline-flex h-12 flex-1 items-center justify-center gap-1.5 rounded-box bg-chip px-3 text-sm font-bold transition-all hover:bg-primary hover:text-white active:scale-95 sm:h-9 sm:flex-none sm:rounded-md sm:text-xs">
             <Messages2 size={16} variant="Bold" /> Discussion
-            {o.unread > 0 && <span className="absolute -right-1.5 -top-1.5 grid min-w-[20px] place-items-center rounded-full bg-danger px-1 text-[11px] leading-[20px] text-white ring-2 ring-white">{o.unread}</span>}
+            {o.unread > 0 && <span className="absolute -right-1.5 -top-1.5 grid min-w-[20px] place-items-center rounded-full bg-danger px-1 text-xs text-white ring-2 ring-surface">{o.unread}</span>}
           </Link>
         )}
         {next === "livree" && (
-          <Link prefetch={false} href={ROUTES.admin.order(o.id)} className="inline-flex h-12 flex-2 items-center justify-center gap-1.5 rounded-box bg-primary px-3 text-[13px] font-bold text-white transition-all hover:bg-primary-dark active:scale-95 sm:h-9 sm:flex-none sm:rounded-md sm:text-[12px]">
+          <Link prefetch={false} href={ROUTES.admin.order(o.id)} className="inline-flex h-12 flex-2 items-center justify-center gap-1.5 rounded-box bg-primary px-3 text-sm font-bold text-white transition-all hover:bg-primary-dark active:scale-95 sm:h-9 sm:flex-none sm:rounded-md sm:text-xs">
             <TickCircle size={14} variant="Bold" /> Saisir le code de livraison
           </Link>
         )}
@@ -124,8 +124,8 @@ export function ResellerDashboardView() {
           <Reveal>
             <Block pad="sm">
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <h2 className="text-[16px] font-bold leading-[22px]">Mes commandes par statut</h2>
-                <Link href={ROUTES.admin.orders} className="group -mr-2 inline-flex min-h-11 items-center gap-1 px-2 text-[13px] font-bold text-primary">
+                <h2 className="text-base font-bold">Mes commandes par statut</h2>
+                <Link href={ROUTES.admin.orders} className="group -mr-2 inline-flex min-h-11 items-center gap-1 px-2 text-sm font-bold text-primary">
                   Tout voir <ArrowRight2 size={14} className="transition-transform group-hover:translate-x-1" />
                 </Link>
               </div>
@@ -133,22 +133,22 @@ export function ResellerDashboardView() {
                 <RevealGroup className="no-scrollbar -mx-4 mt-3 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0">
                   {statuses.map((s) => (
                     <RevealItem key={s} className="shrink-0">
-                      <span className="inline-flex items-center gap-2 whitespace-nowrap rounded-full bg-chip py-1.5 pl-1.5 pr-3 text-[13px] font-semibold">
-                        <span className="grid min-w-7 place-items-center rounded-full bg-surface px-1.5 py-0.5 text-[13px] font-bold">{data.orders.byStatus[s]}</span>
+                      <span className="inline-flex items-center gap-2 whitespace-nowrap rounded-full bg-chip py-1.5 pl-1.5 pr-3 text-sm font-semibold">
+                        <span className="grid min-w-7 place-items-center rounded-full bg-surface px-1.5 py-0.5 text-sm font-bold">{data.orders.byStatus[s]}</span>
                         <StatusDot tone={ORDER_STATUS_TONE[s]}>{ORDER_STATUS_LABEL[s]}</StatusDot>
                       </span>
                     </RevealItem>
                   ))}
                 </RevealGroup>
               ) : (
-                <p className="mt-3 text-[13px] text-ink-3">Aucune commande assignée pour le moment.</p>
+                <p className="mt-3 text-sm text-ink-3">Aucune commande assignée pour le moment.</p>
               )}
             </Block>
           </Reveal>
 
           <Reveal>
             <Block pad="sm">
-              <h2 className="mb-4 text-[16px] font-bold leading-[22px]">Mes commandes ouvertes</h2>
+              <h2 className="mb-4 text-base font-bold">Mes commandes ouvertes</h2>
               {data.openOrders.length === 0 ? (
                 <EmptyState icon={<Box size={34} variant="Bulk" />} title="Rien à traiter" description="Les commandes qui vous sont assignées apparaîtront ici en temps réel." className="py-8" />
               ) : (
@@ -163,23 +163,23 @@ export function ResellerDashboardView() {
           <Reveal>
             <Block pad="sm">
               <div className="mb-3 flex items-center justify-between">
-                <h2 className="text-[16px] font-bold leading-[22px]">Mes dernières ventes</h2>
-                <Link href={ROUTES.admin.sales} className="-mr-2 inline-flex min-h-11 items-center px-2 text-[13px] font-bold text-primary hover:underline">Voir tout</Link>
+                <h2 className="text-base font-bold">Mes dernières ventes</h2>
+                <Link href={ROUTES.admin.sales} className="-mr-2 inline-flex min-h-11 items-center px-2 text-sm font-bold text-primary hover:underline">Voir tout</Link>
               </div>
               {data.recentSales.length === 0 ? (
-                <p className="py-6 text-center text-[13px] text-ink-3">Aucune vente enregistrée.</p>
+                <p className="py-6 text-center text-sm text-ink-3">Aucune vente enregistrée.</p>
               ) : (
                 <ul className="divide-y divide-line-3">
                   {data.recentSales.map((s) => (
                     <li key={s.id} className="flex min-w-0 items-center gap-3 py-3">
                       <span className="relative size-11 shrink-0 overflow-hidden rounded-md bg-page">{s.productImage && <Image src={s.productImage} alt="" fill sizes="44px" className="object-cover" />}</span>
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-[13px] font-semibold leading-[18px]">{s.productName}{s.quantity > 1 ? ` ×${s.quantity}` : ""}</p>
-                        <p className="text-[12px] text-ink-3">{formatRelative(s.soldAt)}</p>
+                        <p className="truncate text-sm font-semibold">{s.productName}{s.quantity > 1 ? ` ×${s.quantity}` : ""}</p>
+                        <p className="text-xs text-ink-3">{formatRelative(s.soldAt)}</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-[14px] font-bold">{formatPrice(s.total)}</p>
-                        <span className={cn("rounded-sm px-1.5 py-px text-[10px] font-bold", METHOD_STYLE[s.method].cls)}>{METHOD_STYLE[s.method].label}</span>
+                        <p className="text-sm font-bold">{formatPrice(s.total)}</p>
+                        <span className={cn("rounded-sm px-1.5 py-px text-xs font-bold", METHOD_STYLE[s.method].cls)}>{METHOD_STYLE[s.method].label}</span>
                       </div>
                     </li>
                   ))}

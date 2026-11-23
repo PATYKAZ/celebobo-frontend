@@ -39,7 +39,7 @@ export function ImageSlot({ label, value, onChange, main, error }: Props) {
 
   return (
     <div>
-      <p className="mb-1.5 text-[13px] font-semibold">{label}{main && <span className="ml-0.5 text-danger">*</span>}</p>
+      <p className="mb-1.5 text-sm font-semibold">{label}{main && <span className="ml-0.5 text-danger">*</span>}</p>
       <div
         onClick={() => input.current?.click()}
         onDragOver={(e) => {
@@ -68,7 +68,7 @@ export function ImageSlot({ label, value, onChange, main, error }: Props) {
             <img src={value.url} alt={label} className="absolute inset-0 size-full object-cover transition-transform duration-500 group-hover:scale-105" />
             <span className="absolute inset-0 bg-black/0 transition-colors group-hover:bg-black/25" />
             {sending && (
-              <span role="status" className="absolute inset-x-2 bottom-2 flex items-center justify-center gap-1.5 rounded-full bg-surface/90 px-2 py-1 text-[11px] font-semibold text-ink-2 shadow-sm">
+              <span role="status" className="absolute inset-x-2 bottom-2 flex items-center justify-center gap-1.5 rounded-full bg-surface/90 px-2 py-1 text-xs font-semibold text-ink-2 shadow-sm">
                 <span className="size-3 animate-spin rounded-full border-2 border-primary border-t-transparent motion-reduce:animate-none" aria-hidden />
                 Envoi…
               </span>
@@ -89,12 +89,12 @@ export function ImageSlot({ label, value, onChange, main, error }: Props) {
         ) : (
           <div className="flex flex-col items-center gap-1.5 px-3 text-center text-ink-3 transition-colors group-hover:text-primary">
             <Gallery size={main ? 34 : 26} variant="Bulk" />
-            <span className="text-[12px] leading-[16px]"><span className="sm:hidden">Touchez pour ajouter</span><span className="hidden sm:inline">Cliquez ou déposez une image</span></span>
+            <span className="text-xs"><span className="sm:hidden">Touchez pour ajouter</span><span className="hidden sm:inline">Cliquez ou déposez une image</span></span>
           </div>
         )}
         <input ref={input} type="file" accept="image/*" hidden onChange={(e) => { take(e.target.files?.[0]); e.target.value = ""; }} />
       </div>
-      {error && <p role="alert" className="mt-1 text-[12px] text-danger">{error}</p>}
+      {error && <p role="alert" className="mt-1 text-xs text-danger">{error}</p>}
     </div>
   );
 }

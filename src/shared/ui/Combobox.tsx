@@ -66,12 +66,12 @@ export function Combobox<T>({
       <CommandInput autoFocus={!isMobile} value={search} onValueChange={onSearchChange} placeholder={searchPlaceholder} aria-label={searchLabel} inputMode="search" className="h-12 sm:h-10" />
       <CommandList className="sm:max-h-[300px]">
         {loading && !items.length ? (
-          <p className="px-3 py-4 text-center text-[13px] text-ink-3">Recherche…</p>
+          <p className="px-3 py-4 text-center text-sm text-ink-3">Recherche…</p>
         ) : (
           <CommandEmpty>{emptyText}</CommandEmpty>
         )}
         {leading && (
-          <CommandItem value="__leading" onSelect={() => pick(leading.onSelect)} data-checked={leading.selected || undefined} className={cn("text-[13px] font-semibold", leading.selected && "bg-primary-50 text-primary")}>
+          <CommandItem value="__leading" onSelect={() => pick(leading.onSelect)} data-checked={leading.selected || undefined} className={cn("text-sm font-semibold", leading.selected && "bg-primary-50 text-primary")}>
             {leading.label}
           </CommandItem>
         )}
@@ -109,7 +109,7 @@ export function Combobox<T>({
   return (
     <div className={cn("relative flex flex-col gap-1.5", className)}>
       {label && (
-        <span id={labelId} className="text-[13px] font-semibold leading-[19.5px]">
+        <span id={labelId} className="text-sm font-semibold">
           {label}
           {required && <span className="ml-0.5 text-danger">*</span>}
         </span>
@@ -134,7 +134,7 @@ export function Combobox<T>({
         </Popover>
       )}
       {error && (
-        <p role="alert" className="text-[12px] text-danger">
+        <p role="alert" className="text-xs text-danger">
           {error}
         </p>
       )}

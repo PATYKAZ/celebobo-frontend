@@ -70,15 +70,15 @@ function CouponRow({ coupon, onEdit }: { coupon: AdminCoupon; onEdit: () => void
     <li className={cn("flex flex-col gap-3 rounded-box border border-line-3 p-3 sm:flex-row sm:items-center sm:p-4", !coupon.isActive && "bg-chip/50")}>
       <div className="min-w-0 flex-1">
         <p className="flex flex-wrap items-center gap-2">
-          <span className="font-mono text-[15px] font-bold tracking-wide">{coupon.code}</span>
-          <span className={cn("rounded-full px-2 py-0.5 text-[10px] font-bold uppercase", status.className)}>{status.label}</span>
-          <span className="text-[14px] font-bold text-primary">{discountLabel(coupon)}</span>
+          <span className="font-mono text-sm font-bold">{coupon.code}</span>
+          <span className={cn("rounded-full px-2 py-0.5 text-xs font-bold", status.className)}>{status.label}</span>
+          <span className="text-sm font-bold text-primary">{discountLabel(coupon)}</span>
         </p>
-        {coupon.description && <p className="mt-1 text-[13px] text-ink-2">{coupon.description}</p>}
+        {coupon.description && <p className="mt-1 text-sm text-ink-2">{coupon.description}</p>}
         {(conditions.length > 0 || when) && (
-          <p className="mt-1 text-[12px] text-ink-3">{[...conditions, when].filter(Boolean).join(" · ")}</p>
+          <p className="mt-1 text-xs text-ink-3">{[...conditions, when].filter(Boolean).join(" · ")}</p>
         )}
-        <p className="mt-1.5 text-[12px] tabular-nums text-ink-2">
+        <p className="mt-1.5 text-xs tabular-nums text-ink-2">
           <strong className="text-ink">{coupon.uses}</strong>
           {coupon.usageLimit != null ? ` / ${coupon.usageLimit}` : ""} utilisation{coupon.uses > 1 ? "s" : ""} · {formatPrice(coupon.discountTotal)} de remises accordées
         </p>
@@ -130,8 +130,8 @@ function Content() {
         </div>
       ) : isError ? (
         <Block className="text-center">
-          <p className="text-[14px] text-ink-2">{getErrorMessage(error, "Impossible de charger les codes promo.")}</p>
-          <Button className="mt-4" variant="chip" upper={false} onClick={() => refetch()}>Réessayer</Button>
+          <p className="text-sm text-ink-2">{getErrorMessage(error, "Impossible de charger les codes promo.")}</p>
+          <Button className="mt-4" variant="secondary" upper={false} onClick={() => refetch()}>Réessayer</Button>
         </Block>
       ) : list.length === 0 ? (
         <Block>

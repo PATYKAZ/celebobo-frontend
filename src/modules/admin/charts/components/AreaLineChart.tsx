@@ -118,10 +118,10 @@ export function AreaLineChart({ labels, series, height: heightProp = 280, format
         )}
       </svg>
       {hover != null && (
-        <div className="pointer-events-none absolute top-2 z-10 min-w-[140px] -translate-x-1/2 rounded-box border border-line-3 bg-surface p-3 shadow-[0_8px_30px_rgba(0,0,0,.12)]" style={{ left: tipLeft }}>
-          <p className="mb-1.5 text-[12px] font-bold">{labels[hover]}</p>
+        <div className="pointer-events-none absolute top-2 z-10 min-w-[140px] -translate-x-1/2 rounded-box border border-line-3 bg-surface p-3 shadow-lg" style={{ left: tipLeft }}>
+          <p className="mb-1.5 text-xs font-bold">{labels[hover]}</p>
           {series.map((s) => (
-            <p key={s.key} className="flex items-center justify-between gap-4 text-[12px] leading-[18px]">
+            <p key={s.key} className="flex items-center justify-between gap-4 text-xs">
               <span className="flex items-center gap-1.5 text-ink-2"><span className="size-2 rounded-full" style={{ background: s.color }} />{s.label}</span>
               <strong>{format(s.data[hover])}</strong>
             </p>

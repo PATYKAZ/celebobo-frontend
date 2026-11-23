@@ -57,9 +57,9 @@ export function CreateResellerModal({ open, onClose }: { open: boolean; onClose:
         </div>
         <Input label="E-mail" type="email" value={form.email} onChange={set("email")} error={errors.email} required />
         <Input label="Téléphone" type="tel" inputMode="tel" value={form.phone} onChange={set("phone")} error={errors.phone} placeholder={PHONE_PLACEHOLDER} hint={PHONE_HINT} required />
-        <p className="rounded-box bg-primary-50 p-3 text-[13px] leading-[19px] text-ink-2">Un code d&apos;invitation à 4 chiffres sera généré. Le revendeur pourra le partager à ses clients. Ses commissions suivent les règles communes à tous les revendeurs.</p>
+        <p className="rounded-box bg-primary-50 p-3 text-sm text-ink-2">Un code d&apos;invitation à 4 chiffres sera généré. Le revendeur pourra le partager à ses clients. Ses commissions suivent les règles communes à tous les revendeurs.</p>
         <div className="grid grid-cols-2 gap-3">
-          <Button variant="chip" onClick={onClose} upper={false}>Annuler</Button>
+          <Button variant="secondary" onClick={onClose} upper={false}>Annuler</Button>
           <Button type="submit" loading={create.isPending} upper={false}>Créer le revendeur</Button>
         </div>
       </form>

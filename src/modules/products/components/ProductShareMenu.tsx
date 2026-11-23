@@ -14,7 +14,7 @@ interface Props {
 export function ProductShareMenu({ name, url }: Props) {
   const href = () => url ?? (typeof window !== "undefined" ? window.location.href : "");
   const text = () => `Regarde ce produit sur Celebobo : ${name}`;
-  const item = "flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-left text-[13px] font-semibold transition-colors hover:bg-chip hover:text-primary";
+  const item = "flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-left text-sm font-semibold transition-colors hover:bg-chip hover:text-primary";
 
   const copy = async () => {
     try {

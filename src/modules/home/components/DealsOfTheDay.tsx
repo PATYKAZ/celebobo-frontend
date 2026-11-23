@@ -57,7 +57,7 @@ function FlipNumber({ value }: { value: number }) {
 
 function Countdown({ endsAt }: { endsAt: string }) {
   const c = useCountdown(endsAt);
-  if (c.done) return <p className="text-[14px] font-bold text-danger">Offre terminée</p>;
+  if (c.done) return <p className="text-sm font-bold text-danger">Offre terminée</p>;
   const cells = [
     { v: c.days, u: "j", label: "jours" },
     { v: c.hours, u: "h", label: "heures" },
@@ -67,11 +67,11 @@ function Countdown({ endsAt }: { endsAt: string }) {
   return (
     <div role="timer" aria-label={`Fin de l'offre dans ${c.days} jours, ${c.hours} heures et ${c.minutes} minutes`} className="grid grid-cols-4 gap-2 sm:flex sm:gap-2.5">
       {cells.map((x) => (
-        <div key={x.u} aria-hidden className="flex h-[74px] w-full flex-col items-center rounded-md bg-chip-2 pt-[7px] sm:w-[56px]">
-          <span className="text-[20px] font-bold leading-[30px]">
+        <div key={x.u} aria-hidden className="flex h-[74px] w-full flex-col items-center rounded-md bg-chip-2 pt-2 sm:w-[56px]">
+          <span className="text-lg font-bold">
             <FlipNumber value={x.v} />
           </span>
-          <span className="text-[14px] font-bold leading-[21px] text-ink-2">{x.u}</span>
+          <span className="text-sm font-bold text-ink-2">{x.u}</span>
         </div>
       ))}
     </div>
@@ -99,7 +99,7 @@ function DealCard({ deal }: { deal: HomeDeal }) {
   const addToCart = () => add(product, 1, variant ? { variantId: variant.id, variantLabel: variant.label, priceDelta: deal.dealPrice - product.price } : undefined);
 
   return (
-    <div className="grid grid-cols-[minmax(0,1fr)] gap-5 rounded-b-box bg-surface p-4 sm:gap-6 sm:p-[30px] lg:grid-cols-[minmax(0,45fr)_minmax(0,55fr)] lg:gap-[34px]">
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-5 rounded-b-box bg-surface p-4 sm:gap-6 sm:p-8 lg:grid-cols-[minmax(0,45fr)_minmax(0,55fr)] lg:gap-9">
       {/* Galerie */}
       <div className="flex min-w-0 flex-col-reverse gap-3 sm:flex-row">
         <div className="no-scrollbar flex shrink-0 gap-2.5 overflow-x-auto sm:w-[35px] sm:flex-col sm:gap-4 sm:overflow-visible">
@@ -112,7 +112,7 @@ function DealCard({ deal }: { deal: HomeDeal }) {
         <div className="relative aspect-4/3 w-full min-w-0 sm:aspect-405/330 sm:flex-1">
           {gallery[active] && <ZoomImage src={gallery[active]} alt={product.name} />}
           {onSale && <SaveBadge large amount={saving} className="absolute left-3 top-3 z-10" />}
-          <button onClick={addToCart} disabled={!inStock} aria-label="Ajouter au panier" className="absolute right-3 top-3 z-10 grid size-11 place-items-center rounded-pill bg-chip-2 transition-all hover:rotate-90 hover:bg-primary hover:text-white disabled:pointer-events-none disabled:opacity-40 sm:size-[30px]">
+          <button onClick={addToCart} disabled={!inStock} aria-label="Ajouter au panier" className="absolute right-3 top-3 z-10 grid size-11 place-items-center rounded-full bg-chip-2 transition-all hover:rotate-90 hover:bg-primary hover:text-white disabled:pointer-events-none disabled:opacity-40 sm:size-[30px]">
             <Add size={16} />
           </button>
         </div>
@@ -121,32 +121,32 @@ function DealCard({ deal }: { deal: HomeDeal }) {
       {/* Infos */}
       <div className="min-w-0">
         <Stars rating={product.rating ?? 5} count={product.reviewsCount} />
-        <Link href={ROUTES.product(product.slug)} className="mt-2 block text-[16px] font-bold leading-[19.2px] transition-colors hover:text-primary">
+        <Link href={ROUTES.product(product.slug)} className="mt-2 block text-base font-bold transition-colors hover:text-primary">
           {product.name}
           {variant && <span className="font-semibold text-ink-2"> · {variant.label}</span>}
         </Link>
         <Price current={deal.dealPrice} original={onSale ? deal.regularPrice : null} size="lg" className="mt-4" />
         <ul className="mt-4 space-y-1">
           {product.features.slice(0, 3).map((f) => (
-            <li key={f} className="flex items-center gap-2 text-[12px] leading-[21.6px]">
+            <li key={f} className="flex items-center gap-2 text-xs">
               <RecordCircle size={10} variant="Bold" className="text-ink-2" /> {f}
             </li>
           ))}
         </ul>
         <div className="mt-4 flex flex-wrap gap-2">
-          {onSale && <Pill tone="red" className="h-7 px-[15px] text-[12px]">−{percent} %</Pill>}
+          {onSale && <Pill tone="red" className="h-7 px-4 text-xs">−{percent} %</Pill>}
           {deal.giftLabel && (
-            <Pill tone="red" className="h-7 gap-1.5 px-[15px] text-[12px]">
+            <Pill tone="red" className="h-7 gap-1.5 px-4 text-xs">
               <Gift size={14} variant="Bold" /> {deal.giftLabel}
             </Pill>
           )}
-          {product.freeShipping && <Pill tone="green" className="h-7 px-[15px] text-[12px]">Livraison offerte</Pill>}
-          <Pill tone={inStock ? "green" : "red"} className="h-7 px-[15px] text-[12px]">{inStock ? "En stock" : "Épuisé"}</Pill>
+          {product.freeShipping && <Pill tone="green" className="h-7 px-4 text-xs">Livraison offerte</Pill>}
+          <Pill tone={inStock ? "green" : "red"} className="h-7 px-4 text-xs">{inStock ? "En stock" : "Épuisé"}</Pill>
         </div>
 
         {deal.endsAt && (
           <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-5">
-            <p className="text-[13px] font-medium uppercase leading-[19.5px] sm:max-w-[130px]" title={`Jusqu'au ${endFmt.format(new Date(deal.endsAt))}`}>
+            <p className="text-sm font-medium sm:max-w-[130px]" title={`Jusqu'au ${endFmt.format(new Date(deal.endsAt))}`}>
               Dépêchez-vous ! L’offre se termine dans
             </p>
             <Countdown endsAt={deal.endsAt} />
@@ -162,7 +162,7 @@ function DealCard({ deal }: { deal: HomeDeal }) {
             </div>
           )}
           <div className={cn("flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between", deal.quantity != null && "mt-3")}>
-            <p className="text-[13px] leading-[22px] text-ink-2">
+            <p className="text-sm text-ink-2">
               {deal.quantity != null ? (
                 <>
                   Vendus : <strong className="text-ink"><CountUp to={deal.sold ?? 0} />/{deal.quantity}</strong>
@@ -175,7 +175,7 @@ function DealCard({ deal }: { deal: HomeDeal }) {
               )}
             </p>
             <div className="flex gap-2">
-              <Button size="sm" variant="outline" href={ROUTES.product(product.slug)} className="max-sm:flex-1">Voir</Button>
+              <Button size="sm" variant="secondary" href={ROUTES.product(product.slug)} className="max-sm:flex-1">Voir</Button>
               <Button size="sm" onClick={addToCart} disabled={!inStock} className="max-sm:flex-1 max-sm:px-8">Ajouter</Button>
             </div>
           </div>
@@ -192,7 +192,7 @@ export function DealsOfTheDay({ content }: { content?: HomeContent }) {
   return (
     <section className="grid grid-cols-[minmax(0,1fr)] gap-3 sm:gap-4 xl:grid-cols-[minmax(0,3.3fr)_minmax(0,1fr)]">
       <div>
-        <div className="flex h-14 items-center rounded-t-box bg-primary px-4 sm:h-[62px] sm:px-[30px]">
+        <div className="flex h-14 items-center rounded-t-box bg-primary px-4 sm:h-[62px] sm:px-8">
           <SectionHeader title="Offres du jour" viewAllHref={`${ROUTES.products}?onSale=1`} onPrimary className="w-full" />
         </div>
         {!picks ? (
@@ -200,29 +200,29 @@ export function DealsOfTheDay({ content }: { content?: HomeContent }) {
         ) : picks.deal ? (
           <DealCard deal={picks.deal} />
         ) : (
-          <div className="rounded-b-box bg-surface p-6 text-center text-[14px] text-ink-2 sm:p-10">Pas de promotion en ce moment. Revenez bientôt !</div>
+          <div className="rounded-b-box bg-surface p-6 text-center text-sm text-ink-2 sm:p-10">Pas de promotion en ce moment. Revenez bientôt !</div>
         )}
       </div>
 
-      <div className="max-sm:snap-row max-sm:mx-[-15px] max-sm:scroll-px-[15px] max-sm:px-[15px] sm:grid sm:grid-cols-3 sm:gap-4 xl:grid-cols-1 xl:grid-rows-3">
+      <div className="max-sm:snap-row max-sm:mx-[-15px] max-sm:scroll-px-[15px] max-sm:px-4 sm:grid sm:grid-cols-3 sm:gap-4 xl:grid-cols-1 xl:grid-rows-3">
         {picks
           ? picks.side.map((b, i) => {
               const t = bannerTone(b, "from-black/80 via-black/40 to-transparent");
               return (
                 <Reveal key={b.key} delay={i * 0.1} className="h-full min-h-[150px] max-sm:w-[78%] sm:min-h-[170px]">
-                  <PhotoBanner image={b.image} href={b.href} label={b.title} overlay={t.overlay} direction="t" className="h-full rounded-[12px]" sizes="296px" contentClassName="flex flex-col justify-end p-5">
-                    {b.eyebrow && <p className={cn("text-[10px] uppercase tracking-[0.2em]", t.muted)}>{b.eyebrow}</p>}
-                    <p className={cn("mt-1 line-clamp-2 whitespace-pre-line text-[17px] font-semibold leading-[21px]", t.text)}>{b.title}</p>
+                  <PhotoBanner image={b.image} href={b.href} label={b.title} overlay={t.overlay} direction="t" className="h-full rounded-box" sizes="296px" contentClassName="flex flex-col justify-end p-5">
+                    {b.eyebrow && <p className={cn("text-xs", t.muted)}>{b.eyebrow}</p>}
+                    <p className={cn("mt-1 line-clamp-2 whitespace-pre-line text-base font-semibold", t.text)}>{b.title}</p>
                     {b.product ? (
-                      <p className="mt-0.5"><BannerPrice product={b.product} className={cn("text-[15px]", t.price)} strikeClassName={t.strike} /></p>
+                      <p className="mt-0.5"><BannerPrice product={b.product} className={cn("text-sm", t.price)} strikeClassName={t.strike} /></p>
                     ) : (
-                      b.subtitle && <p className={cn("mt-0.5 line-clamp-1 text-[12px]", t.muted)}>{b.subtitle}</p>
+                      b.subtitle && <p className={cn("mt-0.5 line-clamp-1 text-xs", t.muted)}>{b.subtitle}</p>
                     )}
                   </PhotoBanner>
                 </Reveal>
               );
             })
-          : [0, 1, 2].map((i) => <Skeleton key={i} className="min-h-[150px] rounded-[12px] max-sm:w-[78%] sm:min-h-[170px]" />)}
+          : [0, 1, 2].map((i) => <Skeleton key={i} className="min-h-[150px] rounded-box max-sm:w-[78%] sm:min-h-[170px]" />)}
       </div>
     </section>
   );

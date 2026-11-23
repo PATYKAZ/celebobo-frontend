@@ -93,9 +93,9 @@ function AllCommissions({ data }: { data?: CommissionsOverview }) {
         <div className="flex items-center gap-3">
           <span className="relative">
             <Avatar src={r.avatar} name={r.name} size={36} />
-            <span title={AVAILABILITY_LABEL[r.availability]} className={cn("absolute bottom-0 right-0 size-2.5 rounded-full ring-2 ring-white", AVAILABILITY_DOT[r.availability])} />
+            <span title={AVAILABILITY_LABEL[r.availability]} className={cn("absolute bottom-0 right-0 size-2.5 rounded-full ring-2 ring-surface", AVAILABILITY_DOT[r.availability])} />
           </span>
-          <div className="min-w-0"><p className="truncate font-semibold leading-[18px]">{r.name}</p>{!r.active && <p className="text-[11px] text-danger">Désactivé</p>}</div>
+          <div className="min-w-0"><p className="truncate font-semibold">{r.name}</p>{!r.active && <p className="text-xs text-danger">Désactivé</p>}</div>
         </div>
       ),
     },
@@ -111,7 +111,7 @@ function AllCommissions({ data }: { data?: CommissionsOverview }) {
       align: "right",
       cell: (r) => (
         <div className="flex justify-end gap-2" onClick={(e) => e.stopPropagation()}>
-          <Button size="xs" variant="chip" upper={false} className="max-md:min-h-11 max-md:px-5" onClick={() => setHistory(r.resellerId)}>Historique</Button>
+          <Button size="xs" variant="secondary" upper={false} className="max-md:min-h-11 max-md:px-5" onClick={() => setHistory(r.resellerId)}>Historique</Button>
         </div>
       ),
     },
@@ -136,14 +136,14 @@ function AllCommissions({ data }: { data?: CommissionsOverview }) {
         <div className="p-5">
           {historyRow && (
             <div className="mb-5 grid grid-cols-3 gap-3 text-center">
-              <div className="rounded-box bg-chip p-3"><p className="text-[11px] uppercase text-ink-3">En attente</p><p className="font-bold">{formatPrice(historyRow.pending)}</p></div>
-              <div className="rounded-box bg-chip p-3"><p className="text-[11px] uppercase text-ink-3">Payé</p><p className="font-bold">{formatPrice(historyRow.paid)}</p></div>
-              <div className="rounded-box bg-primary-50 p-3"><p className="text-[11px] uppercase text-ink-3">Dû</p><p className="font-bold text-primary">{formatPrice(historyRow.due)}</p></div>
+              <div className="rounded-box bg-chip p-3"><p className="text-xs text-ink-3">En attente</p><p className="font-bold">{formatPrice(historyRow.pending)}</p></div>
+              <div className="rounded-box bg-chip p-3"><p className="text-xs text-ink-3">Payé</p><p className="font-bold">{formatPrice(historyRow.paid)}</p></div>
+              <div className="rounded-box bg-primary-50 p-3"><p className="text-xs text-ink-3">Dû</p><p className="font-bold text-primary">{formatPrice(historyRow.due)}</p></div>
             </div>
           )}
-          <h3 className="mb-2 text-[13px] font-bold uppercase text-ink-3">Relevés</h3>
+          <h3 className="mb-2 text-sm font-bold text-ink-3">Relevés</h3>
           {resellerStatements ? <StatementsList statements={resellerStatements} onOpen={setStatement} onPay={canPay ? setPaying : undefined} /> : <Skeleton className="h-16 w-full" />}
-          <h3 className="mb-2 mt-5 text-[13px] font-bold uppercase text-ink-3">Paiements</h3>
+          <h3 className="mb-2 mt-5 text-sm font-bold text-ink-3">Paiements</h3>
           {loadingPayments ? <div className="space-y-3"><Skeleton className="h-16 w-full" /><Skeleton className="h-16 w-full" /></div> : <PaymentsList payments={payments ?? []} />}
         </div>
       </Drawer>
@@ -161,7 +161,7 @@ function OwnCommissions({ data }: { data: CommissionsOverview }) {
   return (
     <>
       <PageHeader title="Mes commissions" description={`${data.asOfLabel} · ${COMMISSION_RULES_SUMMARY}.`} />
-      <section className="rounded-box bg-primary-50 p-4 text-[14px] text-ink-2">
+      <section className="rounded-box bg-primary-50 p-4 text-sm text-ink-2">
         <p className="font-bold text-ink">{nextPayoutLabel(row)}</p>
         <p className="mt-1">
           Une commission reste en attente jusqu&apos;à 7 jours après la livraison (ou la vente), puis elle est validée et payée au prochain 1er ou 16 du mois.

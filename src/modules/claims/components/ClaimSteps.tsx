@@ -47,9 +47,9 @@ export function ClaimSteps({ claim }: { claim: Claim }) {
       {claimSteps(claim).map((s) => (
         <li key={s.title} className="flex gap-3">
           <span className={cn("mt-1 size-3 shrink-0 rounded-full border-2", s.at ? "border-primary bg-primary" : "border-line-3 bg-white")} aria-hidden />
-          <div className="min-w-0 text-[13px] leading-[19px]">
+          <div className="min-w-0 text-sm">
             <p className={cn("font-semibold", !s.at && "text-ink-3")}>{s.title}</p>
-            {s.at && <p className="text-[12px] text-ink-3">{formatDateTime(s.at)}</p>}
+            {s.at && <p className="text-xs text-ink-3">{formatDateTime(s.at)}</p>}
             {s.detail && <p className="mt-0.5 text-ink-2">{s.detail}</p>}
           </div>
         </li>

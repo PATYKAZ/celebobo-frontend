@@ -72,7 +72,7 @@ export function VariantsEditor({ options, rows, basePrice, onChange, error }: Pr
               </div>
               <div className="mt-3 flex flex-wrap items-center gap-2">
                 {o.values.map((v) => (
-                  <span key={v} className="inline-flex min-h-9 items-center gap-1.5 rounded-full bg-primary-50 py-1.5 pl-3.5 pr-2 text-[13px] font-medium text-primary-dark">
+                  <span key={v} className="inline-flex min-h-9 items-center gap-1.5 rounded-full bg-primary-50 py-1.5 pl-3.5 pr-2 text-sm font-medium text-primary-dark">
                     {v}
                     <button type="button" aria-label={`Retirer ${v}`} onClick={() => update(options.map((x, j) => (j === i ? { ...x, values: x.values.filter((y) => y !== v) } : x)))} className="text-primary-dark/60 hover:text-danger">
                       <CloseCircle size={16} variant="Bold" />
@@ -86,14 +86,14 @@ export function VariantsEditor({ options, rows, basePrice, onChange, error }: Pr
                   onBlur={() => addValue(i)}
                   placeholder="Ajouter une valeur + Entrée"
                   aria-label="Nouvelle valeur"
-                  className="h-11 min-w-[150px] flex-1 rounded-full border border-dashed border-line bg-surface px-4 text-[16px] outline-hidden focus:border-primary sm:h-9 sm:min-w-[180px] sm:px-3 sm:text-[13px]"
+                  className="h-11 min-w-[150px] flex-1 rounded-full border border-dashed border-line bg-surface px-4 text-base outline-hidden focus:border-primary sm:h-9 sm:min-w-[180px] sm:px-3 sm:text-sm"
                 />
               </div>
             </motion.div>
           ))}
         </AnimatePresence>
         {options.length < 3 && (
-          <Button variant="chip" upper={false} size="sm" className="max-sm:w-full sm:self-start" leftIcon={<Add size={16} />} onClick={() => update([...options, { name: "", values: [] }])}>
+          <Button variant="secondary" upper={false} size="sm" className="max-sm:w-full sm:self-start" leftIcon={<Add size={16} />} onClick={() => update([...options, { name: "", values: [] }])}>
             Ajouter une option
           </Button>
         )}
@@ -101,7 +101,7 @@ export function VariantsEditor({ options, rows, basePrice, onChange, error }: Pr
 
       {rows.length > 0 && (
         <div>
-          <div className="mb-2 flex items-center justify-between text-[13px]">
+          <div className="mb-2 flex items-center justify-between text-sm">
             <span className="font-semibold">{rows.length} variante{rows.length > 1 ? "s" : ""}</span>
             <span className="text-ink-2">Stock total : <strong className="text-ink">{total}</strong></span>
           </div>
@@ -109,18 +109,18 @@ export function VariantsEditor({ options, rows, basePrice, onChange, error }: Pr
           <ul className="grid gap-2.5 sm:hidden">
             {rows.map((r) => (
               <li key={r.id} className="rounded-box border border-line p-3.5">
-                <p className="text-[14px] font-bold">{r.label}</p>
+                <p className="text-sm font-bold">{r.label}</p>
                 <div className="mt-2.5 grid grid-cols-2 gap-2.5">
-                  <label className="grid gap-1 text-[12px] font-semibold text-ink-2">Prix ($)<input type="number" inputMode="decimal" min="0" step="0.01" value={r.price} onChange={(e) => setRow(r.id, { price: e.target.value })} placeholder={basePrice ? formatPrice(basePrice) : "Prix du produit"} aria-label={`Prix ${r.label}`} className="field" /></label>
-                  <label className="grid gap-1 text-[12px] font-semibold text-ink-2">Stock<input type="number" inputMode="numeric" min="0" step="1" value={r.stock} onChange={(e) => setRow(r.id, { stock: e.target.value })} aria-label={`Stock ${r.label}`} className="field" /></label>
-                  <label className="col-span-2 grid gap-1 text-[12px] font-semibold text-ink-2">SKU<input value={r.sku} onChange={(e) => setRow(r.id, { sku: e.target.value })} aria-label={`SKU ${r.label}`} className="field" /></label>
+                  <label className="grid gap-1 text-xs font-semibold text-ink-2">Prix ($)<input type="number" inputMode="decimal" min="0" step="0.01" value={r.price} onChange={(e) => setRow(r.id, { price: e.target.value })} placeholder={basePrice ? formatPrice(basePrice) : "Prix du produit"} aria-label={`Prix ${r.label}`} className="field" /></label>
+                  <label className="grid gap-1 text-xs font-semibold text-ink-2">Stock<input type="number" inputMode="numeric" min="0" step="1" value={r.stock} onChange={(e) => setRow(r.id, { stock: e.target.value })} aria-label={`Stock ${r.label}`} className="field" /></label>
+                  <label className="col-span-2 grid gap-1 text-xs font-semibold text-ink-2">SKU<input value={r.sku} onChange={(e) => setRow(r.id, { sku: e.target.value })} aria-label={`SKU ${r.label}`} className="field" /></label>
                 </div>
               </li>
             ))}
           </ul>
           <div className="hidden overflow-x-auto rounded-box border border-line sm:block">
-            <table className="w-full min-w-[560px] text-[13px]">
-              <thead className="bg-page/60 text-left text-[11px] uppercase tracking-wide text-ink-3">
+            <table className="w-full min-w-[560px] text-sm">
+              <thead className="bg-page/60 text-left text-xs text-ink-3">
                 <tr><th className="px-3 py-2">Variante</th><th className="px-3 py-2">Prix ($)</th><th className="px-3 py-2">Stock</th><th className="px-3 py-2">SKU</th></tr>
               </thead>
               <tbody>
@@ -135,10 +135,10 @@ export function VariantsEditor({ options, rows, basePrice, onChange, error }: Pr
               </tbody>
             </table>
           </div>
-          <p className="mt-2 text-[12px] text-ink-3">Laissez le prix vide pour reprendre celui du produit. Le stock du produit est la somme des variantes.</p>
+          <p className="mt-2 text-xs text-ink-3">Laissez le prix vide pour reprendre celui du produit. Le stock du produit est la somme des variantes.</p>
         </div>
       )}
-      {error && <p role="alert" className="text-[12px] text-danger">{error}</p>}
+      {error && <p role="alert" className="text-xs text-danger">{error}</p>}
     </div>
   );
 }

@@ -67,23 +67,23 @@ export function BulkSaleForm() {
 
   return (
     <form onSubmit={submit} className="space-y-3 sm:space-y-4">
-      <Block pad="none" className="grid gap-4 p-4 sm:grid-cols-3 sm:gap-5 sm:p-[30px]">
+      <Block pad="none" className="grid gap-4 p-4 sm:grid-cols-3 sm:gap-5 sm:p-8">
         <Input label="Date de la vente" required type="date" max={todayStr()} value={soldAt} onChange={(e) => setSoldAt(e.target.value)} />
         <Select label="Moyen de paiement" value={method} onChange={(e) => setMethod(e.target.value as PaymentMethod)} options={METHOD_OPTIONS} />
         <Input label="Client (toutes les lignes)" value={venduA} onChange={(e) => setVenduA(e.target.value)} maxLength={50} placeholder="Vendu à… (facultatif)" hint="Peut être remplacé ligne par ligne." />
       </Block>
 
-      <Block pad="none" className="space-y-4 p-4 sm:p-[30px]">
+      <Block pad="none" className="space-y-4 p-4 sm:p-8">
         <div className="flex items-center justify-between gap-3">
-          <h3 className="text-[16px]">Lignes de vente <span className="text-ink-3">({lines.length})</span></h3>
-          <Button type="button" variant="chip" size="sm" upper={false} leftIcon={<Add size={16} />} onClick={() => setLines((l) => [...l, blank()])}>Ajouter</Button>
+          <h3 className="text-base">Lignes de vente <span className="text-ink-3">({lines.length})</span></h3>
+          <Button type="button" variant="secondary" size="sm" upper={false} leftIcon={<Add size={16} />} onClick={() => setLines((l) => [...l, blank()])}>Ajouter</Button>
         </div>
         <div className="space-y-3">
           {lines.map((l, i) => (
             <div key={l.key} className="grid min-w-0 items-end gap-3 rounded-box border border-line-3 p-3.5 lg:grid-cols-[minmax(0,2fr)_130px_130px_minmax(0,1fr)_40px] lg:p-3">
               {/* mobile : en-tête de carte avec suppression */}
               <div className="flex items-center justify-between lg:hidden">
-                <span className="text-[12px] font-bold uppercase tracking-wide text-ink-3">Ligne {i + 1}</span>
+                <span className="text-xs font-bold text-ink-3">Ligne {i + 1}</span>
                 <button type="button" aria-label="Supprimer la ligne" disabled={lines.length === 1} onClick={() => setLines((ls) => ls.filter((x) => x.key !== l.key))} className="grid size-11 place-items-center rounded-full bg-chip transition-colors active:scale-90 disabled:opacity-40">
                   <Trash size={18} />
                 </button>
@@ -94,7 +94,7 @@ export function BulkSaleForm() {
               </div>
               <div className="grid grid-cols-2 gap-3 lg:contents">
                 <div className="flex flex-col gap-1.5">
-                  <span className={i > 0 ? "text-[13px] font-semibold lg:sr-only" : "text-[13px] font-semibold"}>Quantité</span>
+                  <span className={i > 0 ? "text-sm font-semibold lg:sr-only" : "text-sm font-semibold"}>Quantité</span>
                   <QuantityStepper value={l.quantity} onChange={(q) => patch(l.key, { quantity: q })} max={999} className="w-full max-sm:justify-between" />
                 </div>
                 <div className={i > 0 ? "lg:[&_label]:sr-only" : ""}>
@@ -110,13 +110,13 @@ export function BulkSaleForm() {
             </div>
           ))}
         </div>
-        {error && <p role="alert" className="text-[13px] text-danger">{error}</p>}
+        {error && <p role="alert" className="text-sm text-danger">{error}</p>}
       </Block>
 
-      <Block pad="none" className="hidden flex-wrap items-center justify-between gap-4 p-[30px] lg:flex">
-        <p className="text-[14px] text-ink-2">{filled.length} ligne{filled.length > 1 ? "s" : ""} · Total <strong className="ml-1 text-[22px] text-primary"><CountUp to={total} format={formatPrice} duration={0.6} /></strong></p>
+      <Block pad="none" className="hidden flex-wrap items-center justify-between gap-4 p-8 lg:flex">
+        <p className="text-sm text-ink-2">{filled.length} ligne{filled.length > 1 ? "s" : ""} · Total <strong className="ml-1 text-xl text-primary"><CountUp to={total} format={formatPrice} duration={0.6} /></strong></p>
         <div className="flex gap-2">
-          <Button variant="chip" upper={false} href={ROUTES.admin.sales}>Annuler</Button>
+          <Button variant="secondary" upper={false} href={ROUTES.admin.sales}>Annuler</Button>
           <Button type="submit" loading={create.isPending} upper={false}>Valider les ventes</Button>
         </div>
       </Block>
@@ -125,8 +125,8 @@ export function BulkSaleForm() {
       <div className="h-20 lg:hidden" aria-hidden />
       <div className="fixed inset-x-0 bottom-[max(var(--tabbar-h),env(safe-area-inset-bottom))] z-40 flex items-center gap-3 border-t border-line-3 bg-surface/95 px-4 py-3 backdrop-blur-xl lg:hidden">
         <div className="min-w-0 flex-1">
-          <p className="text-[11px] font-semibold uppercase tracking-wide text-ink-3">{filled.length} ligne{filled.length > 1 ? "s" : ""} · Total</p>
-          <p className="truncate text-[20px] font-bold leading-[24px] text-primary">{formatPrice(total)}</p>
+          <p className="text-xs font-semibold text-ink-3">{filled.length} ligne{filled.length > 1 ? "s" : ""} · Total</p>
+          <p className="truncate text-lg font-bold text-primary">{formatPrice(total)}</p>
         </div>
         <Button type="submit" loading={create.isPending} upper={false} className="min-w-[150px]">Valider</Button>
       </div>

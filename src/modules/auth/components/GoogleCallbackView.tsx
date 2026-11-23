@@ -51,7 +51,7 @@ export function GoogleCallbackView() {
       ) : (
         <div className="grid min-h-[260px] place-items-center gap-3 text-center">
           <Spinner size={28} />
-          <p className="text-[14px] text-ink-2">Connexion avec Google…</p>
+          <p className="text-sm text-ink-2">Connexion avec Google…</p>
         </div>
       )}
     </Block>

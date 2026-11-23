@@ -49,22 +49,22 @@ function RefundForm({ sale, onClose }: { sale: Sale; onClose: () => void }) {
 
   return (
     <form onSubmit={submit} className="space-y-4">
-      <p className="rounded-box bg-page/60 p-3 text-[13px]">
+      <p className="rounded-box bg-page/60 p-3 text-sm">
         <strong>{sale.productName}</strong> × {sale.quantity} — {formatPrice(sale.total)}
       </p>
       <div className="grid gap-2 sm:grid-cols-2">
         {TYPES.map((t) => (
           <button key={t.value} type="button" aria-pressed={type === t.value} onClick={() => setType(t.value)} className={cn("min-h-14 rounded-box border p-3 text-left transition-colors active:scale-[0.99]", type === t.value ? "border-primary bg-primary-50" : "border-line hover:border-primary")}>
-            <span className="block text-[14px] font-bold">{t.label}</span>
-            <span className="text-[12px] text-ink-2">{t.hint}</span>
+            <span className="block text-sm font-bold">{t.label}</span>
+            <span className="text-xs text-ink-2">{t.hint}</span>
           </button>
         ))}
       </div>
       <Input label="Montant remboursé ($)" required type="number" inputMode="decimal" min={0.01} max={sale.total} step="0.01" value={amount} onChange={(e) => setAmount(e.target.value)} error={errors.amount} hint="Un remboursement partiel est possible." />
       <Textarea label="Motif" required value={reason} onChange={(e) => setReason(e.target.value)} error={errors.reason} placeholder="Produit défectueux, erreur de commande…" />
-      <p className="text-[12px] text-ink-3">La vente sera retirée du chiffre d&apos;affaires et du bénéfice. L&apos;action est tracée dans le journal d&apos;audit.</p>
+      <p className="text-xs text-ink-3">La vente sera retirée du chiffre d&apos;affaires et du bénéfice. L&apos;action est tracée dans le journal d&apos;audit.</p>
       <div className="grid grid-cols-[1fr_1.4fr] gap-3 sm:grid-cols-2">
-        <Button type="button" variant="chip" upper={false} onClick={onClose}>Annuler</Button>
+        <Button type="button" variant="secondary" upper={false} onClick={onClose}>Annuler</Button>
         <Button type="submit" variant="danger" upper={false} loading={refund.isPending}>Confirmer</Button>
       </div>
     </form>

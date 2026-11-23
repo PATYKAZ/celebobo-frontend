@@ -230,17 +230,17 @@ function Content() {
   return (
     <div className="grid gap-3 sm:gap-4 lg:grid-cols-[1fr_380px]">
       <Reveal className="min-w-0">
-        <Block pad="none" className="p-4 sm:p-[30px]">
-          <h1 className="text-[22px] leading-[28px] sm:text-h-page">Finaliser la commande</h1>
+        <Block pad="none" className="p-4 sm:p-8">
+          <h1 className="text-xl sm:text-h-page">Finaliser la commande</h1>
 
           {/* Mobile : récapitulatif repliable (s'ouvre en feuille) */}
           <button onClick={() => setRecap(true)} className="mt-4 flex min-h-14 w-full items-center gap-3 rounded-box bg-primary-50 px-4 py-2.5 text-left active:scale-[0.99] lg:hidden">
             <Bag2 size={20} variant="Bold" className="shrink-0 text-primary" />
             <span className="min-w-0 flex-1">
-              <span className="block text-[13px] font-bold leading-[18px]">Récapitulatif · {count} article{count > 1 ? "s" : ""}</span>
-              <span className="block text-[12px] leading-[16px] text-ink-2">Appuyez pour voir le détail</span>
+              <span className="block text-sm font-bold">Récapitulatif · {count} article{count > 1 ? "s" : ""}</span>
+              <span className="block text-xs text-ink-2">Appuyez pour voir le détail</span>
             </span>
-            <span className="text-[16px] font-extrabold text-primary">{formatPrice(payable)}</span>
+            <span className="text-base font-bold text-primary">{formatPrice(payable)}</span>
             <ArrowDown2 size={16} className="text-ink-3" />
           </button>
 
@@ -259,7 +259,7 @@ function Content() {
 
               {step === 1 && (
                 <div className="space-y-4 sm:space-y-5">
-                  <h2 className="text-[17px] sm:text-[18px]">Comment souhaitez-vous payer ?</h2>
+                  <h2 className="text-base sm:text-lg">Comment souhaitez-vous payer ?</h2>
                   <PaymentMethodCards value={form.paymentMethod} onChange={(v) => set("paymentMethod", v)} methods={methods} />
                   <Textarea label="Note pour le revendeur (optionnel)" value={form.note} onChange={(e) => set("note", e.target.value)} placeholder="Horaires de livraison, point de repère…" maxLength={500} />
                 </div>
@@ -267,46 +267,46 @@ function Content() {
 
               {step === 2 && (
                 <div className="space-y-4 sm:space-y-5">
-                  <h2 className="text-[17px] sm:text-[18px]">Vérifiez votre commande</h2>
+                  <h2 className="text-base sm:text-lg">Vérifiez votre commande</h2>
                   <div className="grid gap-3 sm:grid-cols-2">
-                    <div className="rounded-box bg-page/60 p-4 text-[14px] leading-[22px]">
+                    <div className="rounded-box bg-page/60 p-4 text-sm">
                       {form.pickup ? (
                         <>
-                          <p className="mb-1 text-[12px] font-bold uppercase text-ink-3">Retrait sur place</p>
+                          <p className="mb-1 text-xs font-bold text-ink-3">Retrait sur place</p>
                           {quote?.pickupAddress}
                           {quote?.deliveryEstimate && <span className="block text-ink-2">{quote.deliveryEstimate}</span>}
                           <span className="block text-ink-2">Contact : {form.recipient} · {form.phone}</span>
                         </>
                       ) : (
                         <>
-                          <p className="mb-1 text-[12px] font-bold uppercase text-ink-3">Livraison</p>
+                          <p className="mb-1 text-xs font-bold text-ink-3">Livraison</p>
                           {form.recipient}<br />{form.address}<br />{form.quarter}, {form.city}, {form.country}<br />{form.phone}
-                          {quote?.shippingQuoteRequired && <span className="mt-1 block text-[13px] text-warn">Frais sur devis : le revendeur vous les indique dans la discussion.</span>}
+                          {quote?.shippingQuoteRequired && <span className="mt-1 block text-sm text-warn">Frais sur devis : le revendeur vous les indique dans la discussion.</span>}
                         </>
                       )}
-                      <button onClick={() => go(0)} className="mt-1 flex min-h-11 items-center text-[13px] font-semibold text-primary hover:underline">Modifier</button>
+                      <button onClick={() => go(0)} className="mt-1 flex min-h-11 items-center text-sm font-semibold text-primary hover:underline">Modifier</button>
                     </div>
-                    <div className="rounded-box bg-page/60 p-4 text-[14px] leading-[22px]">
-                      <p className="mb-1 text-[12px] font-bold uppercase text-ink-3">Paiement</p>
+                    <div className="rounded-box bg-page/60 p-4 text-sm">
+                      <p className="mb-1 text-xs font-bold text-ink-3">Paiement</p>
                       {paymentLabel}
                       {form.note && <span className="mt-1 block text-ink-2">« {form.note} »</span>}
-                      <button onClick={() => go(1)} className="mt-1 flex min-h-11 items-center text-[13px] font-semibold text-primary hover:underline">Modifier</button>
+                      <button onClick={() => go(1)} className="mt-1 flex min-h-11 items-center text-sm font-semibold text-primary hover:underline">Modifier</button>
                     </div>
                   </div>
                   <ul className="divide-y divide-line-3 rounded-box border border-line-3">
                     {items.map((i) => (
                       <li key={`${i.productId}-${i.variantId ?? 0}`} className="flex items-center gap-3 p-3">
                         <span className="relative size-14 shrink-0 overflow-hidden rounded-md bg-page">{i.product.image && <Image src={i.product.image} alt="" fill sizes="56px" className="object-cover" />}</span>
-                        <p className="min-w-0 flex-1 text-[14px] font-semibold leading-[18px]">
+                        <p className="min-w-0 flex-1 text-sm font-semibold">
                           <span className="line-clamp-2">{i.product.name}</span>
-                          <span className="text-[12px] font-normal text-ink-3">{i.variantLabel ? `${i.variantLabel} · ` : ""}× {i.quantity}</span>
+                          <span className="text-xs font-normal text-ink-3">{i.variantLabel ? `${i.variantLabel} · ` : ""}× {i.quantity}</span>
                         </p>
-                        <p className="text-[14px] font-bold">{formatPrice(unitPrice(i) * i.quantity)}</p>
+                        <p className="text-sm font-bold">{formatPrice(unitPrice(i) * i.quantity)}</p>
                       </li>
                     ))}
                   </ul>
-                  {cartItems.length > items.length && <p className="rounded-md bg-star/10 px-3 py-2 text-[13px] text-warn">Certains articles de votre panier ne sont plus disponibles : ils ne seront pas commandés.</p>}
-                  {submitError && <p role="alert" className="rounded-md bg-danger-50 px-3 py-2 text-[13px] text-danger">{submitError}</p>}
+                  {cartItems.length > items.length && <p className="rounded-md bg-star/10 px-3 py-2 text-sm text-warn">Certains articles de votre panier ne sont plus disponibles : ils ne seront pas commandés.</p>}
+                  {submitError && <p role="alert" className="rounded-md bg-danger-50 px-3 py-2 text-sm text-danger">{submitError}</p>}
                 </div>
               )}
             </motion.div>
@@ -317,9 +317,9 @@ function Content() {
           <div className="max-lg:fixed max-lg:inset-x-0 max-lg:bottom-tabbar max-lg:z-40 max-lg:border-t max-lg:border-line-3 max-lg:bg-surface/95 max-lg:px-4 max-lg:pb-safe max-lg:pt-3 max-lg:backdrop-blur-xl lg:mt-8">
             <div className="mx-auto flex max-w-[640px] items-center gap-3 lg:mx-0 lg:max-w-none lg:justify-between">
               {step > 0 ? (
-                <Button variant="chip" onClick={() => go(step - 1)} leftIcon={<ArrowLeft size={16} />} disabled={pending} className="max-lg:px-4">Retour</Button>
+                <Button variant="secondary" onClick={() => go(step - 1)} leftIcon={<ArrowLeft size={16} />} disabled={pending} className="max-lg:px-4">Retour</Button>
               ) : (
-                <Button variant="chip" href={ROUTES.cart} leftIcon={<ArrowLeft size={16} />} className="max-lg:px-4">Panier</Button>
+                <Button variant="secondary" href={ROUTES.cart} leftIcon={<ArrowLeft size={16} />} className="max-lg:px-4">Panier</Button>
               )}
               {step < CHECKOUT_STEPS.length - 1 ? (
                 <Button onClick={next} rightIcon={<ArrowRight size={16} />} className="max-lg:flex-1">Continuer</Button>

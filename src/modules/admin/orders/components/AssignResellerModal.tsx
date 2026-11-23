@@ -81,7 +81,7 @@ export function AssignResellerModal({ order, onClose }: Props) {
       {suggested && (
         <div className="mb-3 flex items-center gap-3 rounded-box border border-primary bg-primary-50 p-3">
           <span className="grid size-9 shrink-0 place-items-center rounded-full bg-primary text-white"><UserTick size={18} variant="Bold" /></span>
-          <span className="min-w-0 flex-1 text-[13px]">
+          <span className="min-w-0 flex-1 text-sm">
             <span className="block font-semibold">Invité par {suggested.name} — suggéré</span>
             <span className="block text-ink-3">{suggested.invitedAt ? `Client invité le ${formatDate(suggested.invitedAt)}` : "Revendeur qui a invité ce client"}</span>
             {suggestedBlocked && <span className="block text-danger">{suggestedBlocked}</span>}
@@ -90,7 +90,7 @@ export function AssignResellerModal({ order, onClose }: Props) {
         </div>
       )}
       <Input placeholder="Rechercher par nom ou code…" inputMode="search" value={q} onChange={(e) => setQ(e.target.value)} leftIcon={<SearchNormal1 size={16} />} aria-label="Rechercher un revendeur" />
-      <p className="mt-3 text-[12px] text-ink-3">{data ? `${data.filter((r) => r.active).length} revendeurs actifs sur ${data.length}` : "Chargement…"} · triés par disponibilité puis par charge</p>
+      <p className="mt-3 text-xs text-ink-3">{data ? `${data.filter((r) => r.active).length} revendeurs actifs sur ${data.length}` : "Chargement…"} · triés par disponibilité puis par charge</p>
 
       <ul className="mt-2 max-h-[calc(var(--dvh)*40)] space-y-1 overflow-y-auto overscroll-contain pr-1 sm:max-h-[340px]">
         {isLoading && Array.from({ length: 5 }, (_, i) => <Skeleton key={i} className="h-14 w-full" />)}
@@ -110,11 +110,11 @@ export function AssignResellerModal({ order, onClose }: Props) {
                 <Avatar src={r.avatar} name={r.name} size={38} />
                 <span className="min-w-0 flex-1">
                   <span className="flex items-center gap-2">
-                    <span className="truncate text-[14px] font-semibold">{r.name}</span>
-                    <span className="rounded-sm bg-chip px-1.5 text-[11px] font-bold tracking-wider text-ink-2">{r.code}</span>
-                    {r.id === suggested?.id && <span className="rounded-sm bg-primary-50 px-1.5 text-[11px] font-bold text-primary">Suggéré</span>}
+                    <span className="truncate text-sm font-semibold">{r.name}</span>
+                    <span className="rounded-sm bg-chip px-1.5 text-xs font-bold text-ink-2">{r.code}</span>
+                    {r.id === suggested?.id && <span className="rounded-sm bg-primary-50 px-1.5 text-xs font-bold text-primary">Suggéré</span>}
                   </span>
-                  <span className="flex items-center gap-3 text-[12px] text-ink-3">
+                  <span className="flex items-center gap-3 text-xs text-ink-3">
                     <AvailabilityDot value={r.availability} withLabel />
                     <span>{r.openOrders} commande{r.openOrders > 1 ? "s" : ""} en cours</span>
                     {reason && <span className="font-semibold text-danger">{reason}</span>}
@@ -125,12 +125,12 @@ export function AssignResellerModal({ order, onClose }: Props) {
             </li>
           );
         })}
-        {!isLoading && list.length === 0 && <li className="py-8 text-center text-[13px] text-ink-3">Aucun revendeur ne correspond.</li>}
+        {!isLoading && list.length === 0 && <li className="py-8 text-center text-sm text-ink-3">Aucun revendeur ne correspond.</li>}
       </ul>
 
       <Textarea label="Note (optionnel)" value={note} onChange={(e) => setNote(e.target.value)} className="mt-4 min-h-[70px]" placeholder="Consigne pour le revendeur…" />
       <div className="sticky bottom-0 -mx-5 mt-4 grid grid-cols-[1fr_1.5fr] gap-3 border-t border-line-3 bg-surface px-5 py-3 sm:static sm:mx-0 sm:mt-5 sm:grid-cols-2 sm:border-0 sm:p-0">
-        <Button variant="chip" upper={false} onClick={onClose}>Annuler</Button>
+        <Button variant="secondary" upper={false} onClick={onClose}>Annuler</Button>
         <Button upper={false} disabled={picked == null} loading={assign.isPending} onClick={() => submit()}>{reassign ? "Réassigner" : "Assigner"}</Button>
       </div>
     </Modal>

@@ -38,17 +38,17 @@ function PageRow({ page, onEdit, onDelete }: { page: AdminPage; onEdit: () => vo
     <li className={cn("flex flex-col gap-3 rounded-box border border-line-3 p-3 sm:flex-row sm:items-center sm:p-4", !page.isPublished && "bg-chip/50")}>
       <div className="min-w-0 flex-1">
         <p className="flex flex-wrap items-center gap-2">
-          <span className="text-[15px] font-bold">{page.title}</span>
-          {policy && <span className="rounded-full bg-primary-100 px-2 py-0.5 text-[10px] font-bold uppercase text-primary-dark">Politique</span>}
-          {!page.isPublished && <span className="rounded-full bg-line-3 px-2 py-0.5 text-[10px] font-bold uppercase text-ink">Brouillon</span>}
+          <span className="text-sm font-bold">{page.title}</span>
+          {policy && <span className="rounded-full bg-primary-100 px-2 py-0.5 text-xs font-bold text-primary-dark">Politique</span>}
+          {!page.isPublished && <span className="rounded-full bg-line-3 px-2 py-0.5 text-xs font-bold text-ink">Brouillon</span>}
         </p>
-        <p className="mt-1 text-[12px] text-ink-3">
+        <p className="mt-1 text-xs text-ink-3">
           /pages/{page.slug}
           {page.version && <> · version {page.version}</>}
           {page.effectiveOn && <> · en vigueur le {formatDate(page.effectiveOn)}</>}
           {" · "}modifiée le {formatDate(page.updatedAt)}
         </p>
-        {page.summary && <p className="mt-1 text-[13px] text-ink-2">{page.summary}</p>}
+        {page.summary && <p className="mt-1 text-sm text-ink-2">{page.summary}</p>}
       </div>
       <div className="flex shrink-0 items-center gap-2 max-sm:justify-end">
         <Switch
@@ -87,8 +87,8 @@ function Content() {
         </div>
       ) : isError ? (
         <Block className="text-center">
-          <p className="text-[14px] text-ink-2">{getErrorMessage(error, "Impossible de charger les pages.")}</p>
-          <Button className="mt-4" variant="chip" upper={false} onClick={() => refetch()}>Réessayer</Button>
+          <p className="text-sm text-ink-2">{getErrorMessage(error, "Impossible de charger les pages.")}</p>
+          <Button className="mt-4" variant="secondary" upper={false} onClick={() => refetch()}>Réessayer</Button>
         </Block>
       ) : list.length === 0 ? (
         <Block>

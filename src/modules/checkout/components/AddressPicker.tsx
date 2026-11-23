@@ -52,8 +52,8 @@ export function AddressPicker({ form, errors, set, onPick, cities = [], zone }: 
               >
                 <m.icon size={22} variant="Bold" className={cn("shrink-0", active ? "text-primary" : "text-ink-3")} />
                 <span className="min-w-0">
-                  <span className="block text-[14px] font-bold leading-[19px] sm:text-[15px]">{m.title}</span>
-                  <span className="block text-[12px] leading-[16px] text-ink-2">{m.hint}</span>
+                  <span className="block text-sm font-bold sm:text-sm">{m.title}</span>
+                  <span className="block text-xs text-ink-2">{m.hint}</span>
                 </span>
               </button>
             );
@@ -62,7 +62,7 @@ export function AddressPicker({ form, errors, set, onPick, cities = [], zone }: 
       )}
 
       {form.pickup && zone?.pickupAddress && (
-        <p className="flex items-start gap-2 rounded-md bg-primary-50 px-3 py-2.5 text-[13px] leading-[19px]">
+        <p className="flex items-start gap-2 rounded-md bg-primary-50 px-3 py-2.5 text-sm">
           <Shop size={18} variant="Bold" className="mt-px shrink-0 text-primary" />
           <span>
             À retirer : <strong>{zone.pickupAddress}</strong>
@@ -71,7 +71,7 @@ export function AddressPicker({ form, errors, set, onPick, cities = [], zone }: 
         </p>
       )}
 
-      <h2 className="text-[17px] sm:text-[18px]">{form.pickup ? "Vos coordonnées" : "Où devons-nous livrer ?"}</h2>
+      <h2 className="text-base sm:text-lg">{form.pickup ? "Vos coordonnées" : "Où devons-nous livrer ?"}</h2>
 
       <div role="radiogroup" aria-label="Adresse de livraison" className="grid gap-3 sm:grid-cols-2">
         {isLoading && (
@@ -93,11 +93,11 @@ export function AddressPicker({ form, errors, set, onPick, cities = [], zone }: 
               className={cn("relative rounded-box border-2 p-4 text-left transition-all", active ? "border-primary bg-primary-50" : "border-line-3 hover:border-primary/50")}
             >
               {active && <TickCircle size={20} variant="Bold" className="absolute right-3 top-3 text-primary" />}
-              <span className="flex items-center gap-2 text-[15px] font-bold">
+              <span className="flex items-center gap-2 text-sm font-bold">
                 <Icon size={18} variant="Bold" className={active ? "text-primary" : "text-ink-3"} /> {a.label}
-                {a.isDefault && <span className="rounded-full bg-primary px-2 py-0.5 text-[10px] font-bold uppercase text-white">Défaut</span>}
+                {a.isDefault && <span className="rounded-full bg-primary px-2 py-0.5 text-xs font-bold text-white">Défaut</span>}
               </span>
-              <span className="mt-2 block text-[13px] leading-[19px] text-ink-2">
+              <span className="mt-2 block text-sm text-ink-2">
                 {a.recipient} · {a.phone}
                 <br />
                 {a.line1}, {a.quarter}, {a.city}
@@ -110,7 +110,7 @@ export function AddressPicker({ form, errors, set, onPick, cities = [], zone }: 
           role="radio"
           aria-checked={isNew}
           onClick={() => onPick(null)}
-          className={cn("flex min-h-[72px] flex-col items-center justify-center gap-2 rounded-box border-2 border-dashed p-4 sm:min-h-[120px] text-[14px] font-bold transition-all", isNew ? "border-primary bg-primary-50 text-primary-dark" : "border-line hover:border-primary/60 hover:text-primary")}
+          className={cn("flex min-h-[72px] flex-col items-center justify-center gap-2 rounded-box border-2 border-dashed p-4 sm:min-h-[120px] text-sm font-bold transition-all", isNew ? "border-primary bg-primary-50 text-primary-dark" : "border-line hover:border-primary/60 hover:text-primary")}
         >
           <span className="grid size-10 place-items-center rounded-full bg-surface"><Add size={20} /></span>
           Nouvelle adresse
@@ -142,7 +142,7 @@ export function AddressPicker({ form, errors, set, onPick, cities = [], zone }: 
       </AnimatePresence>
 
       {!form.pickup && zone?.shippingZone && !zone.shippingQuoteRequired && (
-        <p className="flex items-center gap-2 rounded-md bg-page/60 px-3 py-2.5 text-[13px] leading-[19px]">
+        <p className="flex items-center gap-2 rounded-md bg-page/60 px-3 py-2.5 text-sm">
           <TruckFast size={18} variant="Bold" className="shrink-0 text-primary" />
           <span>
             Zone <strong>{zone.shippingZone}</strong>
@@ -151,7 +151,7 @@ export function AddressPicker({ form, errors, set, onPick, cities = [], zone }: 
         </p>
       )}
       {!form.pickup && zone?.shippingQuoteRequired && (
-        <p className="flex items-start gap-2 rounded-md bg-star/10 px-3 py-2.5 text-[13px] leading-[19px] text-warn">
+        <p className="flex items-start gap-2 rounded-md bg-star/10 px-3 py-2.5 text-sm text-warn">
           <TruckFast size={18} variant="Bold" className="mt-px shrink-0" />
           <span>
             Votre ville est livrée <strong>sur devis</strong>

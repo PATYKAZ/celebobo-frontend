@@ -47,10 +47,10 @@ const SENTIMENT: Record<Sentiment, { label: string; tone: "green" | "gray" | "re
 function Row({ log }: { log: QuestionLog }) {
   const [open, setOpen] = useState(false);
   return (
-    <li className="px-4 py-3 text-[13px] sm:px-6">
+    <li className="px-4 py-3 text-sm sm:px-6">
       <button type="button" onClick={() => setOpen((v) => !v)} aria-expanded={open} className="block w-full text-left">
         <span className="flex flex-wrap items-start justify-between gap-2">
-          <b className="min-w-0 text-[14px]">{log.question}</b>
+          <b className="min-w-0 text-sm">{log.question}</b>
           <span className="flex shrink-0 items-center gap-1.5">
             {log.errorCode && <Pill tone="red">{log.errorCode}</Pill>}
             {log.sentiment && <Pill tone={SENTIMENT[log.sentiment].tone}>{SENTIMENT[log.sentiment].label}</Pill>}
@@ -75,7 +75,7 @@ function Reindex() {
     onSuccess: () => toast.success("Réindexation lancée", "L'index des produits se reconstruit en arrière-plan (quelques minutes)."),
     onError: (e) => toast.error("Réindexation impossible", getErrorMessage(e)),
   });
-  return <Button variant="outline" upper={false} loading={reindex.isPending} onClick={() => reindex.mutate()}>Reconstruire l&apos;index</Button>;
+  return <Button variant="secondary" upper={false} loading={reindex.isPending} onClick={() => reindex.mutate()}>Reconstruire l&apos;index</Button>;
 }
 
 function Content() {
@@ -98,14 +98,14 @@ function Content() {
         actions={canReindex ? <Reindex /> : undefined}
       />
       <Block pad="none" className="overflow-hidden">
-        <div className="grid gap-3 p-3 sm:grid-cols-2 sm:p-5 sm:px-[30px] xl:grid-cols-[1.4fr_0.8fr_0.8fr_0.7fr_0.7fr]">
+        <div className="grid gap-3 p-3 sm:grid-cols-2 sm:p-5 sm:px-8 xl:grid-cols-[1.4fr_0.8fr_0.8fr_0.7fr_0.7fr]">
           <Input aria-label="Rechercher" placeholder="Texte de la question…" value={search} onChange={(e) => at(setSearch)(e.target.value)} />
           <Select aria-label="Ressenti" value={sentiment} onChange={(e) => at(setSentiment)(e.target.value)} options={[{ value: "", label: "Tous les ressentis" }, ...Object.entries(SENTIMENT).map(([value, s]) => ({ value, label: s.label }))]} />
           <Input aria-label="Sujet" placeholder="Sujet (ex. livraison)" value={topic} onChange={(e) => at(setTopic)(e.target.value)} />
           <Input type="date" aria-label="Du" value={from} onChange={(e) => at(setFrom)(e.target.value)} />
           <Input type="date" aria-label="Au" value={to} onChange={(e) => at(setTo)(e.target.value)} />
         </div>
-        {data && <p className="px-4 text-[13px] text-ink-3 sm:px-[30px]">{data.meta.count} question{data.meta.count > 1 ? "s" : ""}</p>}
+        {data && <p className="px-4 text-sm text-ink-3 sm:px-8">{data.meta.count} question{data.meta.count > 1 ? "s" : ""}</p>}
         {isLoading || !data ? (
           <div className="space-y-2 p-4">{[0, 1, 2, 3].map((i) => <Skeleton key={i} className="h-14 w-full" />)}</div>
         ) : data.results.length === 0 ? (

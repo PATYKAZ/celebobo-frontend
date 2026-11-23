@@ -55,7 +55,7 @@ export function ResetPasswordView() {
             <h1 className="text-h-page">Choisir un nouveau mot de passe</h1>
             <Input label="Nouveau mot de passe" required type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} error={errors.password ?? fieldError(reset.error, "newPassword1")} leftIcon={<Lock size={17} />} autoComplete="new-password" />
             <Input label="Confirmation" required type="password" value={form.passwordConfirm} onChange={(e) => setForm({ ...form, passwordConfirm: e.target.value })} error={errors.passwordConfirm ?? fieldError(reset.error, "newPassword2")} leftIcon={<Lock size={17} />} autoComplete="new-password" enterKeyHint="go" />
-            {generalError(reset.error) && <p role="alert" className="rounded-md bg-danger-50 px-3 py-2 text-[13px] text-danger">{generalError(reset.error)}</p>}
+            {generalError(reset.error) && <p role="alert" className="rounded-md bg-danger-50 px-3 py-2 text-sm text-danger">{generalError(reset.error)}</p>}
             <Button type="submit" size="lg" fullWidth loading={reset.isPending}>Enregistrer</Button>
           </form>
         )}

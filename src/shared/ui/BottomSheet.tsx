@@ -41,7 +41,7 @@ export function BottomSheet({ open, onClose, title, action, children, className,
           className={cn("max-w-[560px] overflow-hidden p-0 sm:p-0", className)}
         >
           <div className="flex shrink-0 items-center justify-between gap-3 px-5 pb-2 pt-5">
-            <DialogTitle className="text-[16px] leading-[22px]">{title}</DialogTitle>
+            <DialogTitle className="text-base">{title}</DialogTitle>
             <div className="flex items-center gap-3">
               {action}
               <DialogClose asChild>

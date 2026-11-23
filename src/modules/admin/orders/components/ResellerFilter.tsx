@@ -22,7 +22,7 @@ export function ResellerFilter({ value, onChange }: { value?: number; onChange: 
       onSelect={(r) => onChange(r.id)}
       leading={{ label: "Tous les revendeurs", onSelect: () => onChange(undefined), selected: value == null }}
       renderItem={(r, selected) => (
-        <span className={cn("flex w-full items-center justify-between gap-2 text-[13px]", selected && "font-bold text-primary")}>
+        <span className={cn("flex w-full items-center justify-between gap-2 text-sm", selected && "font-bold text-primary")}>
           <span className="truncate">{r.name}</span>
           <AvailabilityDot value={r.availability} />
         </span>

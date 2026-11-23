@@ -13,10 +13,10 @@ export function ProductsPageView() {
     <>
       <Breadcrumb items={[{ label: "Produits" }]} />
       <Reveal>
-        <Block pad="none" className="flex flex-wrap items-end justify-between gap-2 px-4 py-4 sm:px-[30px] sm:py-6">
+        <Block pad="none" className="flex flex-wrap items-end justify-between gap-2 px-4 py-4 sm:px-8 sm:py-6">
           <div>
-            <h1 className="text-[22px] leading-[28px] sm:text-h-page">Tous les produits</h1>
-            <p className="mt-1 text-[13px] leading-[19px] text-ink-2 sm:text-[14px]">Smartphones, ordinateurs, audio, gaming et accessoires — sélectionnés par Celebobo.</p>
+            <h1 className="text-xl sm:text-h-page">Tous les produits</h1>
+            <p className="mt-1 text-sm text-ink-2 sm:text-sm">Smartphones, ordinateurs, audio, gaming et accessoires — sélectionnés par Celebobo.</p>
           </div>
         </Block>
       </Reveal>

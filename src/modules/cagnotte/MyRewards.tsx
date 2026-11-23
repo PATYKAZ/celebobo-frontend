@@ -23,10 +23,10 @@ export function MyRewards() {
   if (!data?.length) return null;
   return (
     <Block pad="none" className="overflow-hidden">
-      <h2 className="px-4 pt-4 text-[15px] font-bold sm:px-6">Mes avantages Cagnotte</h2>
+      <h2 className="px-4 pt-4 text-sm font-bold sm:px-6">Mes avantages Cagnotte</h2>
       <ul className="divide-y divide-line-3">
         {data.map((r) => (
-          <li key={r.id} className="flex items-center justify-between gap-3 px-4 py-3 text-[13px] sm:px-6">
+          <li key={r.id} className="flex items-center justify-between gap-3 px-4 py-3 text-sm sm:px-6">
             <span className="min-w-0">
               <b>{KIND_LABELS[r.kind]} · {r.campaignName}</b>
               <span className="block text-ink-3">

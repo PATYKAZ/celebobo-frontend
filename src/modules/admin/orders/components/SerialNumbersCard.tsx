@@ -42,11 +42,11 @@ export function SerialNumbersCard({ order }: { order: Order }) {
   return (
     <Reveal>
       <Block pad="sm">
-        <h3 className="mb-1 flex items-center gap-2 text-[15px]">
+        <h3 className="mb-1 flex items-center gap-2 text-sm">
           <span className="grid size-8 place-items-center rounded-full bg-primary-50 text-primary"><Tag size={17} variant="Bold" /></span>
           Numéros de série / IMEI
         </h3>
-        <p className="mb-3 text-[12px] leading-[17px] text-ink-3">Un numéro par unité, avant le départ en livraison. Ils figurent sur la facture et le reçu : un retour doit porter le même numéro.</p>
+        <p className="mb-3 text-xs text-ink-3">Un numéro par unité, avant le départ en livraison. Ils figurent sur la facture et le reçu : un retour doit porter le même numéro.</p>
         <div className="space-y-4">
           {lines.map((it) => (
             <SerialLine key={it.id} orderId={order.id} item={it} editable={editable} />
@@ -74,7 +74,7 @@ function SerialLine({ orderId, item, editable }: { orderId: number; item: OrderI
     );
   return (
     <div>
-      <p className="mb-1.5 flex items-baseline justify-between gap-2 text-[13px]">
+      <p className="mb-1.5 flex items-baseline justify-between gap-2 text-sm">
         <span className="font-semibold">{item.productName}{item.variantLabel ? ` — ${item.variantLabel}` : ""}</span>
         <span className={filled < item.quantity && item.serialRequired ? "text-danger" : "text-ink-3"}>
           {filled}/{item.quantity}
@@ -94,18 +94,18 @@ function SerialLine({ orderId, item, editable }: { orderId: number; item: OrderI
               />
             ))}
           </div>
-          <Button size="sm" variant="outline" upper={false} className="mt-2" disabled={!changed || problems.some(Boolean)} loading={record.isPending} onClick={save}>
+          <Button size="sm" variant="secondary" upper={false} className="mt-2" disabled={!changed || problems.some(Boolean)} loading={record.isPending} onClick={save}>
             Enregistrer
           </Button>
         </>
       ) : saved.length > 0 ? (
-        <ul className="flex flex-wrap gap-1.5 text-[13px]">
+        <ul className="flex flex-wrap gap-1.5 text-sm">
           {saved.map((s) => (
             <li key={s} className="rounded-md bg-page/70 px-2 py-1 font-mono">{s}</li>
           ))}
         </ul>
       ) : (
-        <p className="text-[13px] text-ink-3">Pas encore saisis.</p>
+        <p className="text-sm text-ink-3">Pas encore saisis.</p>
       )}
     </div>
   );

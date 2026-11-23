@@ -34,13 +34,13 @@ export function InviteCard({ code, invitedCount }: { code: string; invitedCount?
       <Block pad="sm" className="overflow-hidden bg-[radial-gradient(120%_120%_at_0%_0%,rgba(34,109,104,.09),transparent_60%),var(--color-surface)]">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <h2 className="text-[16px] font-bold leading-[22px]">Mon code d&apos;invitation</h2>
-            <p className="text-[12px] text-ink-3">{invitedCount != null ? `${invitedCount} client${invitedCount > 1 ? "s" : ""} invité${invitedCount > 1 ? "s" : ""}` : "Partagez-le pour gagner des commissions"}</p>
+            <h2 className="text-base font-bold">Mon code d&apos;invitation</h2>
+            <p className="text-xs text-ink-3">{invitedCount != null ? `${invitedCount} client${invitedCount > 1 ? "s" : ""} invité${invitedCount > 1 ? "s" : ""}` : "Partagez-le pour gagner des commissions"}</p>
           </div>
         </div>
 
         <button onClick={() => copy(code, `Code ${code}`)} className="group mt-4 flex min-h-16 w-full items-center justify-between rounded-box border border-dashed border-primary/50 bg-primary-50 px-4 py-3 transition-all hover:bg-primary-100 active:scale-[0.985]" aria-label="Copier le code">
-          <span className="text-[32px] font-extrabold leading-[38px] tracking-[0.3em] text-primary-dark">{code || "—"}</span>
+          <span className="text-2xl font-bold text-primary-dark">{code || "—"}</span>
           <Copy size={20} className="text-primary transition-transform group-hover:scale-110" />
         </button>
 
@@ -49,9 +49,9 @@ export function InviteCard({ code, invitedCount }: { code: string; invitedCount?
             {link ? <QRCodeSVG value={link} size={256} level="M" fgColor="#18534F" className="h-full w-full" /> : <span className="size-full animate-pulse rounded-sm bg-chip" />}
           </div>
           <div className="w-full min-w-0 flex-1 space-y-2.5 sm:space-y-2">
-            <p className="truncate rounded-md bg-chip px-3 py-2.5 text-center text-[12px] text-ink-2 sm:text-left" title={link}>{link || "…"}</p>
+            <p className="truncate rounded-md bg-chip px-3 py-2.5 text-center text-xs text-ink-2 sm:text-left" title={link}>{link || "…"}</p>
             <div className="grid grid-cols-2 gap-2">
-              <button onClick={() => link && copy(link, "Lien d'invitation copié")} disabled={!link} className="inline-flex h-12 items-center justify-center gap-1.5 rounded-box bg-chip text-[13px] font-bold transition-all hover:bg-primary hover:text-white active:scale-95 disabled:opacity-50 sm:h-9 sm:rounded-md sm:text-[12px]">
+              <button onClick={() => link && copy(link, "Lien d'invitation copié")} disabled={!link} className="inline-flex h-12 items-center justify-center gap-1.5 rounded-box bg-chip text-sm font-bold transition-all hover:bg-primary hover:text-white active:scale-95 disabled:opacity-50 sm:h-9 sm:rounded-md sm:text-xs">
                 <Link21 size={16} /> Copier
               </button>
               <a
@@ -59,7 +59,7 @@ export function InviteCard({ code, invitedCount }: { code: string; invitedCount?
                 target="_blank"
                 rel="noreferrer"
                 aria-disabled={!link}
-                className="inline-flex h-12 items-center justify-center gap-1.5 rounded-box bg-[#25D366] text-[13px] font-bold text-white transition-all hover:opacity-90 active:scale-95 aria-disabled:pointer-events-none aria-disabled:opacity-50 sm:h-9 sm:rounded-md sm:text-[12px]"
+                className="inline-flex h-12 items-center justify-center gap-1.5 rounded-box bg-[#25D366] text-sm font-bold text-white transition-all hover:opacity-90 active:scale-95 aria-disabled:pointer-events-none aria-disabled:opacity-50 sm:h-9 sm:rounded-md sm:text-xs"
               >
                 <Whatsapp size={16} variant="Bold" /> WhatsApp
               </a>

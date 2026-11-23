@@ -20,7 +20,7 @@ export function QuantityStepper({ value, onChange, min = 1, max = 99, size = "md
       <button type="button" aria-label="Diminuer" className={btn} disabled={value <= min} onClick={() => onChange(value - 1)}>
         <Minus size={16} />
       </button>
-      <span aria-live="polite" className={cn("min-w-9 text-center font-semibold tabular-nums", size === "sm" ? "text-[13px]" : "text-[14px]")}>
+      <span aria-live="polite" className={cn("min-w-9 text-center font-semibold tabular-nums", size === "sm" ? "text-sm" : "text-sm")}>
         {value}
       </span>
       <button type="button" aria-label="Augmenter" className={btn} disabled={value >= max} onClick={() => onChange(value + 1)}>

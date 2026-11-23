@@ -12,9 +12,9 @@ export function OrderStatusDot({ status }: { status: OrderStatus }) {
 export function RefundBadge({ status }: { status?: Order["refundStatus"] }) {
   if (!status) return null;
   return status === "due" ? (
-    <span className="rounded-full bg-danger-100 px-2 py-0.5 text-[10px] font-bold uppercase text-danger">À rembourser</span>
+    <span className="rounded-full bg-danger-100 px-2 py-0.5 text-xs font-bold text-danger">À rembourser</span>
   ) : (
-    <span className="rounded-full bg-primary-100 px-2 py-0.5 text-[10px] font-bold uppercase text-primary-dark">Remboursée</span>
+    <span className="rounded-full bg-primary-100 px-2 py-0.5 text-xs font-bold text-primary-dark">Remboursée</span>
   );
 }
 
@@ -33,7 +33,7 @@ export function AvailabilityDot({ value, withLabel, className }: { value: Availa
       <span className={cn("relative size-2.5 rounded-full", AV[value].cls)}>
         {value === "online" && <span className="absolute inset-0 animate-pulse-ring rounded-full bg-primary/60" />}
       </span>
-      {withLabel && <span className="text-[12px] text-ink-2">{AV[value].label}</span>}
+      {withLabel && <span className="text-xs text-ink-2">{AV[value].label}</span>}
     </span>
   );
 }
@@ -44,11 +44,11 @@ export function Thumbs({ order }: { order: Order }) {
   return (
     <div className="flex items-center">
       {order.items.slice(0, 3).map((it, i) => (
-        <span key={it.id} className="relative -ml-2 size-9 overflow-hidden rounded-full bg-page ring-2 ring-white first:ml-0" style={{ zIndex: 3 - i }}>
+        <span key={it.id} className="relative -ml-2 size-9 overflow-hidden rounded-full bg-page ring-2 ring-surface first:ml-0" style={{ zIndex: 3 - i }}>
           {it.productImage && <Image src={it.productImage} alt={it.productName} fill sizes="36px" className="object-cover" />}
         </span>
       ))}
-      {extra > 0 && <span className="-ml-2 grid size-9 place-items-center rounded-full bg-chip text-[11px] font-bold ring-2 ring-white">+{extra}</span>}
+      {extra > 0 && <span className="-ml-2 grid size-9 place-items-center rounded-full bg-chip text-xs font-bold ring-2 ring-surface">+{extra}</span>}
     </div>
   );
 }

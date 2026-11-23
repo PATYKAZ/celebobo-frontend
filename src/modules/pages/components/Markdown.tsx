@@ -29,12 +29,12 @@ export function MarkdownBlocks({ blocks }: { blocks: MdBlock[] }) {
       {blocks.map((b, i) => {
         if (b.type === "heading") {
           const H = b.level === 2 ? "h2" : "h3";
-          return <H key={i} className={cn("text-ink first:mt-0", b.level === 2 ? "mt-7 text-[19px] leading-[26px] sm:text-[22px] sm:leading-[30px]" : "mt-5 text-[16px] leading-[23px] sm:text-[18px]")}><Inline text={b.text} /></H>;
+          return <H key={i} className={cn("text-ink first:mt-0", b.level === 2 ? "mt-7 text-lg sm:text-xl" : "mt-5 text-base sm:text-lg")}><Inline text={b.text} /></H>;
         }
         if (b.type === "table") {
           return (
             <div key={i} className="mt-4 overflow-x-auto rounded-box border border-line-3 first:mt-0">
-              <table className="w-full min-w-[480px] text-left text-[13px] leading-[19px] sm:text-[14px] sm:leading-[21px]">
+              <table className="w-full min-w-[480px] text-left text-sm sm:text-sm">
                 <thead className="bg-page/70 text-ink">
                   <tr>{b.head.map((cell, j) => <th key={j} scope="col" className="px-3 py-2.5 font-bold"><Inline text={cell} /></th>)}</tr>
                 </thead>
@@ -66,7 +66,7 @@ export function MarkdownBlocks({ blocks }: { blocks: MdBlock[] }) {
 /** Rendu du Markdown du back-office (sous-ensemble sûr, sans HTML brut). */
 export function Markdown({ source, className }: { source: string; className?: string }) {
   return (
-    <div className={cn("text-[14px] leading-[23px] text-ink-2 sm:text-[15px] sm:leading-[26px]", className)}>
+    <div className={cn("text-sm text-ink-2 sm:text-sm", className)}>
       <MarkdownBlocks blocks={parseMarkdown(source)} />
     </div>
   );

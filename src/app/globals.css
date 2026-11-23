@@ -53,9 +53,9 @@
   --color-chip-social: #dfeeeb;
 
   --color-ink-2: #666666;
-  /* #6E6E6E : 5,1:1 sur blanc, 4,7:1 sur chip (#ECF8F6) — WCAG AA ; l'ancien #999 plafonnait à 2,8:1 */
-  --color-ink-3: #6e6e6e;
-  --color-ink-4: #757575;
+  /* #666 : 5,7:1 sur blanc, 4,8:1 sur le fond de page (#DFEEEB) — WCAG AA ; l'ancien #6E6E6E tombait à 4,3:1 sur la page */
+  --color-ink-3: #666666;
+  --color-ink-4: #666666;
   --color-ink: #000000;
   --color-ink-dark: #222222;
   --color-ink-dark2: #333333;
@@ -63,6 +63,8 @@
   --color-line-2: #999999;
   --color-line-3: #dee2e6;
   --color-line: #cccccc;
+  /* contour des champs : 3:1 avec la surface (WCAG 1.4.11) ; les séparateurs gardent --color-line */
+  --color-field: #8c8c8c;
 
   --color-info: #0d6efd;
 
@@ -92,8 +94,33 @@
   --spacing-safe-b: env(safe-area-inset-bottom);
   --spacing-safe-t: env(safe-area-inset-top);
 
+  /*
+    Échelle typographique : six tailles, chacune avec son interligne. Rien d'autre dans les composants
+    (pas de text-[Npx]) : 12 étiquettes · 14 interface · 16 lecture · 20 sous-titres · 24 titres · 32 accroches.
+  */
+  --text-xs: 12px;
+  --text-xs--line-height: 16px;
+  --text-sm: 14px;
+  --text-sm--line-height: 20px;
+  --text-base: 16px;
+  --text-base--line-height: 24px;
+  --text-lg: 20px;
+  --text-lg--line-height: 28px;
+  --text-xl: 24px;
+  --text-xl--line-height: 32px;
+  --text-2xl: 32px;
+  --text-2xl--line-height: 40px;
+
+  /* Rayons : petits éléments (badges, puces) · champs et boutons · blocs · grandes feuilles ; full pour les pastilles. */
+  --radius-sm: 6px;
+  --radius-md: 8px;
   --radius-box: 10px;
-  --radius-pill: 30px;
+  --radius-lg: 16px;
+
+  /* Élévation : une seule échelle, ombres décalées et douces, teintées du vert profond de la palette. */
+  --shadow-sm: 0 1px 2px rgba(15, 40, 37, 0.06), 0 1px 3px rgba(15, 40, 37, 0.06);
+  --shadow-md: 0 4px 12px -2px rgba(15, 40, 37, 0.1), 0 2px 4px -2px rgba(15, 40, 37, 0.06);
+  --shadow-lg: 0 16px 40px -12px rgba(15, 40, 37, 0.22), 0 4px 10px -4px rgba(15, 40, 37, 0.08);
 
   --breakpoint-xs: 480px;
   --breakpoint-3xl: 1400px;
@@ -256,51 +283,54 @@
   comme en Tailwind v3. Avec des jetons @theme, un `leading-*` de base l'emporterait sur `sm:text-h-page`.
 */
 @utility text-section {
-  font-size: 18px;
-  line-height: 21.6px;
+  font-size: 20px;
+  line-height: 28px;
   font-weight: 700;
 }
 @utility text-tab {
-  font-size: 18px;
-  line-height: 27px;
+  font-size: 16px;
+  line-height: 24px;
 }
 @utility text-link {
-  font-size: 13px;
-  line-height: 19.5px;
+  font-size: 14px;
+  line-height: 20px;
 }
 @utility text-name {
   font-size: 14px;
-  line-height: 16.8px;
-  font-weight: 700;
+  line-height: 20px;
+  font-weight: 600;
 }
 @utility text-price {
-  font-size: 18px;
-  line-height: 21.6px;
+  font-size: 20px;
+  line-height: 28px;
   font-weight: 600;
+  font-variant-numeric: tabular-nums;
 }
 @utility text-body {
   font-size: 14px;
-  line-height: 21px;
+  line-height: 20px;
 }
 @utility text-body-lg {
-  font-size: 14px;
-  line-height: 25.2px;
+  /* texte long (descriptions, politiques) : taille de lecture */
+  font-size: 16px;
+  line-height: 26px;
 }
 @utility text-small {
   font-size: 12px;
-  line-height: 18px;
+  line-height: 16px;
 }
 @utility text-tiny {
-  font-size: 10px;
-  line-height: 15px;
+  /* ancien 10 px : relevé au plancher de l'échelle */
+  font-size: 12px;
+  line-height: 16px;
 }
 @utility text-h-hero {
-  font-size: 30px;
-  line-height: 36px;
+  font-size: 32px;
+  line-height: 40px;
 }
 @utility text-h-page {
-  font-size: 28px;
-  line-height: 33.6px;
+  font-size: 24px;
+  line-height: 32px;
   font-weight: 700;
 }
 
@@ -316,12 +346,12 @@
 }
 @utility wh-box {
   /* Bloc blanc standard du design (fond #FFF, rad 10) */
-  @apply rounded-box bg-white;
+  @apply rounded-box bg-surface;
 }
 
 @utility field {
   /* 16px sur mobile : évite le zoom automatique d'iOS au focus */
-  @apply h-[48px] w-full rounded-md border border-line bg-surface px-3 text-[16px] text-ink outline-hidden transition-colors placeholder:text-ink-3 focus:border-primary sm:h-[45px] sm:text-[14px];
+  @apply h-12 w-full rounded-md border border-field bg-surface px-3 text-base text-ink outline-hidden transition-[border-color,box-shadow] duration-150 placeholder:text-ink-3 hover:border-ink-3 focus:border-primary focus:ring-3 focus:ring-primary-100 disabled:cursor-not-allowed disabled:opacity-60 sm:h-11 sm:text-sm;
 }
 
 @utility snap-row {
@@ -397,8 +427,8 @@
 
 /*
   Échelle mobile : les tailles des composants sont en px (textes, icônes, hauteurs). Sous 1024 px, toute l'interface
-  est réduite d'un même facteur (zoom, standard CSS) : 90 % sur tablette, 85 % sur téléphone. La mise en page
-  mobile reste celle des points de rupture (calculés sur la vraie largeur de l'écran).
+  est réduite d'un même facteur (zoom, standard CSS) : 90 % sur tablette, 85 % sur téléphone (choix du design).
+  La mise en page mobile reste celle des points de rupture (calculés sur la vraie largeur de l'écran).
 */
 /* --dvh : 1 % de la hauteur d'écran, compensé du zoom (les unités vh/dvh sont réduites avec le reste) */
 :root {
@@ -435,7 +465,7 @@
     user-select: none;
   }
   body {
-    @apply bg-page font-sans text-[14px] leading-[21px] text-ink antialiased;
+    @apply bg-page font-sans text-sm text-ink antialiased;
     font-feature-settings: "ss01", "cv11";
   }
   h1, h2, h3, h4 {
@@ -460,18 +490,59 @@
     background: rgba(34, 109, 104, 0.25);
   }
   :focus-visible {
-    outline: 2px solid #1aba1a;
+    outline: 2px solid var(--border-color-primary);
     outline-offset: 2px;
   }
   input::placeholder,
   textarea::placeholder {
     @apply text-ink-3;
   }
+
+  /*
+    Barres de défilement aux couleurs de l'application (menu latéral du back-office, listes déroulantes, feuilles,
+    tableaux) : fines, pouce arrondi teinté de la palette, piste transparente ; plus de barre grise du système.
+  */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scroll-thumb) transparent;
+  }
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--scroll-thumb);
+    border: 3px solid transparent;
+    border-radius: 9999px;
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--scroll-thumb-hover);
+  }
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+  :root {
+    --scroll-thumb: rgba(34, 109, 104, 0.28);
+    --scroll-thumb-hover: rgba(34, 109, 104, 0.5);
+  }
+  .dark {
+    --scroll-thumb: rgba(95, 195, 185, 0.28);
+    --scroll-thumb-hover: rgba(95, 195, 185, 0.5);
+  }
+  /* liste des <select> natifs : mêmes couleurs que les champs */
+  select option {
+    background-color: var(--color-surface);
+    color: var(--color-ink);
+  }
 }
 
 /* Swiper — pagination / flèches alignées sur le design */
 .swiper {
-  --swiper-theme-color: #1aba1a;
+  --swiper-theme-color: var(--color-primary);
 }
 .swiper-pagination-bullet {
   background: #fff;
@@ -479,7 +550,7 @@
 }
 .swiper-pagination-bullet-active {
   opacity: 1;
-  background: #1aba1a;
+  background: var(--color-primary);
 }
 
 /* Réduit les animations pour les utilisateurs qui le demandent */
@@ -536,7 +607,7 @@
   --accent-foreground: var(--color-ink);
   --destructive: var(--color-danger);
   --border: var(--color-line);
-  --input: var(--color-line);
+  --input: var(--color-field);
   --ring: var(--color-primary);
 }
 
@@ -564,6 +635,7 @@
 
   --color-line: #445753;
   --color-line-2: #6d817d;
+  --color-field: #667a76;
   --color-line-3: #2a3a37;
 
   --color-primary-50: rgba(95, 195, 185, 0.08);
@@ -577,6 +649,9 @@
   --text-color-danger: #f2766c;
   --text-color-info: #7cb2ff;
   --border-color-primary: #4fb3a9;
+
+  /* fonds « sombres fixes » (pastille Nouveau, Cash) : un ton au-dessus de la surface, sinon invisibles (1,02:1) */
+  --background-color-ink-dark: #33504b;
 
   --skeleton-a: #1d2b29;
   --skeleton-b: #263734;

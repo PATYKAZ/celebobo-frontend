@@ -23,13 +23,13 @@ export function RateResellerCard({ order }: { order: Order }) {
 
   if (order.rating) {
     return (
-      <Block pad="none" className="p-4 sm:p-[30px]">
-        <h2 className="text-[16px] uppercase sm:text-section">Votre note</h2>
+      <Block pad="none" className="p-4 sm:p-8">
+        <h2 className="text-base sm:text-section">Votre note</h2>
         <div className="mt-3 flex items-center gap-2">
           <Stars rating={order.rating.score} size={18} hideCount />
-          <span className="text-[13px] font-semibold text-ink-2">{order.rating.score}/5 · le {formatDate(order.rating.createdAt)}</span>
+          <span className="text-sm font-semibold text-ink-2">{order.rating.score}/5 · le {formatDate(order.rating.createdAt)}</span>
         </div>
-        {order.rating.comment && <p className="mt-2 text-[14px] leading-[21px] text-ink-2">« {order.rating.comment} »</p>}
+        {order.rating.comment && <p className="mt-2 text-sm text-ink-2">« {order.rating.comment} »</p>}
       </Block>
     );
   }
@@ -49,17 +49,17 @@ export function RateResellerCard({ order }: { order: Order }) {
   };
 
   return (
-    <Block pad="none" className="p-4 sm:p-[30px]">
+    <Block pad="none" className="p-4 sm:p-8">
       <form onSubmit={submit} className="flex flex-col gap-3">
-        <h2 className="text-[16px] uppercase sm:text-section">Notez {reseller}</h2>
-        <p className="text-[13px] leading-[19px] text-ink-2">Comment s&apos;est passée votre commande avec votre revendeur : échanges, délai, remise ?</p>
+        <h2 className="text-base sm:text-section">Notez {reseller}</h2>
+        <p className="text-sm text-ink-2">Comment s&apos;est passée votre commande avec votre revendeur : échanges, délai, remise ?</p>
         <div className="flex items-center gap-1" onMouseLeave={() => setHover(0)} role="radiogroup" aria-label="Note du revendeur">
           {[1, 2, 3, 4, 5].map((n) => (
             <button key={n} type="button" role="radio" aria-checked={score === n} aria-label={`${n} étoile${n > 1 ? "s" : ""}`} onMouseEnter={() => setHover(n)} onClick={() => setScore(n)} className="grid size-11 place-items-center transition-transform hover:scale-110">
               <Star1 size={30} variant="Bold" color={n <= (hover || score) ? "#D6955B" : "#C9CBD3"} />
             </button>
           ))}
-          {score > 0 && <span className="ml-1 text-[13px] font-semibold text-ink-2">{score}/5</span>}
+          {score > 0 && <span className="ml-1 text-sm font-semibold text-ink-2">{score}/5</span>}
         </div>
         <Textarea label="Commentaire (optionnel)" value={comment} onChange={(e) => setComment(e.target.value)} placeholder="Ex. : très réactif, livraison à l'heure" maxLength={1000} error={error} className="min-h-[84px]" />
         <Button type="submit" loading={rate.isPending} className="self-start" upper={false}>Envoyer ma note</Button>

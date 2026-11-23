@@ -39,12 +39,12 @@ export function ForgotPasswordModal({ open, onClose, initialEmail = "" }: { open
       {sent ? (
         <div className="py-4 text-center">
           <span className="mx-auto grid size-16 place-items-center rounded-full bg-primary-100 text-primary"><TickCircle size={34} variant="Bold" /></span>
-          <p className="mt-4 text-[14px] leading-[22px] text-ink-2">Si un compte existe pour <strong className="text-ink">{email}</strong>, un lien de réinitialisation vient de vous être envoyé.</p>
+          <p className="mt-4 text-sm text-ink-2">Si un compte existe pour <strong className="text-ink">{email}</strong>, un lien de réinitialisation vient de vous être envoyé.</p>
           <Button className="mt-6" onClick={close} upper={false}>Fermer</Button>
         </div>
       ) : (
         <form onSubmit={submit} noValidate className="space-y-4">
-          <p className="text-[14px] leading-[22px] text-ink-2">Saisissez l&apos;adresse e-mail de votre compte : nous vous enverrons un lien pour choisir un nouveau mot de passe.</p>
+          <p className="text-sm text-ink-2">Saisissez l&apos;adresse e-mail de votre compte : nous vous enverrons un lien pour choisir un nouveau mot de passe.</p>
           <Input label="E-mail" type="email" value={email} onChange={(e) => setEmail(e.target.value)} error={error} leftIcon={<Sms size={17} />} autoFocus />
           <Button type="submit" loading={loading} fullWidth>Envoyer le lien</Button>
         </form>

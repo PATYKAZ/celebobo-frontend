@@ -54,8 +54,8 @@ function SheetRow({ icon, title, hint, onClick, href }: { icon: React.ReactNode;
     <>
       <span className="grid size-11 shrink-0 place-items-center rounded-full bg-chip text-ink">{icon}</span>
       <span className="min-w-0 flex-1 text-left">
-        <span className="block truncate text-[15px] font-semibold leading-[20px]">{title}</span>
-        {hint && <span className="block truncate text-[12px] text-ink-3">{hint}</span>}
+        <span className="block truncate text-sm font-semibold">{title}</span>
+        {hint && <span className="block truncate text-xs text-ink-3">{hint}</span>}
       </span>
       {(href || onClick) && <ArrowRight2 size={16} className="shrink-0 text-ink-3" />}
     </>
@@ -235,9 +235,9 @@ export function ChatWindow({ conversationId, onBack, className }: Props) {
     return (
       <section className={cn("grid min-h-0 place-items-center p-8 text-center", className)}>
         <div>
-          <h2 className="text-[18px]">Discussion inaccessible</h2>
-          <p className="mt-1 max-w-[320px] text-[14px] text-ink-2">Cette discussion n&apos;existe pas ou ne fait pas partie de vos conversations.</p>
-          {onBack && <button onClick={onBack} className="mt-4 min-h-12 rounded-box bg-chip px-6 text-[14px] font-bold active:scale-95 hover:bg-primary hover:text-white">Retour</button>}
+          <h2 className="text-lg">Discussion inaccessible</h2>
+          <p className="mt-1 max-w-[320px] text-sm text-ink-2">Cette discussion n&apos;existe pas ou ne fait pas partie de vos conversations.</p>
+          {onBack && <button onClick={onBack} className="mt-4 min-h-12 rounded-box bg-chip px-6 text-sm font-bold active:scale-95 hover:bg-primary hover:text-white">Retour</button>}
         </div>
       </section>
     );
@@ -256,11 +256,11 @@ export function ChatWindow({ conversationId, onBack, className }: Props) {
           <>
             <div className="relative shrink-0">
               <Avatar src={lead?.avatar} name={lead?.name ?? "Celebobo"} size={42} />
-              {leadPresence && !concluded && <span className={cn("absolute -bottom-0.5 -right-0.5 size-3 rounded-full ring-2 ring-white", PRESENCE_DOT[leadPresence])} aria-label={PRESENCE_LABEL[leadPresence]} />}
+              {leadPresence && !concluded && <span className={cn("absolute -bottom-0.5 -right-0.5 size-3 rounded-full ring-2 ring-surface", PRESENCE_DOT[leadPresence])} aria-label={PRESENCE_LABEL[leadPresence]} />}
             </div>
             <div className="min-w-0 flex-1 pl-0.5">
-              <h2 className="truncate text-[15px] font-bold leading-[20px]">{lead?.name ?? "Équipe Celebobo"}</h2>
-              <p className="flex items-center gap-1.5 truncate text-[12px] text-ink-3">
+              <h2 className="truncate text-sm font-bold">{lead?.name ?? "Équipe Celebobo"}</h2>
+              <p className="flex items-center gap-1.5 truncate text-xs text-ink-3">
                 {concluded ? "Discussion clôturée" : typingNames.length ? <span className="font-semibold text-primary">écrit…</span> : leadPresence ? PRESENCE_LABEL[leadPresence] : conv.displayName}
                 {!concluded && leadPresence && <span className="hidden sm:inline">· {conv.displayName}</span>}
               </p>
@@ -268,19 +268,19 @@ export function ChatWindow({ conversationId, onBack, className }: Props) {
             {/* ≥ sm : puces d'état ; mobile : lien commande compact + menu « détails » */}
             <div className="hidden items-center gap-2 sm:flex">
               {orderStatus && <StatusDot tone={ORDER_STATUS_TONE[orderStatus]}>{ORDER_STATUS_LABEL[orderStatus]}</StatusDot>}
-              {isStaff && conv.assignedRevendeur && <span className="rounded-full bg-chip px-2.5 py-1 text-[12px] font-semibold">{conv.assignedRevendeur.name}</span>}
+              {isStaff && conv.assignedRevendeur && <span className="rounded-full bg-chip px-2.5 py-1 text-xs font-semibold">{conv.assignedRevendeur.name}</span>}
               {conv.relatedOrderId && orderHref && (
-                <Link href={orderHref} className="inline-flex items-center gap-1.5 rounded-full bg-primary-50 px-3 py-1.5 text-[12px] font-bold text-primary transition-colors hover:bg-primary hover:text-white">
+                <Link href={orderHref} className="inline-flex items-center gap-1.5 rounded-full bg-primary-50 px-3 py-1.5 text-xs font-bold text-primary transition-colors hover:bg-primary hover:text-white">
                   <Receipt2 size={14} variant="Bold" /> {orderLabel}
                 </Link>
               )}
               {canAssign && (
-                <button onClick={() => setAssignOpen(true)} className="inline-flex items-center gap-1.5 rounded-full bg-chip px-3 py-1.5 text-[12px] font-bold transition-colors hover:bg-primary hover:text-white">
+                <button onClick={() => setAssignOpen(true)} className="inline-flex items-center gap-1.5 rounded-full bg-chip px-3 py-1.5 text-xs font-bold transition-colors hover:bg-primary hover:text-white">
                   <Profile2User size={14} variant="Bold" /> {conv.assignedRevendeur ? "Réassigner" : "Assigner"}
                 </button>
               )}
               {canModerate && (
-                <button onClick={toggleClosed} disabled={close.isPending || reopen.isPending} className="inline-flex items-center gap-1.5 rounded-full bg-chip px-3 py-1.5 text-[12px] font-bold transition-colors hover:bg-ink-dark hover:text-white disabled:opacity-60">
+                <button onClick={toggleClosed} disabled={close.isPending || reopen.isPending} className="inline-flex items-center gap-1.5 rounded-full bg-chip px-3 py-1.5 text-xs font-bold transition-colors hover:bg-ink-dark hover:text-white disabled:opacity-60">
                   {concluded ? <Unlock size={14} variant="Bold" /> : <Lock size={14} variant="Bold" />} {concluded ? "Rouvrir" : "Clôturer"}
                 </button>
               )}
@@ -319,7 +319,7 @@ export function ChatWindow({ conversationId, onBack, className }: Props) {
               <Fragment key={m.id}>
                 {newDay && (
                   <div className="flex justify-center py-2">
-                    <span className="rounded-full bg-surface px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-ink-3 ring-1 ring-line-3">{dayLabel(m.timestamp)}</span>
+                    <span className="rounded-full bg-surface px-3 py-1 text-xs font-semibold text-ink-3 ring-1 ring-line-3">{dayLabel(m.timestamp)}</span>
                   </div>
                 )}
                 <MessageBubble message={m} mine={m.sender.id === myId} showSender={showSender} onOpenImage={setLightbox} isBuyer={isBuyer} />
@@ -339,7 +339,7 @@ export function ChatWindow({ conversationId, onBack, className }: Props) {
                 toBottom("smooth");
                 setJump(false);
               }}
-              className="absolute bottom-3 left-1/2 inline-flex min-h-11 -translate-x-1/2 items-center gap-1.5 rounded-full bg-ink-dark px-4 text-[13px] font-semibold text-white shadow-[0_6px_20px_rgba(0,0,0,.25)] active:scale-95"
+              className="absolute bottom-3 left-1/2 inline-flex min-h-11 -translate-x-1/2 items-center gap-1.5 rounded-full bg-ink-dark px-4 text-sm font-semibold text-white shadow-md active:scale-95"
             >
               <ArrowDown size={16} /> Nouveaux messages
             </motion.button>
@@ -362,7 +362,7 @@ export function ChatWindow({ conversationId, onBack, className }: Props) {
           )}
         </AnimatePresence>
         {concluded ? (
-          <p className="rounded-box bg-chip px-4 py-3 text-center text-[13px] text-ink-2">
+          <p className="rounded-box bg-chip px-4 py-3 text-center text-sm text-ink-2">
             Cette discussion est clôturée. {canModerate ? <button onClick={toggleClosed} className="font-bold text-primary hover:underline">Rouvrir</button> : isStaff ? "" : "Ouvrez une nouvelle discussion pour toute autre demande."}
           </p>
         ) : (
@@ -380,19 +380,19 @@ export function ChatWindow({ conversationId, onBack, className }: Props) {
             />
             {/* mobile : « + » ouvre la feuille d'actions */}
             <button type="button" onClick={() => setActions(true)} aria-label="Plus d'actions" className="grid size-12 shrink-0 place-items-center rounded-full bg-chip text-ink transition-all active:scale-90 sm:hidden">
-              <span className="text-[26px] font-light leading-none">+</span>
+              <span className="text-xl font-light leading-none">+</span>
             </button>
             {/* ≥ sm : boutons directs */}
             <button type="button" onClick={() => fileInput.current?.click()} aria-label="Joindre une image" className="hidden size-[45px] shrink-0 place-items-center rounded-box bg-chip transition-colors hover:bg-primary hover:text-white sm:grid">
               <Gallery size={20} />
             </button>
             {canPropose && (
-              <button type="button" onClick={() => setProposal(true)} aria-label="Proposer un prix final" title="Proposer un prix final" className="hidden h-[45px] shrink-0 items-center gap-1.5 rounded-box bg-primary-50 px-3 text-[12px] font-bold uppercase text-primary transition-colors hover:bg-primary hover:text-white sm:inline-flex">
+              <button type="button" onClick={() => setProposal(true)} aria-label="Proposer un prix final" title="Proposer un prix final" className="hidden h-[45px] shrink-0 items-center gap-1.5 rounded-box bg-primary-50 px-3 text-xs font-bold text-primary transition-colors hover:bg-primary hover:text-white sm:inline-flex">
                 <Money3 size={18} variant="Bold" /> Proposer un prix
               </button>
             )}
             {canQuoteShipping && (
-              <button type="button" onClick={() => setShippingQuote(true)} aria-label="Proposer les frais de livraison" title="Proposer les frais de livraison" className="hidden h-[45px] shrink-0 items-center gap-1.5 rounded-box bg-primary-50 px-3 text-[12px] font-bold uppercase text-primary transition-colors hover:bg-primary hover:text-white sm:inline-flex">
+              <button type="button" onClick={() => setShippingQuote(true)} aria-label="Proposer les frais de livraison" title="Proposer les frais de livraison" className="hidden h-[45px] shrink-0 items-center gap-1.5 rounded-box bg-primary-50 px-3 text-xs font-bold text-primary transition-colors hover:bg-primary hover:text-white sm:inline-flex">
                 <TruckFast size={18} variant="Bold" /> Frais de livraison
               </button>
             )}
@@ -411,7 +411,7 @@ export function ChatWindow({ conversationId, onBack, className }: Props) {
               enterKeyHint="send"
               placeholder="Écrivez votre message…"
               aria-label="Message"
-              className="field max-h-32 min-h-12 resize-none py-3 leading-6 max-sm:rounded-[24px] max-sm:px-4 sm:h-[45px] sm:min-h-[45px] sm:py-[11px] sm:leading-[21px]"
+              className="field max-h-32 min-h-12 resize-none py-3 leading-6 max-sm:rounded-lg max-sm:px-4 sm:h-[45px] sm:min-h-[45px] sm:py-3"
             />
             <motion.button whileTap={{ scale: 0.88 }} type="button" onClick={submit} disabled={!canSend} aria-label="Envoyer" className="grid size-12 shrink-0 place-items-center rounded-full bg-primary text-white transition-colors hover:bg-primary-dark disabled:bg-line disabled:text-white sm:size-[45px] sm:rounded-box">
               <Send2 size={20} variant="Bold" />
@@ -485,7 +485,7 @@ export function ChatWindow({ conversationId, onBack, className }: Props) {
               }}
             />
           )}
-          {conv && <p className="px-1 pt-2 text-[12px] text-ink-3">{conv.displayName}</p>}
+          {conv && <p className="px-1 pt-2 text-xs text-ink-3">{conv.displayName}</p>}
         </div>
       </BottomSheet>
 

@@ -40,7 +40,7 @@ function EditContent({ id }: { id: number }) {
   if (isError || !data) {
     return (
       <Block className="py-16 text-center">
-        <h2 className="text-[20px]">Produit introuvable</h2>
+        <h2 className="text-lg">Produit introuvable</h2>
         <p className="mt-2 text-ink-2">Ce produit n&apos;existe plus ou a été supprimé.</p>
         <Button href={ROUTES.admin.products} className="mt-6">Retour aux produits</Button>
       </Block>

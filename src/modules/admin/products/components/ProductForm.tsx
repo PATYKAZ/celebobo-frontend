@@ -28,9 +28,9 @@ import { useAppRouter } from "@/shared/hooks/useAppRouter";
 function Section({ title, hint, children, delay = 0 }: { title: string; hint?: string; children: ReactNode; delay?: number }) {
   return (
     <Reveal delay={delay}>
-      <Block pad="none" className="p-4 sm:p-[30px]">
-        <h2 className="text-[16px] leading-[22px] sm:text-[18px] sm:leading-[24px]">{title}</h2>
-        {hint && <p className="mt-1 text-[12px] leading-[17px] text-ink-3 sm:text-[13px]">{hint}</p>}
+      <Block pad="none" className="p-4 sm:p-8">
+        <h2 className="text-base sm:text-lg">{title}</h2>
+        {hint && <p className="mt-1 text-xs text-ink-3 sm:text-sm">{hint}</p>}
         <div className="mt-4 grid gap-4 sm:mt-5 sm:gap-5">{children}</div>
       </Block>
     </Reveal>
@@ -38,7 +38,7 @@ function Section({ title, hint, children, delay = 0 }: { title: string; hint?: s
 }
 
 const Counter = ({ n, min, max }: { n: number; min?: number; max: number }) => (
-  <span className={cn("text-[12px] tabular-nums", n > max || (min != null && n < min) ? "text-danger" : "text-ink-3")}>{n}/{max}</span>
+  <span className={cn("text-xs tabular-nums", n > max || (min != null && n < min) ? "text-danger" : "text-ink-3")}>{n}/{max}</span>
 );
 
 const SLOT_LABELS = ["Image principale", "Image 2", "Image 3", "Image 4"];
@@ -141,7 +141,7 @@ export function ProductForm({ product }: Props) {
         </div>
         <div>
           <Textarea label="Description longue" className="min-h-[130px]" value={v.longDescription} onChange={(e) => set("longDescription", e.target.value)} error={errors.longDescription} hint="5 phrases maximum." />
-          <div className="mt-1 text-right text-[12px] text-ink-3"><span className={sentences > 5 ? "text-danger" : ""}>{sentences}</span>/5 phrases</div>
+          <div className="mt-1 text-right text-xs text-ink-3"><span className={sentences > 5 ? "text-danger" : ""}>{sentences}</span>/5 phrases</div>
         </div>
       </Section>
 
@@ -152,9 +152,9 @@ export function ProductForm({ product }: Props) {
           <Input label="Prix soldé ($)" type="number" inputMode="decimal" min="0" step="0.01" value={v.priceSolde} onChange={(e) => set("priceSolde", e.target.value)} error={errors.priceSolde} hint="Laissez vide si pas de promo." />
         </div>
         <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3">
-          <div className="rounded-box bg-page/60 p-3.5 sm:p-4"><p className="text-[12px] text-ink-3">Prix de vente</p><p className="text-[18px] font-bold sm:text-[20px]">{formatPrice(calc.current)}</p></div>
-          <div className="rounded-box bg-page/60 p-3.5 sm:p-4"><p className="text-[12px] text-ink-3">Remise</p><p className={cn("text-[18px] font-bold sm:text-[20px]", calc.onSale && "text-danger")}>{calc.onSale ? `-${calc.percent.toFixed(1)}%` : "—"}</p></div>
-          <div className="col-span-2 rounded-box bg-page/60 p-3.5 sm:col-span-1 sm:p-4"><p className="text-[12px] text-ink-3">Marge</p><p className={cn("text-[18px] font-bold sm:text-[20px]", calc.margin < 0 ? "text-danger" : "text-primary-dark")}>{v.pricePrimary ? `${formatPrice(calc.margin)}${calc.marginPct != null ? ` · ${calc.marginPct.toFixed(0)}%` : ""}` : "—"}</p></div>
+          <div className="rounded-box bg-page/60 p-3.5 sm:p-4"><p className="text-xs text-ink-3">Prix de vente</p><p className="text-lg font-bold sm:text-lg">{formatPrice(calc.current)}</p></div>
+          <div className="rounded-box bg-page/60 p-3.5 sm:p-4"><p className="text-xs text-ink-3">Remise</p><p className={cn("text-lg font-bold sm:text-lg", calc.onSale && "text-danger")}>{calc.onSale ? `-${calc.percent.toFixed(1)}%` : "—"}</p></div>
+          <div className="col-span-2 rounded-box bg-page/60 p-3.5 sm:col-span-1 sm:p-4"><p className="text-xs text-ink-3">Marge</p><p className={cn("text-lg font-bold sm:text-lg", calc.margin < 0 ? "text-danger" : "text-primary-dark")}>{v.pricePrimary ? `${formatPrice(calc.margin)}${calc.marginPct != null ? ` · ${calc.marginPct.toFixed(0)}%` : ""}` : "—"}</p></div>
         </div>
       </Section>
 
@@ -187,12 +187,12 @@ export function ProductForm({ product }: Props) {
       <Section title="Caractéristiques" hint="Points forts affichés sous forme de puces." delay={0.03}>
         <div className="flex gap-2">
           <input value={feature} onChange={(e) => setFeature(e.target.value)} onKeyDown={onFeatureKey} placeholder="Ex : Écran AMOLED 120 Hz" aria-label="Nouvelle caractéristique" className="field" />
-          <Button variant="chip" onClick={addFeature} leftIcon={<Add size={16} />} upper={false} className="shrink-0">Ajouter</Button>
+          <Button variant="secondary" onClick={addFeature} leftIcon={<Add size={16} />} upper={false} className="shrink-0">Ajouter</Button>
         </div>
         {v.features.length > 0 && (
           <ul className="flex flex-wrap gap-2">
             {v.features.map((f) => (
-              <li key={f} className="inline-flex min-h-9 items-center gap-1 rounded-full bg-primary-50 py-0.5 pl-3.5 pr-1 text-[13px] font-medium text-primary-dark">
+              <li key={f} className="inline-flex min-h-9 items-center gap-1 rounded-full bg-primary-50 py-0.5 pl-3.5 pr-1 text-sm font-medium text-primary-dark">
                 {f}
                 <button type="button" aria-label={`Retirer ${f}`} onClick={() => set("features", v.features.filter((x) => x !== f))} className="touch-target relative grid size-8 place-items-center rounded-full text-primary-dark/60 hover:text-danger active:scale-90"><CloseCircle size={17} variant="Bold" /></button>
               </li>
@@ -204,7 +204,7 @@ export function ProductForm({ product }: Props) {
       <Section title="Entretien" hint="Séparez les éléments par des sauts de ligne ou des « ; »." delay={0.03}>
         <Textarea aria-label="Entretien" value={v.charaEntretien} onChange={(e) => set("charaEntretien", e.target.value)} placeholder={"Nettoyer avec un chiffon doux\nÉviter l'humidité"} />
         {care.length > 0 && (
-          <ul className="grid gap-1.5 rounded-box bg-page/60 p-4 text-[13px]">
+          <ul className="grid gap-1.5 rounded-box bg-page/60 p-4 text-sm">
             {care.map((c, i) => <li key={`${c}-${i}`} className="flex gap-2"><span className="mt-2 size-1.5 shrink-0 rounded-full bg-primary" />{c}</li>)}
           </ul>
         )}
@@ -215,19 +215,19 @@ export function ProductForm({ product }: Props) {
         <Textarea label="Politique de livraison — phase 2" value={v.deliveryPolicyPhase2} onChange={(e) => set("deliveryPolicyPhase2", e.target.value)} className="min-h-[80px]" />
         <div className="grid gap-5 sm:grid-cols-2">
           <Input label="Frais de livraison ($)" type="number" inputMode="decimal" min="0" step="0.01" value={v.shippingFee} onChange={(e) => set("shippingFee", e.target.value)} disabled={v.freeShipping} />
-          <label className="flex min-h-12 cursor-pointer items-center justify-between gap-3 rounded-box border border-line px-4 active:bg-chip"><span className="text-[14px] font-semibold">Livraison offerte</span><Switch label="Livraison offerte" checked={v.freeShipping} onChange={(x) => set("freeShipping", x)} /></label>
+          <label className="flex min-h-12 cursor-pointer items-center justify-between gap-3 rounded-box border border-line px-4 active:bg-chip"><span className="text-sm font-semibold">Livraison offerte</span><Switch label="Livraison offerte" checked={v.freeShipping} onChange={(x) => set("freeShipping", x)} /></label>
         </div>
         <label className="flex min-h-12 cursor-pointer items-center justify-between gap-3 rounded-box border border-line px-4 py-2 active:bg-chip">
           <span>
-            <span className="block text-[14px] font-semibold">Numéro de série / IMEI requis</span>
-            <span className="block text-[12px] leading-[17px] text-ink-3">Téléphones, ordinateurs… : chaque unité reçoit son numéro avant la livraison ; il est imprimé sur la facture.</span>
+            <span className="block text-sm font-semibold">Numéro de série / IMEI requis</span>
+            <span className="block text-xs text-ink-3">Téléphones, ordinateurs… : chaque unité reçoit son numéro avant la livraison ; il est imprimé sur la facture.</span>
           </span>
           <Switch label="Numéro de série / IMEI requis" checked={v.serialRequired} onChange={(x) => set("serialRequired", x)} />
         </label>
         <label className="flex min-h-12 cursor-pointer items-center justify-between gap-3 rounded-box border border-line px-4 py-2 active:bg-chip">
           <span>
-            <span className="block text-[14px] font-semibold">Repris sous scellé uniquement</span>
-            <span className="block text-[12px] leading-[17px] text-ink-3">Écouteurs intra-auriculaires… : pour un changement d&apos;avis, le produit n&apos;est repris que si le scellé est intact. Les défauts restent couverts.</span>
+            <span className="block text-sm font-semibold">Repris sous scellé uniquement</span>
+            <span className="block text-xs text-ink-3">Écouteurs intra-auriculaires… : pour un changement d&apos;avis, le produit n&apos;est repris que si le scellé est intact. Les défauts restent couverts.</span>
           </span>
           <Switch label="Repris sous scellé uniquement" checked={v.sealedReturnOnly} onChange={(x) => set("sealedReturnOnly", x)} />
         </label>
@@ -262,7 +262,7 @@ export function ProductForm({ product }: Props) {
           <Input label="Devrait être vendu avant le" type="date" value={v.dateWish} min={product ? undefined : today} onChange={(e) => set("dateWish", e.target.value)} error={errors.dateWish} hint="Date objectif de vente (suivi des produits à rotation lente)." />
         </div>
         <label className="flex min-h-14 cursor-pointer items-center justify-between gap-3 rounded-box border border-line px-4 py-3 active:bg-chip">
-          <div><p className="text-[14px] font-semibold">Visible en boutique</p><p className="text-[12px] text-ink-3">Désactivez pour masquer le produit sans le supprimer.</p></div>
+          <div><p className="text-sm font-semibold">Visible en boutique</p><p className="text-xs text-ink-3">Désactivez pour masquer le produit sans le supprimer.</p></div>
           <Switch label="Visible en boutique" checked={v.isActive} onChange={(x) => set("isActive", x)} />
         </label>
       </Section>
@@ -283,10 +283,10 @@ export function ProductForm({ product }: Props) {
       {/* réserve la place de la barre fixe (mobile) */}
       <div className="h-20 lg:hidden" aria-hidden />
       {/* Mobile : fixée au-dessus de la barre d'onglets (zone sûre iOS) ; desktop : carte collante en bas */}
-      <div className="fixed inset-x-0 bottom-[max(var(--tabbar-h),env(safe-area-inset-bottom))] z-40 flex items-center justify-between gap-3 border-t border-line-3 bg-surface/95 px-4 py-3 backdrop-blur-xl lg:sticky lg:inset-x-auto lg:bottom-3 lg:z-30 lg:rounded-box lg:border-0 lg:bg-surface lg:p-3 lg:shadow-[0_8px_30px_rgba(0,0,0,.12)] lg:backdrop-blur-none">
-        <p className="hidden pl-2 text-[13px] text-ink-3 lg:block">{product ? `Modification de « ${product.name} »` : "Nouveau produit"}</p>
+      <div className="fixed inset-x-0 bottom-[max(var(--tabbar-h),env(safe-area-inset-bottom))] z-40 flex items-center justify-between gap-3 border-t border-line-3 bg-surface/95 px-4 py-3 backdrop-blur-xl lg:sticky lg:inset-x-auto lg:bottom-3 lg:z-30 lg:rounded-box lg:border-0 lg:bg-surface lg:p-3 lg:shadow-lg lg:backdrop-blur-none">
+        <p className="hidden pl-2 text-sm text-ink-3 lg:block">{product ? `Modification de « ${product.name} »` : "Nouveau produit"}</p>
         <div className="grid w-full grid-cols-[1fr_1.6fr] gap-3 lg:ml-auto lg:flex lg:w-auto">
-          <Button variant="chip" upper={false} onClick={() => router.push(ROUTES.admin.products)}>Annuler</Button>
+          <Button variant="secondary" upper={false} onClick={() => router.push(ROUTES.admin.products)}>Annuler</Button>
           <Button upper={false} loading={save.isPending} onClick={submit}>{product ? "Enregistrer" : "Créer le produit"}</Button>
         </div>
       </div>

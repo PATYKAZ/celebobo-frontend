@@ -40,7 +40,7 @@ export function VerifyEmailView({ verificationKey }: { verificationKey: string }
       ) : (
         <div className="grid min-h-[260px] place-items-center gap-3 text-center">
           <Spinner size={28} />
-          <p className="text-[14px] text-ink-2">Confirmation de votre adresse e-mail…</p>
+          <p className="text-sm text-ink-2">Confirmation de votre adresse e-mail…</p>
         </div>
       )}
     </Block>

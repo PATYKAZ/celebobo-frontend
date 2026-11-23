@@ -28,13 +28,13 @@ export function GoogleButton({ next = ROUTES.home, label = "Continuer avec Googl
 
   return (
     <div>
-      <div className="my-4 flex items-center gap-3 sm:my-5 text-[12px] uppercase tracking-wider text-ink-3" role="separator">
+      <div className="my-4 flex items-center gap-3 sm:my-5 text-xs text-ink-3" role="separator">
         <span className="h-px flex-1 bg-line-3" /> ou <span className="h-px flex-1 bg-line-3" />
       </div>
       <button
         type="button"
         onClick={onClick}
-        className="flex h-12 w-full items-center justify-center gap-3 sm:h-[45px] rounded-box border border-line bg-surface text-[14px] font-semibold transition-all hover:border-ink-3 hover:bg-page/50 active:scale-[0.98]"
+        className="flex h-12 w-full items-center justify-center gap-3 sm:h-[45px] rounded-box border border-line bg-surface text-sm font-semibold transition-all hover:border-ink-3 hover:bg-page/50 active:scale-[0.98]"
       >
         <GoogleLogo /> {label}
       </button>

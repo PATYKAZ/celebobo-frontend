@@ -77,10 +77,10 @@ function Content() {
 
   return (
     <Block className="mx-auto max-w-[640px]">
-      <h1 className="flex items-center gap-2 text-[22px] leading-[28px] text-primary sm:text-h-page">
+      <h1 className="flex items-center gap-2 text-xl text-primary sm:text-h-page">
         <ShieldTick size={24} variant="Bold" /> Avant de continuer
       </h1>
-      <p className="mb-5 mt-2 text-[14px] leading-[21px] text-ink-2">
+      <p className="mb-5 mt-2 text-sm text-ink-2">
         {outdated
           ? `Notre politique de confidentialité a changé${version ? ` (version ${version})` : ""}. Pour continuer à utiliser votre compte, acceptez-la de nouveau.`
           : missing.length
@@ -116,7 +116,7 @@ function Content() {
             {missing.map((kind) => (
               <div key={kind}>
                 <Checkbox checked={!!checked[kind]} onChange={toggle(kind)} label={<ConsentLabel kind={kind} />} />
-                {errors[kind] && <p role="alert" className="mt-1 text-[12px] text-danger">{errors[kind]}</p>}
+                {errors[kind] && <p role="alert" className="mt-1 text-xs text-danger">{errors[kind]}</p>}
               </div>
             ))}
             {!marketingGiven && <Checkbox checked={!!checked.marketing} onChange={toggle("marketing")} label={<ConsentLabel kind="marketing" />} />}
@@ -124,7 +124,7 @@ function Content() {
           <Button type="submit" size="lg" fullWidth loading={give.isPending || updatePhone.isPending}>Continuer</Button>
         </form>
       )}
-      <div className="mt-6 space-y-3 border-t border-line-3 pt-5 text-[13px] leading-[20px] text-ink-2">
+      <div className="mt-6 space-y-3 border-t border-line-3 pt-5 text-sm text-ink-2">
         <p>
           Vous ne souhaitez pas continuer ? Sans ces informations, votre compte ne peut pas être utilisé. Vous pouvez d&apos;abord{" "}
           <Link href={ROUTES.myData} className="font-semibold text-primary underline">

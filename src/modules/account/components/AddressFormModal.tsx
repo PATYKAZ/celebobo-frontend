@@ -81,7 +81,7 @@ export function AddressFormModal({ open, onClose, address, defaults, onSaved }: 
         </div>
         <Checkbox label="Définir comme adresse par défaut" checked={!!form.isDefault} onChange={(e) => set("isDefault", e.target.checked)} />
         <div className="flex flex-col-reverse gap-2.5 pt-2 sm:grid sm:grid-cols-2 sm:gap-3">
-          <Button variant="chip" upper={false} onClick={onClose}>Annuler</Button>
+          <Button variant="secondary" upper={false} onClick={onClose}>Annuler</Button>
           <Button upper={false} loading={save.isPending} onClick={submit}>Enregistrer</Button>
         </div>
       </div>

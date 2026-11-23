@@ -54,7 +54,7 @@ function DashboardContent() {
       <PageHeader
         title={`${hello()}, ${user?.firstName || "équipe"} 👋`}
         description={data ? `Activité de Celebobo · ${data.periodLabel}` : "Voici l'activité de Celebobo : ventes, marges et commandes à traiter."}
-        actions={<Button variant="dark" size="md" leftIcon={<DocumentDownload size={18} />} loading={exporting} onClick={exportPdf}>Exporter PDF</Button>}
+        actions={<Button variant="secondary" size="md" leftIcon={<DocumentDownload size={18} />} loading={exporting} onClick={exportPdf}>Exporter PDF</Button>}
       >
         <Tabs variant="pill" tabs={PERIODS} value={period} onChange={setPeriod} />
       </PageHeader>
@@ -88,9 +88,9 @@ function DashboardContent() {
         <div className="flex items-center justify-center rounded-box bg-primary p-8 text-white">
           <div className="max-w-[420px] text-center">
             <Chart2 size={44} variant="Bulk" className="mx-auto animate-float" />
-            <h3 className="mt-3 text-[22px] leading-[28px]">Plongez dans l&apos;analytique</h3>
-            <p className="mt-2 text-[14px] leading-[22px] text-white/85">Valeur du stock, rotation lente, performance des revendeurs, heures de pointe…</p>
-            <Button href={ROUTES.admin.analytics} variant="white" className="mt-5">Voir l&apos;analytique</Button>
+            <h3 className="mt-3 text-xl">Plongez dans l&apos;analytique</h3>
+            <p className="mt-2 text-sm text-white/85">Valeur du stock, rotation lente, performance des revendeurs, heures de pointe…</p>
+            <Button href={ROUTES.admin.analytics} variant="secondary" className="mt-5">Voir l&apos;analytique</Button>
           </div>
         </div>
       </div>

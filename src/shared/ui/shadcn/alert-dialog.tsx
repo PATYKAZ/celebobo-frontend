@@ -41,7 +41,7 @@ function AlertDialogContent({ className, ...props }: React.ComponentProps<typeof
       <AlertDialogPrimitive.Content
         data-slot="alert-dialog-content"
         className={cn(
-          "fixed inset-x-0 bottom-0 z-[90] mx-auto flex w-full max-w-[440px] flex-col rounded-t-[22px] bg-popover p-5 pb-[max(20px,env(safe-area-inset-bottom))] text-popover-foreground outline-none",
+          "fixed inset-x-0 bottom-0 z-[90] mx-auto flex w-full max-w-[440px] flex-col rounded-t-lg bg-popover p-5 pb-[max(20px,env(safe-area-inset-bottom))] text-popover-foreground outline-none",
           "sm:inset-x-auto sm:bottom-auto sm:left-1/2 sm:top-1/2 sm:w-[calc(100%-2rem)] sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-box sm:p-6",
           "duration-200 data-open:animate-in data-open:fade-in-0 data-open:slide-in-from-bottom-10 data-closed:animate-out data-closed:fade-out-0 data-closed:slide-out-to-bottom-10",
           "sm:data-open:slide-in-from-bottom-0 sm:data-open:zoom-in-95 sm:data-closed:slide-out-to-bottom-0 sm:data-closed:zoom-out-95",
@@ -77,7 +77,7 @@ function AlertDialogTitle({ className, ...props }: React.ComponentProps<typeof A
   return (
     <AlertDialogPrimitive.Title
       data-slot="alert-dialog-title"
-      className={cn("mt-3 text-[18px] font-bold leading-[26px] sm:mt-4 sm:text-[20px] sm:leading-[28px]", className)}
+      className={cn("mt-3 text-lg font-bold sm:mt-4 sm:text-lg", className)}
       {...props}
     />
   )
@@ -87,7 +87,7 @@ function AlertDialogDescription({ className, ...props }: React.ComponentProps<ty
   return (
     <AlertDialogPrimitive.Description
       data-slot="alert-dialog-description"
-      className={cn("mt-2 text-[14px] leading-[22px] text-muted-foreground", className)}
+      className={cn("mt-2 text-sm text-muted-foreground", className)}
       {...props}
     />
   )

@@ -23,7 +23,7 @@ export function ProductCarousel({ products, loading, perView = 5 }: Props) {
   const sync = (s: SwiperType) => setEdge({ begin: s.isBeginning, end: s.isEnd });
 
   return (
-    <div className="relative min-w-0 lg:px-[50px]">
+    <div className="relative min-w-0 lg:px-13">
       <SideArrow dir="prev" onClick={() => swiper?.slidePrev()} disabled={edge.begin} />
       <SideArrow dir="next" onClick={() => swiper?.slideNext()} disabled={edge.end} />
       {loading || !products ? (

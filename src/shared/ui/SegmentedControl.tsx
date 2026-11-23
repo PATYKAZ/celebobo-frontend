@@ -37,11 +37,11 @@ export function SegmentedControl<T extends string>({ options, value, onChange, c
           <ToggleGroup.Item
             key={o.value}
             value={o.value}
-            className={cn("relative flex items-center justify-center gap-1.5 whitespace-nowrap rounded-full font-semibold transition-colors", size === "md" ? "min-h-10 px-4 text-[13px]" : "min-h-8 px-3 text-[12px]", fullWidth && "flex-1", active ? "text-white" : "text-ink-2 hover:text-ink")}
+            className={cn("relative flex items-center justify-center gap-1.5 whitespace-nowrap rounded-full font-semibold transition-colors", size === "md" ? "min-h-10 px-4 text-sm" : "min-h-8 px-3 text-xs", fullWidth && "flex-1", active ? "text-white" : "text-ink-2 hover:text-ink")}
           >
             {active && <motion.span layoutId={`seg-${id}`} className="absolute inset-0 rounded-full bg-primary" transition={{ type: "spring", stiffness: 420, damping: 34 }} />}
             <span className="relative">{o.label}</span>
-            {o.count != null && <span className={cn("relative text-[11px] opacity-70")}>{o.count}</span>}
+            {o.count != null && <span className={cn("relative text-xs opacity-70")}>{o.count}</span>}
           </ToggleGroup.Item>
         );
       })}

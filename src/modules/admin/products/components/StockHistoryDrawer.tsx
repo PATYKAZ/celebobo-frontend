@@ -24,8 +24,8 @@ export function StockHistoryDrawer({ product, onClose }: { product: Product | nu
   return (
     <Drawer open={!!product} onClose={onClose} side="right" title="Historique du stock" className="sm:max-w-[460px]">
       <div className="p-5">
-        <p className="line-clamp-2 text-[14px] font-bold">{product?.name}</p>
-        <p className="mt-1 text-[13px] text-ink-3">Stock actuel : <strong className="text-ink">{product?.stock}</strong> · seuil d&apos;alerte : {product?.stockThreshold}</p>
+        <p className="line-clamp-2 text-sm font-bold">{product?.name}</p>
+        <p className="mt-1 text-sm text-ink-3">Stock actuel : <strong className="text-ink">{product?.stock}</strong> · seuil d&apos;alerte : {product?.stockThreshold}</p>
         <ol className="mt-5 space-y-3">
           {isLoading && Array.from({ length: 5 }, (_, i) => <Skeleton key={i} className="h-16 w-full" />)}
           {data?.map((m) => (
@@ -34,16 +34,16 @@ export function StockHistoryDrawer({ product, onClose }: { product: Product | nu
                 {m.delta > 0 ? <ArrowUp size={16} variant="Bold" /> : m.delta < 0 ? <ArrowDown size={16} variant="Bold" /> : "="}
               </span>
               <div className="min-w-0 flex-1">
-                <p className="flex items-center justify-between gap-2 text-[14px] font-bold">
+                <p className="flex items-center justify-between gap-2 text-sm font-bold">
                   <span>{REASON[m.reason] ?? m.reason}</span>
                   <span className={cn("tabular-nums", m.delta > 0 ? "text-primary-dark" : m.delta < 0 ? "text-danger" : "text-ink-3")}>{m.delta > 0 ? "+" : ""}{m.delta}</span>
                 </p>
-                {m.note && <p className="mt-0.5 text-[12px] text-ink-2">{m.note}</p>}
-                <p className="mt-1 text-[11px] text-ink-3">{formatDateTime(m.at)} · {m.by.name} · solde {m.balanceAfter}</p>
+                {m.note && <p className="mt-0.5 text-xs text-ink-2">{m.note}</p>}
+                <p className="mt-1 text-xs text-ink-3">{formatDateTime(m.at)} · {m.by.name} · solde {m.balanceAfter}</p>
               </div>
             </li>
           ))}
-          {data?.length === 0 && <li className="py-10 text-center text-[14px] text-ink-3">Aucun mouvement enregistré.</li>}
+          {data?.length === 0 && <li className="py-10 text-center text-sm text-ink-3">Aucun mouvement enregistré.</li>}
         </ol>
       </div>
     </Drawer>

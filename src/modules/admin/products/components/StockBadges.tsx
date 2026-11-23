@@ -17,10 +17,10 @@ export function StockPill({ product, className }: { product: Pick<Product, "stoc
 export function DeadlineBadge({ dateWish, full }: { dateWish: string | null | undefined; full?: boolean }) {
   const { state, days } = deadlineState(dateWish);
   if (state === "none") return null;
-  if (state === "ok") return full ? <span className="inline-flex items-center gap-1 text-[12px] text-ink-3"><Clock size={13} /> avant le {formatDate(dateWish as string)}</span> : null;
+  if (state === "ok") return full ? <span className="inline-flex items-center gap-1 text-xs text-ink-3"><Clock size={13} /> avant le {formatDate(dateWish as string)}</span> : null;
   const overdue = state === "overdue";
   return (
-    <span className={cn("inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[11px] font-bold", overdue ? "bg-danger-100 text-danger" : "bg-star/15 text-warn")}>
+    <span className={cn("inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-bold", overdue ? "bg-danger-100 text-danger" : "bg-star/15 text-warn")}>
       {overdue ? <Danger size={12} variant="Bold" /> : <Clock size={12} variant="Bold" />}
       {overdue ? `Dépassé de ${Math.abs(days)} j` : days === 0 ? "Aujourd'hui" : `J-${days}`}
     </span>

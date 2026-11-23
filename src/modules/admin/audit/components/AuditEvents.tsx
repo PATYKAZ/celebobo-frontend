@@ -27,10 +27,10 @@ function EventRow({ e }: { e: AuditEvent }) {
   const [open, setOpen] = useState(false);
   const fields = Object.entries(e.payload ?? {}).filter(([, v]) => v !== null && v !== "");
   return (
-    <li className="px-4 py-3 text-[13px] sm:px-6">
+    <li className="px-4 py-3 text-sm sm:px-6">
       <button type="button" onClick={() => setOpen((v) => !v)} aria-expanded={open} disabled={!fields.length} className="flex w-full items-start justify-between gap-3 text-left disabled:cursor-default">
         <span className="min-w-0">
-          <span className="block text-[14px] font-semibold">{e.name || e.eventType}</span>
+          <span className="block text-sm font-semibold">{e.name || e.eventType}</span>
           <span className="block text-ink-3">
             {e.actor?.name ?? "Système"} · {formatDateTime(e.occurredAt)} · {formatRelative(e.occurredAt)}
           </span>
@@ -41,7 +41,7 @@ function EventRow({ e }: { e: AuditEvent }) {
         <dl className="mt-2 grid gap-1 rounded-box bg-page/60 p-3 sm:grid-cols-[180px_1fr]">
           {fields.map(([key, value]) => (
             <div key={key} className="contents">
-              <dt className="font-mono text-[12px] text-ink-3">{key}</dt>
+              <dt className="font-mono text-xs text-ink-3">{key}</dt>
               <dd className="break-all">{typeof value === "object" ? JSON.stringify(value) : String(value)}</dd>
             </div>
           ))}
@@ -62,16 +62,16 @@ export function AuditEvents() {
   const reset = () => { setType(""); setFrom(""); setTo(""); setPage(1); };
   return (
     <Block pad="none" className="overflow-hidden">
-      <div className="grid gap-3 p-3 sm:grid-cols-[1.4fr_1fr_1fr_auto] sm:items-end sm:p-5 sm:px-[30px]">
+      <div className="grid gap-3 p-3 sm:grid-cols-[1.4fr_1fr_1fr_auto] sm:items-end sm:p-5 sm:px-8">
         <Input aria-label="Type d'événement" placeholder="Type d'événement (ex. OrderStatusChanged)" value={type} onChange={(e) => { setType(e.target.value); setPage(1); }} />
         <Input type="date" aria-label="Du" value={from} onChange={(e) => { setFrom(e.target.value); setPage(1); }} />
         <Input type="date" aria-label="Au" value={to} onChange={(e) => { setTo(e.target.value); setPage(1); }} />
-        <Button variant="chip" upper={false} onClick={reset}>Réinitialiser</Button>
+        <Button variant="secondary" upper={false} onClick={reset}>Réinitialiser</Button>
       </div>
       {isLoading || !data ? (
         <div className="space-y-2 p-4">{[0, 1, 2, 3].map((i) => <Skeleton key={i} className="h-12 w-full" />)}</div>
       ) : data.results.length === 0 ? (
-        <p className="py-14 text-center text-[14px] text-ink-3">Aucun événement ne correspond à ces filtres.</p>
+        <p className="py-14 text-center text-sm text-ink-3">Aucun événement ne correspond à ces filtres.</p>
       ) : (
         <ul className="divide-y divide-line-3">{data.results.map((e) => <EventRow key={e.id} e={e} />)}</ul>
       )}

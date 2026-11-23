@@ -24,7 +24,7 @@ function Badge({ status }: { status: ConsentStatus }) {
     : status.outdated
       ? ["À renouveler", "bg-star/15 text-warn"]
       : ["Donné", "bg-primary-50 text-primary-dark"];
-  return <span className={cn("rounded-full px-2 py-0.5 text-[10px] font-bold uppercase", tone)}>{label}</span>;
+  return <span className={cn("rounded-full px-2 py-0.5 text-xs font-bold", tone)}>{label}</span>;
 }
 
 function ConsentRow({ status, busy, onGive, onWithdraw }: { status: ConsentStatus; busy: boolean; onGive: () => void; onWithdraw: () => void }) {
@@ -32,12 +32,12 @@ function ConsentRow({ status, busy, onGive, onWithdraw }: { status: ConsentStatu
   return (
     <li className="flex flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:px-5">
       <div className="min-w-0 flex-1">
-        <p className="flex flex-wrap items-center gap-2 text-[14px] font-bold">
+        <p className="flex flex-wrap items-center gap-2 text-sm font-bold">
           {status.label}
           <Badge status={status} />
-          {status.required && <span className="text-[11px] font-semibold text-ink-3">obligatoire</span>}
+          {status.required && <span className="text-xs font-semibold text-ink-3">obligatoire</span>}
         </p>
-        <p className="mt-1 text-[12px] leading-[18px] text-ink-3">
+        <p className="mt-1 text-xs text-ink-3">
           {status.given && status.acceptedAt
             ? `Version ${status.version || "—"} acceptée le ${formatDate(status.acceptedAt)}${status.source ? ` (${CONSENT_SOURCE_LABELS[status.source]})` : ""}.`
             : "Vous n'avez pas donné votre accord."}
@@ -64,12 +64,12 @@ function History({ history, labels }: { history: ConsentRecord[]; labels: Record
   if (!history.length) return null;
   return (
     <div className="mt-6">
-      <h2 className="text-[16px]">Historique</h2>
-      <ul className="mt-3 divide-y divide-line-3 rounded-box border border-line-3 text-[13px]">
+      <h2 className="text-base">Historique</h2>
+      <ul className="mt-3 divide-y divide-line-3 rounded-box border border-line-3 text-sm">
         {history.map((r, i) => (
           <li key={`${r.kind}-${r.acceptedAt}-${i}`} className="px-4 py-3 sm:px-5">
             <p className="font-semibold">{labels[r.kind] ?? r.kind}</p>
-            <p className="text-[12px] text-ink-3">
+            <p className="text-xs text-ink-3">
               Version {r.version || "—"} acceptée le {formatDateTime(r.acceptedAt)} ({CONSENT_SOURCE_LABELS[r.source]})
               {r.withdrawnAt && ` · retirée le ${formatDateTime(r.withdrawnAt)}`}
             </p>
@@ -104,9 +104,9 @@ function Content() {
 
   const labels = Object.fromEntries((data?.consents ?? []).map((c) => [c.kind, c.label]));
   return (
-    <Block pad="none" className="mx-auto max-w-[820px] p-4 sm:p-[30px]">
-      <h1 className="flex items-center gap-2 text-[22px] leading-[28px] text-primary sm:text-h-page"><ShieldTick size={24} variant="Bold" /> Mes consentements</h1>
-      <p className="mb-4 mt-1 text-[13px] leading-[19px] text-ink-2 sm:mb-6 sm:text-[14px]">
+    <Block pad="none" className="mx-auto max-w-[820px] p-4 sm:p-8">
+      <h1 className="flex items-center gap-2 text-xl text-primary sm:text-h-page"><ShieldTick size={24} variant="Bold" /> Mes consentements</h1>
+      <p className="mb-4 mt-1 text-sm text-ink-2 sm:mb-6 sm:text-sm">
         Ce que vous avez accepté, avec la version de la{" "}
         <a href={ROUTES.page("politique-de-confidentialite")} target="_blank" rel="noopener" className="font-semibold text-ink underline">politique de confidentialité</a> et la date. Vous pouvez retirer chaque consentement à tout moment.
       </p>

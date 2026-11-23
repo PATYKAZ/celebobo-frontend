@@ -26,12 +26,12 @@ export function OrderSummaryCard({ content, orderId, mine }: { content: string; 
   if (!lines.length) return <p className="whitespace-pre-wrap">{content}</p>;
   return (
     <div className="w-[min(280px,100%)] min-w-[220px] max-w-full">
-      <div className="mb-2 flex items-center gap-2 text-[12px] font-bold uppercase tracking-wide opacity-90">
+      <div className="mb-2 flex items-center gap-2 text-xs font-bold opacity-90">
         <Receipt2 size={16} variant="Bold" /> Demande de commande{orderId ? ` #${orderId}` : ""}
       </div>
       <ul className={`divide-y rounded-lg px-3 ${mine ? "divide-white/20 bg-white/15" : "divide-line-3 bg-page/60"}`}>
         {lines.map((l, i) => (
-          <li key={i} className="flex items-start justify-between gap-3 py-2 text-[13px] leading-[18px]">
+          <li key={i} className="flex items-start justify-between gap-3 py-2 text-sm">
             <span className="min-w-0">
               <span className="block wrap-break-word font-semibold">{l.name}</span>
               <span className="opacity-70">Quantité : {l.qty}</span>
@@ -41,7 +41,7 @@ export function OrderSummaryCard({ content, orderId, mine }: { content: string; 
         ))}
       </ul>
       {total && (
-        <div className="mt-2 flex items-center justify-between text-[14px] font-bold">
+        <div className="mt-2 flex items-center justify-between text-sm font-bold">
           <span>Total</span>
           <span>{total}</span>
         </div>

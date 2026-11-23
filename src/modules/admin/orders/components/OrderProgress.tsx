@@ -27,23 +27,23 @@ export function StatusStepper({ order }: { order: Order }) {
                 initial={{ scale: 0.6 }}
                 animate={{ scale: 1 }}
                 transition={{ type: "spring", delay: i * 0.06 }}
-                className={cn("relative z-10 grid size-8 place-items-center rounded-full text-[12px] font-bold", done ? (terminal ? "bg-ink-3 text-white" : "bg-primary text-white") : "bg-chip text-ink-3", current && "ring-4 ring-primary/25")}
+                className={cn("relative z-10 grid size-8 place-items-center rounded-full text-xs font-bold", done ? (terminal ? "bg-ink-3 text-white" : "bg-primary text-white") : "bg-chip text-ink-3", current && "ring-4 ring-primary/25")}
               >
                 {done ? <TickCircle size={18} variant="Bold" /> : i + 1}
               </motion.span>
-              <span className={cn("mt-2 hidden px-1 text-[12px] leading-[16px] sm:block", done ? "font-semibold" : "text-ink-3")}>{ORDER_STATUS_LABEL[s]}</span>
+              <span className={cn("mt-2 hidden px-1 text-xs sm:block", done ? "font-semibold" : "text-ink-3")}>{ORDER_STATUS_LABEL[s]}</span>
             </li>
           );
         })}
       </ol>
       {/* mobile : libellé de l'étape courante (les libellés de la frise sont masqués) */}
       {!terminal && (
-        <p className="mt-3 text-center text-[13px] sm:hidden">
+        <p className="mt-3 text-center text-sm sm:hidden">
           Étape {Math.max(reached, 0) + 1}/{ORDER_FLOW.length} · <strong className="text-primary-dark">{ORDER_STATUS_LABEL[ORDER_FLOW[Math.max(reached, 0)]]}</strong>
         </p>
       )}
       {terminal && (
-        <p className={cn("mt-4 rounded-box px-4 py-3 text-[13px] font-semibold", order.status === "annulee" ? "bg-danger-100 text-danger" : "bg-chip text-ink-2")}>
+        <p className={cn("mt-4 rounded-box px-4 py-3 text-sm font-semibold", order.status === "annulee" ? "bg-danger-100 text-danger" : "bg-chip text-ink-2")}>
           {ORDER_STATUS_LABEL[order.status]}
           {order.cancelReason ? ` — ${order.cancelReason}` : ""}
         </p>
@@ -60,12 +60,12 @@ export function StatusHistory({ order }: { order: Order }) {
       {items.map((h, i) => (
         <motion.li key={`${h.status}-${h.at}-${i}`} initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }} className="relative">
           <span className={cn("absolute left-[-27px] top-1 size-3 rounded-full ring-4 ring-white", i === 0 ? "bg-primary" : "bg-line")} />
-          <p className="text-[14px] font-semibold leading-[20px]">{ORDER_STATUS_LABEL[h.status]}</p>
-          <p className="text-[12px] text-ink-3">
+          <p className="text-sm font-semibold">{ORDER_STATUS_LABEL[h.status]}</p>
+          <p className="text-xs text-ink-3">
             {formatDateTime(h.at)} · par {h.by.name}
             {h.by.role !== "system" && <span className="capitalize"> ({h.by.role === "mukubwa" ? "responsable" : h.by.role})</span>}
           </p>
-          {h.note && <p className="mt-1 rounded-md bg-page/60 px-3 py-1.5 text-[13px] text-ink-2">{h.note}</p>}
+          {h.note && <p className="mt-1 rounded-md bg-page/60 px-3 py-1.5 text-sm text-ink-2">{h.note}</p>}
         </motion.li>
       ))}
     </ol>

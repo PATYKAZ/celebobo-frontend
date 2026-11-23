@@ -11,12 +11,12 @@ import { useShippingZones } from "@/modules/checkout/hooks/useCheckout";
 
 const list = (names: string[]) => (names.length > 1 ? `${names.slice(0, -1).join(", ")} et ${names.at(-1)}` : names[0]);
 
-const BAND = "relative flex min-h-[107px] flex-wrap items-center justify-center gap-x-2 gap-y-1 px-5 py-6 text-center text-[14px] leading-[24px] text-white sm:gap-x-3 sm:py-5 sm:text-[18px] sm:leading-[32.4px]";
+const BAND = "relative flex min-h-[107px] flex-wrap items-center justify-center gap-x-2 gap-y-1 px-5 py-6 text-center text-sm text-white sm:gap-x-3 sm:py-5 sm:text-lg";
 
 function Band({ children }: { children: ReactNode }) {
   return (
     <Reveal>
-      <div className="relative overflow-hidden rounded-[15px] bg-ink-dark">
+      <div className="relative overflow-hidden rounded-lg bg-ink-dark">
         <ParallaxImage src="/images/hero/hero-3.jpg" alt="" fill sizes="1300px" strength={30} wrapperClassName="absolute! inset-0" />
         <div className="absolute inset-0 bg-linear-to-r from-primary-dark/95 via-primary/80 to-black/70" />
         <div className={BAND}>{children}</div>
@@ -41,9 +41,9 @@ export function ShippingBanner() {
       <Float>
         <Truck size={30} variant="Bold" className="text-sun" />
       </Float>
-      <span className="font-semibold uppercase text-sun">Livraison offerte</span>
+      <span className="font-semibold text-sun">Livraison offerte</span>
       <span>dès {formatPrice(threshold)} d’achat {names.length === free.length && free.length === zones?.length ? "partout où nous livrons" : `à ${list(names)}`}.</span>
-      <Link href={ROUTES.guide} className="link-underline ml-0 basis-full py-1 text-[14px] font-semibold leading-[25px] sm:ml-6 sm:basis-auto sm:font-normal">
+      <Link href={ROUTES.guide} className="link-underline ml-0 basis-full py-1 text-sm font-semibold sm:ml-6 sm:basis-auto sm:font-normal">
         Zones et délais de livraison
       </Link>
     </Band>

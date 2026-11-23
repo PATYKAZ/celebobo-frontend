@@ -54,15 +54,15 @@ export function OrderTimeline({ order, layout = "horizontal", className }: { ord
                 {s.current && s.status !== "livree" && s.status !== "annulee" && <span className="absolute inset-0 animate-pulse-ring rounded-full bg-primary/40" />}
               </span>
               <div className="min-w-0 pt-0.5">
-                <p className={cn("text-[14px] font-bold leading-[18px]", !s.done && "text-ink-3")}>{ORDER_STATUS_LABEL[s.status]}</p>
+                <p className={cn("text-sm font-bold", !s.done && "text-ink-3")}>{ORDER_STATUS_LABEL[s.status]}</p>
                 {s.event ? (
-                  <p className="mt-0.5 text-[12px] leading-[17px] text-ink-2">
+                  <p className="mt-0.5 text-xs text-ink-2">
                     {formatDateTime(s.event.at)}
                     {s.event.by.name ? ` · par ${s.event.by.name}` : ""}
                     {s.event.note ? <span className="block italic text-ink-3">« {s.event.note} »</span> : null}
                   </p>
                 ) : (
-                  <p className="mt-0.5 text-[12px] text-ink-3">À venir</p>
+                  <p className="mt-0.5 text-xs text-ink-3">À venir</p>
                 )}
               </div>
             </motion.li>
@@ -98,8 +98,8 @@ export function OrderTimeline({ order, layout = "horizontal", className }: { ord
               <Icon size={18} variant={s.done ? "Bold" : "Linear"} />
               {s.current && s.status !== "livree" && s.status !== "annulee" && s.status !== "retournee" && <span className="absolute inset-0 animate-pulse-ring rounded-full bg-primary/40" />}
             </motion.span>
-            <span className={cn("mt-2 px-0.5 text-[11px] font-semibold leading-[14px] sm:text-[12px] sm:leading-[16px]", s.done ? "text-ink" : "text-ink-3")}>{ORDER_STATUS_LABEL[s.status]}</span>
-            {s.event && <span className="mt-0.5 hidden text-[10px] text-ink-3 md:block">{formatDateTime(s.event.at).split(" à ")[0]}</span>}
+            <span className={cn("mt-2 px-0.5 text-xs font-semibold sm:text-xs", s.done ? "text-ink" : "text-ink-3")}>{ORDER_STATUS_LABEL[s.status]}</span>
+            {s.event && <span className="mt-0.5 hidden text-xs text-ink-3 md:block">{formatDateTime(s.event.at).split(" à ")[0]}</span>}
           </li>
         );
       })}
@@ -115,7 +115,7 @@ export function OrderProgress({ status }: { status: OrderStatus }) {
   const bad = status === "annulee";
   return (
     <div aria-label={`Statut : ${ORDER_STATUS_LABEL[status]}`}>
-      <div className="mb-1.5 flex items-center justify-between text-[12px]">
+      <div className="mb-1.5 flex items-center justify-between text-xs">
         <span className="font-semibold">{ORDER_STATUS_LABEL[status]}</span>
         {!final && <span className="text-ink-3">Étape {idx + 1}/{ORDER_FLOW.length}</span>}
       </div>

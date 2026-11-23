@@ -23,7 +23,7 @@ export function BulkBar({ count, status, busy, onClear, onAction }: Props) {
   const [categoryId, setCategoryId] = useState("");
   const [percent, setPercent] = useState("10");
   const { data: categories } = useAdminCategories(dialog === "category");
-  const btn = "inline-flex h-11 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full bg-white/10 px-4 text-[13px] font-semibold text-white transition-colors hover:bg-white/20 active:scale-95 disabled:opacity-50 sm:h-9 sm:px-3.5";
+  const btn = "inline-flex h-11 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full bg-white/10 px-4 text-sm font-semibold text-white transition-colors hover:bg-white/20 active:scale-95 disabled:opacity-50 sm:h-9 sm:px-3.5";
 
   return (
     <>
@@ -34,9 +34,9 @@ export function BulkBar({ count, status, busy, onClear, onAction }: Props) {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 80, opacity: 0 }}
             transition={{ type: "spring", stiffness: 380, damping: 30 }}
-            className="no-scrollbar fixed inset-x-3 bottom-[calc(var(--tabbar-h)+12px)] z-40 flex items-center gap-2 overflow-x-auto rounded-[22px] bg-ink-dark p-2.5 pl-4 shadow-[0_12px_40px_rgba(0,0,0,.35)] sm:sticky sm:inset-x-auto sm:bottom-3 sm:z-30 sm:mx-auto sm:w-fit sm:max-w-full sm:flex-wrap sm:overflow-visible sm:rounded-[20px]"
+            className="no-scrollbar fixed inset-x-3 bottom-[calc(var(--tabbar-h)+12px)] z-40 flex items-center gap-2 overflow-x-auto rounded-lg bg-ink-dark p-2.5 pl-4 shadow-lg sm:sticky sm:inset-x-auto sm:bottom-3 sm:z-30 sm:mx-auto sm:w-fit sm:max-w-full sm:flex-wrap sm:overflow-visible sm:rounded-lg"
           >
-            <span className="mr-1 shrink-0 whitespace-nowrap text-[13px] font-bold text-white">{count} sélectionné{count > 1 ? "s" : ""}</span>
+            <span className="mr-1 shrink-0 whitespace-nowrap text-sm font-bold text-white">{count} sélectionné{count > 1 ? "s" : ""}</span>
             {status === "trash" ? (
               <button className={btn} disabled={busy} onClick={() => onAction({ type: "restore" })}><Refresh2 size={15} /> Restaurer</button>
             ) : (
@@ -57,7 +57,7 @@ export function BulkBar({ count, status, busy, onClear, onAction }: Props) {
         <div className="grid gap-4">
           <Select label={`Nouvelle catégorie pour ${count} produit${count > 1 ? "s" : ""}`} value={categoryId} onChange={(e) => setCategoryId(e.target.value)} options={[{ value: "", label: "Choisir…" }, ...(categories ?? []).map((c) => ({ value: c.id, label: c.name }))]} />
           <div className="grid grid-cols-2 gap-3">
-            <Button variant="chip" upper={false} onClick={() => setDialog(null)}>Annuler</Button>
+            <Button variant="secondary" upper={false} onClick={() => setDialog(null)}>Annuler</Button>
             <Button upper={false} disabled={!categoryId} onClick={() => { onAction({ type: "category", categoryId: Number(categoryId) }); setDialog(null); }}>Appliquer</Button>
           </div>
         </div>
@@ -65,13 +65,13 @@ export function BulkBar({ count, status, busy, onClear, onAction }: Props) {
 
       <Modal open={dialog === "discount"} onClose={() => setDialog(null)} title="Appliquer une remise" className="max-w-[440px]">
         <div className="grid gap-4">
-          <label className="grid gap-1.5 text-[13px] font-semibold">
+          <label className="grid gap-1.5 text-sm font-semibold">
             Remise (%) sur {count} produit{count > 1 ? "s" : ""}
             <input type="number" min={0} max={90} value={percent} onChange={(e) => setPercent(e.target.value)} className="field" />
-            <span className="text-[12px] font-normal text-ink-3">Le prix soldé = prix normal − remise. Saisissez 0 pour retirer la promotion.</span>
+            <span className="text-xs font-normal text-ink-3">Le prix soldé = prix normal − remise. Saisissez 0 pour retirer la promotion.</span>
           </label>
           <div className="grid grid-cols-2 gap-3">
-            <Button variant="chip" upper={false} onClick={() => setDialog(null)}>Annuler</Button>
+            <Button variant="secondary" upper={false} onClick={() => setDialog(null)}>Annuler</Button>
             <Button upper={false} disabled={percent === "" || Number(percent) < 0 || Number(percent) > 90} onClick={() => { onAction({ type: "discount", percent: Number(percent) }); setDialog(null); }}>Appliquer</Button>
           </div>
         </div>

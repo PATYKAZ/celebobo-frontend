@@ -16,7 +16,7 @@ export function ReviewList({ reviews, loading }: { reviews?: Review[]; loading?:
       </div>
     );
   }
-  if (!reviews?.length) return <p className="py-6 text-center text-[14px] text-ink-3">Aucun avis pour le moment. Soyez le premier à donner le vôtre !</p>;
+  if (!reviews?.length) return <p className="py-6 text-center text-sm text-ink-3">Aucun avis pour le moment. Soyez le premier à donner le vôtre !</p>;
   return (
     <ul className="flex flex-col divide-y divide-line-3">
       <AnimatePresence initial={false}>
@@ -25,14 +25,14 @@ export function ReviewList({ reviews, loading }: { reviews?: Review[]; loading?:
             <Avatar src={r.user.avatar} name={r.user.name} size={44} />
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-                <p className="text-[14px] font-bold">{r.user.name}</p>
+                <p className="text-sm font-bold">{r.user.name}</p>
                 {r.verified && (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-primary-100 px-2 py-0.5 text-[11px] font-bold text-primary-dark"><TickCircle size={12} variant="Bold" /> Achat vérifié</span>
+                  <span className="inline-flex items-center gap-1 rounded-full bg-primary-100 px-2 py-0.5 text-xs font-bold text-primary-dark"><TickCircle size={12} variant="Bold" /> Achat vérifié</span>
                 )}
                 <Stars rating={r.rating} hideCount />
-                <span className="text-[12px] text-ink-3">{formatRelative(r.dateCreated)}</span>
+                <span className="text-xs text-ink-3">{formatRelative(r.dateCreated)}</span>
               </div>
-              <p className="mt-2 text-[14px] leading-[22px] text-ink-2">{r.message}</p>
+              <p className="mt-2 text-sm text-ink-2">{r.message}</p>
             </div>
           </motion.li>
         ))}

@@ -29,7 +29,7 @@ function List() {
     <Block pad="none" className="overflow-hidden">
       <div className="flex flex-wrap gap-2 border-b border-line-3 p-3 sm:p-4">
         {FILTERS.map((f) => (
-          <Button key={f} size="sm" variant={f === status ? "primary" : "chip"} upper={false} onClick={() => { setStatus(f); setPage(1); }}>
+          <Button key={f} size="sm" variant={f === status ? "primary" : "secondary"} upper={false} onClick={() => { setStatus(f); setPage(1); }}>
             {f === "all" ? "Toutes" : STATUS_LABEL[f]}
           </Button>
         ))}
@@ -44,19 +44,19 @@ function List() {
             <li key={c.id}>
               <Link href={ROUTES.admin.claim(c.id)} className="flex items-center justify-between gap-3 px-4 py-3 hover:bg-page/60 sm:px-6">
                 <span className="min-w-0">
-                  <span className="block truncate text-[14px] font-semibold">{c.number} · {c.productName}</span>
-                  <span className="block text-[12px] text-ink-3">{c.clientName} · {c.kindLabel} · {formatDateTime(c.createdAt)}</span>
+                  <span className="block truncate text-sm font-semibold">{c.number} · {c.productName}</span>
+                  <span className="block text-xs text-ink-3">{c.clientName} · {c.kindLabel} · {formatDateTime(c.createdAt)}</span>
                 </span>
                 <span className="flex shrink-0 items-center gap-2">
-                  {c.overdue && <span className="rounded-full bg-danger-100 px-2 py-0.5 text-[11px] font-bold text-danger">En retard</span>}
-                  <span className="rounded-full bg-chip px-2.5 py-1 text-[12px] font-semibold">{c.status === "closed" && c.outcome ? OUTCOME_LABEL[c.outcome] : STATUS_LABEL[c.status]}</span>
+                  {c.overdue && <span className="rounded-full bg-danger-100 px-2 py-0.5 text-xs font-bold text-danger">En retard</span>}
+                  <span className="rounded-full bg-chip px-2.5 py-1 text-xs font-semibold">{c.status === "closed" && c.outcome ? OUTCOME_LABEL[c.outcome] : STATUS_LABEL[c.status]}</span>
                 </span>
               </Link>
             </li>
           ))}
         </ul>
       )}
-      {data?.next && <div className="p-3"><Button variant="outline" size="sm" upper={false} onClick={() => setPage((p) => p + 1)}>Voir plus</Button></div>}
+      {data?.next && <div className="p-3"><Button variant="secondary" size="sm" upper={false} onClick={() => setPage((p) => p + 1)}>Voir plus</Button></div>}
     </Block>
   );
 }
@@ -95,7 +95,7 @@ function Actions({ claim }: { claim: Claim }) {
         )}
         <div className="border-t border-line-3 pt-3">
           <Checkbox label="Le scellé est intact (produits repris sous scellé)" checked={sealed} onChange={(e) => setSealed(e.target.checked)} />
-          <Button fullWidth variant={claim.status === "answered" ? "primary" : "outline"} upper={false} className="mt-2" loading={steps.receive.isPending} onClick={() => steps.receive.mutate({ sealed, note: "" }, { onSuccess: ok("Produit reçu"), onError: fail })}>Produit reçu : émettre le bon de dépôt</Button>
+          <Button fullWidth variant={claim.status === "answered" ? "primary" : "secondary"} upper={false} className="mt-2" loading={steps.receive.isPending} onClick={() => steps.receive.mutate({ sealed, note: "" }, { onSuccess: ok("Produit reçu"), onError: fail })}>Produit reçu : émettre le bon de dépôt</Button>
         </div>
       </div>
     );
@@ -107,8 +107,8 @@ function Actions({ claim }: { claim: Claim }) {
         <Select label="Solution" value={outcome} onChange={(e) => setOutcome(e.target.value as ClaimOutcome)} options={choices.map((o) => ({ value: o, label: OUTCOME_LABEL[o] }))} />
         {outcome === "exchange" && <Input label="N° de série / IMEI du produit donné en échange" value={newSerial} onChange={(e) => setNewSerial(e.target.value)} />}
         {outcome === "not_covered" && <Input label="Devis de réparation payante ($, facultatif)" type="number" min="0" step="0.01" value={quote} onChange={(e) => setQuote(e.target.value)} />}
-        {outcome === "store_credit" && <p className="text-[12px] leading-[17px] text-ink-3">L&apos;unité est retournée sur la commande ; ce que le client avait payé devient un avoir valable 6 mois, livraison comprise.</p>}
-        {outcome === "refund" && <p className="text-[12px] leading-[17px] text-ink-3">L&apos;unité est retournée sur la commande : stock, points et remboursement dû suivent, à verser sous 15 jours.</p>}
+        {outcome === "store_credit" && <p className="text-xs text-ink-3">L&apos;unité est retournée sur la commande ; ce que le client avait payé devient un avoir valable 6 mois, livraison comprise.</p>}
+        {outcome === "refund" && <p className="text-xs text-ink-3">L&apos;unité est retournée sur la commande : stock, points et remboursement dû suivent, à verser sous 15 jours.</p>}
         <Textarea label="Note du diagnostic" value={note} onChange={(e) => setNote(e.target.value)} className="min-h-[70px]" />
         <Button fullWidth upper={false} loading={steps.diagnose.isPending} onClick={() => steps.diagnose.mutate({ covered, outcome, note, newSerial, quote: quote || null }, { onSuccess: ok("Diagnostic enregistré"), onError: fail })}>Enregistrer le diagnostic</Button>
       </div>
@@ -122,7 +122,7 @@ function Actions({ claim }: { claim: Claim }) {
       </div>
     );
   }
-  return <p className="text-[13px] text-ink-3">Réclamation terminée.</p>;
+  return <p className="text-sm text-ink-3">Réclamation terminée.</p>;
 }
 
 function Detail({ id }: { id: number }) {
@@ -134,15 +134,15 @@ function Detail({ id }: { id: number }) {
       <PageHeader
         title={`Réclamation ${c.number}`}
         description={`${c.clientName} · ${c.productName}${c.serial ? ` · ${c.serial}` : ""}`}
-        actions={<Button href={ROUTES.admin.claims} variant="chip" size="sm" upper={false} leftIcon={<ArrowLeft2 size={16} />}>Réclamations</Button>}
+        actions={<Button href={ROUTES.admin.claims} variant="secondary" size="sm" upper={false} leftIcon={<ArrowLeft2 size={16} />}>Réclamations</Button>}
       />
       <div className="grid grid-cols-1 gap-3 sm:gap-4 xl:grid-cols-[minmax(0,1fr)_380px]">
         <Block>
-          <p className="mb-1 text-[13px] text-ink-3">
+          <p className="mb-1 text-sm text-ink-3">
             <Link href={ROUTES.admin.order(c.orderId)} className="font-semibold text-primary underline">Commande {c.orderNumber}</Link> · {c.kindLabel} · protection : {c.protection === "trial" ? "délai d'essai" : c.protection === "warranty" ? "garantie CeLE BoBO" : "authenticité"}
-            {c.overdue && <span className="ml-2 rounded-full bg-danger-100 px-2 py-0.5 text-[11px] font-bold text-danger">En retard</span>}
+            {c.overdue && <span className="ml-2 rounded-full bg-danger-100 px-2 py-0.5 text-xs font-bold text-danger">En retard</span>}
           </p>
-          <p className="mb-4 rounded-box bg-page/70 p-3.5 text-[14px] leading-[20px]">{c.description}</p>
+          <p className="mb-4 rounded-box bg-page/70 p-3.5 text-sm">{c.description}</p>
           {c.photos.length > 0 && (
             <div className="mb-4 flex flex-wrap gap-2">
               {c.photos.map((url) => (
@@ -155,7 +155,7 @@ function Detail({ id }: { id: number }) {
           <ClaimSteps claim={c} />
         </Block>
         <Block pad="sm">
-          <h3 className="mb-3 text-[15px]">Étape suivante</h3>
+          <h3 className="mb-3 text-sm">Étape suivante</h3>
           <Actions key={`${c.status}-${c.outcome ?? ""}`} claim={c} />
         </Block>
       </div>

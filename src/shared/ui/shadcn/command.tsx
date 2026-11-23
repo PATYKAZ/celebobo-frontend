@@ -28,11 +28,11 @@ function CommandList({ className, ...props }: React.ComponentProps<typeof Comman
 }
 
 function CommandEmpty({ className, ...props }: React.ComponentProps<typeof CommandPrimitive.Empty>) {
-  return <CommandPrimitive.Empty data-slot="command-empty" className={cn("px-3 py-4 text-center text-[13px] text-ink-3", className)} {...props} />
+  return <CommandPrimitive.Empty data-slot="command-empty" className={cn("px-3 py-4 text-center text-sm text-ink-3", className)} {...props} />
 }
 
 function CommandLoading({ className, ...props }: React.ComponentProps<typeof CommandPrimitive.Loading>) {
-  return <CommandPrimitive.Loading data-slot="command-loading" className={cn("px-3 py-4 text-center text-[13px] text-ink-3", className)} {...props} />
+  return <CommandPrimitive.Loading data-slot="command-loading" className={cn("px-3 py-4 text-center text-sm text-ink-3", className)} {...props} />
 }
 
 function CommandGroup({ className, ...props }: React.ComponentProps<typeof CommandPrimitive.Group>) {

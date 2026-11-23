@@ -52,9 +52,9 @@ function Content() {
         ) : (
           <ul className="divide-y divide-line-3">
             {data.results.map((job) => (
-              <li key={job.id} className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 text-[13px] sm:px-6">
+              <li key={job.id} className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 text-sm sm:px-6">
                 <span className="min-w-0">
-                  <span className="block text-[14px] font-semibold">{KIND[job.kind] ?? job.kind} <span className="font-normal uppercase text-ink-3">· {job.format}</span></span>
+                  <span className="block text-sm font-semibold">{KIND[job.kind] ?? job.kind} <span className="font-normal text-ink-3">· {job.format}</span></span>
                   <span className="block text-ink-3">
                     {formatDateTime(job.createdAt)}
                     {job.downloadable && job.size ? ` · ${size(job.size)}` : ""}
@@ -72,7 +72,7 @@ function Content() {
             ))}
           </ul>
         )}
-        {pending && <p className="px-4 pb-3 text-[12px] text-ink-3 sm:px-6">Un export est en cours : rechargez la page dans quelques instants.</p>}
+        {pending && <p className="px-4 pb-3 text-xs text-ink-3 sm:px-6">Un export est en cours : rechargez la page dans quelques instants.</p>}
         {data && <Pagination className="py-4" page={page} pageCount={data.meta.totalPages} onChange={setPage} />}
       </Block>
     </>

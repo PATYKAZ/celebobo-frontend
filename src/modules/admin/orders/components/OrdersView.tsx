@@ -104,11 +104,11 @@ function OrdersContent() {
         <div className="min-w-0">
           {/* mobile : n° + statut en en-tête de carte */}
           <div className="mb-1 flex items-center justify-between gap-2 sm:hidden">
-            <span className="text-[15px] font-bold text-primary">#{o.id}</span>
+            <span className="text-sm font-bold text-primary">#{o.id}</span>
             <OrderStatusDot status={o.status} />
           </div>
           <p className="truncate font-semibold">{o.user.name}</p>
-          <p className="truncate text-[12px] text-ink-3">{o.user.email}</p>
+          <p className="truncate text-xs text-ink-3">{o.user.email}</p>
         </div>
       ),
     },
@@ -131,8 +131,8 @@ function OrdersContent() {
       hideBelow: "lg",
       cell: (o) => <ResellerCell order={o} />,
     },
-    { key: "pay", header: "Paiement", hideBelow: "xl", mobile: "hide", cell: (o) => <span className="text-[13px] text-ink-2">{o.paymentMethod ? PAYMENT_LABEL[o.paymentMethod] : "—"}</span> },
-    { key: "date", header: "Date", hideBelow: "sm", cell: (o) => <span className="whitespace-nowrap text-[13px] text-ink-2">{formatDate(o.createdAt)}</span> },
+    { key: "pay", header: "Paiement", hideBelow: "xl", mobile: "hide", cell: (o) => <span className="text-sm text-ink-2">{o.paymentMethod ? PAYMENT_LABEL[o.paymentMethod] : "—"}</span> },
+    { key: "date", header: "Date", hideBelow: "sm", cell: (o) => <span className="whitespace-nowrap text-sm text-ink-2">{formatDate(o.createdAt)}</span> },
     {
       key: "actions",
       header: "",
@@ -199,7 +199,7 @@ function OrdersContent() {
             </div>
           </div>
           {filtered && (
-            <div className="flex items-center justify-between rounded-md bg-primary-50 px-3 py-2 text-[13px]">
+            <div className="flex items-center justify-between rounded-md bg-primary-50 px-3 py-2 text-sm">
               <span>{data?.count ?? 0} résultat(s) avec les filtres actifs</span>
               <Button size="xs" variant="ghost" upper={false} onClick={reset}>Réinitialiser</Button>
             </div>
@@ -229,10 +229,10 @@ function OrdersContent() {
 
 function ResellerCell({ order }: { order: Order }) {
   const { data } = useResellerOptions();
-  if (!order.assignedRevendeur) return <span className="text-[13px] text-ink-3">Non assignée</span>;
+  if (!order.assignedRevendeur) return <span className="text-sm text-ink-3">Non assignée</span>;
   const av = data?.find((r) => r.id === order.assignedRevendeur!.id)?.availability;
   return (
-    <span className="flex items-center gap-2 text-[13px] font-semibold">
+    <span className="flex items-center gap-2 text-sm font-semibold">
       {av && <AvailabilityDot value={av} />}
       <span className="truncate">{order.assignedRevendeur.name}</span>
     </span>

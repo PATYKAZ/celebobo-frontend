@@ -69,8 +69,8 @@ export function MessagesView({ initialId = null, embedded }: Props) {
             <div className="grid h-full place-items-center p-8 text-center">
               <div>
                 <span className="mx-auto grid size-24 animate-float place-items-center rounded-full bg-primary-50 text-primary"><Messages3 size={44} variant="Bulk" /></span>
-                <h2 className="mt-5 text-[20px]">Sélectionnez une discussion</h2>
-                <p className="mx-auto mt-1 max-w-[320px] text-[14px] text-ink-2">
+                <h2 className="mt-5 text-lg">Sélectionnez une discussion</h2>
+                <p className="mx-auto mt-1 max-w-[320px] text-sm text-ink-2">
                   {embedded ? "Répondez aux clients, proposez un prix final et suivez les commandes en direct." : "Échangez avec nos revendeurs pour finaliser vos commandes en toute confiance."}
                 </p>
               </div>

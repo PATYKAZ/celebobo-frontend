@@ -47,7 +47,7 @@ function Row({ r }: { r: Review }) {
     onError: (e) => toast.error("Modération impossible", getErrorMessage(e)),
   });
   return (
-    <li className="space-y-1.5 px-4 py-3.5 text-[13px] sm:px-6">
+    <li className="space-y-1.5 px-4 py-3.5 text-sm sm:px-6">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <span className="flex flex-wrap items-center gap-2">
           <Stars rating={r.rating} hideCount />
@@ -60,7 +60,7 @@ function Row({ r }: { r: Review }) {
         <Link href={ROUTES.product(r.product.slug)} className="text-primary hover:underline">{r.product.name}</Link> · {formatDateTime(r.createdAt)}
       </p>
       {r.message && <p className="whitespace-pre-line text-ink-2">{r.message}</p>}
-      <Button size="sm" variant={next === "hidden" ? "outline" : "primary"} upper={false} loading={moderate.isPending} onClick={() => moderate.mutate()}>
+      <Button size="sm" variant={next === "hidden" ? "secondary" : "primary"} upper={false} loading={moderate.isPending} onClick={() => moderate.mutate()}>
         {next === "hidden" ? "Masquer" : "Publier"}
       </Button>
     </li>

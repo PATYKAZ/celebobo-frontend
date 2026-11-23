@@ -16,11 +16,11 @@ type Errors = Partial<Record<string, string>>;
 
 export function SettingsSection({ title, hint, children, aside }: { title: string; hint?: string; children: ReactNode; aside?: ReactNode }) {
   return (
-    <Block pad="none" className="p-4 sm:p-[30px]">
+    <Block pad="none" className="p-4 sm:p-8">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
-          <h2 className="text-[16px] leading-[22px] sm:text-[18px] sm:leading-[24px]">{title}</h2>
-          {hint && <p className="mt-1 text-[12px] leading-[17px] text-ink-3 sm:text-[13px] sm:leading-[19px]">{hint}</p>}
+          <h2 className="text-base sm:text-lg">{title}</h2>
+          {hint && <p className="mt-1 text-xs text-ink-3 sm:text-sm">{hint}</p>}
         </div>
         {aside}
       </div>
@@ -97,7 +97,7 @@ export function SettingsForm({ settings }: { settings: AdminSiteSettings }) {
             onChange={(e) => set("usdToCdf", e.target.value)}
             error={errors.usdToCdf}
           />
-          <div className="rounded-box bg-chip p-4 text-[13px] leading-[20px] text-ink-2">
+          <div className="rounded-box bg-chip p-4 text-sm text-ink-2">
             <p className="font-semibold text-ink">Aperçu</p>
             {Number.isFinite(rate) && rate >= 1 ? (
               <p className="mt-1 tabular-nums">1 $ = {fc(rate)} · 99 $ = {fc(99 * rate)} · 250 $ = {fc(250 * rate)}</p>
@@ -129,12 +129,12 @@ export function SettingsForm({ settings }: { settings: AdminSiteSettings }) {
       <SettingsSection
         title="Horaires d'ouverture"
         aside={
-          <Button type="button" variant="chip" size="sm" upper={false} leftIcon={<Add size={16} />} onClick={() => set("openingHours", [...v.openingHours, { days: "", hours: "" }])}>
+          <Button type="button" variant="secondary" size="sm" upper={false} leftIcon={<Add size={16} />} onClick={() => set("openingHours", [...v.openingHours, { days: "", hours: "" }])}>
             Ajouter une ligne
           </Button>
         }
       >
-        {v.openingHours.length === 0 && <p className="text-[13px] text-ink-3">Aucun horaire affiché.</p>}
+        {v.openingHours.length === 0 && <p className="text-sm text-ink-3">Aucun horaire affiché.</p>}
         {v.openingHours.map((h, i) => (
           <div key={i} className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-2 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] sm:gap-3">
             <Input label={i === 0 ? "Jours" : undefined} aria-label="Jours" value={h.days} placeholder="Lundi à vendredi" onChange={(e) => set("openingHours", v.openingHours.map((x, j) => (j === i ? { ...x, days: e.target.value } : x)))} wrapperClassName="max-sm:col-span-2" />
@@ -161,8 +161,8 @@ export function SettingsForm({ settings }: { settings: AdminSiteSettings }) {
         />
         <label className="flex min-h-14 cursor-pointer items-center justify-between gap-3 rounded-box border border-line px-4 py-3 active:bg-chip">
           <span>
-            <span className="block text-[14px] font-semibold">Service client joignable 24 h/24, 7 j/7</span>
-            <span className="block text-[12px] leading-[17px] text-ink-3">
+            <span className="block text-sm font-semibold">Service client joignable 24 h/24, 7 j/7</span>
+            <span className="block text-xs text-ink-3">
               {v.supportAlwaysOpen ? "La boutique affiche « Service client 24/7 »." : "La boutique affiche vos horaires d'ouverture à la place."}
             </span>
           </span>
@@ -200,8 +200,8 @@ export function SettingsForm({ settings }: { settings: AdminSiteSettings }) {
 
       {/* actions collées en bas de l'écran */}
       <div className="sticky bottom-[calc(var(--tabbar-h)+8px)] z-10 lg:bottom-4">
-        <Block pad="none" className="flex items-center justify-between gap-3 px-4 py-3 shadow-[0_8px_30px_rgba(0,0,0,.08)] sm:px-[30px]">
-          <p className="text-[13px] text-ink-2 max-sm:hidden">Les changements s’appliquent à toute la boutique.</p>
+        <Block pad="none" className="flex items-center justify-between gap-3 px-4 py-3 shadow-lg sm:px-8">
+          <p className="text-sm text-ink-2 max-sm:hidden">Les changements s’appliquent à toute la boutique.</p>
           <Button type="submit" loading={save.isPending} upper={false} className="max-sm:w-full">Enregistrer les réglages</Button>
         </Block>
       </div>

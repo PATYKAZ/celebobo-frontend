@@ -33,12 +33,12 @@ export function FavoritesView() {
     <>
       <Breadcrumb items={[{ label: "Mes favoris" }]} />
       <Reveal>
-        <Block pad="none" className="flex flex-col gap-3 px-4 py-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-4 sm:px-[30px] sm:py-6">
+        <Block pad="none" className="flex flex-col gap-3 px-4 py-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-4 sm:px-8 sm:py-6">
           <div className="flex items-center gap-3 sm:gap-4">
             <span className="grid size-11 shrink-0 place-items-center rounded-full bg-danger-100 text-danger sm:size-12"><Heart size={24} variant="Bold" /></span>
             <div>
-              <h1 className="text-[22px] leading-[28px] sm:text-h-page">Mes favoris</h1>
-              <p className="text-[13px] text-ink-2 sm:text-[14px]">{pluralize(ids.length, "produit")} enregistré{ids.length > 1 ? "s" : ""}</p>
+              <h1 className="text-xl sm:text-h-page">Mes favoris</h1>
+              <p className="text-sm text-ink-2 sm:text-sm">{pluralize(ids.length, "produit")} enregistré{ids.length > 1 ? "s" : ""}</p>
             </div>
           </div>
           {!!products?.length && (
@@ -61,7 +61,7 @@ export function FavoritesView() {
             </AnimatePresence>
             {hasNextPage && (
               <div className="col-span-full flex justify-center pt-4">
-                <Button variant="outline" upper={false} loading={isFetchingNextPage} onClick={() => fetchNextPage()}>Afficher plus de favoris</Button>
+                <Button variant="secondary" upper={false} loading={isFetchingNextPage} onClick={() => fetchNextPage()}>Afficher plus de favoris</Button>
               </div>
             )}
           </div>

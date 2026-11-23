@@ -93,19 +93,19 @@ export function ZoneFormModal({ zone, nextPosition, onClose }: { zone: AdminShip
         <Input label="Délai annoncé" value={v.deliveryEstimate} onChange={(e) => set("deliveryEstimate", e.target.value)} placeholder={pickup ? "Ex. Dès confirmation" : "Ex. 24 à 48 h"} maxLength={60} error={errors.deliveryEstimate} />
         <div className="grid gap-3 sm:grid-cols-2">
           <label className="flex min-h-12 cursor-pointer items-center justify-between gap-3 rounded-box border border-line px-4 active:bg-chip">
-            <span className="text-[14px] font-semibold">Zone active</span>
+            <span className="text-sm font-semibold">Zone active</span>
             <Switch label="Zone active" checked={v.isActive} onChange={(x) => set("isActive", x)} />
           </label>
           {!pickup && (
             <label className="flex min-h-12 cursor-pointer items-center justify-between gap-3 rounded-box border border-line px-4 active:bg-chip">
-              <span className="text-[14px] font-semibold">Zone par défaut</span>
+              <span className="text-sm font-semibold">Zone par défaut</span>
               <Switch label="Zone par défaut" checked={v.isDefault} onChange={(x) => set("isDefault", x)} />
             </label>
           )}
         </div>
-        {!pickup && <p className="-mt-1 text-[12px] leading-[17px] text-ink-3">La zone par défaut s’applique aux villes qui ne figurent dans aucune zone (ex. « Autres localités », sur devis).</p>}
+        {!pickup && <p className="-mt-1 text-xs text-ink-3">La zone par défaut s’applique aux villes qui ne figurent dans aucune zone (ex. « Autres localités », sur devis).</p>}
         <div className="mt-1 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-          <Button type="button" variant="chip" upper={false} onClick={onClose}>Annuler</Button>
+          <Button type="button" variant="secondary" upper={false} onClick={onClose}>Annuler</Button>
           <Button type="submit" loading={save.isPending} upper={false}>{zone ? "Enregistrer" : "Créer la zone"}</Button>
         </div>
       </form>

@@ -38,7 +38,7 @@ function Inner() {
         cell: (c) => (
           <div className="flex items-center gap-3">
             <Avatar name={c.name} size={36} />
-            <p className="min-w-0 truncate font-semibold leading-[18px]">{c.name}</p>
+            <p className="min-w-0 truncate font-semibold">{c.name}</p>
           </div>
         ),
       },
@@ -99,10 +99,10 @@ function Inner() {
           <InviteCard code={data?.code ?? ""} invitedCount={data?.invitedCount} />
           <Reveal>
             <Block pad="sm">
-              <h2 className="mb-3 text-[16px] font-bold leading-[22px]">Bien inviter</h2>
+              <h2 className="mb-3 text-base font-bold">Bien inviter</h2>
               <ul className="space-y-3">
                 {TIPS.map((t) => (
-                  <li key={t} className="flex gap-3 text-[14px] leading-[21px] text-ink-2 sm:text-[13px] sm:leading-[19px]">
+                  <li key={t} className="flex gap-3 text-sm text-ink-2 sm:text-sm">
                     <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary" />
                     {t}
                   </li>

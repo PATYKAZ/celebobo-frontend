@@ -41,16 +41,16 @@ export function PayStatementModal({ statement, onClose }: { statement: PayoutSta
       {statement && (
         <form onSubmit={submit} className="grid gap-4" noValidate>
           <div className="grid grid-cols-3 gap-3 rounded-box bg-chip p-3 text-center">
-            <div><p className="text-[11px] uppercase text-ink-3">Commissions</p><p className="font-bold">{formatPrice(statement.commissions)}</p></div>
-            <div><p className="text-[11px] uppercase text-ink-3">Livraisons</p><p className="font-bold">{formatPrice(statement.deliveryFees)}</p></div>
-            <div><p className="text-[11px] uppercase text-ink-3">À verser</p><p className="font-bold text-primary">{formatPrice(statement.total)}</p></div>
+            <div><p className="text-xs text-ink-3">Commissions</p><p className="font-bold">{formatPrice(statement.commissions)}</p></div>
+            <div><p className="text-xs text-ink-3">Livraisons</p><p className="font-bold">{formatPrice(statement.deliveryFees)}</p></div>
+            <div><p className="text-xs text-ink-3">À verser</p><p className="font-bold text-primary">{formatPrice(statement.total)}</p></div>
           </div>
-          <p className="text-[14px] text-ink-2">
+          <p className="text-sm text-ink-2">
             Revendeur : <strong className="text-ink">{statement.resellerName}</strong> · relevé du {payoutDay(statement.payoutDate)}
           </p>
           <Textarea label="Note (optionnel)" value={note} onChange={(e) => setNote(e.target.value)} placeholder="Ex. M-Pesa, référence de la transaction" className="min-h-[80px]" />
           <div className="grid grid-cols-2 gap-3">
-            <Button variant="chip" onClick={close} upper={false}>Annuler</Button>
+            <Button variant="secondary" onClick={close} upper={false}>Annuler</Button>
             <Button type="submit" loading={pay.isPending} upper={false}>Confirmer le paiement</Button>
           </div>
         </form>

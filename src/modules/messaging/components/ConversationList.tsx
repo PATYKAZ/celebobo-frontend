@@ -71,11 +71,11 @@ export function ConversationList({ activeId, onSelect, inbox }: Props) {
     <div className="flex min-h-0 flex-col lg:h-full">
       {/* Titre (défile avec la page sur mobile) */}
       <div className="flex items-center justify-between px-4 pb-1 pt-4 lg:pb-3">
-        <h1 className="text-[22px] leading-[28px] lg:text-[20px]">{inbox ? (seeAll ? "Boîte de réception" : "Mes discussions") : "Messages"}</h1>
+        <h1 className="text-xl lg:text-lg">{inbox ? (seeAll ? "Boîte de réception" : "Mes discussions") : "Messages"}</h1>
         {!inbox && (
           <button
             onClick={() => setCreating(true)}
-            className="inline-flex h-11 items-center gap-1.5 rounded-full bg-primary px-4 text-[12px] font-bold uppercase text-white transition-all hover:bg-primary-dark active:scale-95 disabled:opacity-60 lg:h-9 lg:px-3.5"
+            className="inline-flex h-11 items-center gap-1.5 rounded-full bg-primary px-4 text-xs font-bold text-white transition-all hover:bg-primary-dark active:scale-95 disabled:opacity-60 lg:h-9 lg:px-3.5"
           >
             <Add size={15} /> Nouvelle
           </button>
@@ -96,7 +96,7 @@ export function ConversationList({ activeId, onSelect, inbox }: Props) {
               className={cn("relative grid size-12 shrink-0 place-items-center rounded-box transition-all active:scale-95 lg:hidden", reseller ? "bg-primary text-white" : "bg-chip text-ink")}
             >
               <Filter size={20} variant={reseller ? "Bold" : "Linear"} />
-              {reseller && <span className="absolute -right-1 -top-1 size-3 rounded-full bg-danger ring-2 ring-white" />}
+              {reseller && <span className="absolute -right-1 -top-1 size-3 rounded-full bg-danger ring-2 ring-surface" />}
             </button>
           )}
         </div>
@@ -109,21 +109,21 @@ export function ConversationList({ activeId, onSelect, inbox }: Props) {
                   role="tab"
                   aria-selected={filter === f.value}
                   onClick={() => setFilter(f.value)}
-                  className={cn("inline-flex min-h-11 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-4 text-[13px] font-semibold transition-colors active:scale-95 lg:min-h-0 lg:px-3 lg:py-1.5 lg:text-[12px]", filter === f.value ? "bg-primary text-white" : "bg-chip text-ink-2 hover:bg-primary-50 hover:text-primary")}
+                  className={cn("inline-flex min-h-11 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-4 text-sm font-semibold transition-colors active:scale-95 lg:min-h-0 lg:px-3 lg:py-1.5 lg:text-xs", filter === f.value ? "bg-primary text-white" : "bg-chip text-ink-2 hover:bg-primary-50 hover:text-primary")}
                 >
                   {f.label}
-                  <span className={cn("rounded-full px-1.5 text-[11px]", filter === f.value ? "bg-white/25" : "bg-surface")}>{counts[f.value]}</span>
+                  <span className={cn("rounded-full px-1.5 text-xs", filter === f.value ? "bg-white/25" : "bg-surface")}>{counts[f.value]}</span>
                 </button>
               ))}
               {resellerName && (
-                <button onClick={() => setReseller("")} className="inline-flex min-h-11 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full bg-primary-50 px-4 text-[13px] font-semibold text-primary-dark ring-1 ring-primary/30 active:scale-95 lg:hidden">
+                <button onClick={() => setReseller("")} className="inline-flex min-h-11 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full bg-primary-50 px-4 text-sm font-semibold text-primary-dark ring-1 ring-primary/30 active:scale-95 lg:hidden">
                   {resellerName} <span aria-hidden>×</span>
                 </button>
               )}
             </div>
             {/* desktop : sélecteur classique */}
             {seeAll && resellers.length > 0 && (
-              <select value={reseller} onChange={(e) => setReseller(e.target.value)} aria-label="Filtrer par revendeur" className="field hidden text-[13px] lg:block lg:h-10">
+              <select value={reseller} onChange={(e) => setReseller(e.target.value)} aria-label="Filtrer par revendeur" className="field hidden text-sm lg:block lg:h-10">
                 <option value="">Tous les revendeurs</option>
                 {resellers.map(([id, name]) => (
                   <option key={id} value={id}>
@@ -148,7 +148,7 @@ export function ConversationList({ activeId, onSelect, inbox }: Props) {
                   setReseller(id);
                   setFilterSheet(false);
                 }}
-                className={cn("flex min-h-14 w-full items-center justify-between gap-3 rounded-box px-3 text-left text-[15px] font-semibold transition-colors active:bg-chip", reseller === id && "bg-primary-50 text-primary-dark")}
+                className={cn("flex min-h-14 w-full items-center justify-between gap-3 rounded-box px-3 text-left text-sm font-semibold transition-colors active:bg-chip", reseller === id && "bg-primary-50 text-primary-dark")}
               >
                 {name}
                 {reseller === id && <TickCircle size={20} variant="Bold" className="text-primary" />}

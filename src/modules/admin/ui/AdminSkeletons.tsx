@@ -11,7 +11,7 @@ import { Skeleton } from "@/shared/ui/Skeleton";
 /** Même gabarit que <PageHeader>. */
 export function PageHeaderSkeleton({ actions = 1 }: { actions?: number }) {
   return (
-    <Block pad="none" className="p-4 sm:px-[30px] sm:py-6">
+    <Block pad="none" className="p-4 sm:px-8 sm:py-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-col gap-2">
           <Skeleton className="h-7 w-48 sm:h-8" />
@@ -95,7 +95,7 @@ export function AdminFormSkeleton({ sections = 4 }: { sections?: number }) {
     <SkeletonRoot label="Chargement du formulaire">
       <PageHeaderSkeleton actions={0} />
       {Array.from({ length: sections }, (_, s) => (
-        <Block key={s} pad="none" className="p-4 sm:p-[30px]">
+        <Block key={s} pad="none" className="p-4 sm:p-8">
           <Skeleton className="h-6 w-40" />
           <Skeleton className="mt-2 h-3.5 w-72 max-w-full" />
           <div className="mt-5 grid gap-4 sm:grid-cols-2">
@@ -108,7 +108,7 @@ export function AdminFormSkeleton({ sections = 4 }: { sections?: number }) {
           </div>
         </Block>
       ))}
-      <Block pad="none" className="flex justify-end gap-2 p-4 sm:px-[30px]">
+      <Block pad="none" className="flex justify-end gap-2 p-4 sm:px-8">
         <Skeleton className="h-12 flex-1 rounded-box sm:w-32 sm:flex-none" />
         <Skeleton className="h-12 flex-1 rounded-box sm:w-40 sm:flex-none" />
       </Block>
@@ -123,7 +123,7 @@ export function AdminDetailSkeleton() {
       <PageHeaderSkeleton actions={2} />
       <div className="grid gap-3 sm:gap-4 xl:grid-cols-[minmax(0,1fr)_380px]">
         <div className="flex flex-col gap-3 sm:gap-4">
-          <Block pad="none" className="p-4 sm:p-[30px]">
+          <Block pad="none" className="p-4 sm:p-8">
             <Skeleton className="h-6 w-40" />
             <div className="mt-4 divide-y divide-line-3">
               {Array.from({ length: 3 }, (_, i) => (
@@ -135,7 +135,7 @@ export function AdminDetailSkeleton() {
               ))}
             </div>
           </Block>
-          <Block pad="none" className="p-4 sm:p-[30px]">
+          <Block pad="none" className="p-4 sm:p-8">
             <Skeleton className="h-6 w-32" />
             <Skeleton className="mt-4 h-4 w-full" />
             <Skeleton className="mt-2.5 h-4 w-4/5" />

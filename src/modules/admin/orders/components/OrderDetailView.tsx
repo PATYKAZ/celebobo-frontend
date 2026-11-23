@@ -40,7 +40,7 @@ function Card({ title, icon, children, delay = 0 }: { title: string; icon: React
   return (
     <Reveal delay={delay}>
       <Block pad="sm">
-        <h3 className="mb-3 flex items-center gap-2 text-[15px]">
+        <h3 className="mb-3 flex items-center gap-2 text-sm">
           <span className="grid size-8 place-items-center rounded-full bg-primary-50 text-primary">{icon}</span>
           {title}
         </h3>
@@ -89,7 +89,7 @@ function Content({ id }: { id: number }) {
         description={`Passée le ${formatDateTime(order.createdAt)} par ${order.user.name}`}
         actions={
           <>
-            <Button href={ROUTES.admin.orders} variant="chip" size="sm" upper={false} leftIcon={<ArrowLeft2 size={16} />}>Commandes</Button>
+            <Button href={ROUTES.admin.orders} variant="secondary" size="sm" upper={false} leftIcon={<ArrowLeft2 size={16} />}>Commandes</Button>
             <OrderStatusDot status={order.status} />
           </>
         }
@@ -104,26 +104,26 @@ function Content({ id }: { id: number }) {
         <div className="flex min-w-0 flex-col gap-3 sm:gap-4">
           <Reveal>
             <Block pad="none" className="overflow-hidden">
-              <h3 className="px-4 pb-3 pt-4 text-[16px] sm:px-6 sm:pt-5">Articles ({order.items.reduce((n, i) => n + i.quantity, 0)})</h3>
+              <h3 className="px-4 pb-3 pt-4 text-base sm:px-6 sm:pt-5">Articles ({order.items.reduce((n, i) => n + i.quantity, 0)})</h3>
               {/* Mobile : un article par ligne-carte */}
               <ul className="divide-y divide-line-3/70 border-t border-line-3 sm:hidden">
                 {order.items.map((it) => (
                   <li key={it.id} className="flex items-center gap-3 p-4">
                     <span className="relative size-14 shrink-0 overflow-hidden rounded-md bg-page">{it.productImage && <Image src={it.productImage} alt="" fill sizes="56px" className="object-cover" />}</span>
                     <div className="min-w-0 flex-1">
-                      {it.productSlug ? <Link href={ROUTES.product(it.productSlug)} className="-my-1 line-clamp-2 py-1 text-[14px] font-semibold leading-[19px]">{it.productName}</Link> : <span className="text-[14px] font-semibold">{it.productName}</span>}
-                      {it.variantLabel && <p className="text-[12px] text-ink-3">{it.variantLabel}</p>}
-                      <p className="mt-0.5 text-[12px] text-ink-2">{it.quantity} × {formatPrice(it.unitPrice)}</p>
+                      {it.productSlug ? <Link href={ROUTES.product(it.productSlug)} className="-my-1 line-clamp-2 py-1 text-sm font-semibold">{it.productName}</Link> : <span className="text-sm font-semibold">{it.productName}</span>}
+                      {it.variantLabel && <p className="text-xs text-ink-3">{it.variantLabel}</p>}
+                      <p className="mt-0.5 text-xs text-ink-2">{it.quantity} × {formatPrice(it.unitPrice)}</p>
                     </div>
-                    <p className="shrink-0 text-[15px] font-bold">{formatPrice(it.unitPrice * it.quantity)}</p>
+                    <p className="shrink-0 text-sm font-bold">{formatPrice(it.unitPrice * it.quantity)}</p>
                   </li>
                 ))}
                 <li className="flex items-center justify-between bg-page/50 px-4 py-3.5">
-                  <span className="text-[13px] text-ink-2">Total de la commande</span>
-                  <span className="text-[18px] font-bold text-primary">{formatPrice(order.totalPrice)}</span>
+                  <span className="text-sm text-ink-2">Total de la commande</span>
+                  <span className="text-lg font-bold text-primary">{formatPrice(order.totalPrice)}</span>
                 </li>
                 {(!!order.points || !!order.storeCredit || !!order.pointsEarned) && (
-                  <li className="px-4 pb-3.5 text-right text-[12px] text-ink-2">
+                  <li className="px-4 pb-3.5 text-right text-xs text-ink-2">
                     {!!order.points && <span className="block">dont points de fidélité utilisés : <b className="text-danger">-{formatPrice(order.points)}</b></span>}
                     {!!order.storeCredit && <span className="block">dont avoir utilisé : <b className="text-danger">-{formatPrice(order.storeCredit)}</b></span>}
                     {!!order.pointsEarned && <span className="block font-semibold text-primary">+{formatPointsEarned(order.pointsEarned)}</span>}
@@ -131,9 +131,9 @@ function Content({ id }: { id: number }) {
                 )}
               </ul>
               <div className="hidden overflow-x-auto sm:block">
-                <table className="w-full min-w-[520px] text-[14px]">
+                <table className="w-full min-w-[520px] text-sm">
                   <thead>
-                    <tr className="border-y border-line-3 bg-page/50 text-left text-[12px] uppercase tracking-wide text-ink-3">
+                    <tr className="border-y border-line-3 bg-page/50 text-left text-xs text-ink-3">
                       <th className="px-5 py-2.5 font-semibold sm:px-6">Produit</th>
                       <th className="px-3 py-2.5 text-right font-semibold">Prix</th>
                       <th className="px-3 py-2.5 text-center font-semibold">Qté</th>
@@ -148,7 +148,7 @@ function Content({ id }: { id: number }) {
                             <span className="relative size-12 shrink-0 overflow-hidden rounded-md bg-page">{it.productImage && <Image src={it.productImage} alt="" fill sizes="48px" className="object-cover" />}</span>
                             <div className="min-w-0">
                               {it.productSlug ? <Link href={ROUTES.product(it.productSlug)} className="line-clamp-2 font-semibold hover:text-primary">{it.productName}</Link> : <span className="font-semibold">{it.productName}</span>}
-                              {it.variantLabel && <p className="text-[12px] text-ink-3">Variante : {it.variantLabel}</p>}
+                              {it.variantLabel && <p className="text-xs text-ink-3">Variante : {it.variantLabel}</p>}
                             </div>
                           </div>
                         </td>
@@ -161,29 +161,29 @@ function Content({ id }: { id: number }) {
                   <tfoot>
                     {!!order.campaignDiscount && (
                       <tr>
-                        <td colSpan={3} className="px-5 pt-4 text-right text-[13px] text-ink-2 sm:px-6">Remise Cagnotte{order.campaignName ? ` · ${order.campaignName}` : ""} (pas de commission)</td>
+                        <td colSpan={3} className="px-5 pt-4 text-right text-sm text-ink-2 sm:px-6">Remise Cagnotte{order.campaignName ? ` · ${order.campaignName}` : ""} (pas de commission)</td>
                         <td className="px-5 pt-4 text-right font-semibold text-danger sm:px-6">-{formatPrice(order.campaignDiscount)}</td>
                       </tr>
                     )}
                     {!!order.points && (
                       <tr>
-                        <td colSpan={3} className="px-5 pt-4 text-right text-[13px] text-ink-2 sm:px-6">Points de fidélité utilisés</td>
+                        <td colSpan={3} className="px-5 pt-4 text-right text-sm text-ink-2 sm:px-6">Points de fidélité utilisés</td>
                         <td className="px-5 pt-4 text-right font-semibold text-danger sm:px-6">-{formatPrice(order.points)}</td>
                       </tr>
                     )}
                     {!!order.storeCredit && (
                       <tr>
-                        <td colSpan={3} className="px-5 pt-4 text-right text-[13px] text-ink-2 sm:px-6">Avoir utilisé (pas de commission)</td>
+                        <td colSpan={3} className="px-5 pt-4 text-right text-sm text-ink-2 sm:px-6">Avoir utilisé (pas de commission)</td>
                         <td className="px-5 pt-4 text-right font-semibold text-danger sm:px-6">-{formatPrice(order.storeCredit)}</td>
                       </tr>
                     )}
                     <tr>
-                      <td colSpan={3} className="px-5 py-4 text-right text-[13px] text-ink-2 sm:px-6">Total de la commande</td>
-                      <td className="px-5 py-4 text-right text-[18px] font-bold text-primary sm:px-6">{formatPrice(order.totalPrice)}</td>
+                      <td colSpan={3} className="px-5 py-4 text-right text-sm text-ink-2 sm:px-6">Total de la commande</td>
+                      <td className="px-5 py-4 text-right text-lg font-bold text-primary sm:px-6">{formatPrice(order.totalPrice)}</td>
                     </tr>
                     {!!order.pointsEarned && (
                       <tr>
-                        <td colSpan={4} className="px-5 pb-4 text-right text-[13px] font-semibold text-primary sm:px-6">+{formatPointsEarned(order.pointsEarned)} à la livraison</td>
+                        <td colSpan={4} className="px-5 pb-4 text-right text-sm font-semibold text-primary sm:px-6">+{formatPointsEarned(order.pointsEarned)} à la livraison</td>
                       </tr>
                     )}
                   </tfoot>
@@ -197,7 +197,7 @@ function Content({ id }: { id: number }) {
 
           <Reveal delay={0.05}>
             <Block>
-              <h3 className="mb-5 text-[16px]">Historique des statuts</h3>
+              <h3 className="mb-5 text-base">Historique des statuts</h3>
               <StatusHistory order={order} />
             </Block>
           </Reveal>
@@ -205,8 +205,8 @@ function Content({ id }: { id: number }) {
 
         <div className="flex min-w-0 flex-col gap-3 sm:gap-4">
           <Card title="Client" icon={<User size={17} variant="Bold" />}>
-            <p className="text-[14px] font-bold">{order.user.name}</p>
-            <ul className="mt-2 space-y-1.5 text-[13px] text-ink-2">
+            <p className="text-sm font-bold">{order.user.name}</p>
+            <ul className="mt-2 space-y-1.5 text-sm text-ink-2">
               {order.user.email && <li className="flex items-center gap-2"><Sms size={15} /> {order.user.email}</li>}
               {order.user.phone && <li className="flex items-center gap-2"><Call size={15} /> {order.user.phone}</li>}
               {contactHidden && <li className="flex items-center gap-2 text-ink-3"><EyeSlash size={15} /> {contactHidden}</li>}
@@ -217,16 +217,16 @@ function Content({ id }: { id: number }) {
 
           <Card title="Livraison & paiement" icon={<Location size={17} variant="Bold" />} delay={0.05}>
             {order.deliveryCodeLocked && !closed && (
-              <p className="mb-3 rounded-md bg-danger-50 px-3 py-2.5 text-[13px] leading-[19px] text-danger">
+              <p className="mb-3 rounded-md bg-danger-50 px-3 py-2.5 text-sm text-danger">
                 <strong>Code de livraison bloqué</strong> après {order.deliveryCodeAttempts} codes incorrects. Un responsable doit vérifier avec le client puis confirmer la livraison avec un motif.
               </p>
             )}
             {order.awaitingShippingQuote && !closed && (
-              <p className="mb-3 rounded-md bg-star/10 px-3 py-2.5 text-[13px] leading-[19px] text-warn">
+              <p className="mb-3 rounded-md bg-star/10 px-3 py-2.5 text-sm text-warn">
                 Zone <strong>sur devis</strong> : proposez les frais de livraison dans la discussion. La commande ne peut être confirmée qu&apos;après l&apos;accord du client, qui peut annuler sans frais d&apos;ici là.
               </p>
             )}
-            <dl className="space-y-3 text-[13px]">
+            <dl className="space-y-3 text-sm">
               {order.pickup ? (
                 <div>
                   <dt className="text-ink-3">Retrait sur place</dt>
@@ -287,8 +287,8 @@ function Content({ id }: { id: number }) {
           {canConvert && (
             <Reveal delay={0.15}>
               <Block pad="sm">
-                <h3 className="mb-2 flex items-center gap-2 text-[15px]"><span className="grid size-8 place-items-center rounded-full bg-primary-50 text-primary"><Convert size={17} variant="Bold" /></span> Enregistrer les ventes</h3>
-                <p className="mb-3 text-[13px] leading-[19px] text-ink-2">{convertBlock ?? "Convertissez cette commande en ventes, article par article, avec le prix final négocié."}</p>
+                <h3 className="mb-2 flex items-center gap-2 text-sm"><span className="grid size-8 place-items-center rounded-full bg-primary-50 text-primary"><Convert size={17} variant="Bold" /></span> Enregistrer les ventes</h3>
+                <p className="mb-3 text-sm text-ink-2">{convertBlock ?? "Convertissez cette commande en ventes, article par article, avec le prix final négocié."}</p>
                 <span title={convertBlock ?? undefined} className="block">
                   <Button href={convertBlock ? undefined : `${ROUTES.admin.saleConvert}?order=${order.id}`} size="sm" upper={false} fullWidth disabled={!!convertBlock}>Convertir en ventes</Button>
                 </span>
@@ -329,9 +329,9 @@ function AttemptsCard({ order }: { order: Order }) {
   return (
     <Card title="Tentatives de livraison" icon={<Truck size={17} variant="Bold" />} delay={0.05}>
       {attempts.length === 0 ? (
-        <p className="text-[13px] text-ink-3">Aucune tentative manquée.</p>
+        <p className="text-sm text-ink-3">Aucune tentative manquée.</p>
       ) : (
-        <ul className="space-y-1.5 text-[13px]">
+        <ul className="space-y-1.5 text-sm">
           {attempts.map((a) => (
             <li key={a.at} className="rounded-md bg-page/60 px-3 py-2">
               <span className="font-semibold">{a.reasonLabel}</span> · {formatDateTime(a.at)}
@@ -340,16 +340,16 @@ function AttemptsCard({ order }: { order: Order }) {
           ))}
         </ul>
       )}
-      <p className="mt-2 text-[12px] leading-[17px] text-ink-3">Deux jours ouvrables (lundi à samedi) de livraison manquée annulent la commande ; une commande payée est remboursée sans les frais de livraison.</p>
+      <p className="mt-2 text-xs text-ink-3">Deux jours ouvrables (lundi à samedi) de livraison manquée annulent la commande ; une commande payée est remboursée sans les frais de livraison.</p>
       {canRecord && !open && (
-        <Button size="sm" variant="outline" upper={false} fullWidth className="mt-3" onClick={() => setOpen(true)}>Enregistrer une tentative échouée</Button>
+        <Button size="sm" variant="secondary" upper={false} fullWidth className="mt-3" onClick={() => setOpen(true)}>Enregistrer une tentative échouée</Button>
       )}
       {canRecord && open && (
         <div className="mt-3 space-y-3">
           <Select label="Motif" value={reason} onChange={(e) => setReason(e.target.value as AttemptReason)} options={ATTEMPT_REASONS} />
           <Input label="Note (optionnel)" value={note} onChange={(e) => setNote(e.target.value)} placeholder="Ex. : personne au domicile à 14 h" maxLength={300} />
           <div className="grid grid-cols-2 gap-2">
-            <Button size="sm" variant="chip" upper={false} onClick={() => setOpen(false)}>Retour</Button>
+            <Button size="sm" variant="secondary" upper={false} onClick={() => setOpen(false)}>Retour</Button>
             <Button size="sm" upper={false} loading={record.isPending} onClick={submit}>Enregistrer</Button>
           </div>
         </div>
@@ -367,13 +367,13 @@ function RefundCard({ order }: { order: Order }) {
   return (
     <Card title={order.refundStatus === "done" ? "Remboursée" : "Remboursement à effectuer"} icon={<Wallet3 size={17} variant="Bold" />} delay={0.05}>
       {order.refundStatus === "done" ? (
-        <p className="text-[13px] leading-[19px] text-ink-2">
+        <p className="text-sm text-ink-2">
           <strong className="text-ink">{amount}</strong> rendus au client{order.refundedAt && <> le {formatDateTime(order.refundedAt)}</>}.
           {order.refundNote && <span className="mt-1 block">Référence : {order.refundNote}</span>}
         </p>
       ) : (
         <div className="space-y-3">
-          <p className="text-[13px] leading-[19px] text-ink-2">
+          <p className="text-sm text-ink-2">
             Commande annulée après paiement : <strong className="text-ink">{amount}</strong> à rendre au client sous 72 h (politique de livraison).
           </p>
           {canRefund && (
@@ -410,17 +410,17 @@ function ResellerCard({ order, canAssign, onAssign }: { order: Order; canAssign:
       {r ? (
         <div className="flex items-center justify-between gap-3">
           <div className="min-w-0">
-            <p className="truncate text-[14px] font-bold">{r.name}</p>
-            <div className="mt-0.5 flex items-center gap-2 text-[12px] text-ink-3">
+            <p className="truncate text-sm font-bold">{r.name}</p>
+            <div className="mt-0.5 flex items-center gap-2 text-xs text-ink-3">
               {opt && <AvailabilityDot value={opt.availability} withLabel />}
               {opt && <span>· code {opt.code}</span>}
             </div>
           </div>
-          {canAssign && <Button size="sm" variant="chip" upper={false} onClick={onAssign}>Réassigner</Button>}
+          {canAssign && <Button size="sm" variant="secondary" upper={false} onClick={onAssign}>Réassigner</Button>}
         </div>
       ) : (
         <div className="flex items-center justify-between gap-3">
-          <p className="text-[13px] text-ink-3">Aucun revendeur assigné.</p>
+          <p className="text-sm text-ink-3">Aucun revendeur assigné.</p>
           {canAssign && <Button size="sm" upper={false} onClick={onAssign}>Assigner</Button>}
         </div>
       )}
@@ -437,13 +437,13 @@ function DiscussionCard({ conversationId }: { conversationId: number }) {
         <Skeleton className="h-12 w-full" />
       ) : last ? (
         <div className="rounded-md bg-page/60 p-3">
-          <p className="text-[12px] font-semibold">{last.sender.name} <span className="font-normal text-ink-3">· {formatRelative(last.timestamp)}</span></p>
-          <p className="mt-1 line-clamp-3 whitespace-pre-line text-[13px] text-ink-2">{last.content ?? "📷 Image"}</p>
+          <p className="text-xs font-semibold">{last.sender.name} <span className="font-normal text-ink-3">· {formatRelative(last.timestamp)}</span></p>
+          <p className="mt-1 line-clamp-3 whitespace-pre-line text-sm text-ink-2">{last.content ?? "📷 Image"}</p>
         </div>
       ) : (
-        <p className="text-[13px] text-ink-3">Aucun message pour l&apos;instant.</p>
+        <p className="text-sm text-ink-3">Aucun message pour l&apos;instant.</p>
       )}
-      <Button href={ROUTES.admin.conversation(conversationId)} size="sm" variant="outline" upper={false} fullWidth className="mt-3">Ouvrir la discussion</Button>
+      <Button href={ROUTES.admin.conversation(conversationId)} size="sm" variant="secondary" upper={false} fullWidth className="mt-3">Ouvrir la discussion</Button>
     </Card>
   );
 }

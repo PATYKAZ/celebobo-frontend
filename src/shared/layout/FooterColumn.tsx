@@ -9,10 +9,10 @@ import { useState } from "react";
 export function FooterColumn({ title, links }: { title: string; links: readonly (readonly [string, string])[] }) {
   const [open, setOpen] = useState(false);
   const list = (
-    <ul className="pb-1 lg:mt-[30px] lg:pb-0">
+    <ul className="pb-1 lg:mt-4 lg:space-y-2 lg:pb-0">
       {links.map(([label, href]) => (
         <li key={label}>
-          <Link href={href} className="link-underline flex min-h-11 items-center text-[14px] leading-[22px] text-ink-2 transition-colors hover:text-primary lg:block lg:min-h-0 lg:leading-[29.4px]">{label}</Link>
+          <Link href={href} className="link-underline flex min-h-11 items-center text-sm text-ink-2 transition-colors hover:text-primary lg:block lg:min-h-0">{label}</Link>
         </li>
       ))}
     </ul>
@@ -20,7 +20,7 @@ export function FooterColumn({ title, links }: { title: string; links: readonly 
   return (
     <div className="border-b border-line-3 lg:border-0">
       <button onClick={() => setOpen((o) => !o)} aria-expanded={open} className="flex w-full items-center justify-between py-4 text-left lg:pointer-events-none lg:py-0">
-        <h2 className="text-[15px] font-bold uppercase leading-[21.6px] lg:text-section">{title}</h2>
+        <h2 className="text-sm font-bold lg:text-base">{title}</h2>
         <ArrowDown2 size={16} className={`transition-transform lg:hidden ${open ? "rotate-180" : ""}`} />
       </button>
       {/* mobile : animé ; desktop : toujours visible */}

@@ -34,64 +34,64 @@ export function OrderSuccess({ order, conversationId }: { order: Order; conversa
             </svg>
           </motion.span>
         </div>
-        <motion.h2 initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="mt-6 text-[24px] leading-[30px] sm:mt-8 sm:text-[28px] sm:leading-[34px]">Commande {number} envoyée !</motion.h2>
-        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.65 }} className="mx-auto mt-3 max-w-[480px] text-[14px] leading-[22px] text-ink-2">
+        <motion.h2 initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="mt-6 text-xl sm:mt-8 sm:text-2xl">Commande {number} envoyée !</motion.h2>
+        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.65 }} className="mx-auto mt-3 max-w-[480px] text-sm text-ink-2">
           Merci {order.user.name.split(" ")[0]} ! Votre demande a bien été transmise à l&apos;équipe Celebobo.
           {order.awaitingShippingQuote && <> Votre zone est livrée sur devis : un revendeur vous indiquera le coût et le délai de livraison dans la discussion. Vous ne payez rien avant de les avoir acceptés.</>}
           {order.pickup && order.pickupAddress && <> Vous la retirerez dès sa confirmation, à l&apos;adresse : {order.pickupAddress}.</>}
         </motion.p>
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }} className="mt-6 flex flex-col gap-2.5 sm:mt-8 sm:flex-row sm:flex-wrap sm:justify-center sm:gap-3">
           {conversationId && <Button href={ROUTES.conversation(conversationId)} size="lg" className="max-sm:w-full" leftIcon={<Messages2 size={17} variant="Bold" />} rightIcon={<ArrowRight size={16} />}>Ouvrir la discussion</Button>}
-          <Button href={ROUTES.orderDetail(number)} variant="dark" size="lg" className="max-sm:w-full" leftIcon={<Receipt2 size={17} variant="Bold" />}>Voir ma commande</Button>
-          <Button href={ROUTES.products} variant="chip" size="lg" className="max-sm:w-full">Continuer mes achats</Button>
+          <Button href={ROUTES.orderDetail(number)} variant="secondary" size="lg" className="max-sm:w-full" leftIcon={<Receipt2 size={17} variant="Bold" />}>Voir ma commande</Button>
+          <Button href={ROUTES.products} variant="secondary" size="lg" className="max-sm:w-full">Continuer mes achats</Button>
         </motion.div>
       </div>
 
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.95 }} className="mx-auto mt-8 grid max-w-[900px] gap-5 sm:mt-12 sm:gap-6 lg:grid-cols-[1fr_1.1fr]">
         <div className="rounded-box bg-page/60 p-4 sm:p-5">
-          <p className="text-[12px] font-bold uppercase text-ink-3">Récapitulatif · {pluralize(count, "article")}</p>
+          <p className="text-xs font-bold text-ink-3">Récapitulatif · {pluralize(count, "article")}</p>
           <ul className="mt-3 space-y-3">
             {order.items.map((it) => (
               <li key={it.id} className="flex items-center gap-3">
                 <span className="relative size-12 shrink-0 overflow-hidden rounded-md bg-surface">{it.productImage && <Image src={it.productImage} alt="" fill sizes="48px" className="object-cover" />}</span>
-                <p className="min-w-0 flex-1 text-[13px] font-semibold leading-[17px]">
+                <p className="min-w-0 flex-1 text-sm font-semibold">
                   <span className="line-clamp-2">{it.productName}</span>
                   <span className="font-normal text-ink-3">{it.variantLabel ? `${it.variantLabel} · ` : ""}× {it.quantity}</span>
                 </p>
-                <p className="text-[13px] font-bold">{formatPrice(it.unitPrice * it.quantity)}</p>
+                <p className="text-sm font-bold">{formatPrice(it.unitPrice * it.quantity)}</p>
               </li>
             ))}
           </ul>
           {!!order.discount && (
-            <div className="mt-4 flex items-center justify-between border-t border-line pt-3 text-[13px]">
+            <div className="mt-4 flex items-center justify-between border-t border-line pt-3 text-sm">
               <span className="text-ink-2">Code promo{order.couponCode ? ` (${order.couponCode})` : ""}</span>
               <span className="font-semibold text-danger">-{formatPrice(order.discount)}</span>
             </div>
           )}
           {!!order.points && (
-            <div className="mt-2 flex items-center justify-between text-[13px]">
+            <div className="mt-2 flex items-center justify-between text-sm">
               <span className="text-ink-2">Points de fidélité utilisés</span>
               <span className="font-semibold text-danger">-{formatPrice(order.points)}</span>
             </div>
           )}
           {order.shippingFee != null && (
-            <div className="mt-2 flex items-center justify-between text-[13px]">
+            <div className="mt-2 flex items-center justify-between text-sm">
               <span className="text-ink-2">Livraison{order.shippingZone ? ` · ${order.shippingZone}` : ""}</span>
               <span className="font-semibold">{order.shippingFee > 0 ? formatPrice(order.shippingFee) : "Offerte"}</span>
             </div>
           )}
           <div className="mt-4 flex items-center justify-between border-t border-line pt-3">
-            <span className="text-[13px] text-ink-2">Total</span>
-            <span className="text-[20px] font-bold text-primary">{formatPrice(order.totalPrice)}</span>
+            <span className="text-sm text-ink-2">Total</span>
+            <span className="text-lg font-bold text-primary">{formatPrice(order.totalPrice)}</span>
           </div>
         </div>
         <div>
-          <p className="text-[12px] font-bold uppercase text-ink-3">Et maintenant ?</p>
+          <p className="text-xs font-bold text-ink-3">Et maintenant ?</p>
           <ol className="mt-3 space-y-4">
             {NEXT_STEPS.map((s, i) => (
               <li key={s.title} className="flex gap-3">
-                <span className="grid size-8 shrink-0 place-items-center rounded-full bg-primary text-[13px] font-bold text-white">{i + 1}</span>
-                <p className="text-[13px] leading-[19px]"><strong className="block text-[14px]">{s.title}</strong><span className="text-ink-2">{s.text}</span></p>
+                <span className="grid size-8 shrink-0 place-items-center rounded-full bg-primary text-sm font-bold text-white">{i + 1}</span>
+                <p className="text-sm"><strong className="block text-sm">{s.title}</strong><span className="text-ink-2">{s.text}</span></p>
               </li>
             ))}
           </ol>

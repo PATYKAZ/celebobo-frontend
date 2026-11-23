@@ -35,7 +35,7 @@ const PRESETS: NonNullable<SaleListParams["preset"]>[] = ["", "2", "7", "30", "9
 
 export { MethodBadge };
 
-const chip = (on: boolean) => cn("min-h-10 rounded-full border px-4 py-2 text-[13px] font-semibold transition-all active:scale-95 sm:min-h-0 sm:px-3.5 sm:text-[12px]", on ? "border-primary bg-primary text-white" : "border-line bg-surface hover:border-primary hover:text-primary");
+const chip = (on: boolean) => cn("min-h-10 rounded-full border px-4 py-2 text-sm font-semibold transition-all active:scale-95 sm:min-h-0 sm:px-3.5 sm:text-xs", on ? "border-primary bg-primary text-white" : "border-line bg-surface hover:border-primary hover:text-primary");
 
 function SalesListContent() {
   const { user } = useAuth();
@@ -110,8 +110,8 @@ function SalesListContent() {
         <div className="flex min-w-0 items-center gap-3 sm:min-w-[210px]">
           <span className="relative size-12 shrink-0 sm:size-11 overflow-hidden rounded-md bg-page">{s.productImage && <Image src={s.productImage} alt="" fill sizes="44px" className={cn("object-cover", s.status !== "valide" && "grayscale")} />}</span>
           <div className="min-w-0">
-            <p className={cn("line-clamp-2 font-bold leading-[19px] sm:line-clamp-1", dim(s))}>{s.productName}{s.quantity > 1 && <span className="ml-1.5 rounded-sm bg-chip px-1.5 py-0.5 text-[11px] no-underline">× {s.quantity}</span>}</p>
-            <p className="text-[12px] text-ink-3">{s.status !== "valide" && <span className="mr-1.5 rounded-sm bg-chip px-1.5 py-0.5 font-semibold text-ink-2 sm:hidden">{SALE_STATUS_LABEL[s.status]}</span>}{s.category}{s.orderId && <> · <Link prefetch={false} href={ROUTES.admin.order(s.orderId)} className="-my-2 inline-block px-1 py-2 text-primary hover:underline">Cmd #{s.orderId}</Link></>}</p>
+            <p className={cn("line-clamp-2 font-bold sm:line-clamp-1", dim(s))}>{s.productName}{s.quantity > 1 && <span className="ml-1.5 rounded-sm bg-chip px-1.5 py-0.5 text-xs no-underline">× {s.quantity}</span>}</p>
+            <p className="text-xs text-ink-3">{s.status !== "valide" && <span className="mr-1.5 rounded-sm bg-chip px-1.5 py-0.5 font-semibold text-ink-2 sm:hidden">{SALE_STATUS_LABEL[s.status]}</span>}{s.category}{s.orderId && <> · <Link prefetch={false} href={ROUTES.admin.order(s.orderId)} className="-my-2 inline-block px-1 py-2 text-primary hover:underline">Cmd #{s.orderId}</Link></>}</p>
           </div>
         </div>
       ),
@@ -127,7 +127,7 @@ function SalesListContent() {
       cell: (s) => (
         <div className="whitespace-nowrap">
           <p className={cn("font-bold", dim(s))}>{formatPrice(s.total)}</p>
-          {s.quantity > 1 && <p className="text-[11px] text-ink-3">{formatPrice(s.unitPrice)} / u.</p>}
+          {s.quantity > 1 && <p className="text-xs text-ink-3">{formatPrice(s.unitPrice)} / u.</p>}
         </div>
       ),
     },
@@ -173,14 +173,14 @@ function SalesListContent() {
         description={isReseller ? "Les ventes que vous avez enregistrées, avec leur marge et leur moyen de paiement." : "Suivez toutes les ventes, leur marge et leur moyen de paiement."}
         actions={
           <>
-            <Button variant="chip" upper={false} leftIcon={<DocumentDownload size={17} />} loading={exporting === "csv"} onClick={() => exportFile("csv")} className="max-sm:order-3">CSV</Button>
+            <Button variant="secondary" upper={false} leftIcon={<DocumentDownload size={17} />} loading={exporting === "csv"} onClick={() => exportFile("csv")} className="max-sm:order-3">CSV</Button>
             {canExport && (
               <>
-                <Button variant="chip" upper={false} leftIcon={<DocumentDownload size={17} />} loading={exporting === "xlsx"} onClick={() => exportFile("xlsx")} className="max-sm:order-3">Excel</Button>
-                <Button variant="chip" upper={false} leftIcon={<DocumentDownload size={17} />} loading={exporting === "pdf"} onClick={() => exportFile("pdf")} className="max-sm:order-3">PDF</Button>
+                <Button variant="secondary" upper={false} leftIcon={<DocumentDownload size={17} />} loading={exporting === "xlsx"} onClick={() => exportFile("xlsx")} className="max-sm:order-3">Excel</Button>
+                <Button variant="secondary" upper={false} leftIcon={<DocumentDownload size={17} />} loading={exporting === "pdf"} onClick={() => exportFile("pdf")} className="max-sm:order-3">PDF</Button>
               </>
             )}
-            {canConvert && <Button href={ROUTES.admin.saleConvert} variant="dark" upper={false} leftIcon={<ReceiptItem size={18} />} className="max-sm:order-2 max-sm:col-span-2!">Convertir une commande</Button>}
+            {canConvert && <Button href={ROUTES.admin.saleConvert} variant="secondary" upper={false} leftIcon={<ReceiptItem size={18} />} className="max-sm:order-2 max-sm:col-span-2!">Convertir une commande</Button>}
             {canCreate && <Button href={ROUTES.admin.saleNew} leftIcon={<Add size={18} />} className="max-sm:order-1 max-sm:col-span-2!">Nouvelle vente</Button>}
           </>
         }
@@ -188,7 +188,7 @@ function SalesListContent() {
       </PageHeader>
 
       <div>
-        <p className="mb-2 px-1 text-[13px] text-ink-2">
+        <p className="mb-2 px-1 text-sm text-ink-2">
           Période : <strong className="text-ink">{data?.periodLabel ?? "…"}</strong>
           {stats && <> · {stats.count} vente{stats.count > 1 ? "s" : ""} valide{stats.count > 1 ? "s" : ""} · {stats.units} unité{stats.units > 1 ? "s" : ""}</>}
         </p>
@@ -211,7 +211,7 @@ function SalesListContent() {
         </div>
         <FilterSheet open={sheet} onClose={() => setSheet(false)} title="Filtrer les ventes" onReset={resetAll} resetDisabled={chips.length === 0}>
           <div>
-            <p className="mb-2 text-[13px] font-semibold">Période</p>
+            <p className="mb-2 text-sm font-semibold">Période</p>
             <div className="flex flex-wrap gap-2" role="group" aria-label="Période">
               {PRESETS.map((p) => (
                 <button key={p || "all"} type="button" aria-pressed={!custom && preset === p} onClick={() => { setCustom(false); reset(setPreset)(p); }} className={chip(!custom && preset === p)}>{p ? `${p} j` : "Tout"}</button>
@@ -220,16 +220,16 @@ function SalesListContent() {
             </div>
             {custom && (
               <div className="mt-3 grid gap-3">
-                <label className="grid gap-1 text-[12px] font-semibold text-ink-2">Vente du<input type="date" value={dateFrom} onChange={(e) => reset(setDateFrom)(e.target.value)} className="field" /></label>
-                <label className="grid gap-1 text-[12px] font-semibold text-ink-2">au<input type="date" value={dateTo} onChange={(e) => reset(setDateTo)(e.target.value)} className="field" /></label>
+                <label className="grid gap-1 text-xs font-semibold text-ink-2">Vente du<input type="date" value={dateFrom} onChange={(e) => reset(setDateFrom)(e.target.value)} className="field" /></label>
+                <label className="grid gap-1 text-xs font-semibold text-ink-2">au<input type="date" value={dateTo} onChange={(e) => reset(setDateTo)(e.target.value)} className="field" /></label>
               </div>
             )}
           </div>
           <div>
-            <p className="mb-2 text-[13px] font-semibold">Moyen de paiement</p>
+            <p className="mb-2 text-sm font-semibold">Moyen de paiement</p>
             <div className="flex flex-wrap gap-2" role="group" aria-label="Moyen de paiement">
               {METHODS.map((m) => (
-                <button key={m} type="button" aria-pressed={method === m} onClick={() => reset(setMethod)(method === m ? "" : m)} className={cn("min-h-10 rounded-full border px-4 py-2 text-[13px] font-semibold transition-all active:scale-95", method === m ? "border-transparent " + METHOD_STYLE[m].cls : "border-line bg-surface")}>{METHOD_STYLE[m].label}</button>
+                <button key={m} type="button" aria-pressed={method === m} onClick={() => reset(setMethod)(method === m ? "" : m)} className={cn("min-h-10 rounded-full border px-4 py-2 text-sm font-semibold transition-all active:scale-95", method === m ? "border-transparent " + METHOD_STYLE[m].cls : "border-line bg-surface")}>{METHOD_STYLE[m].label}</button>
               ))}
             </div>
           </div>
@@ -248,20 +248,20 @@ function SalesListContent() {
               ))}
               <button type="button" aria-pressed={custom} onClick={() => { setCustom(true); setPage(1); }} className={chip(custom)}>Personnalisé</button>
             </div>
-            <Select aria-label="Statut" value={status} onChange={(e) => reset(setStatus)(e.target.value as SaleStatus | "")} wrapperClassName="w-[170px]" className="h-10 text-[13px]" options={[{ value: "", label: "Tous les statuts" }, ...(Object.keys(SALE_STATUS_LABEL) as SaleStatus[]).map((s) => ({ value: s, label: SALE_STATUS_LABEL[s] }))]} />
+            <Select aria-label="Statut" value={status} onChange={(e) => reset(setStatus)(e.target.value as SaleStatus | "")} wrapperClassName="w-[170px]" className="h-10 text-sm" options={[{ value: "", label: "Tous les statuts" }, ...(Object.keys(SALE_STATUS_LABEL) as SaleStatus[]).map((s) => ({ value: s, label: SALE_STATUS_LABEL[s] }))]} />
             {canAll && (
-              <Select aria-label="Vendeur" value={sellerId ?? ""} onChange={(e) => reset(setSellerId)(e.target.value ? Number(e.target.value) : null)} wrapperClassName="w-[200px]" className="h-10 text-[13px]" options={[{ value: "", label: "Tous les vendeurs" }, ...(sellers ?? []).map((s) => ({ value: s.id, label: s.name }))]} />
+              <Select aria-label="Vendeur" value={sellerId ?? ""} onChange={(e) => reset(setSellerId)(e.target.value ? Number(e.target.value) : null)} wrapperClassName="w-[200px]" className="h-10 text-sm" options={[{ value: "", label: "Tous les vendeurs" }, ...(sellers ?? []).map((s) => ({ value: s.id, label: s.name }))]} />
             )}
           </div>
           {custom && (
-            <div className="flex flex-wrap items-center gap-3 text-[13px] text-ink-2">
+            <div className="flex flex-wrap items-center gap-3 text-sm text-ink-2">
               <label className="flex items-center gap-2">Vente du <input type="date" value={dateFrom} onChange={(e) => reset(setDateFrom)(e.target.value)} className="field h-10 w-[150px]" /></label>
               <label className="flex items-center gap-2">au <input type="date" value={dateTo} onChange={(e) => reset(setDateTo)(e.target.value)} className="field h-10 w-[150px]" /></label>
             </div>
           )}
           <div className="flex flex-wrap gap-2" role="group" aria-label="Moyen de paiement">
             {METHODS.map((m) => (
-              <button key={m} type="button" aria-pressed={method === m} onClick={() => reset(setMethod)(method === m ? "" : m)} className={cn("rounded-full border px-3.5 py-2 text-[12px] font-semibold transition-all", method === m ? "border-transparent " + METHOD_STYLE[m].cls : "border-line bg-surface hover:border-primary hover:text-primary")}>
+              <button key={m} type="button" aria-pressed={method === m} onClick={() => reset(setMethod)(method === m ? "" : m)} className={cn("rounded-full border px-3.5 py-2 text-xs font-semibold transition-all", method === m ? "border-transparent " + METHOD_STYLE[m].cls : "border-line bg-surface hover:border-primary hover:text-primary")}>
                 {METHOD_STYLE[m].label}
               </button>
             ))}

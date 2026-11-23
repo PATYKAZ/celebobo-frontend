@@ -54,9 +54,9 @@ function Row({ m }: { m: ContactMessage }) {
     onError: (e) => toast.error("Enregistrement impossible", getErrorMessage(e)),
   });
   return (
-    <li className="space-y-2 px-4 py-3.5 text-[13px] sm:px-6">
+    <li className="space-y-2 px-4 py-3.5 text-sm sm:px-6">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <span><b className="text-[14px]">{m.name}</b> · {SUBJECTS[m.subject] ?? m.subject}</span>
+        <span><b className="text-sm">{m.name}</b> · {SUBJECTS[m.subject] ?? m.subject}</span>
         <Pill tone={STATUS[m.status].tone}>{STATUS[m.status].label}</Pill>
       </div>
       <p className="text-ink-3">
@@ -72,7 +72,7 @@ function Row({ m }: { m: ContactMessage }) {
           <Button size="sm" variant="ghost" upper={false} loading={update.isPending && update.variables === "spam"} onClick={() => update.mutate("spam")}>Indésirable</Button>
         </div>
       ) : (
-        <Button size="sm" variant="outline" upper={false} loading={update.isPending} onClick={() => update.mutate("new")}>Rouvrir</Button>
+        <Button size="sm" variant="secondary" upper={false} loading={update.isPending} onClick={() => update.mutate("new")}>Rouvrir</Button>
       )}
     </li>
   );

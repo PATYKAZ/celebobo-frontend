@@ -16,7 +16,7 @@ function Bullets({ items }: { items: string[] }) {
   return (
     <ul className="grid gap-3 sm:grid-cols-2">
       {items.map((f) => (
-        <li key={f} className="flex items-start gap-3 rounded-box bg-page/60 p-3.5 text-[14px] leading-[21px]">
+        <li key={f} className="flex items-start gap-3 rounded-box bg-page/60 p-3.5 text-sm">
           <TickCircle size={18} variant="Bold" className="mt-0.5 shrink-0 text-primary" /> {f}
         </li>
       ))}
@@ -37,16 +37,16 @@ export function ProductTabs({ product }: { product: Product }) {
     { value: "reviews", label: "Avis", count: reviews?.length ?? product.reviewsCount },
   ];
 
-  const empty = <p className="text-[14px] text-ink-3">Aucune information disponible.</p>;
+  const empty = <p className="text-sm text-ink-3">Aucune information disponible.</p>;
 
   return (
     <div id="avis" className="scroll-mt-4">
-      <Tabs tabs={tabs} value={tab} onChange={setTab} className="border-b border-line-3 pb-4 [&_button]:text-[15px] sm:[&_button]:text-[18px]" />
+      <Tabs tabs={tabs} value={tab} onChange={setTab} className="border-b border-line-3 pb-4 [&_button]:text-sm sm:[&_button]:text-lg" />
       <div className="min-h-[200px] pt-6">
         <AnimatePresence mode="wait">
           <motion.div key={tab} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.25 }}>
             {tab === "description" && (
-              <div className="max-w-[860px] text-[14px] leading-[25.2px] text-ink-2">
+              <div className="max-w-[860px] text-sm text-ink-2">
                 <p className="font-semibold text-ink">{product.description}</p>
                 {product.longDescription ? <p className="mt-3">{product.longDescription}</p> : null}
               </div>
@@ -58,8 +58,8 @@ export function ProductTabs({ product }: { product: Product }) {
                 {[product.deliveryPolicyPhase1, product.deliveryPolicyPhase2].map((t, i) =>
                   t ? (
                     <div key={i} className="rounded-box bg-page/60 p-5">
-                      <span className="grid size-8 place-items-center rounded-full bg-primary text-[14px] font-bold text-white">{i + 1}</span>
-                      <p className="mt-3 text-[14px] leading-[22px] text-ink-2">{t}</p>
+                      <span className="grid size-8 place-items-center rounded-full bg-primary text-sm font-bold text-white">{i + 1}</span>
+                      <p className="mt-3 text-sm text-ink-2">{t}</p>
                     </div>
                   ) : null,
                 )}

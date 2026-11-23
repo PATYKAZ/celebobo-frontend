@@ -21,7 +21,7 @@ export function SaleCreateView() {
       <PageHeader
         title="Nouvelle vente"
         description="Enregistrez une vente, plusieurs ventes en une fois, ou convertissez une commande client."
-        actions={canConvert ? <Button href={ROUTES.admin.saleConvert} variant="dark" upper={false}>Convertir une commande</Button> : undefined}
+        actions={canConvert ? <Button href={ROUTES.admin.saleConvert} variant="secondary" upper={false}>Convertir une commande</Button> : undefined}
       >
         <Tabs variant="pill" value={mode} onChange={setMode} tabs={[{ value: "single", label: "Vente unique" }, { value: "bulk", label: "Ventes multiples" }]} />
       </PageHeader>
@@ -39,8 +39,8 @@ function EditContent({ id }: { id: number }) {
   if (isError || !data || forbidden || data.status !== "valide") {
     return (
       <Block className="py-16 text-center">
-        <h2 className="text-[20px]">{!data || isError ? "Vente introuvable" : forbidden ? "Modification non autorisée" : "Vente non modifiable"}</h2>
-        <p className="mt-2 text-[14px] text-ink-2">{data && forbidden ? "Vous ne pouvez modifier que vos propres ventes." : data && data.status !== "valide" ? "Une vente remboursée ou retournée est figée." : ""}</p>
+        <h2 className="text-lg">{!data || isError ? "Vente introuvable" : forbidden ? "Modification non autorisée" : "Vente non modifiable"}</h2>
+        <p className="mt-2 text-sm text-ink-2">{data && forbidden ? "Vous ne pouvez modifier que vos propres ventes." : data && data.status !== "valide" ? "Une vente remboursée ou retournée est figée." : ""}</p>
         <Button href={ROUTES.admin.sales} className="mt-6">Retour aux ventes</Button>
       </Block>
     );

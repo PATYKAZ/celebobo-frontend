@@ -40,7 +40,7 @@ export function ProductListView({ locked, emptyExtra }: Props) {
   );
 
   return (
-    <Block pad="none" className="grid grid-cols-[minmax(0,1fr)] gap-0 p-3 sm:p-[30px] lg:grid-cols-[250px_minmax(0,1fr)] lg:gap-8">
+    <Block pad="none" className="grid grid-cols-[minmax(0,1fr)] gap-0 p-3 sm:p-8 lg:grid-cols-[250px_minmax(0,1fr)] lg:gap-8">
       <aside className="hidden lg:block">
         <div className="sticky top-4">{filters}</div>
       </aside>
@@ -50,7 +50,7 @@ export function ProductListView({ locked, emptyExtra }: Props) {
         {/* actions collées en bas de la feuille */}
         <div className="sticky bottom-0 -mx-5 mt-3 flex gap-2.5 border-t border-line-3 bg-surface px-5 pb-safe pt-3">
           {activeCount > 0 && (
-            <Button variant="chip" onClick={reset} upper={false} className="shrink-0">
+            <Button variant="secondary" onClick={reset} upper={false} className="shrink-0">
               Réinitialiser
             </Button>
           )}
@@ -95,7 +95,7 @@ export function ProductListView({ locked, emptyExtra }: Props) {
                 icon={<SearchStatus size={44} variant="Bulk" />}
                 title="Aucun produit trouvé"
                 description="Essayez d'élargir votre recherche ou de retirer certains filtres."
-                action={activeCount > 0 ? <Button onClick={reset} variant="outline" upper={false}>Réinitialiser les filtres</Button> : undefined}
+                action={activeCount > 0 ? <Button onClick={reset} variant="secondary" upper={false}>Réinitialiser les filtres</Button> : undefined}
               />
               {emptyExtra}
             </>

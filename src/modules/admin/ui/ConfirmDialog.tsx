@@ -43,7 +43,7 @@ export function ConfirmDialog({ open, onClose, onConfirm, title, message, confir
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel asChild>
-            <Button variant="chip" upper={false} disabled={loading}>Annuler</Button>
+            <Button variant="secondary" upper={false} disabled={loading}>Annuler</Button>
           </AlertDialogCancel>
           <Button variant={tone === "danger" ? "danger" : "primary"} onClick={onConfirm} loading={loading} upper={false}>{confirmLabel}</Button>
         </AlertDialogFooter>

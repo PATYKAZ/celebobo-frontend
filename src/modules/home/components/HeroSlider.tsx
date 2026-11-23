@@ -52,14 +52,14 @@ function Slide({ slide, active }: { slide: HeroSlide; active: boolean }) {
         variants={container}
         initial="hidden"
         animate={active ? "show" : "hidden"}
-        className={cn("relative z-10 flex h-full flex-col justify-end gap-0 px-5 pb-12 text-white sm:max-w-[62%] sm:justify-center sm:px-0 sm:pb-0 sm:pl-[60px]", !dark && "sm:text-on-light")}
+        className={cn("relative z-10 flex h-full flex-col justify-end gap-0 px-5 pb-12 text-white sm:max-w-[62%] sm:justify-center sm:px-0 sm:pb-0 sm:pl-15", !dark && "sm:text-on-light")}
       >
         {slide.eyebrow && (
-          <motion.p variants={item} className={cn("mb-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-white/80", !dark && "sm:text-on-light-2")}>
+          <motion.p variants={item} className={cn("mb-2 text-xs font-semibold text-white/80", !dark && "sm:text-on-light-2")}>
             {slide.eyebrow}
           </motion.p>
         )}
-        <motion.h2 variants={item} className="text-[26px] font-medium leading-[30px] sm:text-h-hero">
+        <motion.h2 variants={item} className="text-xl font-medium sm:text-h-hero">
           {slide.titleLines.map((l) => (
             <span key={l.text} className={cn("block", l.className)}>
               {l.text}
@@ -67,26 +67,26 @@ function Slide({ slide, active }: { slide: HeroSlide; active: boolean }) {
           ))}
         </motion.h2>
         {slide.text && (
-          <motion.p variants={item} className="mt-3 hidden text-[12px] leading-[20.4px] opacity-90 sm:block">
+          <motion.p variants={item} className="mt-3 hidden text-xs opacity-90 sm:block">
             {slide.text}
           </motion.p>
         )}
         {slide.product && (
           <motion.p variants={item} className="mt-3">
-            <BannerPrice product={slide.product} className={cn("text-[22px] leading-[26px] text-sun", !dark && "sm:text-[#c4261d]")} strikeClassName={cn("text-white/70", !dark && "sm:text-on-light-2")} />
+            <BannerPrice product={slide.product} className={cn("text-xl text-sun", !dark && "sm:text-[#c4261d]")} strikeClassName={cn("text-white/70", !dark && "sm:text-on-light-2")} />
           </motion.p>
         )}
         {slide.bullets && (
           <motion.ul variants={item} className="mt-3 hidden space-y-1 sm:block">
             {slide.bullets.map((b) => (
-              <li key={b} className="flex items-center gap-2 text-[12px] leading-[18px]">
+              <li key={b} className="flex items-center gap-2 text-xs">
                 <RecordCircle size={12} variant="Bold" className="text-primary" /> {b}
               </li>
             ))}
           </motion.ul>
         )}
         <motion.div variants={item} className="mt-4 sm:mt-5">
-          <Link href={slide.cta.href} className={cn("inline-flex h-11 items-center rounded-box px-5 text-[12px] font-semibold uppercase transition-all active:scale-95 sm:h-[34px] sm:px-4 sm:font-medium", CTA[slide.cta.variant])}>
+          <Link href={slide.cta.href} className={cn("inline-flex h-11 items-center rounded-box px-5 text-xs font-semibold transition-all active:scale-95 sm:h-[34px] sm:px-4 sm:font-medium", CTA[slide.cta.variant])}>
             {slide.cta.label}
           </Link>
         </motion.div>
@@ -130,7 +130,7 @@ export function HeroSlider({ slides, className }: { slides?: HeroSlide[]; classN
       </div>
 
       {/* desktop : contrôle fraction */}
-      <div className="absolute bottom-5 right-5 z-20 hidden h-[29px] w-[107px] items-center justify-between rounded-pill bg-surface px-3 text-[14px] leading-[21px] sm:flex">
+      <div className="absolute bottom-5 right-5 z-20 hidden h-[29px] w-[107px] items-center justify-between rounded-full bg-surface px-3 text-sm sm:flex">
         <button aria-label="Slide précédente" onClick={() => swiper?.slidePrev()} className="p-1 transition-colors hover:text-primary">
           <ArrowLeft2 size={12} variant="Bold" />
         </button>

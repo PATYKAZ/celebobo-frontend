@@ -51,7 +51,7 @@ export function TabBar({ items, onMore, moreActive, moreBadge, hideOn }: Props) 
   if (hidden) return null;
 
   const isActive = (t: TabItem) => (t.exact ? pathname === t.href : pathname === t.href || pathname.startsWith(`${t.href}/`) || !!t.alsoActive?.some((p) => pathname.startsWith(p)));
-  const cell = "relative flex flex-1 flex-col items-center justify-center gap-0.5 pt-1.5 text-[10.5px] font-semibold leading-[14px] transition-colors active:scale-95";
+  const cell = "relative flex flex-1 flex-col items-center justify-center gap-0.5 pt-1.5 text-xs font-semibold transition-colors active:scale-95";
 
   return (
     <nav aria-label="Navigation principale" className="fixed inset-x-0 bottom-0 z-50 border-t border-line-3 bg-surface/95 pb-safe-b backdrop-blur-xl lg:hidden">
@@ -66,7 +66,7 @@ export function TabBar({ items, onMore, moreActive, moreBadge, hideOn }: Props) 
                 <Icon size={22} variant={active ? "Bold" : "Linear"} className="relative" />
                 <AnimatePresence>
                   {!!t.badge && (
-                    <motion.span key={t.badge} initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} className="absolute right-1.5 top-0 grid min-w-[17px] place-items-center rounded-full bg-danger px-1 text-[10px] font-bold leading-[17px] text-white ring-2 ring-white">
+                    <motion.span key={t.badge} initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} className="absolute right-1.5 top-0 grid min-w-[17px] place-items-center rounded-full bg-danger px-1 text-xs font-bold text-white ring-2 ring-surface">
                       {t.badge > 99 ? "99+" : t.badge}
                     </motion.span>
                   )}
@@ -80,7 +80,7 @@ export function TabBar({ items, onMore, moreActive, moreBadge, hideOn }: Props) 
           <span className="relative grid h-8 w-14 place-items-center">
             {moreActive && <motion.span layoutId={`tab-pill-${id}`} className="absolute inset-0 rounded-full bg-primary-100" transition={{ type: "spring", stiffness: 420, damping: 34 }} />}
             <More size={22} variant={moreActive ? "Bold" : "Linear"} className="relative" />
-            {!!moreBadge && <span className="absolute right-1.5 top-0 grid min-w-[17px] place-items-center rounded-full bg-danger px-1 text-[10px] font-bold leading-[17px] text-white ring-2 ring-white">{moreBadge}</span>}
+            {!!moreBadge && <span className="absolute right-1.5 top-0 grid min-w-[17px] place-items-center rounded-full bg-danger px-1 text-xs font-bold text-white ring-2 ring-surface">{moreBadge}</span>}
           </span>
           <span>Plus</span>
         </button>

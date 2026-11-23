@@ -45,16 +45,16 @@ function Position({ s }: { s: CashSummary }) {
   return (
     <div className="grid gap-3 sm:grid-cols-3">
       <div className="rounded-box bg-primary-50 p-3.5">
-        <p className="text-[12px] text-primary-dark">À reverser</p>
-        <p className="text-[22px] font-bold text-primary">{formatPrice(Number(s.held))}</p>
+        <p className="text-xs text-primary-dark">À reverser</p>
+        <p className="text-xl font-bold text-primary">{formatPrice(Number(s.held))}</p>
       </div>
       <div className="rounded-box bg-page/70 p-3.5">
-        <p className="text-[12px] text-ink-3">En retard (plus de 24 h)</p>
-        <p className={`text-[22px] font-bold ${Number(s.overdue) > 0 ? "text-danger" : ""}`}>{formatPrice(Number(s.overdue))}</p>
+        <p className="text-xs text-ink-3">En retard (plus de 24 h)</p>
+        <p className={`text-xl font-bold ${Number(s.overdue) > 0 ? "text-danger" : ""}`}>{formatPrice(Number(s.overdue))}</p>
       </div>
       <div className="rounded-box bg-page/70 p-3.5">
-        <p className="text-[12px] text-ink-3">Plafond · niveau {LEVEL[s.level] ?? s.level}</p>
-        <p className="text-[22px] font-bold">{formatPrice(Number(s.cap))}</p>
+        <p className="text-xs text-ink-3">Plafond · niveau {LEVEL[s.level] ?? s.level}</p>
+        <p className="text-xl font-bold">{formatPrice(Number(s.cap))}</p>
       </div>
     </div>
   );
@@ -78,21 +78,21 @@ function Detail({ s, canRecord }: { s: CashSummary; canRecord: boolean }) {
     <div className="space-y-4">
       <Position s={s} />
       {s.blockedReason && (
-        <p className="flex items-start gap-2 rounded-box bg-danger-100 p-3 text-[13px] text-danger">
+        <p className="flex items-start gap-2 rounded-box bg-danger-100 p-3 text-sm text-danger">
           <InfoCircle size={18} className="mt-0.5 shrink-0" /> Plus de nouvelles commandes : {s.blockedReason}.
         </p>
       )}
       <section>
-        <h3 className="mb-2 text-[14px] font-semibold">Encaissements à reverser</h3>
+        <h3 className="mb-2 text-sm font-semibold">Encaissements à reverser</h3>
         {s.collections.length === 0 ? (
-          <p className="text-[13px] text-ink-3">Rien à reverser.</p>
+          <p className="text-sm text-ink-3">Rien à reverser.</p>
         ) : (
-          <ul className="divide-y divide-line-3 rounded-box border border-line-3 text-[13px]">
+          <ul className="divide-y divide-line-3 rounded-box border border-line-3 text-sm">
             {s.collections.map((c) => (
               <li key={c.orderId} className="flex items-center justify-between gap-3 p-3">
                 <span>
                   <b>Commande {c.orderNumber}</b>
-                  <span className="block text-[12px] text-ink-3">Encaissée le {formatDateTime(c.collectedAt)} · à reverser avant le {formatDateTime(c.dueAt)}</span>
+                  <span className="block text-xs text-ink-3">Encaissée le {formatDateTime(c.collectedAt)} · à reverser avant le {formatDateTime(c.dueAt)}</span>
                 </span>
                 <span className={`shrink-0 font-bold ${c.overdue ? "text-danger" : ""}`}>{formatPrice(Number(c.left))}</span>
               </li>
@@ -102,7 +102,7 @@ function Detail({ s, canRecord }: { s: CashSummary; canRecord: boolean }) {
       </section>
       {canRecord && Number(s.held) > 0 && (
         <section className="rounded-box border border-line-3 p-3.5">
-          <h3 className="mb-2 text-[14px] font-semibold">Enregistrer un reversement <span className="font-normal text-ink-3">(au plus {formatPrice(Number(s.held))})</span></h3>
+          <h3 className="mb-2 text-sm font-semibold">Enregistrer un reversement <span className="font-normal text-ink-3">(au plus {formatPrice(Number(s.held))})</span></h3>
           <div className="grid gap-2 sm:grid-cols-[1fr_1fr_auto]">
             <Input aria-label="Montant reçu ($)" type="number" min="0.01" step="0.01" max={s.held} placeholder="Montant ($)" title={`Au plus ${s.held} $`} value={amount} onChange={(e) => setAmount(e.target.value)} />
             <Input aria-label="Référence Mobile Money" placeholder="Référence Mobile Money" value={reference} onChange={(e) => setReference(e.target.value)} />
@@ -112,8 +112,8 @@ function Detail({ s, canRecord }: { s: CashSummary; canRecord: boolean }) {
       )}
       {s.remittances.length > 0 && (
         <section>
-          <h3 className="mb-2 text-[14px] font-semibold">Derniers reversements</h3>
-          <ul className="space-y-1 text-[13px]">
+          <h3 className="mb-2 text-sm font-semibold">Derniers reversements</h3>
+          <ul className="space-y-1 text-sm">
             {s.remittances.map((r, i) => (
               <li key={`${r.receivedAt}-${i}`} className="flex justify-between gap-3">
                 <span className="text-ink-2">{formatDateTime(r.receivedAt)}{r.reference ? ` · ${r.reference}` : ""}</span>
@@ -132,7 +132,7 @@ function Mine() {
   if (isLoading || !data) return <Skeleton className="h-60 rounded-box!" />;
   return (
     <Block>
-      <p className="mb-4 text-[13px] leading-[19px] text-ink-2">L&apos;argent encaissé auprès des clients appartient à Celebobo : reversez-le en totalité par Mobile Money dans les 24 heures, sans déduire votre prime. Au-delà du délai ou du plafond, plus de nouvelles commandes jusqu&apos;à régularisation.</p>
+      <p className="mb-4 text-sm text-ink-2">L&apos;argent encaissé auprès des clients appartient à Celebobo : reversez-le en totalité par Mobile Money dans les 24 heures, sans déduire votre prime. Au-delà du délai ou du plafond, plus de nouvelles commandes jusqu&apos;à régularisation.</p>
       <Detail s={data} canRecord={false} />
     </Block>
   );
@@ -154,8 +154,8 @@ function Team() {
               <li key={r.resellerId}>
                 <button type="button" onClick={() => setSelected(r.resellerId)} className={`flex w-full items-center justify-between gap-3 px-4 py-3 text-left hover:bg-page/60 ${selected === r.resellerId ? "bg-primary-50" : ""}`}>
                   <span className="min-w-0">
-                    <span className="block truncate text-[14px] font-semibold">{r.resellerName}</span>
-                    <span className="block text-[12px] text-ink-3">{r.blockedReason ? `Bloqué : ${r.blockedReason}` : `Plafond ${formatPrice(Number(r.cap))}`}</span>
+                    <span className="block truncate text-sm font-semibold">{r.resellerName}</span>
+                    <span className="block text-xs text-ink-3">{r.blockedReason ? `Bloqué : ${r.blockedReason}` : `Plafond ${formatPrice(Number(r.cap))}`}</span>
                   </span>
                   <span className={`shrink-0 font-bold ${r.blockedReason ? "text-danger" : ""}`}>{formatPrice(Number(r.held))}</span>
                 </button>
@@ -164,7 +164,7 @@ function Team() {
           </ul>
         )}
       </Block>
-      <Block>{selected == null ? <p className="text-[13px] text-ink-3">Choisissez un revendeur pour voir ses encaissements et enregistrer un reversement.</p> : detail.data ? <Detail s={detail.data} canRecord /> : <Skeleton className="h-40 rounded-box!" />}</Block>
+      <Block>{selected == null ? <p className="text-sm text-ink-3">Choisissez un revendeur pour voir ses encaissements et enregistrer un reversement.</p> : detail.data ? <Detail s={detail.data} canRecord /> : <Skeleton className="h-40 rounded-box!" />}</Block>
     </div>
   );
 }

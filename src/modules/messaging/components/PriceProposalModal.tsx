@@ -56,7 +56,7 @@ export function PriceProposalModal({ open, onClose, conversation }: Props) {
   return (
     <BottomSheet open={open} onClose={onClose} title="Proposer un prix final">
       <div className="space-y-4 pb-2 pt-1">
-        <p className="text-[13px] leading-[19px] text-ink-2">Le client recevra une carte avec Accepter / Refuser. Le prix de la commande n&apos;est modifié qu&apos;après son accord.</p>
+        <p className="text-sm text-ink-2">Le client recevra une carte avec Accepter / Refuser. Le prix de la commande n&apos;est modifié qu&apos;après son accord.</p>
         <Select
           label="Article de la commande"
           value={itemId}
@@ -66,7 +66,7 @@ export function PriceProposalModal({ open, onClose, conversation }: Props) {
         <Input label="Nouveau prix unitaire ($)" type="number" inputMode="decimal" min="1" step="0.01" value={price} onChange={(e) => setPrice(e.target.value)} hint={item ? `Prix actuel : ${formatPrice(item.unitPrice)}` : undefined} error={error} />
         <Textarea label="Motif (optionnel)" value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Ex. : remise fidélité, produit reconditionné…" className="min-h-[80px]" />
         <div className="flex flex-col-reverse gap-2.5 pt-1 sm:flex-row sm:justify-end">
-          <Button variant="chip" upper={false} onClick={onClose}>Annuler</Button>
+          <Button variant="secondary" upper={false} onClick={onClose}>Annuler</Button>
           <Button upper={false} loading={propose.isPending} onClick={submit}>Envoyer la proposition</Button>
         </div>
       </div>

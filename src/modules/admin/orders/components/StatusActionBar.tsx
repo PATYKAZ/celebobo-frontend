@@ -27,7 +27,7 @@ const ACTIONS: Partial<Record<OrderStatus, ActionDef>> = {
   en_livraison: { label: "Passer en livraison", confirm: "La commande part en livraison chez le client.", variant: "primary", icon: <Truck size={16} variant="Bold" /> },
   livree: { label: "Marquer livrée", confirm: "Saisissez le code de livraison que le client vous donne une fois sa commande en main.", variant: "primary", icon: <TickCircle size={16} variant="Bold" /> },
   annulee: { label: "Annuler la commande", confirm: "Cette action clôture la commande. Indiquez le motif.", variant: "danger", icon: <CloseCircle size={16} variant="Bold" />, noteRequired: true },
-  retournee: { label: "Enregistrer un retour", confirm: "La commande livrée est retournée par le client. Indiquez le motif.", variant: "dark", icon: <Refresh2 size={16} variant="Bold" />, noteRequired: true },
+  retournee: { label: "Enregistrer un retour", confirm: "La commande livrée est retournée par le client. Indiquez le motif.", variant: "secondary", icon: <Refresh2 size={16} variant="Bold" />, noteRequired: true },
 };
 
 /** Barre d'actions de statut : étape suivante + annulation + retour, désactivées avec l'explication si le rôle ne le permet pas. */
@@ -119,26 +119,26 @@ export function StatusActionBar({ order, onAssign }: { order: Order; onAssign?: 
           const t = orderWorkflow.canTransition(user, order, s);
           return (
             <span key={s} title={t.ok ? undefined : t.reason}>
-              <Button size="sm" upper={false} variant={t.ok ? a.variant : "chip"} disabled={!t.ok} leftIcon={a.icon} onClick={() => setPending(s)}>
+              <Button size="sm" upper={false} variant={t.ok ? a.variant : "secondary"} disabled={!t.ok} leftIcon={a.icon} onClick={() => setPending(s)}>
                 {a.label}
               </Button>
             </span>
           );
         })}
-        {candidates.length === 0 && order.status !== "attente" && <p className="text-[13px] text-ink-3">Commande clôturée — aucune action possible.</p>}
+        {candidates.length === 0 && order.status !== "attente" && <p className="text-sm text-ink-3">Commande clôturée — aucune action possible.</p>}
       </div>
-      {candidates.length === 0 && order.status !== "attente" && <p className="text-[13px] text-ink-3 lg:hidden">Commande clôturée — aucune action possible.</p>}
+      {candidates.length === 0 && order.status !== "attente" && <p className="text-sm text-ink-3 lg:hidden">Commande clôturée — aucune action possible.</p>}
 
       <Modal open={!!pending} onClose={close} title={def?.label} className="max-w-[460px]">
         {delivering ? (
           <div className="space-y-3">
             {locked ? (
-              <p className="rounded-md bg-danger-50 px-3 py-2.5 text-[13px] leading-[19px] text-danger">
+              <p className="rounded-md bg-danger-50 px-3 py-2.5 text-sm text-danger">
                 Code bloqué après trop d&apos;erreurs. {staff ? "Vérifiez avec le client, puis confirmez la livraison avec un motif." : "Un responsable doit confirmer la livraison."}
               </p>
             ) : (
               <>
-                <p className="text-[14px] leading-[22px] text-ink-2">{def?.confirm}</p>
+                <p className="text-sm text-ink-2">{def?.confirm}</p>
                 <Input
                   label="Code de livraison"
                   value={code}
@@ -151,7 +151,7 @@ export function StatusActionBar({ order, onAssign }: { order: Order; onAssign?: 
                   maxLength={7}
                   placeholder="6 chiffres"
                   error={codeError}
-                  className="text-center text-[20px] tracking-[0.3em]"
+                  className="text-center text-lg"
                   autoFocus
                 />
               </>
@@ -169,12 +169,12 @@ export function StatusActionBar({ order, onAssign }: { order: Order; onAssign?: 
           </div>
         ) : (
           <>
-            <p className="text-[14px] leading-[22px] text-ink-2">{def?.confirm}</p>
+            <p className="text-sm text-ink-2">{def?.confirm}</p>
             <Textarea label={def?.noteRequired ? "Motif" : "Note (optionnel)"} required={def?.noteRequired} value={note} onChange={(e) => setNote(e.target.value)} className="mt-3 min-h-[80px]" wrapperClassName="mt-3" />
           </>
         )}
         <div className="mt-5 grid grid-cols-2 gap-3">
-          <Button variant="chip" upper={false} onClick={close}>Retour</Button>
+          <Button variant="secondary" upper={false} onClick={close}>Retour</Button>
           <Button
             variant={def?.variant ?? "primary"}
             upper={false}

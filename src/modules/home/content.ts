@@ -6,20 +6,20 @@ const h = (n: string) => `/images/hero/${n}.jpg`;
 
 /** Marques connues : seules celles présentes dans le catalogue s'affichent (cf. home.mapper). */
 export const BRANDS: Brand[] = [
-  { name: "Apple", aliases: ["iPhone", "iPad", "MacBook", "AirPods"], className: "text-[26px] font-semibold tracking-tight", color: "#111" },
-  { name: "SONY", className: "text-[22px] font-black tracking-[0.18em]", color: "#111" },
-  { name: "JBL", className: "text-[28px] font-black italic", color: "#FF3300" },
-  { name: "logitech", className: "text-[24px] font-bold lowercase tracking-tight", color: "#00B8FC" },
-  { name: "hp", className: "text-[30px] font-extrabold lowercase", color: "#0096D6" },
-  { name: "DELL", className: "text-[24px] font-black tracking-[0.12em]", color: "#007DB8" },
-  { name: "Xiaomi", aliases: ["Redmi", "Poco"], className: "text-[24px] font-black tracking-tight", color: "#FF6900" },
-  { name: "SAMSUNG", className: "text-[18px] font-black tracking-[0.2em]", color: "#1428A0" },
-  { name: "Canon", className: "text-[26px] font-extrabold italic", color: "#CC0000" },
-  { name: "HUAWEI", className: "text-[19px] font-bold tracking-[0.18em]", color: "#CF0A2C" },
-  { name: "TECNO", className: "text-[22px] font-black tracking-[0.12em]", color: "#0072CE" },
-  { name: "Infinix", className: "text-[24px] font-bold tracking-tight", color: "#2DB24A" },
-  { name: "Lenovo", className: "text-[24px] font-bold tracking-tight", color: "#E2231A" },
-  { name: "ANKER", className: "text-[22px] font-black tracking-[0.14em]", color: "#00A7E1" },
+  { name: "Apple", aliases: ["iPhone", "iPad", "MacBook", "AirPods"], className: "text-xl font-semibold tracking-tight", color: "#111" },
+  { name: "SONY", className: "text-xl font-bold", color: "#111" },
+  { name: "JBL", className: "text-2xl font-bold italic", color: "#FF3300" },
+  { name: "logitech", className: "text-xl font-bold lowercase tracking-tight", color: "#00B8FC" },
+  { name: "hp", className: "text-2xl font-bold lowercase", color: "#0096D6" },
+  { name: "DELL", className: "text-xl font-bold", color: "#007DB8" },
+  { name: "Xiaomi", aliases: ["Redmi", "Poco"], className: "text-xl font-bold tracking-tight", color: "#FF6900" },
+  { name: "SAMSUNG", className: "text-lg font-bold", color: "#1428A0" },
+  { name: "Canon", className: "text-xl font-bold italic", color: "#CC0000" },
+  { name: "HUAWEI", className: "text-lg font-bold", color: "#CF0A2C" },
+  { name: "TECNO", className: "text-xl font-bold", color: "#0072CE" },
+  { name: "Infinix", className: "text-xl font-bold tracking-tight", color: "#2DB24A" },
+  { name: "Lenovo", className: "text-xl font-bold tracking-tight", color: "#E2231A" },
+  { name: "ANKER", className: "text-xl font-bold", color: "#00A7E1" },
 ];
 
 /**

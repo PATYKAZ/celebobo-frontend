@@ -20,18 +20,18 @@ export function FormField({ label, error, hint, required, className, htmlFor, ch
   return (
     <div className={cn("flex flex-col gap-1.5", className)}>
       {label && (
-        <label htmlFor={htmlFor} className="text-[13px] font-semibold leading-[19.5px]">
+        <label htmlFor={htmlFor} className="text-sm font-semibold">
           {label}
           {required && <span className="ml-0.5 text-danger">*</span>}
         </label>
       )}
       {children}
       {error ? (
-        <p role="alert" className="text-[12px] leading-[18px] text-danger">
+        <p role="alert" className="text-xs text-danger">
           {error}
         </p>
       ) : hint ? (
-        <p className="text-[12px] leading-[18px] text-ink-3">{hint}</p>
+        <p className="text-xs text-ink-3">{hint}</p>
       ) : null}
     </div>
   );
@@ -152,7 +152,7 @@ interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "typ
 
 export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Checkbox({ label, className, ...rest }, ref) {
   return (
-    <label className={cn("flex min-h-11 cursor-pointer items-start gap-3 py-1.5 text-[13px] leading-[19.5px] text-ink-2 sm:min-h-0 sm:gap-2.5 sm:py-0", className)}>
+    <label className={cn("flex min-h-11 cursor-pointer items-start gap-3 py-1.5 text-sm text-ink-2 sm:min-h-0 sm:gap-2.5 sm:py-0", className)}>
       <input ref={ref} type="checkbox" className="mt-0.5 size-5 shrink-0 cursor-pointer accent-primary sm:size-4" {...rest} />
       <span>{label}</span>
     </label>

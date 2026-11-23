@@ -53,8 +53,8 @@ const isSelect = (c: { key: string }) => c.key === "select" || c.key === "checkb
  * ≥ md : tableau classique (lignes animées, squelettes). < md : liste de cartes empilées, plus lisible au doigt.
  */
 export function DataTable<T>({ columns, rows, rowKey, loading, empty, onRowClick, page, pageCount, onPageChange, className, skeletonRows = 6 }: Props<T>) {
-  const th = (c: Column<T>) => cn("whitespace-nowrap px-4 py-3 text-[12px] font-semibold uppercase tracking-wide text-ink-2", ALIGN[c.align ?? "left"], c.hideBelow && HIDE[c.hideBelow]);
-  const td = (c: Column<T>) => cn("px-4 py-3.5 align-middle text-[14px]", ALIGN[c.align ?? "left"], c.hideBelow && HIDE[c.hideBelow], c.className);
+  const th = (c: Column<T>) => cn("whitespace-nowrap px-4 py-3 text-xs font-semibold text-ink-2", ALIGN[c.align ?? "left"], c.hideBelow && HIDE[c.hideBelow]);
+  const td = (c: Column<T>) => cn("px-4 py-3.5 align-middle text-sm", ALIGN[c.align ?? "left"], c.hideBelow && HIDE[c.hideBelow], c.className);
 
   // classement des colonnes pour le rendu carte
   const selectCol = columns.find(isSelect);
@@ -122,15 +122,15 @@ export function DataTable<T>({ columns, rows, rowKey, loading, empty, onRowClick
                 className={cn("rounded-box border border-line-3 bg-surface p-4 transition-colors", onRowClick && "cursor-pointer active:bg-primary-50")}
               >
                 <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0 flex-1 text-[14px]">{titleCol?.cell(row, i)}</div>
+                  <div className="min-w-0 flex-1 text-sm">{titleCol?.cell(row, i)}</div>
                   {selectCol && <div onClick={(e) => e.stopPropagation()}>{selectCol.cell(row, i)}</div>}
                 </div>
                 {metaCols.length > 0 && (
                   <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-2.5 border-t border-line-3/70 pt-3">
                     {metaCols.map((c) => (
                       <div key={c.key} className="min-w-0">
-                        <dt className="text-[11px] font-semibold uppercase tracking-wide text-ink-3">{c.mobileLabel ?? c.header}</dt>
-                        <dd className="mt-0.5 min-w-0 wrap-break-word text-[13px] font-medium">{c.cell(row, i)}</dd>
+                        <dt className="text-xs font-semibold text-ink-3">{c.mobileLabel ?? c.header}</dt>
+                        <dd className="mt-0.5 min-w-0 wrap-break-word text-sm font-medium">{c.cell(row, i)}</dd>
                       </div>
                     ))}
                   </dl>
@@ -146,7 +146,7 @@ export function DataTable<T>({ columns, rows, rowKey, loading, empty, onRowClick
             ))}
       </div>
 
-      {!loading && rows?.length === 0 && (empty ?? <p className="py-14 text-center text-[14px] text-ink-3">Aucun résultat.</p>)}
+      {!loading && rows?.length === 0 && (empty ?? <p className="py-14 text-center text-sm text-ink-3">Aucun résultat.</p>)}
       {page != null && pageCount != null && onPageChange && <Pagination page={page} pageCount={pageCount} onChange={onPageChange} className="py-5" />}
     </div>
   );

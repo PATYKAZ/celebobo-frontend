@@ -44,10 +44,10 @@ export function CartView() {
       ) : (
         <div className="grid gap-3 sm:gap-4 lg:grid-cols-[1fr_380px]">
           <Reveal className="min-w-0">
-            <Block pad="none" className="p-4 sm:p-[30px]">
+            <Block pad="none" className="p-4 sm:p-8">
               <div className="flex items-center justify-between gap-3">
-                <h1 className="text-[22px] leading-[28px] sm:text-h-page">Mon panier <span className="text-[15px] font-medium text-ink-3 sm:text-[16px]">({count})</span></h1>
-                <button onClick={() => setConfirmClear(true)} className="flex min-h-11 items-center gap-1.5 rounded-full px-2 text-[13px] text-ink-2 transition-colors hover:text-danger active:scale-95">
+                <h1 className="text-xl sm:text-h-page">Mon panier <span className="text-sm font-medium text-ink-3 sm:text-base">({count})</span></h1>
+                <button onClick={() => setConfirmClear(true)} className="flex min-h-11 items-center gap-1.5 rounded-full px-2 text-sm text-ink-2 transition-colors hover:text-danger active:scale-95">
                   <Trash size={16} /> <span className="max-sm:hidden">Vider le panier</span><span className="sm:hidden">Vider</span>
                 </button>
               </div>
@@ -58,7 +58,7 @@ export function CartView() {
                   ))}
                 </AnimatePresence>
               </ul>
-              <Button href={ROUTES.products} variant="chip" leftIcon={<ArrowLeft size={16} />} className="mt-4 max-sm:w-full">Continuer mes achats</Button>
+              <Button href={ROUTES.products} variant="secondary" leftIcon={<ArrowLeft size={16} />} className="mt-4 max-sm:w-full">Continuer mes achats</Button>
             </Block>
           </Reveal>
 
@@ -84,8 +84,8 @@ export function CartView() {
           <div className="fixed inset-x-0 bottom-tabbar z-40 border-t border-line-3 bg-surface/95 px-4 pb-3 pt-3 backdrop-blur-xl lg:hidden">
             <div className="mx-auto flex max-w-[640px] items-center gap-3">
               <div className="min-w-0">
-                <p className="text-[11px] font-semibold uppercase leading-[14px] text-ink-3">Total · {count} article{count > 1 ? "s" : ""}</p>
-                <p className="text-[20px] font-extrabold leading-[26px] text-primary">{formatPrice(payable)}</p>
+                <p className="text-xs font-semibold text-ink-3">Total · {count} article{count > 1 ? "s" : ""}</p>
+                <p className="text-lg font-bold text-primary">{formatPrice(payable)}</p>
               </div>
               <Button href={ROUTES.checkout} size="lg" className="ml-auto flex-1 sm:flex-none" rightIcon={<ArrowRight size={17} />}>Commander</Button>
             </div>

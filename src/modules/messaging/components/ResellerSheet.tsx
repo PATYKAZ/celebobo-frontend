@@ -43,7 +43,7 @@ export function ResellerSheet({ open, onClose, options, value, onChange, onConfi
       </div>
 
       <ul role="listbox" className="space-y-1 pb-2">
-        {list.length === 0 && <li className="px-3 py-8 text-center text-[14px] text-ink-3">Aucun revendeur trouvé</li>}
+        {list.length === 0 && <li className="px-3 py-8 text-center text-sm text-ink-3">Aucun revendeur trouvé</li>}
         {list.map((o) => {
           const selected = String(o.id) === value;
           const av = o.availability ?? "online";
@@ -58,16 +58,16 @@ export function ResellerSheet({ open, onClose, options, value, onChange, onConfi
               >
                 <span className="relative shrink-0">
                   <Avatar name={o.name} size={44} />
-                  <span className={cn("absolute -bottom-0.5 -right-0.5 size-3.5 rounded-full ring-2 ring-white", DOT[av])} />
+                  <span className={cn("absolute -bottom-0.5 -right-0.5 size-3.5 rounded-full ring-2 ring-surface", DOT[av])} />
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="block truncate text-[15px] font-semibold leading-[20px]">{o.name}</span>
-                  <span className="text-[12px] text-ink-3">
+                  <span className="block truncate text-sm font-semibold">{o.name}</span>
+                  <span className="text-xs text-ink-3">
                     {LABEL[av]}
                     {o.code ? ` · code ${o.code}` : ""}
                   </span>
                 </span>
-                {o.openOrders != null && <span className={cn("shrink-0 rounded-full px-2.5 py-1 text-[11px] font-bold", o.openOrders > 4 ? "bg-danger-100 text-danger" : "bg-chip text-ink-2")}>{o.openOrders} en cours</span>}
+                {o.openOrders != null && <span className={cn("shrink-0 rounded-full px-2.5 py-1 text-xs font-bold", o.openOrders > 4 ? "bg-danger-100 text-danger" : "bg-chip text-ink-2")}>{o.openOrders} en cours</span>}
                 {selected && <TickCircle size={22} variant="Bold" className="shrink-0 text-primary" />}
               </button>
             </li>

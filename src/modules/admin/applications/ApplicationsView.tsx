@@ -61,9 +61,9 @@ function Row({ a }: { a: Application }) {
     onError: (e) => toast.error("Refus impossible", getErrorMessage(e)),
   });
   return (
-    <li className="space-y-2 px-4 py-3.5 text-[13px] sm:px-6">
+    <li className="space-y-2 px-4 py-3.5 text-sm sm:px-6">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <span><b className="text-[14px]">{a.firstName} {a.lastName}</b> · {a.city}</span>
+        <span><b className="text-sm">{a.firstName} {a.lastName}</b> · {a.city}</span>
         <Pill tone={STATUS[a.status].tone}>{STATUS[a.status].label}</Pill>
       </div>
       <p className="text-ink-3">{a.email} · {a.phoneNumber} · reçue le {formatDateTime(a.createdAt)}</p>
@@ -82,7 +82,7 @@ function Row({ a }: { a: Application }) {
                 <Button size="sm" variant="ghost" upper={false} onClick={() => setRejecting(false)}>Annuler</Button>
               </>
             ) : (
-              <Button size="sm" variant="outline" upper={false} onClick={() => setRejecting(true)}>Refuser</Button>
+              <Button size="sm" variant="secondary" upper={false} onClick={() => setRejecting(true)}>Refuser</Button>
             )}
           </div>
         </div>

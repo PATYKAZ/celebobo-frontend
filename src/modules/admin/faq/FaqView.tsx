@@ -54,7 +54,7 @@ function EntryForm({ entry, categories, onClose }: { entry: FaqEntry | null; cat
       <datalist id="faq-categories">{categories.map((c) => <option key={c} value={c} />)}</datalist>
       <Switch checked={v.isPublished} onChange={(on) => set("isPublished", on)} label="Visible sur le site" />
       <div className="flex justify-end gap-2">
-        <Button variant="outline" upper={false} onClick={onClose}>Annuler</Button>
+        <Button variant="secondary" upper={false} onClick={onClose}>Annuler</Button>
         <Button upper={false} disabled={!v.question.trim() || !v.answer.trim()} loading={save.isPending} onClick={() => save.mutate()}>Enregistrer</Button>
       </div>
     </div>
@@ -86,17 +86,17 @@ function Content() {
         <div className="space-y-3 sm:space-y-4">
           {groups.map(([category, entries]) => (
             <Block key={category} pad="none" className="overflow-hidden">
-              <h2 className="px-4 pt-4 text-[15px] font-bold sm:px-6">{category}</h2>
+              <h2 className="px-4 pt-4 text-sm font-bold sm:px-6">{category}</h2>
               <ul className="divide-y divide-line-3">
                 {entries.map((entry) => (
-                  <li key={entry.id} className="space-y-1 px-4 py-3 text-[13px] sm:px-6">
+                  <li key={entry.id} className="space-y-1 px-4 py-3 text-sm sm:px-6">
                     <div className="flex flex-wrap items-start justify-between gap-2">
-                      <b className="text-[14px]">{entry.question}</b>
+                      <b className="text-sm">{entry.question}</b>
                       {!entry.isPublished && <Pill tone="gray">Masquée</Pill>}
                     </div>
                     <p className="line-clamp-2 whitespace-pre-line text-ink-2">{entry.answer}</p>
                     <div className="flex gap-2 pt-1">
-                      <Button size="sm" variant="outline" upper={false} onClick={() => setEditing(entry)}>Modifier</Button>
+                      <Button size="sm" variant="secondary" upper={false} onClick={() => setEditing(entry)}>Modifier</Button>
                       <Button size="sm" variant="ghost" upper={false} loading={remove.isPending && remove.variables === entry.id} onClick={() => remove.mutate(entry.id)}>Supprimer</Button>
                     </div>
                   </li>

@@ -44,7 +44,7 @@ function Toggle({ active, onClick, children }: { active: boolean; onClick: () =>
       type="button"
       aria-pressed={active}
       onClick={onClick}
-      className={cn("h-12 rounded-box border px-3 text-[13px] font-semibold transition-colors active:scale-[0.97] sm:h-[45px] sm:px-4", active ? "border-primary bg-primary text-white" : "border-line bg-surface hover:border-primary hover:text-primary")}
+      className={cn("h-12 rounded-box border px-3 text-sm font-semibold transition-colors active:scale-[0.97] sm:h-[45px] sm:px-4", active ? "border-primary bg-primary text-white" : "border-line bg-surface hover:border-primary hover:text-primary")}
     >
       {children}
     </button>
@@ -141,8 +141,8 @@ function Content() {
         <div className="flex min-w-0 items-center gap-3 sm:min-w-[220px]">
           <span className={cn("relative size-14 shrink-0 sm:size-12 overflow-hidden rounded-md bg-page", p.isActive === false && "opacity-50 grayscale")}>{p.image && <Image src={p.image} alt="" fill sizes="48px" className="object-cover" />}</span>
           <div className="min-w-0">
-            <Link prefetch={false} href={ROUTES.admin.product(p.id)} className="-my-1.5 line-clamp-2 py-1.5 font-bold leading-[19px] hover:text-primary sm:line-clamp-1">{p.name}</Link>
-            <p className="flex items-center gap-1.5 text-[12px] text-ink-3">
+            <Link prefetch={false} href={ROUTES.admin.product(p.id)} className="-my-1.5 line-clamp-2 py-1.5 font-bold hover:text-primary sm:line-clamp-1">{p.name}</Link>
+            <p className="flex items-center gap-1.5 text-xs text-ink-3">
               {p.category}
               {p.isActive === false && <span className="inline-flex items-center gap-0.5 font-semibold text-ink-2"><EyeSlash size={12} /> masqué</span>}
               {p.origin === "partner" && <Pill tone="yellow" className="h-[18px] px-1.5">Partenaire</Pill>}
@@ -161,7 +161,7 @@ function Content() {
         return (
           <div>
             <p className={cn("font-bold", pr.onSale && "text-danger")}>{formatPrice(pr.current)}</p>
-            {pr.original && <p className="text-[12px] text-ink-3 line-through">{formatPrice(pr.original)}</p>}
+            {pr.original && <p className="text-xs text-ink-3 line-through">{formatPrice(pr.original)}</p>}
           </div>
         );
       },
@@ -190,7 +190,7 @@ function Content() {
       key: "deadline",
       header: "À vendre avant",
       hideBelow: "xl",
-      cell: (p) => (p.dateWish ? <div className="flex flex-col items-start gap-1"><span className="text-[13px] text-ink-2">{formatDate(p.dateWish)}</span><DeadlineBadge dateWish={p.dateWish} /></div> : <span className="text-ink-3">—</span>),
+      cell: (p) => (p.dateWish ? <div className="flex flex-col items-start gap-1"><span className="text-sm text-ink-2">{formatDate(p.dateWish)}</span><DeadlineBadge dateWish={p.dateWish} /></div> : <span className="text-ink-3">—</span>),
     },
     {
       key: "rating",
@@ -230,8 +230,8 @@ function Content() {
         description={canManage ? "Gérez votre catalogue : prix, promotions, stock, variantes et visuels." : "Consultez le catalogue (lecture seule)."}
         actions={
           <>
-            {canManage && <Button variant="chip" upper={false} loading={exporting} leftIcon={<DocumentDownload size={17} />} onClick={exportCsv}>Exporter CSV</Button>}
-            {canImport && <Button variant="chip" upper={false} leftIcon={<DocumentUpload size={17} />} onClick={() => setImportOpen(true)}>Importer CSV</Button>}
+            {canManage && <Button variant="secondary" upper={false} loading={exporting} leftIcon={<DocumentDownload size={17} />} onClick={exportCsv}>Exporter CSV</Button>}
+            {canImport && <Button variant="secondary" upper={false} leftIcon={<DocumentUpload size={17} />} onClick={() => setImportOpen(true)}>Importer CSV</Button>}
             {canManage && <Button href={ROUTES.admin.productNew} leftIcon={<Add size={18} />}>Nouveau produit</Button>}
           </>
         }
@@ -265,7 +265,7 @@ function Content() {
         <FilterSheet open={sheet} onClose={() => setSheet(false)} title="Filtrer les produits" onReset={() => { reset(); setSearch(""); }} resetDisabled={activeCount === 0}>
           <Select label="Catégorie" value={params.category ? String(params.category) : ""} onChange={(e) => set({ cat: e.target.value })} options={[{ value: "", label: "Toutes les catégories" }, ...(categories ?? []).map((c) => ({ value: c.id, label: categoryOptionLabel(c) }))]} />
           <div>
-            <p className="mb-2 text-[13px] font-semibold">Disponibilité</p>
+            <p className="mb-2 text-sm font-semibold">Disponibilité</p>
             <div className="grid grid-cols-3 gap-2">
               <Toggle active={!!params.onSale} onClick={() => set({ sale: !params.onSale })}>En promo</Toggle>
               <Toggle active={!!params.lowStock} onClick={() => set({ low: !params.lowStock, out: undefined })}>Stock bas</Toggle>
@@ -290,10 +290,10 @@ function Content() {
           <Toggle active={!!params.onSale} onClick={() => set({ sale: !params.onSale })}>En promo</Toggle>
           <Toggle active={!!params.lowStock} onClick={() => set({ low: !params.lowStock, out: undefined })}>Stock bas</Toggle>
           <Toggle active={!!params.outOfStock} onClick={() => set({ out: !params.outOfStock, low: undefined })}>Rupture</Toggle>
-          <button onClick={() => setAdvanced((a) => !a)} aria-expanded={advanced} className={cn("inline-flex h-[45px] items-center gap-2 rounded-box border px-4 text-[13px] font-semibold transition-colors", advanced ? "border-primary text-primary" : "border-line hover:border-primary hover:text-primary")}>
+          <button onClick={() => setAdvanced((a) => !a)} aria-expanded={advanced} className={cn("inline-flex h-[45px] items-center gap-2 rounded-box border px-4 text-sm font-semibold transition-colors", advanced ? "border-primary text-primary" : "border-line hover:border-primary hover:text-primary")}>
             <Filter size={16} /> Filtres avancés
           </button>
-          {activeCount > 0 && <button onClick={() => { reset(); setSearch(""); }} className="text-[13px] font-semibold text-danger hover:underline">Réinitialiser ({activeCount})</button>}
+          {activeCount > 0 && <button onClick={() => { reset(); setSearch(""); }} className="text-sm font-semibold text-danger hover:underline">Réinitialiser ({activeCount})</button>}
         </div>
         <AnimatePresence initial={false}>
           {advanced && (

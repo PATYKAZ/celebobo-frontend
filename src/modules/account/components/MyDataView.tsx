@@ -42,21 +42,21 @@ function download(job: DataExportJob) {
 function ExportState({ job }: { job: DataExportJob }) {
   if (job.status === "pending" || job.status === "running")
     return (
-      <div className="flex items-center gap-3 rounded-box bg-chip p-3.5 text-[13px] leading-[19px] text-ink-2 sm:p-4 sm:text-[14px]">
+      <div className="flex items-center gap-3 rounded-box bg-chip p-3.5 text-sm text-ink-2 sm:p-4 sm:text-sm">
         <Spinner size={20} className="shrink-0 text-primary" />
         <span>Préparation de votre fichier… Vous pouvez quitter cette page : il vous attendra ici.</span>
       </div>
     );
   if (job.status === "failed")
-    return <p className="rounded-box bg-danger-50 p-3.5 text-[13px] leading-[19px] text-danger sm:p-4 sm:text-[14px]">La préparation de votre fichier a échoué. Vous pourrez relancer la demande dans quelques minutes.</p>;
+    return <p className="rounded-box bg-danger-50 p-3.5 text-sm text-danger sm:p-4 sm:text-sm">La préparation de votre fichier a échoué. Vous pourrez relancer la demande dans quelques minutes.</p>;
   if (!job.downloadable)
-    return <p className="rounded-box bg-chip p-3.5 text-[13px] leading-[19px] text-ink-2 sm:p-4 sm:text-[14px]">Le lien de votre dernier fichier a expiré. Demandez un nouvel export.</p>;
+    return <p className="rounded-box bg-chip p-3.5 text-sm text-ink-2 sm:p-4 sm:text-sm">Le lien de votre dernier fichier a expiré. Demandez un nouvel export.</p>;
   return (
-    <div className="flex flex-wrap items-center gap-3 rounded-box bg-primary-50 p-3.5 text-[13px] leading-[19px] text-primary-dark sm:p-4 sm:text-[14px]">
+    <div className="flex flex-wrap items-center gap-3 rounded-box bg-primary-50 p-3.5 text-sm text-primary-dark sm:p-4 sm:text-sm">
       <TickCircle size={22} variant="Bold" className="shrink-0" />
       <div className="min-w-0 flex-1">
         <p className="font-bold">Votre fichier est prêt ({sizeLabel(job.size)})</p>
-        {job.expiresAt && <p className="text-[12px] sm:text-[13px]">Lien valable jusqu&apos;au {formatDateTime(job.expiresAt)}.</p>}
+        {job.expiresAt && <p className="text-xs sm:text-sm">Lien valable jusqu&apos;au {formatDateTime(job.expiresAt)}.</p>}
       </div>
       <Button size="sm" leftIcon={<DocumentDownload size={16} />} onClick={() => download(job)} className="max-sm:w-full">
         Télécharger le fichier
@@ -82,20 +82,20 @@ function Content() {
 
   return (
     <Reveal>
-      <Block pad="none" className="p-4 sm:p-[30px]">
-        <h1 className="text-[22px] leading-[28px] text-primary sm:text-h-page">Mes données</h1>
-        <p className="mt-1 text-[13px] leading-[19px] text-ink-2 sm:text-[14px]">
+      <Block pad="none" className="p-4 sm:p-8">
+        <h1 className="text-xl text-primary sm:text-h-page">Mes données</h1>
+        <p className="mt-1 text-sm text-ink-2 sm:text-sm">
           Téléchargez une copie des données que Celebobo garde sur votre compte, dans un fichier ZIP : une page à ouvrir dans votre navigateur et un fichier JSON pour les conserver ou les transmettre à un autre service.
         </p>
 
         <div className="mt-4 rounded-box border border-line-3 p-4 sm:mt-6 sm:p-5">
-          <p className="text-[15px] font-bold">Ce que contient le fichier</p>
-          <ul className="mt-2 list-disc space-y-1 pl-5 text-[13px] leading-[19px] text-ink-2 sm:text-[14px]">
+          <p className="text-sm font-bold">Ce que contient le fichier</p>
+          <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-ink-2 sm:text-sm">
             {included.map((line) => (
               <li key={line}>{line}</li>
             ))}
           </ul>
-          <p className="mt-3 text-[12px] leading-[18px] text-ink-3 sm:text-[13px]">Les coordonnées des autres personnes (revendeurs, autres clients) n&apos;y figurent pas. Le lien de téléchargement reste valable 48 heures ; vous pouvez demander un nouvel export une fois par heure (10 minutes après un échec).</p>
+          <p className="mt-3 text-xs text-ink-3 sm:text-sm">Les coordonnées des autres personnes (revendeurs, autres clients) n&apos;y figurent pas. Le lien de téléchargement reste valable 48 heures ; vous pouvez demander un nouvel export une fois par heure (10 minutes après un échec).</p>
         </div>
 
         <div className="mt-4 space-y-3 sm:mt-6">
@@ -104,11 +104,11 @@ function Content() {
             <Button leftIcon={<DocumentDownload size={18} />} loading={request.isPending} disabled={isLoading || preparing || !!waitUntil} onClick={ask} className="max-sm:w-full">
               {job?.downloadable ? "Préparer un nouvel export" : "Télécharger mes données"}
             </Button>
-            {waitUntil && <span className="text-[13px] text-ink-3">Nouvelle demande possible à partir du {formatDateTime(waitUntil)}.</span>}
+            {waitUntil && <span className="text-sm text-ink-3">Nouvelle demande possible à partir du {formatDateTime(waitUntil)}.</span>}
           </div>
         </div>
 
-        <div className="mt-6 flex items-start gap-3 rounded-box bg-page/60 p-3.5 text-[13px] leading-[19px] text-ink-2 sm:p-4 sm:text-[14px]">
+        <div className="mt-6 flex items-start gap-3 rounded-box bg-page/60 p-3.5 text-sm text-ink-2 sm:p-4 sm:text-sm">
           <ShieldTick size={22} variant="Bold" className="mt-0.5 shrink-0 text-primary" />
           <p>
             Vous pouvez aussi, gratuitement, demander l&apos;accès à vos données, leur correction ou leur effacement : nous accusons réception sous 72 heures et répondons dans les 30 jours. La marche à suivre est dans notre{" "}
@@ -122,7 +122,7 @@ function Content() {
             avec « Données personnelles » en objet.
           </p>
         </div>
-        <p className="mt-3 flex items-center gap-2 text-[12px] text-ink-3">
+        <p className="mt-3 flex items-center gap-2 text-xs text-ink-3">
           <InfoCircle size={14} className="shrink-0" /> Gardez ce fichier en lieu sûr : il contient vos informations personnelles.
         </p>
       </Block>

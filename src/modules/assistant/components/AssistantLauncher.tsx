@@ -160,11 +160,11 @@ export function AssistantLauncher() {
                 exit={{ opacity: 0, scale: 0.9 }}
                 onClick={toggle}
                 className={cn(
-                  "absolute bottom-[calc(100%+10px)] w-max max-w-[220px] rounded-2xl bg-surface px-4 py-2.5 text-left text-[13px] font-semibold leading-[18px] shadow-[0_10px_30px_rgba(0,0,0,.18)]",
+                  "absolute bottom-[calc(100%+10px)] w-max max-w-[220px] rounded-lg bg-surface px-4 py-2.5 text-left text-sm font-semibold shadow-lg",
                   side === "r" ? "right-0 rounded-br-md" : "left-0 rounded-bl-md",
                 )}
               >
-                Besoin d&apos;aide ? <span className="font-normal text-ink-2">Je peux vous conseiller 👋</span>
+                Besoin d&apos;aide ? <span className="font-normal text-ink-2">Je peux vous conseiller.</span>
               </motion.button>
             )}
           </AnimatePresence>
@@ -178,23 +178,24 @@ export function AssistantLauncher() {
             animate={{ scale: dragging ? 1.12 : 1 }}
             transition={{ type: "spring", stiffness: 400, damping: 22 }}
             className={cn(
-              "relative grid size-full place-items-center rounded-full bg-[linear-gradient(145deg,#2E8A84,#18534F)] text-white shadow-[0_8px_26px_rgba(34,109,104,.5)] outline-hidden",
+              "relative grid size-full place-items-center rounded-full bg-[linear-gradient(145deg,#2E8A84,#18534F)] text-white shadow-md outline-hidden",
               dragging ? "cursor-grabbing" : "cursor-grab",
             )}
           >
-            {!open && !dragging && <span className="absolute inset-0 animate-pulse-ring rounded-full bg-primary/40" />}
+            {/* trois pulsations à l'arrivée pour signaler le bouton, puis plus rien : une animation en boucle finit par distraire */}
+            {!open && !dragging && <span className="absolute inset-0 animate-pulse-ring rounded-full bg-primary/40 [animation-iteration-count:3]" />}
             <AnimatePresence mode="wait" initial={false}>
               {open ? (
                 <motion.span key="x" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.18 }}>
                   <ArrowDown2 size={26} variant="Bold" />
                 </motion.span>
               ) : (
-                <motion.span key="i" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.18 }} className="animate-float-slow">
+                <motion.span key="i" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.18 }}>
                   <BagHappy size={28} variant="Bold" />
                 </motion.span>
               )}
             </AnimatePresence>
-            <span className="absolute right-0.5 top-0.5 size-3.5 rounded-full bg-sun ring-2 ring-white" />
+            <span className="absolute right-0.5 top-0.5 size-3.5 rounded-full bg-sun ring-2 ring-surface" />
           </motion.button>
         </motion.div>
       </div>
@@ -217,7 +218,7 @@ export function AssistantLauncher() {
             exit={{ opacity: 0, y: 16, scale: 0.97 }}
             transition={{ type: "spring", stiffness: 340, damping: 30 }}
             className={cn(
-              "fixed bottom-[168px] z-61 flex h-[min(560px,calc(calc(var(--dvh)*100)-210px))] w-[390px] flex-col overflow-hidden rounded-box bg-surface shadow-[0_20px_60px_rgba(0,0,0,.28)]",
+              "fixed bottom-[168px] z-61 flex h-[min(560px,calc(calc(var(--dvh)*100)-210px))] w-[390px] flex-col overflow-hidden rounded-box bg-surface shadow-lg",
               side === "r" ? "right-5" : "left-5",
             )}
           >

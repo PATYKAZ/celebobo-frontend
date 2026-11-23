@@ -31,7 +31,7 @@ function Stepper({ steps }: { steps: Step[] }) {
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start 75%", "end 60%"] });
   const scaleY = useSpring(scrollYProgress, { stiffness: 120, damping: 24 });
   return (
-    <ol ref={ref} className="relative mt-8 space-y-5 pl-[60px] sm:mt-10 sm:space-y-8 sm:pl-20">
+    <ol ref={ref} className="relative mt-8 space-y-5 pl-15 sm:mt-10 sm:space-y-8 sm:pl-20">
       <span aria-hidden className="absolute bottom-6 left-[21px] top-6 w-[3px] rounded-full bg-chip sm:left-[35px]" />
       <motion.span aria-hidden style={{ scaleY }} className="absolute bottom-6 left-[21px] top-6 w-[3px] origin-top rounded-full bg-primary sm:left-[35px]" />
       {steps.map((s, i) => {
@@ -42,9 +42,9 @@ function Stepper({ steps }: { steps: Step[] }) {
               <Icon size={22} variant="Bold" />
             </motion.span>
             <Reveal direction="up" className="rounded-box border border-line-3 p-4 transition-colors hover:border-primary sm:p-6">
-              <span className="text-[12px] font-bold uppercase tracking-wider text-primary">Étape {i + 1}</span>
-              <h3 className="mt-1 text-[17px] leading-[23px] sm:text-[19px] sm:leading-[26px]">{s.title}</h3>
-              {s.text && <p className="mt-1.5 text-[14px] leading-[22px] text-ink-2 sm:mt-2 sm:leading-[23px]">{s.text}</p>}
+              <span className="text-xs font-bold text-primary">Étape {i + 1}</span>
+              <h3 className="mt-1 text-base sm:text-lg">{s.title}</h3>
+              {s.text && <p className="mt-1.5 text-sm text-ink-2 sm:mt-2">{s.text}</p>}
             </Reveal>
           </li>
         );
@@ -68,35 +68,35 @@ export function GuideView() {
     <>
       <Breadcrumb items={[{ label: "Guide d'achat" }]} />
 
-      <Block pad="none" className="p-4 text-center sm:p-[30px]">
-        <Reveal><span className="inline-block rounded-full bg-primary-50 px-4 py-1.5 text-[12px] font-bold uppercase tracking-wider text-primary">{page?.title ?? "Guide d'achat"}</span></Reveal>
-        <Reveal delay={0.08}><h1 className="mx-auto mt-4 max-w-[640px] text-[26px] font-extrabold leading-[32px] sm:text-[40px] sm:leading-[48px]">Comment commander chez <span className="text-primary">Celebobo</span> ?</h1></Reveal>
-        <Reveal delay={0.16}><p className="mx-auto mt-3 max-w-[560px] text-[14px] leading-[22px] text-ink-2 sm:mt-4 sm:text-[15px] sm:leading-[26px]">{page?.summary || "Cinq étapes simples, sans paiement en ligne risqué : vous gardez le contrôle du début à la fin."}</p></Reveal>
+      <Block pad="none" className="p-4 text-center sm:p-8">
+        <Reveal><span className="inline-block rounded-full bg-primary-50 px-4 py-1.5 text-xs font-bold text-primary">{page?.title ?? "Guide d'achat"}</span></Reveal>
+        <Reveal delay={0.08}><h1 className="mx-auto mt-4 max-w-[640px] text-xl font-bold sm:text-2xl">Comment commander chez <span className="text-primary">Celebobo</span> ?</h1></Reveal>
+        <Reveal delay={0.16}><p className="mx-auto mt-3 max-w-[560px] text-sm text-ink-2 sm:mt-4 sm:text-sm">{page?.summary || "Cinq étapes simples, sans paiement en ligne risqué : vous gardez le contrôle du début à la fin."}</p></Reveal>
         <div className="mx-auto max-w-[760px] text-left"><Stepper steps={guideSteps(page?.body)} /></div>
         <Reveal className="mt-8 flex flex-col gap-2.5 sm:mt-10 sm:flex-row sm:flex-wrap sm:justify-center sm:gap-3">
           <Button href={ROUTES.products} size="lg" className="max-sm:w-full">Commencer mes achats</Button>
-          <Button href={ROUTES.assistant} size="lg" variant="outline" className="max-sm:w-full">Poser une question à l&apos;assistant</Button>
+          <Button href={ROUTES.assistant} size="lg" variant="secondary" className="max-sm:w-full">Poser une question à l&apos;assistant</Button>
         </Reveal>
       </Block>
 
-      <Block pad="none" className="p-4 sm:p-[30px]">
-        <Reveal><h2 className="text-[16px] uppercase sm:text-section">Modes de paiement</h2></Reveal>
+      <Block pad="none" className="p-4 sm:p-8">
+        <Reveal><h2 className="text-base sm:text-section">Modes de paiement</h2></Reveal>
         <RevealGroup className="mt-4 grid gap-3 sm:mt-6 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
           {settings.paymentMethods.map((code) => (
             <RevealItem key={code}>
               <div className="group h-full rounded-box border border-line-3 p-4 transition-all sm:p-5 duration-300 hover:-translate-y-1.5 hover:border-transparent hover:bg-chip">
-                <span className={cn("inline-block rounded-md px-3 py-1.5 text-[13px] font-bold transition-transform duration-300 group-hover:scale-110", paymentMethod(code).cls)}>{paymentMethod(code).label}</span>
-                {PAYMENT_TEXT[code] && <p className="mt-3 text-[14px] leading-[22px] text-ink-2">{PAYMENT_TEXT[code]}</p>}
+                <span className={cn("inline-block rounded-md px-3 py-1.5 text-sm font-bold transition-transform duration-300 group-hover:scale-110", paymentMethod(code).cls)}>{paymentMethod(code).label}</span>
+                {PAYMENT_TEXT[code] && <p className="mt-3 text-sm text-ink-2">{PAYMENT_TEXT[code]}</p>}
               </div>
             </RevealItem>
           ))}
         </RevealGroup>
       </Block>
 
-      <Block pad="none" className="p-4 sm:p-[30px]">
-        <Reveal><h2 className="text-[16px] uppercase sm:text-section">Politique de livraison</h2></Reveal>
+      <Block pad="none" className="p-4 sm:p-8">
+        <Reveal><h2 className="text-base sm:text-section">Politique de livraison</h2></Reveal>
         {!delivery.length && (
-          <p className="mt-4 text-[14px] leading-[22px] text-ink-2">
+          <p className="mt-4 text-sm text-ink-2">
             Nous livrons à Bukavu, à Goma et dans leurs environs, puis partout en RD Congo. Le délai et les frais dépendent de votre ville ; ils vous sont indiqués avant la validation de la commande.
           </p>
         )}
@@ -104,18 +104,18 @@ export function GuideView() {
         <ul className="mt-4 space-y-2.5 sm:hidden">
           {delivery.map((d) => (
             <li key={d.zone} className="rounded-box border border-line-3 p-4">
-              <p className="text-[15px] font-bold">{d.zone}</p>
-              <dl className="mt-2 grid grid-cols-2 gap-3 text-[13px]">
-                <div><dt className="text-[11px] font-semibold uppercase text-ink-3">Délai</dt><dd className="mt-0.5 font-medium">{d.delay}</dd></div>
-                <div><dt className="text-[11px] font-semibold uppercase text-ink-3">Frais</dt><dd className="mt-0.5 font-medium text-ink-2">{d.fee}</dd></div>
+              <p className="text-sm font-bold">{d.zone}</p>
+              <dl className="mt-2 grid grid-cols-2 gap-3 text-sm">
+                <div><dt className="text-xs font-semibold text-ink-3">Délai</dt><dd className="mt-0.5 font-medium">{d.delay}</dd></div>
+                <div><dt className="text-xs font-semibold text-ink-3">Frais</dt><dd className="mt-0.5 font-medium text-ink-2">{d.fee}</dd></div>
               </dl>
             </li>
           ))}
         </ul>
         <Reveal delay={0.1} className={delivery.length ? "mt-6 hidden overflow-x-auto sm:block" : "hidden"}>
-          <table className="w-full min-w-[520px] text-left text-[14px]">
+          <table className="w-full min-w-[520px] text-left text-sm">
             <thead>
-              <tr className="border-b border-line-3 text-[12px] uppercase tracking-wide text-ink-3">
+              <tr className="border-b border-line-3 text-xs text-ink-3">
                 <th className="py-3 pr-4 font-semibold">Zone</th><th className="py-3 pr-4 font-semibold">Délai</th><th className="py-3 font-semibold">Frais</th>
               </tr>
             </thead>
@@ -130,8 +130,8 @@ export function GuideView() {
         </Reveal>
       </Block>
 
-      <Block pad="none" className="p-4 sm:p-[30px]">
-        <Reveal><h2 className="text-[16px] uppercase sm:text-section">Questions fréquentes</h2></Reveal>
+      <Block pad="none" className="p-4 sm:p-8">
+        <Reveal><h2 className="text-base sm:text-section">Questions fréquentes</h2></Reveal>
         <div className="mt-4"><Faq /></div>
       </Block>
     </>

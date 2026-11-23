@@ -28,19 +28,19 @@ function range(page: number, count: number): (number | "…")[] {
  */
 export function Pagination({ page, pageCount, onChange, className }: Props) {
   if (pageCount <= 1) return null;
-  const base = "grid size-10 place-items-center rounded-full text-[14px] font-semibold transition-colors";
+  const base = "grid size-10 place-items-center rounded-full text-sm font-semibold transition-colors";
   const nav = "bg-chip hover:bg-primary hover:text-white disabled:opacity-40 disabled:hover:bg-chip disabled:hover:text-ink";
   return (
     <nav aria-label="Pagination" className={cn("px-3", className)}>
       {/* mobile */}
       <div className="flex items-center justify-between gap-2 sm:hidden">
-        <button disabled={page <= 1} onClick={() => onChange(page - 1)} className={cn("flex h-12 flex-1 items-center justify-center gap-1 rounded-box text-[13px] font-semibold active:scale-[0.97]", nav)}>
+        <button disabled={page <= 1} onClick={() => onChange(page - 1)} className={cn("flex h-12 flex-1 items-center justify-center gap-1 rounded-box text-sm font-semibold active:scale-[0.97]", nav)}>
           <ArrowLeft2 size={16} /> Précédent
         </button>
-        <span className="min-w-[64px] text-center text-[13px] font-bold tabular-nums">
+        <span className="min-w-[64px] text-center text-sm font-bold tabular-nums">
           {page} <span className="font-normal text-ink-3">/ {pageCount}</span>
         </span>
-        <button disabled={page >= pageCount} onClick={() => onChange(page + 1)} className={cn("flex h-12 flex-1 items-center justify-center gap-1 rounded-box text-[13px] font-semibold active:scale-[0.97]", nav)}>
+        <button disabled={page >= pageCount} onClick={() => onChange(page + 1)} className={cn("flex h-12 flex-1 items-center justify-center gap-1 rounded-box text-sm font-semibold active:scale-[0.97]", nav)}>
           Suivant <ArrowRight2 size={16} />
         </button>
       </div>

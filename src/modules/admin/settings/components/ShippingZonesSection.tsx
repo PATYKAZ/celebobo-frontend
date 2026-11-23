@@ -50,16 +50,16 @@ export function ShippingZonesSection() {
             {list.map((z, i) => (
               <li key={z.id} className={cn("flex flex-col gap-3 rounded-box border border-line-3 p-4 sm:flex-row sm:items-center", !z.isActive && "bg-chip/60")}>
                 <div className="min-w-0 flex-1">
-                  <p className="flex flex-wrap items-center gap-2 text-[15px] font-bold">
-                    <span className="grid size-6 place-items-center rounded-full bg-primary-100 text-[12px] text-primary-dark">{i + 1}</span>
+                  <p className="flex flex-wrap items-center gap-2 text-sm font-bold">
+                    <span className="grid size-6 place-items-center rounded-full bg-primary-100 text-xs text-primary-dark">{i + 1}</span>
                     {z.name}
-                    {z.pricing === "quote" && <span className="rounded-full bg-star/20 px-2 py-0.5 text-[10px] font-bold uppercase text-warn">Sur devis</span>}
-                    {z.pricing === "pickup" && <span className="rounded-full bg-primary-100 px-2 py-0.5 text-[10px] font-bold uppercase text-primary-dark">Retrait sur place</span>}
-                    {z.isDefault && <span className="rounded-full bg-primary px-2 py-0.5 text-[10px] font-bold uppercase text-white">Par défaut</span>}
-                    {!z.isActive && <span className="rounded-full bg-line-3 px-2 py-0.5 text-[10px] font-bold uppercase text-ink">Inactive</span>}
+                    {z.pricing === "quote" && <span className="rounded-full bg-star/20 px-2 py-0.5 text-xs font-bold text-warn">Sur devis</span>}
+                    {z.pricing === "pickup" && <span className="rounded-full bg-primary-100 px-2 py-0.5 text-xs font-bold text-primary-dark">Retrait sur place</span>}
+                    {z.isDefault && <span className="rounded-full bg-primary px-2 py-0.5 text-xs font-bold text-white">Par défaut</span>}
+                    {!z.isActive && <span className="rounded-full bg-line-3 px-2 py-0.5 text-xs font-bold text-ink">Inactive</span>}
                   </p>
-                  <p className="mt-1 text-[13px] leading-[19px] text-ink-2">{z.pricing === "pickup" ? z.pickupAddress : z.cities.length ? z.cities.join(", ") : z.isDefault ? "Toutes les autres villes" : "Aucune ville"}</p>
-                  <p className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1 text-[13px] tabular-nums">
+                  <p className="mt-1 text-sm text-ink-2">{z.pricing === "pickup" ? z.pickupAddress : z.cities.length ? z.cities.join(", ") : z.isDefault ? "Toutes les autres villes" : "Aucune ville"}</p>
+                  <p className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1 text-sm tabular-nums">
                     <span><span className="text-ink-3">Frais </span><b>{z.pricing === "quote" ? "Proposés par le revendeur" : z.pricing === "pickup" || z.fee === 0 ? "Gratuit" : formatPrice(z.fee)}</b></span>
                     {z.freeThreshold != null && <span><span className="text-ink-3">Offerte dès </span><b>{formatPrice(z.freeThreshold)}</b></span>}
                     {z.deliveryEstimate && <span><span className="text-ink-3">Délai </span><b>{z.deliveryEstimate}</b></span>}

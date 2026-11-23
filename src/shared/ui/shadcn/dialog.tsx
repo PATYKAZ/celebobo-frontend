@@ -68,7 +68,7 @@ function DialogContent({
       <DialogPrimitive.Content
         data-slot="dialog-content"
         className={cn(
-          "fixed inset-x-0 bottom-0 z-[90] mx-auto flex max-h-[calc(var(--dvh)*92)] w-full max-w-[520px] flex-col overflow-y-auto overscroll-contain rounded-t-[22px] bg-popover p-5 pb-[max(20px,env(safe-area-inset-bottom))] text-popover-foreground outline-none",
+          "fixed inset-x-0 bottom-0 z-[90] mx-auto flex max-h-[calc(var(--dvh)*92)] w-full max-w-[520px] flex-col overflow-y-auto overscroll-contain rounded-t-lg bg-popover p-5 pb-[max(20px,env(safe-area-inset-bottom))] text-popover-foreground outline-none",
           "sm:inset-x-auto sm:bottom-auto sm:left-1/2 sm:top-1/2 sm:max-h-[calc(var(--dvh)*90)] sm:w-[calc(100%-2rem)] sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-box sm:p-6",
           "duration-200 data-open:animate-in data-open:fade-in-0 data-open:slide-in-from-bottom-10 data-closed:animate-out data-closed:fade-out-0 data-closed:slide-out-to-bottom-10",
           "sm:data-open:slide-in-from-bottom-0 sm:data-open:zoom-in-95 sm:data-closed:slide-out-to-bottom-0 sm:data-closed:zoom-out-95",
@@ -103,7 +103,7 @@ function DialogFooter({ className, ...props }: React.ComponentProps<"div">) {
 
 function DialogTitle({ className, ...props }: React.ComponentProps<typeof DialogPrimitive.Title>) {
   return (
-    <DialogPrimitive.Title data-slot="dialog-title" className={cn("text-[20px] font-bold leading-[28px]", className)} {...props} />
+    <DialogPrimitive.Title data-slot="dialog-title" className={cn("text-lg font-bold", className)} {...props} />
   )
 }
 
@@ -111,7 +111,7 @@ function DialogDescription({ className, ...props }: React.ComponentProps<typeof 
   return (
     <DialogPrimitive.Description
       data-slot="dialog-description"
-      className={cn("text-[14px] leading-[22px] text-muted-foreground", className)}
+      className={cn("text-sm text-muted-foreground", className)}
       {...props}
     />
   )

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Call, Facebook, Instagram, Location, Music, Sms, Tenx, Whatsapp, Youtube } from "@/shared/ui/icons";
+import { Facebook, Instagram, Location, Music, Sms, Tenx, Whatsapp, Youtube } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import { SITE } from "@/config/site";
 import { CircleButton } from "@/shared/ui/CircleButton";
@@ -30,7 +30,7 @@ const COLUMNS = [
     title: "Centre d'aide",
     links: [
       ["Mon compte", ROUTES.profile],
-      ["Suivre ma commande", ROUTES.orders],
+      ["Suivre ma commande", ROUTES.track],
       ["Mes messages", ROUTES.messages],
       ["Mes favoris", ROUTES.favorites],
       ["Questions fréquentes", ROUTES.guide],
@@ -50,7 +50,7 @@ const COLUMNS = [
   {
     title: "Partenaires",
     links: [
-      ["Devenir revendeur", ROUTES.register],
+      ["Devenir revendeur", ROUTES.becomeReseller],
       ["Programme d'invitation", ROUTES.register],
       ["Nous contacter", ROUTES.contact],
     ],
@@ -70,27 +70,27 @@ export function Footer() {
   const { data: categories } = useCategories();
   const categoryLinks: [string, string][] = (categories ?? []).filter((c) => c.productsCount > 0).map((c) => [c.name, ROUTES.category(c.slug)]);
   return (
-    <footer className="mt-6 bg-surface lg:mt-[40px]">
-      <div className="container pt-8 lg:pt-[79px]">
+    <footer className="mt-6 bg-surface lg:mt-10">
+      <div className="container pt-8 lg:pt-14">
         <div className="grid gap-8 lg:grid-cols-[260px_repeat(5,1fr)] lg:gap-6">
           {/* Colonne 1 */}
           <div>
-            <h2 className="text-section uppercase">Celebobo — la tech en confiance</h2>
-            <p className="mt-[34px] text-[14px] uppercase leading-[23.8px]">{supportLabel(site)}</p>
-            <a href={site.hotlineHref} className="mt-1 flex min-h-11 items-center text-[30px] font-bold leading-[36px] text-primary">{site.hotline}</a>
+            <h2 className="text-base font-bold">Celebobo — la tech en confiance</h2>
+            <p className="mt-6 text-sm text-ink-2">{supportLabel(site)}</p>
+            <a href={site.hotlineHref} className="mt-1 flex min-h-11 items-center text-lg font-bold tabular-nums text-primary hover:underline">{site.hotline}</a>
             {!site.supportAlwaysOpen && site.openingHours.length > 0 && (
-              <ul className="mt-1 text-[13px] leading-[20px] text-ink-2">
+              <ul className="mt-1 text-sm text-ink-2">
                 {site.openingHours.map((h) => (
                   <li key={h.days}>{h.days} : {h.hours}</li>
                 ))}
               </ul>
             )}
-            <p className="mt-6 flex items-start gap-2 text-[14px] leading-[23.8px]">
+            <p className="mt-6 flex items-start gap-2 text-sm">
               <Location size={18} className="mt-1 shrink-0" />
               <span>{site.address.map((line, i) => <span key={i}>{i > 0 && <>,<br /></>}{line}</span>)}</span>
             </p>
-            <a href={`mailto:${site.email}`} className="mt-1 flex min-h-11 items-center gap-2 text-[14px] hover:text-primary"><Sms size={18} /> {site.email}</a>
-            <div className="mt-8 flex gap-[14px]">
+            <a href={`mailto:${site.email}`} className="mt-1 flex min-h-11 items-center gap-2 text-sm hover:text-primary"><Sms size={18} /> {site.email}</a>
+            <div className="mt-6 flex gap-3">
               {SOCIALS.filter((n) => site.social[n.key]).map(({ key, label, icon: Icon }) => (
                 <CircleButton key={key} size={44} tone="social" label={label} href={site.social[key]}><Icon size={17} variant="Bold" /></CircleButton>
               ))}
@@ -104,32 +104,32 @@ export function Footer() {
         </div>
 
         {/* Ligne 2 */}
-        <div className="mt-12 flex flex-col gap-8 lg:flex-row lg:items-start">
+        <div className="mt-10 flex flex-col gap-8 lg:flex-row lg:items-start">
           <div>
-            <p className="mb-2 text-[13px] font-semibold text-ink-2">Afficher les prix en</p>
+            <p className="mb-2 text-sm font-semibold text-ink-2">Afficher les prix en</p>
             <CurrencySwitch size="md" />
-            <p className="mt-2 max-w-[260px] text-[12px] leading-[17px] text-ink-3">Paiement toujours calculé en dollars, au taux du jour.</p>
+            <p className="mt-2 max-w-[260px] text-xs text-ink-3">Paiement toujours calculé en dollars, au taux du jour.</p>
           </div>
           <div className="w-full max-w-[857px] lg:ml-auto">
-            <h2 className="text-section uppercase">Abonnez-vous et obtenez <span className="text-danger">{site.newsletterDiscount} % de remise</span> sur votre première commande</h2>
+            <h2 className="text-section">Abonnez-vous et obtenez <span className="text-danger">{site.newsletterDiscount} % de remise</span> sur votre première commande</h2>
             <div className="mt-6"><NewsletterForm /></div>
-            <p className="mt-3 text-[13px] italic leading-[22px] text-ink-2">
+            <p className="mt-3 text-sm text-ink-2">
               En vous abonnant, vous acceptez notre <Link href={ROUTES.page("politique-de-confidentialite")} className="text-ink underline">politique de confidentialité</Link>
             </p>
           </div>
         </div>
 
         {/* Bas de page */}
-        <div className="mt-[60px] flex flex-col items-start gap-5 border-t border-line-2/30 py-8 lg:mt-[80px] lg:flex-row lg:items-center lg:justify-between">
+        <div className="mt-10 flex flex-col items-start gap-5 border-t border-line-3 py-6 lg:mt-12 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-12">
-            <p className="text-[14px] leading-[23.8px] text-ink-2">© {new Date().getFullYear()} <strong className="text-ink">{SITE.copyright}</strong>. Tous droits réservés.</p>
+            <p className="text-sm text-ink-2">© {new Date().getFullYear()} <strong className="text-ink">{SITE.copyright}</strong>. Tous droits réservés.</p>
             <div className="flex flex-wrap gap-2">
               {site.paymentMethods.map((code) => (
-                <span key={code} className={`rounded-md px-2.5 py-1 text-[11px] font-bold ${paymentMethod(code).cls}`}>{paymentMethod(code).label}</span>
+                <span key={code} className={`inline-flex h-6 items-center rounded-sm px-2 text-xs font-semibold ${paymentMethod(code).cls}`}>{paymentMethod(code).label}</span>
               ))}
             </div>
           </div>
-          <a href={site.whatsappUrl} className="flex min-h-11 items-center gap-2 text-[14px] text-info hover:underline"><Call size={16} variant="Bold" /> Assistance WhatsApp</a>
+          <a href={site.whatsappUrl} className="flex min-h-11 items-center gap-2 text-sm font-medium text-primary hover:underline"><Whatsapp size={16} variant="Bold" /> Assistance WhatsApp</a>
         </div>
       </div>
     </footer>

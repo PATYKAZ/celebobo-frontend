@@ -31,22 +31,22 @@ function Column({ category, title, catalog, banner, index, wide }: { category: C
 
   return (
     <Reveal delay={index * 0.1} className="h-full">
-      <Block pad="none" className="h-full min-w-0 overflow-hidden px-4 pb-5 pt-4 sm:px-[30px] sm:pb-8 sm:pt-[30px]">
+      <Block pad="none" className="h-full min-w-0 overflow-hidden px-4 pb-5 pt-4 sm:px-8 sm:pb-8 sm:pt-8">
         <SectionHeader title={title} viewAllHref={href} />
         {banner ? (
-          <PhotoBanner image={banner.image} href={banner.href} label={banner.title} overlay={tone.overlay} className="mt-4 h-[150px] sm:mt-6 sm:h-[190px]" sizes="(min-width:1280px) 368px, 100vw" contentClassName="flex flex-col justify-center px-[30px]">
-            {banner.eyebrow && <p className={cn("text-[10px] uppercase tracking-[0.2em]", tone.muted)}>{banner.eyebrow}</p>}
-            <p className={cn("line-clamp-2 whitespace-pre-line text-[14px] font-bold uppercase leading-[22.4px]", tone.text)}>{banner.title}</p>
+          <PhotoBanner image={banner.image} href={banner.href} label={banner.title} overlay={tone.overlay} className="mt-4 h-[150px] sm:mt-6 sm:h-[190px]" sizes="(min-width:1280px) 368px, 100vw" contentClassName="flex flex-col justify-center px-8">
+            {banner.eyebrow && <p className={cn("text-xs", tone.muted)}>{banner.eyebrow}</p>}
+            <p className={cn("line-clamp-2 whitespace-pre-line text-sm font-bold", tone.text)}>{banner.title}</p>
             {banner.product ? (
-              <p className="mt-1"><BannerPrice product={banner.product} className={cn("text-[16px]", tone.price)} strikeClassName={tone.strike} /></p>
+              <p className="mt-1"><BannerPrice product={banner.product} className={cn("text-base", tone.price)} strikeClassName={tone.strike} /></p>
             ) : (
-              banner.subtitle && <p className={cn("mt-1 line-clamp-2 text-[12px]", tone.muted)}>{banner.subtitle}</p>
+              banner.subtitle && <p className={cn("mt-1 line-clamp-2 text-xs", tone.muted)}>{banner.subtitle}</p>
             )}
           </PhotoBanner>
         ) : (
-          <PhotoBanner image={category.image ?? products?.[0]?.image ?? "/images/hero/hero-2.jpg"} href={href} label={category.name} overlay="from-black/80 via-black/45 to-transparent" className="mt-4 h-[150px] sm:mt-6 sm:h-[190px]" sizes="(min-width:1280px) 368px, 100vw" contentClassName="flex flex-col justify-center px-[30px]">
-            <p className="text-[14px] font-bold uppercase leading-[22.4px] text-white">{category.name}</p>
-            <p className="mt-1 text-[12px] text-white/80">{category.productsCount} article{category.productsCount > 1 ? "s" : ""}</p>
+          <PhotoBanner image={category.image ?? products?.[0]?.image ?? "/images/hero/hero-2.jpg"} href={href} label={category.name} overlay="from-black/80 via-black/45 to-transparent" className="mt-4 h-[150px] sm:mt-6 sm:h-[190px]" sizes="(min-width:1280px) 368px, 100vw" contentClassName="flex flex-col justify-center px-8">
+            <p className="text-sm font-bold text-white">{category.name}</p>
+            <p className="mt-1 text-xs text-white/80">{category.productsCount} article{category.productsCount > 1 ? "s" : ""}</p>
           </PhotoBanner>
         )}
 
@@ -58,8 +58,8 @@ function Column({ category, title, catalog, banner, index, wide }: { category: C
                   <span className="relative block size-24 max-w-full overflow-hidden rounded-full bg-chip ring-2 ring-transparent transition-all duration-500 group-hover:-translate-y-1.5 group-hover:ring-primary sm:size-[120px]">
                     <Image src={p.image as string} alt="" fill sizes="120px" className="object-cover transition-transform duration-700 group-hover:scale-125" />
                   </span>
-                  <span className="mt-3 line-clamp-2 text-[14px] font-bold leading-[18px] transition-colors group-hover:text-primary">{p.name}</span>
-                  <span className="mt-0.5 text-[12px] font-semibold leading-[18px] text-primary">{formatPrice(getPricing(p).current)}</span>
+                  <span className="mt-3 line-clamp-2 text-sm font-bold transition-colors group-hover:text-primary">{p.name}</span>
+                  <span className="mt-0.5 text-xs font-semibold text-primary">{formatPrice(getPricing(p).current)}</span>
                 </Link>
               ))}
         </div>

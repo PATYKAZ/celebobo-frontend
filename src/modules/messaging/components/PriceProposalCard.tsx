@@ -40,42 +40,42 @@ export function PriceProposalCard({ meta, canRespond, mine }: Props) {
     );
 
   return (
-    <div className={cn("w-[280px] max-w-full overflow-hidden rounded-xl text-ink shadow-[0_1px_0_rgba(0,0,0,.04)] ring-1 ring-line-3", mine ? "bg-surface" : "bg-surface")}>
-      <div className="flex items-center gap-2 bg-primary px-3.5 py-2 text-[12px] font-bold uppercase tracking-wide text-white">
+    <div className={cn("w-[280px] max-w-full overflow-hidden rounded-lg text-ink shadow-[0_1px_0_rgba(0,0,0,.04)] ring-1 ring-line-3", mine ? "bg-surface" : "bg-surface")}>
+      <div className="flex items-center gap-2 bg-primary px-3.5 py-2 text-xs font-bold text-white">
         <Money3 size={16} variant="Bold" /> Proposition de prix
       </div>
       <div className="space-y-3 p-3.5">
         <div>
-          <p className="wrap-break-word text-[14px] font-bold leading-[19px]">{meta.productName}</p>
-          <p className="text-[12px] text-ink-3">Quantité : {meta.quantity}</p>
+          <p className="wrap-break-word text-sm font-bold">{meta.productName}</p>
+          <p className="text-xs text-ink-3">Quantité : {meta.quantity}</p>
         </div>
         <div className="flex items-end justify-between gap-3">
           <div>
-            <p className="text-[12px] text-ink-3 line-through">{formatPrice(meta.oldPrice)}</p>
-            <motion.p key={meta.status} initial={{ scale: 0.9 }} animate={{ scale: 1 }} className="text-[22px] font-bold leading-[26px] text-primary">
+            <p className="text-xs text-ink-3 line-through">{formatPrice(meta.oldPrice)}</p>
+            <motion.p key={meta.status} initial={{ scale: 0.9 }} animate={{ scale: 1 }} className="text-xl font-bold text-primary">
               {formatPrice(meta.newPrice)}
             </motion.p>
           </div>
           {diff !== 0 && (
-            <span className={cn("rounded-full px-2.5 py-1 text-[12px] font-bold", diff > 0 ? "bg-primary-100 text-primary-dark" : "bg-star/15 text-warn")}>
+            <span className={cn("rounded-full px-2.5 py-1 text-xs font-bold", diff > 0 ? "bg-primary-100 text-primary-dark" : "bg-star/15 text-warn")}>
               {diff > 0 ? "−" : "+"}
               {formatPrice(Math.abs(diff))} / unité
             </span>
           )}
         </div>
-        {meta.reason && <p className="rounded-md bg-page/60 px-3 py-2 text-[12px] leading-[18px] text-ink-2">« {meta.reason} »</p>}
+        {meta.reason && <p className="rounded-md bg-page/60 px-3 py-2 text-xs text-ink-2">« {meta.reason} »</p>}
 
         {meta.status === "pending" && canRespond ? (
           <div className="grid grid-cols-2 gap-2">
-            <button onClick={() => answer(true)} disabled={respond.isPending} className="inline-flex h-12 items-center justify-center gap-1.5 rounded-box bg-primary text-[13px] font-bold uppercase text-white transition-all hover:bg-primary-dark active:scale-95 disabled:opacity-60 sm:h-10">
+            <button onClick={() => answer(true)} disabled={respond.isPending} className="inline-flex h-12 items-center justify-center gap-1.5 rounded-box bg-primary text-sm font-bold text-white transition-all hover:bg-primary-dark active:scale-95 disabled:opacity-60 sm:h-10">
               <TickCircle size={15} variant="Bold" /> Accepter
             </button>
-            <button onClick={() => answer(false)} disabled={respond.isPending} className="inline-flex h-12 items-center justify-center gap-1.5 rounded-box bg-chip text-[13px] font-bold uppercase transition-all hover:bg-danger hover:text-white active:scale-95 disabled:opacity-60 sm:h-10">
+            <button onClick={() => answer(false)} disabled={respond.isPending} className="inline-flex h-12 items-center justify-center gap-1.5 rounded-box bg-chip text-sm font-bold transition-all hover:bg-danger hover:text-white active:scale-95 disabled:opacity-60 sm:h-10">
               <CloseCircle size={15} variant="Bold" /> Refuser
             </button>
           </div>
         ) : (
-          <span className={cn("inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-bold", st.cls)}>
+          <span className={cn("inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold", st.cls)}>
             <Icon size={14} variant="Bold" /> {st.label}
           </span>
         )}

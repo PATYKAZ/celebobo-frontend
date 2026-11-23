@@ -54,7 +54,7 @@ function BannerImage({ value, onChange, error, slot }: { value: BannerImageValue
   };
   return (
     <div>
-      <p className="mb-1.5 text-[13px] font-semibold">Image<span className="ml-0.5 text-danger">*</span></p>
+      <p className="mb-1.5 text-sm font-semibold">Image<span className="ml-0.5 text-danger">*</span></p>
       <button
         type="button"
         onClick={() => input.current?.click()}
@@ -70,19 +70,19 @@ function BannerImage({ value, onChange, error, slot }: { value: BannerImageValue
           // eslint-disable-next-line @next/next/no-img-element
           <img src={value.url} alt="" className="absolute inset-0 size-full object-cover" />
         ) : (
-          <span className="flex flex-col items-center gap-1.5 px-3 text-center text-[12px] text-ink-3 group-hover:text-primary">
+          <span className="flex flex-col items-center gap-1.5 px-3 text-center text-xs text-ink-3 group-hover:text-primary">
             <Gallery size={30} variant="Bulk" />
             Photo sans texte incrusté, {slot?.size ?? "1800 × 640 px"} conseillé
           </span>
         )}
       </button>
       {value.url && (
-        <button type="button" onClick={() => onChange({ url: null })} className="mt-1.5 inline-flex items-center gap-1 text-[12px] font-semibold text-danger">
+        <button type="button" onClick={() => onChange({ url: null })} className="mt-1.5 inline-flex items-center gap-1 text-xs font-semibold text-danger">
           <Trash size={14} /> Retirer l’image
         </button>
       )}
-      <p className="mt-1 text-[12px] leading-[17px] text-ink-3">Le titre et le bouton s’affichent par-dessus : évitez une image qui contient déjà du texte.</p>
-      {error && <p role="alert" className="mt-1 text-[12px] text-danger">{error}</p>}
+      <p className="mt-1 text-xs text-ink-3">Le titre et le bouton s’affichent par-dessus : évitez une image qui contient déjà du texte.</p>
+      {error && <p role="alert" className="mt-1 text-xs text-danger">{error}</p>}
       <input ref={input} type="file" accept="image/jpeg,image/png,image/webp" hidden onChange={(e) => { take(e.target.files?.[0]); e.target.value = ""; }} />
     </div>
   );
@@ -148,7 +148,7 @@ export function BannerFormModal({ banner, placement, slots, nextPosition, onClos
         />
         <BannerImage value={image} onChange={(x) => { setImage(x); setErrors((e) => ({ ...e, image: undefined })); }} error={errors.image} slot={slot} />
         <div className="grid gap-2">
-          <p className="text-[13px] font-semibold">L’image est plutôt</p>
+          <p className="text-sm font-semibold">L’image est plutôt</p>
           <SegmentedControl aria-label="Ton de l'image" value={v.tone} onChange={(x) => set("tone", x)} options={TONES} fullWidth size="sm" />
         </div>
         <Input label="Sur-titre" value={v.eyebrow} onChange={(e) => set("eyebrow", e.target.value)} maxLength={40} placeholder="Ex. Audio, Nouveau, Exclusivité" hint="Petit texte au-dessus du titre. Facultatif." error={errors.eyebrow} />
@@ -156,7 +156,7 @@ export function BannerFormModal({ banner, placement, slots, nextPosition, onClos
         <Input label="Sous-titre" value={v.subtitle} onChange={(e) => set("subtitle", e.target.value)} maxLength={255} placeholder="Ex. Livraison en 24 h à Bukavu et Goma" hint={v.linkKind === "product" ? "Avec un produit, son prix s'affiche à la place du sous-titre sur les petites bannières." : undefined} error={errors.subtitle} />
 
         <div className="grid gap-2">
-          <p className="text-[13px] font-semibold">Le bouton mène vers<span className="ml-0.5 text-danger">*</span></p>
+          <p className="text-sm font-semibold">Le bouton mène vers<span className="ml-0.5 text-danger">*</span></p>
           <SegmentedControl aria-label="Type de destination" value={v.linkKind} onChange={setKind} options={LINK_KINDS} fullWidth size="sm" />
           {v.linkKind === "category" && (
             <Select aria-label="Catégorie" value={v.linkTarget} onChange={(e) => set("linkTarget", e.target.value)} error={errors.linkTarget} options={[{ value: "", label: "Choisir une catégorie…" }, ...(categories ?? []).map((c) => ({ value: c.slug, label: categoryOptionLabel(c) }))]} />
@@ -172,7 +172,7 @@ export function BannerFormModal({ banner, placement, slots, nextPosition, onClos
                 error={errors.linkTarget}
               />
               {v.productId ? (
-                <p className="text-[12px] text-ink-2">Produit choisi : <b>{v.productName}</b>. Son prix réel s’affiche et le bouton mène à sa fiche.</p>
+                <p className="text-xs text-ink-2">Produit choisi : <b>{v.productName}</b>. Son prix réel s’affiche et le bouton mène à sa fiche.</p>
               ) : null}
             </>
           )}
@@ -180,7 +180,7 @@ export function BannerFormModal({ banner, placement, slots, nextPosition, onClos
             <Select aria-label="Page" value={v.linkTarget} onChange={(e) => set("linkTarget", e.target.value)} error={errors.linkTarget} options={[{ value: "", label: "Choisir une page…" }, ...BANNER_PAGES]} />
           )}
           {v.linkKind === "url" && <Input aria-label="Adresse" value={v.linkTarget} onChange={(e) => set("linkTarget", e.target.value)} placeholder="/produits?search=JBL ou https://…" error={errors.linkTarget} />}
-          {link && <p className="break-all text-[12px] text-ink-3">Adresse : {link}</p>}
+          {link && <p className="break-all text-xs text-ink-3">Adresse : {link}</p>}
         </div>
 
         <Input label="Texte du bouton" value={v.linkLabel} onChange={(e) => set("linkLabel", e.target.value)} maxLength={60} placeholder={v.linkKind === "product" ? "Acheter" : "Découvrir"} hint="Vide : texte par défaut." error={errors.linkLabel} />
@@ -190,12 +190,12 @@ export function BannerFormModal({ banner, placement, slots, nextPosition, onClos
           <Input label="Jusqu’au" type="datetime-local" value={v.endsAt} onChange={(e) => set("endsAt", e.target.value)} hint="Vide : sans fin." error={errors.endsAt} />
         </div>
         <label className="flex min-h-12 cursor-pointer items-center justify-between gap-3 rounded-box border border-line px-4 active:bg-chip">
-          <span className="text-[14px] font-semibold">Bannière active</span>
+          <span className="text-sm font-semibold">Bannière active</span>
           <Switch label="Bannière active" checked={v.isActive} onChange={(x) => set("isActive", x)} />
         </label>
 
         <div className="mt-1 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-          <Button type="button" variant="chip" upper={false} onClick={onClose}>Annuler</Button>
+          <Button type="button" variant="secondary" upper={false} onClick={onClose}>Annuler</Button>
           <Button type="submit" loading={save.isPending} upper={false}>{banner ? "Enregistrer" : "Créer la bannière"}</Button>
         </div>
       </form>

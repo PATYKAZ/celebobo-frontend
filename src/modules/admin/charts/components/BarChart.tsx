@@ -97,7 +97,7 @@ function VBars({ data, height: heightProp, color, lineColor, format, title, line
         )}
       </svg>
       {hover != null && (
-        <div className="pointer-events-none absolute top-0 z-10 -translate-x-1/2 rounded-box border border-line-3 bg-surface px-3 py-2 text-[12px] shadow-[0_8px_30px_rgba(0,0,0,.12)]" style={{ left: Math.min(Math.max(P.l + slot * hover + slot / 2, 70), width - 70) }}>
+        <div className="pointer-events-none absolute top-0 z-10 -translate-x-1/2 rounded-box border border-line-3 bg-surface px-3 py-2 text-xs shadow-lg" style={{ left: Math.min(Math.max(P.l + slot * hover + slot / 2, 70), width - 70) }}>
           <p className="font-bold">{data[hover].label}</p>
           <p className="text-ink-2">{format(data[hover].value)}</p>
           {data[hover].line != null && <p className="text-ink-2">{lineLabel ?? "Ligne"} : {format(data[hover].line as number)}</p>}
@@ -115,7 +115,7 @@ function HBars({ data, color, format, title }: Required<Pick<Props, "data" | "co
     <ul ref={ref} aria-label={title} className="flex min-w-0 flex-col gap-3 sm:gap-3.5">
       {data.map((d, i) => (
         <li key={d.label} className="group flex items-center gap-2.5 sm:gap-3">
-          <span className="w-4 shrink-0 text-center text-[13px] font-bold text-ink-3 sm:w-5">{i + 1}</span>
+          <span className="w-4 shrink-0 text-center text-sm font-bold text-ink-3 sm:w-5">{i + 1}</span>
           {d.image !== undefined && (
             <span className="relative size-10 shrink-0 overflow-hidden rounded-md bg-page sm:size-11">
               {d.image && <Image src={d.image} alt="" fill sizes="44px" className="object-cover transition-transform duration-500 group-hover:scale-110" />}
@@ -123,8 +123,8 @@ function HBars({ data, color, format, title }: Required<Pick<Props, "data" | "co
           )}
           <div className="min-w-0 flex-1">
             <div className="mb-1 flex items-baseline justify-between gap-3">
-              <span className="truncate text-[13px] font-semibold leading-[18px]">{d.label}</span>
-              <span className="shrink-0 text-[13px] font-bold">{format(d.value)}</span>
+              <span className="truncate text-sm font-semibold">{d.label}</span>
+              <span className="shrink-0 text-sm font-bold">{format(d.value)}</span>
             </div>
             <div className="h-2 overflow-hidden rounded-full bg-chip">
               <motion.div className={cn("h-full rounded-full")} style={{ background: d.color ?? color }} initial={{ width: 0 }} animate={inView ? { width: `${(d.value / max) * 100}%` } : {}} transition={{ duration: 0.9, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }} />

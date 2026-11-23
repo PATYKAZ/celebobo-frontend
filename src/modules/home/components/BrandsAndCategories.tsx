@@ -31,7 +31,7 @@ function Wordmark({ brand }: { brand: Brand }) {
 
 function FeaturedBrands({ brands }: { brands?: Brand[] }) {
   return (
-    <Block pad="none" className="min-w-0 overflow-hidden px-4 py-4 sm:px-[30px] sm:py-6 lg:min-h-[227px]">
+    <Block pad="none" className="min-w-0 overflow-hidden px-4 py-4 sm:px-8 sm:py-6 lg:min-h-[227px]">
       <SectionHeader title="Marques à la une" viewAllHref={ROUTES.products} />
       {!brands ? (
         <Skeleton className="mt-5 h-[60px] sm:mt-8 sm:h-[110px]" />
@@ -64,7 +64,7 @@ function CategoryDot({ slug, name, image, size }: { slug: string; name: string; 
       <span className="relative block overflow-hidden rounded-full bg-chip ring-2 ring-transparent transition-all duration-500 group-hover:-translate-y-1 group-hover:ring-primary" style={{ width: size, height: size }}>
         {image && <Image src={image} alt="" fill sizes={`${size}px`} className="object-cover transition-transform duration-700 group-hover:scale-125" />}
       </span>
-      <span className="line-clamp-2 text-center text-[12px] font-semibold leading-[16px] transition-colors group-hover:text-primary sm:text-[14px] sm:leading-[20px]">{name}</span>
+      <span className="line-clamp-2 text-center text-xs font-semibold transition-colors group-hover:text-primary sm:text-sm">{name}</span>
     </Link>
   );
 }
@@ -76,7 +76,7 @@ function TopCategories() {
   const sync = (s: SwiperType) => setEdge({ begin: s.isBeginning, end: s.isEnd });
 
   return (
-    <Block pad="none" className="min-w-0 overflow-hidden px-4 py-4 sm:px-[30px] sm:py-6 lg:min-h-[227px]">
+    <Block pad="none" className="min-w-0 overflow-hidden px-4 py-4 sm:px-8 sm:py-6 lg:min-h-[227px]">
       <SectionHeader
         title={<><span className="sm:hidden">Catégories</span><span className="hidden sm:inline">Top catégories</span></>}
         viewAllHref={ROUTES.products}

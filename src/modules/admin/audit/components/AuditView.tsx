@@ -44,13 +44,13 @@ function Row({ e, open, onToggle }: { e: AuditEntry; open: boolean; onToggle: ()
   return (
     <Fragment>
       <tr onClick={hasDiff ? onToggle : undefined} className={cn("border-b border-line-3/70 transition-colors", hasDiff ? "cursor-pointer hover:bg-primary-50" : "hover:bg-page/40")}>
-        <td className="whitespace-nowrap px-4 py-3.5 align-top text-[13px]"><span className="block font-semibold">{formatDateTime(e.at)}</span><span className="text-[12px] text-ink-3">{formatRelative(e.at)}</span></td>
-        <td className="px-4 py-3.5 align-top text-[13px]"><span className="block font-semibold">{e.actor.name}</span>{e.actor.role && <span className="text-[12px] text-ink-3">{ROLE_LABEL[e.actor.role]}</span>}</td>
+        <td className="whitespace-nowrap px-4 py-3.5 align-top text-sm"><span className="block font-semibold">{formatDateTime(e.at)}</span><span className="text-xs text-ink-3">{formatRelative(e.at)}</span></td>
+        <td className="px-4 py-3.5 align-top text-sm"><span className="block font-semibold">{e.actor.name}</span>{e.actor.role && <span className="text-xs text-ink-3">{ROLE_LABEL[e.actor.role]}</span>}</td>
         <td className="px-4 py-3.5 align-top">
-          <span className="block text-[14px] font-semibold">{e.action}</span>
-          <span className="block text-[13px] leading-[19px] text-ink-2">{e.summary}</span>
+          <span className="block text-sm font-semibold">{e.action}</span>
+          <span className="block text-sm text-ink-2">{e.summary}</span>
         </td>
-        <td className="hidden px-4 py-3.5 align-top md:table-cell"><span className={cn("rounded-full px-2.5 py-1 text-[12px] font-semibold capitalize", entityStyle(e.entity))}>{e.entityLabel}{e.entityId != null ? ` #${e.entityId}` : ""}</span></td>
+        <td className="hidden px-4 py-3.5 align-top md:table-cell"><span className={cn("rounded-full px-2.5 py-1 text-xs font-semibold capitalize", entityStyle(e.entity))}>{e.entityLabel}{e.entityId != null ? ` #${e.entityId}` : ""}</span></td>
         <td className="w-10 px-3 py-3.5 align-top text-ink-3">{hasDiff && <ArrowDown2 size={16} className={cn("transition-transform", open && "rotate-180")} />}</td>
       </tr>
       <AnimatePresence initial={false}>
@@ -60,7 +60,7 @@ function Row({ e, open, onToggle }: { e: AuditEntry; open: boolean; onToggle: ()
               <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.25 }} className="overflow-hidden">
                 <div className="grid gap-2 px-4 py-3.5">
                   {e.diff!.map((d) => (
-                    <div key={d.field} className="flex flex-wrap items-center gap-2 text-[13px]">
+                    <div key={d.field} className="flex flex-wrap items-center gap-2 text-sm">
                       <code className="rounded-sm bg-surface px-2 py-0.5 font-semibold">{d.field}</code>
                       <span className="rounded-sm bg-danger-100 px-2 py-0.5 text-danger line-through">{String(d.from ?? "—")}</span>
                       <ArrowRight size={14} className="text-ink-3" />
@@ -81,7 +81,7 @@ function DiffList({ e }: { e: AuditEntry }) {
   return (
     <div className="grid gap-2">
       {e.diff!.map((d) => (
-        <div key={d.field} className="flex flex-wrap items-center gap-2 text-[13px]">
+        <div key={d.field} className="flex flex-wrap items-center gap-2 text-sm">
           <code className="rounded-sm bg-surface px-2 py-0.5 font-semibold">{d.field}</code>
           <span className="rounded-sm bg-danger-100 px-2 py-0.5 text-danger line-through">{String(d.from ?? "—")}</span>
           <ArrowRight size={14} className="text-ink-3" />
@@ -100,12 +100,12 @@ function AuditCard({ e, open, onToggle }: { e: AuditEntry; open: boolean; onTogg
       <button onClick={hasDiff ? onToggle : undefined} disabled={!hasDiff} aria-expanded={hasDiff ? open : undefined} className="block w-full p-4 text-left disabled:cursor-default">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <p className="text-[15px] font-bold leading-[20px]">{e.action}</p>
-            <p className="mt-0.5 text-[13px] leading-[19px] text-ink-2">{e.summary}</p>
+            <p className="text-sm font-bold">{e.action}</p>
+            <p className="mt-0.5 text-sm text-ink-2">{e.summary}</p>
           </div>
           {hasDiff && <ArrowDown2 size={18} className={cn("mt-0.5 shrink-0 text-ink-3 transition-transform", open && "rotate-180")} />}
         </div>
-        <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[12px] text-ink-3">
+        <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs text-ink-3">
           <span className={cn("rounded-full px-2.5 py-1 font-semibold capitalize", entityStyle(e.entity))}>{e.entityLabel}{e.entityId != null ? ` #${e.entityId}` : ""}</span>
           <span><strong className="text-ink">{e.actor.name}</strong>{e.actor.role ? ` · ${ROLE_LABEL[e.actor.role]}` : ""}</span>
           <span>{formatDateTime(e.at)} · {formatRelative(e.at)}</span>
@@ -169,23 +169,23 @@ function Changes() {
           <Input wrapperClassName="flex-1" placeholder="Rechercher…" aria-label="Rechercher" leftIcon={<SearchNormal1 size={16} />} value={search} onChange={(e) => reg(setSearch)(e.target.value)} />
           <button onClick={() => setSheet(true)} aria-label="Filtres" className="relative grid size-12 shrink-0 place-items-center rounded-md border border-line bg-surface active:scale-95">
             <Filter size={20} />
-            {activeFilters > 0 && <span className="absolute -right-1 -top-1 grid size-[18px] place-items-center rounded-full bg-primary text-[10px] font-bold text-white">{activeFilters}</span>}
+            {activeFilters > 0 && <span className="absolute -right-1 -top-1 grid size-[18px] place-items-center rounded-full bg-primary text-xs font-bold text-white">{activeFilters}</span>}
           </button>
         </div>
         <BottomSheet open={sheet} onClose={() => setSheet(false)} title="Filtres">
           <div className="grid gap-3 pb-2 pt-1">
             {filterFields(true)}
             <div className="mt-1 grid grid-cols-2 gap-2.5">
-              <Button variant="chip" upper={false} onClick={reset}>Réinitialiser</Button>
+              <Button variant="secondary" upper={false} onClick={reset}>Réinitialiser</Button>
               <Button upper={false} onClick={() => setSheet(false)}>Appliquer</Button>
             </div>
           </div>
         </BottomSheet>
         {/* desktop / tablette : grille de filtres */}
-        <div className="hidden gap-4 p-5 sm:px-[30px] md:grid md:grid-cols-2 xl:grid-cols-[1.4fr_1fr_1fr_0.8fr_0.8fr_auto] xl:items-end">
+        <div className="hidden gap-4 p-5 sm:px-8 md:grid md:grid-cols-2 xl:grid-cols-[1.4fr_1fr_1fr_0.8fr_0.8fr_auto] xl:items-end">
           <Input placeholder="Rechercher une action, un auteur…" aria-label="Rechercher" leftIcon={<SearchNormal1 size={16} />} value={search} onChange={(e) => reg(setSearch)(e.target.value)} />
           {filterFields(false)}
-          <Button variant="chip" upper={false} onClick={reset}>Réinitialiser</Button>
+          <Button variant="secondary" upper={false} onClick={reset}>Réinitialiser</Button>
         </div>
 
         {/* mobile : cartes */}
@@ -198,7 +198,7 @@ function Changes() {
         <div className="hidden overflow-x-auto md:block">
           <table className="w-full min-w-[640px] border-collapse">
             <thead>
-              <tr className="border-b border-line-3 bg-page/50 text-left text-[12px] font-semibold uppercase tracking-wide text-ink-3">
+              <tr className="border-b border-line-3 bg-page/50 text-left text-xs font-semibold text-ink-3">
                 <th className="px-4 py-3">Date</th>
                 <th className="px-4 py-3">Auteur</th>
                 <th className="px-4 py-3">Action</th>
@@ -213,7 +213,7 @@ function Changes() {
             </tbody>
           </table>
         </div>
-        {data && data.results.length === 0 && <p className="py-14 text-center text-[14px] text-ink-3">Aucune entrée ne correspond à ces filtres.</p>}
+        {data && data.results.length === 0 && <p className="py-14 text-center text-sm text-ink-3">Aucune entrée ne correspond à ces filtres.</p>}
         {data && <Pagination page={page} pageCount={Math.ceil(data.count / PAGE_SIZE)} onChange={setPage} className="py-5" />}
       </Block>
     </>

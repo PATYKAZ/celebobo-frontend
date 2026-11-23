@@ -74,7 +74,7 @@ export function CouponFormModal({ coupon, onClose }: { coupon: AdminCoupon | nul
         </div>
 
         <div>
-          <p className="mb-2 text-[14px] font-semibold">Type de remise</p>
+          <p className="mb-2 text-sm font-semibold">Type de remise</p>
           <SegmentedControl<CouponKind>
             aria-label="Type de remise"
             value={v.kind}
@@ -94,7 +94,7 @@ export function CouponFormModal({ coupon, onClose }: { coupon: AdminCoupon | nul
         <div className="grid gap-4 sm:grid-cols-2">
           <Input label="Panier minimum ($)" type="number" inputMode="decimal" min="0" step="0.01" value={v.minSubtotal} onChange={(e) => set("minSubtotal", e.target.value)} hint="Vide : aucun minimum." error={errors.minSubtotal} />
           <label className="flex min-h-12 cursor-pointer items-center justify-between gap-3 self-end rounded-box border border-line px-4 active:bg-chip">
-            <span className="text-[14px] font-semibold">Livraison offerte</span>
+            <span className="text-sm font-semibold">Livraison offerte</span>
             <Switch label="Livraison offerte" checked={v.freeShipping} onChange={(x) => set("freeShipping", x)} />
           </label>
         </div>
@@ -110,12 +110,12 @@ export function CouponFormModal({ coupon, onClose }: { coupon: AdminCoupon | nul
         </div>
 
         <label className="flex min-h-12 cursor-pointer items-center justify-between gap-3 rounded-box border border-line px-4 active:bg-chip">
-          <span className="text-[14px] font-semibold">Code actif</span>
+          <span className="text-sm font-semibold">Code actif</span>
           <Switch label="Code actif" checked={v.isActive} onChange={(x) => set("isActive", x)} />
         </label>
 
         <div className="mt-1 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-          <Button type="button" variant="chip" upper={false} onClick={onClose}>Annuler</Button>
+          <Button type="button" variant="secondary" upper={false} onClick={onClose}>Annuler</Button>
           <Button type="submit" loading={save.isPending} upper={false}>{coupon ? "Enregistrer" : "Créer le code"}</Button>
         </div>
       </form>

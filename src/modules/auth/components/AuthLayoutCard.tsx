@@ -31,10 +31,10 @@ export function AuthLayoutCard({ title, subtitle, image, headline, children, foo
         <KenBurnsImage src={image} alt="" fill sizes="100vw" priority className="opacity-70" />
         <div className="absolute inset-0 bg-linear-to-t from-black/85 via-black/30 to-primary/30" />
         <div className="absolute inset-x-0 bottom-0 p-4 text-white sm:p-6">
-          <p className="max-w-[320px] text-[18px] font-bold leading-[23px] sm:max-w-[420px] sm:text-[22px] sm:leading-[28px]">{headline}</p>
+          <p className="max-w-[320px] text-lg font-bold sm:max-w-[420px] sm:text-xl">{headline}</p>
           <ul className="mt-2 flex flex-wrap gap-1.5">
             {BENEFITS.map(({ icon: Icon, short, label }) => (
-              <li key={label} className="flex shrink-0 items-center gap-1.5 rounded-full bg-white/20 py-1 pl-1.5 pr-2.5 text-[11px] font-semibold backdrop-blur-sm">
+              <li key={label} className="flex shrink-0 items-center gap-1.5 rounded-full bg-white/20 py-1 pl-1.5 pr-2.5 text-xs font-semibold backdrop-blur-sm">
                 <Icon size={13} variant="Bold" /> {short}
               </li>
             ))}
@@ -44,10 +44,10 @@ export function AuthLayoutCard({ title, subtitle, image, headline, children, foo
 
       <div className="grid lg:grid-cols-[1fr_1.05fr]">
         <Reveal className="mx-auto w-full min-w-0 max-w-[520px] px-4 py-6 sm:px-10 sm:py-14">
-          <h1 className="text-[24px] leading-[30px] text-primary sm:text-h-page">{title}</h1>
-          <p className="mb-6 mt-1.5 text-[14px] leading-[21px] text-ink-2 sm:mb-8 sm:mt-2 sm:leading-[22px]">{subtitle}</p>
+          <h1 className="text-xl text-primary sm:text-h-page">{title}</h1>
+          <p className="mb-6 mt-1.5 text-sm text-ink-2 sm:mb-8 sm:mt-2">{subtitle}</p>
           {children}
-          {footer && <div className="mt-6 border-t border-line-3 pt-5 text-center text-[14px] leading-[24px] text-ink-2 sm:mt-8 sm:pt-6 [&_a]:inline-flex [&_a]:min-h-11 [&_a]:items-center">{footer}</div>}
+          {footer && <div className="mt-6 border-t border-line-3 pt-5 text-center text-sm text-ink-2 sm:mt-8 sm:pt-6 [&_a]:inline-flex [&_a]:min-h-11 [&_a]:items-center">{footer}</div>}
         </Reveal>
 
         <div className="relative hidden min-h-[640px] overflow-hidden bg-ink-dark lg:block">
@@ -55,13 +55,13 @@ export function AuthLayoutCard({ title, subtitle, image, headline, children, foo
           <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-primary/30" />
           <motion.div animate={{ y: [0, -12, 0] }} transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }} className="absolute right-10 top-10 flex items-center gap-3 rounded-box bg-surface/95 px-4 py-3 text-ink">
             <span className="grid size-10 place-items-center rounded-full bg-primary text-white"><Bag2 size={20} variant="Bold" /></span>
-            <span className="text-[13px] leading-[17px]"><strong className="block">+12 000 commandes</strong><span className="text-ink-3">livrées avec le sourire</span></span>
+            <span className="text-sm"><strong className="block">+12 000 commandes</strong><span className="text-ink-3">livrées avec le sourire</span></span>
           </motion.div>
           <div className="absolute inset-x-0 bottom-0 p-10 text-white">
-            <h2 className="max-w-[420px] text-[30px] leading-[36px]">{headline}</h2>
+            <h2 className="max-w-[420px] text-2xl">{headline}</h2>
             <ul className="mt-6 space-y-3">
               {BENEFITS.map(({ icon: Icon, label }, i) => (
-                <motion.li key={label} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4 + i * 0.12 }} className="flex items-center gap-3 text-[14px]">
+                <motion.li key={label} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4 + i * 0.12 }} className="flex items-center gap-3 text-sm">
                   <span className="grid size-8 place-items-center rounded-full bg-white/20"><Icon size={16} variant="Bold" /></span>
                   {label}
                 </motion.li>

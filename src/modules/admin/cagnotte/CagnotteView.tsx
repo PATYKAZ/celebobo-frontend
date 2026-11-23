@@ -98,7 +98,7 @@ function ProductPicker({ value, onChange }: { value: FormValues["products"]; onC
     <div>
       <Input aria-label="Ajouter un produit" placeholder="Ajouter un produit (2 lettres au moins)" value={q} onChange={(e) => setQ(e.target.value)} />
       {q.trim().length >= 2 && (search.data?.results ?? []).length > 0 && (
-        <ul className="mt-1 max-h-44 overflow-auto rounded-box border border-line-3 text-[13px]">
+        <ul className="mt-1 max-h-44 overflow-auto rounded-box border border-line-3 text-sm">
           {(search.data?.results ?? []).filter((p) => !value.some((v) => v.id === Number(p.id))).map((p) => (
             <li key={p.id}>
               <button type="button" className="w-full px-3 py-2 text-left hover:bg-page/60" onClick={() => { onChange([...value, { id: Number(p.id), name: p.name }]); setQ(""); }}>{p.name}</button>
@@ -109,7 +109,7 @@ function ProductPicker({ value, onChange }: { value: FormValues["products"]; onC
       {value.length > 0 && (
         <div className="mt-2 flex flex-wrap gap-1.5">
           {value.map((p) => (
-            <button key={p.id} type="button" onClick={() => onChange(value.filter((v) => v.id !== p.id))} className="rounded-full bg-chip px-2.5 py-1 text-[12px]" aria-label={`Retirer ${p.name}`}>{p.name} ×</button>
+            <button key={p.id} type="button" onClick={() => onChange(value.filter((v) => v.id !== p.id))} className="rounded-full bg-chip px-2.5 py-1 text-xs" aria-label={`Retirer ${p.name}`}>{p.name} ×</button>
           ))}
         </div>
       )}
@@ -169,12 +169,12 @@ function CampaignForm({ campaign, onClose }: { campaign: Campaign | null; onClos
         {inPoints && <Input label="Validité des points (jours)" type="number" min="1" max="730" value={v.pointsValidDays} onChange={(e) => set("pointsValidDays", e.target.value)} />}
       </div>
       <fieldset>
-        <legend className="mb-1.5 text-[13px] font-semibold">Produits concernés <span className="font-normal text-ink-3">(rien de coché : tous les produits)</span></legend>
+        <legend className="mb-1.5 text-sm font-semibold">Produits concernés <span className="font-normal text-ink-3">(rien de coché : tous les produits)</span></legend>
         <div className="flex max-h-36 flex-wrap gap-1.5 overflow-auto">
           {(categories.data ?? []).map((c) => {
             const on = v.categoryIds.includes(c.id);
             return (
-              <button key={c.id} type="button" aria-pressed={on} onClick={() => set("categoryIds", on ? v.categoryIds.filter((x) => x !== c.id) : [...v.categoryIds, c.id])} className={`rounded-full px-2.5 py-1 text-[12px] ${on ? "bg-primary text-white" : "bg-chip"}`}>
+              <button key={c.id} type="button" aria-pressed={on} onClick={() => set("categoryIds", on ? v.categoryIds.filter((x) => x !== c.id) : [...v.categoryIds, c.id])} className={`rounded-full px-2.5 py-1 text-xs ${on ? "bg-primary text-white" : "bg-chip"}`}>
                 {c.parentId ? "↳ " : ""}{c.name}
               </button>
             );
@@ -184,7 +184,7 @@ function CampaignForm({ campaign, onClose }: { campaign: Campaign | null; onClos
       </fieldset>
       <Textarea label="Conditions annoncées" value={v.description} onChange={(e) => set("description", e.target.value)} placeholder="Texte affiché sur le site avec l'opération" />
       <div className="flex justify-end gap-2">
-        <Button variant="outline" upper={false} onClick={onClose}>Annuler</Button>
+        <Button variant="secondary" upper={false} onClick={onClose}>Annuler</Button>
         <Button upper={false} disabled={!v.name.trim()} loading={save.isPending} onClick={() => save.mutate()}>Enregistrer</Button>
       </div>
     </div>
@@ -212,7 +212,7 @@ function Campaigns() {
   return (
     <Block pad="none" className="overflow-hidden">
       <div className="flex items-center justify-between gap-2 px-4 pt-4 sm:px-6">
-        <h2 className="text-[15px] font-bold">Opérations</h2>
+        <h2 className="text-sm font-bold">Opérations</h2>
         <Button size="sm" upper={false} onClick={() => setEditing("new")}>Nouvelle opération</Button>
       </div>
       {isLoading || !data ? (
@@ -222,15 +222,15 @@ function Campaigns() {
       ) : (
         <ul className="divide-y divide-line-3">
           {data.map((c) => (
-            <li key={c.id} className="space-y-1.5 px-4 py-3.5 text-[13px] sm:px-6">
+            <li key={c.id} className="space-y-1.5 px-4 py-3.5 text-sm sm:px-6">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <span><b className="text-[14px]">{c.name}</b> · {campaignHeadline(c)}</span>
+                <span><b className="text-sm">{c.name}</b> · {campaignHeadline(c)}</span>
                 <Pill tone={STATE[c.state].tone}>{STATE[c.state].label}</Pill>
               </div>
               <p className="text-ink-3">Du {formatDateTime(c.startsAt)} au {formatDateTime(c.endsAt)}</p>
               <p className="text-ink-2">{campaignConditions(c).slice(0, -1).join(" · ")}</p>
               <div className="flex flex-wrap gap-2 pt-1">
-                {c.state === "upcoming" && <Button size="sm" variant="outline" upper={false} onClick={() => setEditing(c)}>Modifier</Button>}
+                {c.state === "upcoming" && <Button size="sm" variant="secondary" upper={false} onClick={() => setEditing(c)}>Modifier</Button>}
                 {c.state === "upcoming" && <Button size="sm" variant="ghost" upper={false} loading={remove.isPending && remove.variables === c.id} onClick={() => remove.mutate(c.id)}>Supprimer</Button>}
                 {c.state === "running" && <Button size="sm" variant="danger" upper={false} loading={end.isPending} onClick={() => end.mutate(c.id)}>Y mettre fin maintenant</Button>}
               </div>
@@ -254,10 +254,10 @@ function RewardRow({ r }: { r: Reward }) {
     onError: (e) => toast.error("Enregistrement impossible", getErrorMessage(e)),
   });
   return (
-    <li className="space-y-2 px-4 py-3.5 text-[13px] sm:px-6">
+    <li className="space-y-2 px-4 py-3.5 text-sm sm:px-6">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <span><b>{r.clientName}</b> · commande {r.orderNumber} · {r.campaignName}</span>
-        <b className="text-[15px] text-primary">{formatPrice(Number(r.kept))}</b>
+        <b className="text-sm text-primary">{formatPrice(Number(r.kept))}</b>
       </div>
       <p className="text-ink-3">
         {r.status === "paid" ? `Versé le ${formatDate(r.paidAt!)} · réf. ${r.reference}` : `Téléphone ${r.phone} · à verser depuis le ${formatDate(r.availableAt)}`}
@@ -282,7 +282,7 @@ function Rewards() {
   return (
     <Block pad="none" className="overflow-hidden">
       <div className="flex flex-wrap items-center justify-between gap-2 px-4 pt-4 sm:px-6">
-        <h2 className="text-[15px] font-bold">Cashbacks par Mobile Money</h2>
+        <h2 className="text-sm font-bold">Cashbacks par Mobile Money</h2>
         <SegmentedControl size="sm" aria-label="Cashbacks" value={tab} onChange={setTab} options={[{ value: "due", label: "À verser" }, { value: "paid", label: "Versés" }]} />
       </div>
       {isLoading || !data ? (

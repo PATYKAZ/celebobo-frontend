@@ -39,9 +39,9 @@ export function CartLine({ item, onQuantity, onRemove }: Props) {
       </Link>
 
       <div className="min-w-0">
-        {item.product.category && <p className="text-[12px] uppercase text-ink-3">{item.product.category}</p>}
-        <Link href={href} className="line-clamp-2 text-[14px] font-bold leading-[19px] transition-colors hover:text-primary sm:text-[15px] sm:leading-[20px]">{item.product.name}</Link>
-        {item.variantLabel && <span className="mt-1 inline-block rounded-sm bg-chip px-2 py-0.5 text-[12px] font-semibold">{item.variantLabel}</span>}
+        {item.product.category && <p className="text-xs text-ink-3">{item.product.category}</p>}
+        <Link href={href} className="line-clamp-2 text-sm font-bold transition-colors hover:text-primary sm:text-sm">{item.product.name}</Link>
+        {item.variantLabel && <span className="mt-1 inline-block rounded-sm bg-chip px-2 py-0.5 text-xs font-semibold">{item.variantLabel}</span>}
         <div className="mt-2 flex flex-wrap items-center gap-2">
           <Price current={unit} original={original} size="sm" usd />
           {unavailable ? <Pill tone="red">Plus disponible</Pill> : item.product.freeShipping && <Pill tone="green">Livraison offerte</Pill>}
@@ -51,8 +51,8 @@ export function CartLine({ item, onQuantity, onRemove }: Props) {
       <div className="col-span-2 flex items-center justify-between gap-3 sm:col-span-1 sm:contents">
         <QuantityStepper value={item.quantity} onChange={onQuantity} size={mobile ? "md" : "sm"} />
         <div className="text-right sm:w-[110px]">
-          <p className="text-[11px] uppercase text-ink-3 sm:hidden">Total</p>
-          <motion.p key={item.quantity} initial={{ scale: 1.15, color: "#226D68" }} animate={{ scale: 1, color: "#000" }} className="text-[17px] font-bold">
+          <p className="text-xs text-ink-3 sm:hidden">Total</p>
+          <motion.p key={item.quantity} initial={{ scale: 1.15, color: "#226D68" }} animate={{ scale: 1, color: "#000" }} className="text-base font-bold">
             {formatPrice(unit * item.quantity)}
           </motion.p>
         </div>

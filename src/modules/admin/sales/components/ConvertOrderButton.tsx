@@ -17,7 +17,7 @@ export function ConvertOrderButton({ orderId, variant = "primary", className }: 
 
   if (data && !data.convertible) {
     return (
-      <Button variant="chip" disabled upper={false} title={data.blockedReason ?? undefined} leftIcon={<Lock size={16} variant="Bold" />} className={className}>
+      <Button variant="secondary" disabled upper={false} title={data.blockedReason ?? undefined} leftIcon={<Lock size={16} variant="Bold" />} className={className}>
         {data.blockedReason ?? "Non convertible"}
       </Button>
     );

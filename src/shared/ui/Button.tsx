@@ -3,24 +3,28 @@ import type { ButtonHTMLAttributes, ReactNode } from "react";
 import { cn } from "@/shared/lib/cn";
 import { Spinner } from "./Spinner";
 
-export type ButtonVariant = "primary" | "dark" | "outline" | "white" | "chip" | "danger" | "ghost";
+/**
+ * Trois rôles et un bouton discret :
+ * - primary : l'action principale de l'écran (une seule par zone) ;
+ * - secondary : les autres actions ;
+ * - danger : supprimer, annuler, désactiver ;
+ * - ghost : action tertiaire sans fond (liens d'action dans une liste, barres d'outils denses).
+ */
+export type ButtonVariant = "primary" | "secondary" | "danger" | "ghost";
 export type ButtonSize = "xs" | "sm" | "md" | "lg";
 
 const VARIANTS: Record<ButtonVariant, string> = {
-  primary: "bg-primary text-white hover:bg-primary-dark",
-  dark: "bg-ink-dark text-white hover:bg-black",
-  outline: "border border-primary bg-transparent text-primary hover:bg-primary hover:text-white",
-  white: "bg-surface text-ink hover:bg-ink hover:text-white",
-  chip: "bg-chip text-ink hover:bg-primary hover:text-white",
-  danger: "bg-danger text-white hover:bg-[#d62a21]",
-  ghost: "bg-transparent text-ink hover:bg-chip",
+  primary: "bg-primary text-white hover:bg-primary-dark active:bg-primary-dark",
+  secondary: "border border-line bg-surface text-ink hover:border-primary hover:text-primary active:bg-primary-50",
+  danger: "bg-danger text-white hover:bg-danger/90 active:bg-danger/80",
+  ghost: "bg-transparent text-ink hover:bg-chip active:bg-chip",
 };
 
 const SIZES: Record<ButtonSize, string> = {
-  xs: "h-[28px] px-3 text-[11px] leading-[16px] rounded-md max-sm:min-h-9",
-  sm: "h-[34px] px-4 text-[12px] leading-[18px] rounded-box max-sm:min-h-11",
-  md: "h-[45px] px-6 text-[13px] leading-[19px] rounded-box max-sm:min-h-12",
-  lg: "h-[52px] px-8 text-[14px] leading-[21px] rounded-box max-sm:min-h-12",
+  xs: "h-8 px-3 text-xs rounded-md max-sm:min-h-9",
+  sm: "h-9 px-4 text-sm rounded-md max-sm:min-h-11",
+  md: "h-11 px-5 text-sm rounded-box max-sm:min-h-12",
+  lg: "h-12 px-6 text-base rounded-box",
 };
 
 interface BaseProps {
@@ -29,7 +33,7 @@ interface BaseProps {
   loading?: boolean;
   leftIcon?: ReactNode;
   rightIcon?: ReactNode;
-  /** Majuscules (design : boutons d'action en uppercase) */
+  /** Majuscules : réservé aux sigles très courts ; les libellés restent en casse de phrase. */
   upper?: boolean;
   fullWidth?: boolean;
   className?: string;
@@ -39,11 +43,11 @@ interface BaseProps {
 type ButtonProps = BaseProps & ButtonHTMLAttributes<HTMLButtonElement> & { href?: undefined };
 type LinkProps = BaseProps & { href: string; target?: string; onClick?: () => void; disabled?: boolean };
 
-/** Bouton / lien-bouton du design (rad 10, hover avec reflet). */
+/** Bouton / lien-bouton : retour au pressé (léger enfoncement), états de survol et désactivé distincts. */
 export function Button(props: ButtonProps | LinkProps) {
-  const { variant = "primary", size = "md", loading, leftIcon, rightIcon, upper = true, fullWidth, className, children, ...rest } = props;
+  const { variant = "primary", size = "md", loading, leftIcon, rightIcon, upper = false, fullWidth, className, children, ...rest } = props;
   const classes = cn(
-    "group relative inline-flex select-none items-center justify-center gap-2 overflow-hidden whitespace-nowrap font-medium transition-all duration-300 active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50",
+    "relative inline-flex select-none items-center justify-center gap-2 whitespace-nowrap font-semibold transition-[background-color,border-color,color,transform] duration-150 ease-out active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50",
     upper && "uppercase",
     VARIANTS[variant],
     SIZES[size],
@@ -52,10 +56,6 @@ export function Button(props: ButtonProps | LinkProps) {
   );
   const content = (
     <>
-      <span
-        aria-hidden
-        className="pointer-events-none absolute inset-y-0 left-0 w-1/4 translate-x-[-120%] bg-white/25 group-hover:animate-sheen"
-      />
       {loading ? <Spinner size={16} className="text-current" /> : leftIcon}
       {children}
       {!loading && rightIcon}

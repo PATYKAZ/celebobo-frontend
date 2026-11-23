@@ -43,7 +43,7 @@ function DrawerContent({ className, children, ...props }: React.ComponentProps<t
       <DrawerPrimitive.Content
         data-slot="drawer-content"
         className={cn(
-          "fixed inset-x-0 bottom-0 z-[95] mx-auto flex max-h-[calc(var(--dvh)*86)] w-full flex-col rounded-t-[22px] bg-popover text-popover-foreground outline-none",
+          "fixed inset-x-0 bottom-0 z-[95] mx-auto flex max-h-[calc(var(--dvh)*86)] w-full flex-col rounded-t-lg bg-popover text-popover-foreground outline-none",
           className
         )}
         {...props}
@@ -79,11 +79,11 @@ function DrawerFooter({ className, ...props }: React.ComponentProps<"div">) {
 }
 
 function DrawerTitle({ className, ...props }: React.ComponentProps<typeof DrawerPrimitive.Title>) {
-  return <DrawerPrimitive.Title data-slot="drawer-title" className={cn("text-[16px] font-bold leading-[22px]", className)} {...props} />
+  return <DrawerPrimitive.Title data-slot="drawer-title" className={cn("text-base font-bold", className)} {...props} />
 }
 
 function DrawerDescription({ className, ...props }: React.ComponentProps<typeof DrawerPrimitive.Description>) {
-  return <DrawerPrimitive.Description data-slot="drawer-description" className={cn("text-[13px] text-muted-foreground", className)} {...props} />
+  return <DrawerPrimitive.Description data-slot="drawer-description" className={cn("text-sm text-muted-foreground", className)} {...props} />
 }
 
 export {

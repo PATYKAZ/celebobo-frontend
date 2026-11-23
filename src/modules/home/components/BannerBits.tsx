@@ -28,7 +28,7 @@ export function BannerPrice({ product, className, strikeClassName }: { product: 
   return (
     <span className="inline-flex items-baseline gap-2">
       <span className={cn("font-bold", className)}>{formatPrice(pricing.current)}</span>
-      {pricing.original != null && <s className={cn("text-[12px]", strikeClassName)}>{formatPrice(pricing.original)}</s>}
+      {pricing.original != null && <s className={cn("text-xs", strikeClassName)}>{formatPrice(pricing.original)}</s>}
     </span>
   );
 }

@@ -35,7 +35,7 @@ function Content() {
         ) : (
           <ul className="divide-y divide-line-3">
             {data.map((row) => (
-              <li key={`${row.productId}-${row.variantId ?? 0}`} className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 text-[13px] sm:px-6">
+              <li key={`${row.productId}-${row.variantId ?? 0}`} className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 text-sm sm:px-6">
                 <Link href={ROUTES.admin.product(row.productId)} className="min-w-0 font-semibold text-primary hover:underline">
                   {row.name}{row.variantLabel ? ` — ${row.variantLabel}` : ""}
                 </Link>

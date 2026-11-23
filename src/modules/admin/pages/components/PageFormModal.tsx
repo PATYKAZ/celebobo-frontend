@@ -94,7 +94,7 @@ export function PageFormModal({ page, onClose }: { page: AdminPage | null; onClo
 
         <div>
           <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-            <p className="text-[14px] font-semibold">Texte</p>
+            <p className="text-sm font-semibold">Texte</p>
             <SegmentedControl<"edit" | "preview">
               aria-label="Texte ou aperçu"
               value={tab}
@@ -112,23 +112,23 @@ export function PageFormModal({ page, onClose }: { page: AdminPage | null; onClo
               value={v.body}
               onChange={(e) => set("body", e.target.value)}
               error={errors.body}
-              className="min-h-[360px] font-mono text-[13px] leading-[20px]"
+              className="min-h-[360px] font-mono text-sm"
               hint="Mise en forme : ## Titre, ### Sous-titre, - liste, 1. liste numérotée, **gras**, *italique*, [lien](/pages/…), tableaux | Colonne | Colonne |."
             />
           ) : (
             <div className="max-h-[480px] overflow-y-auto rounded-box border border-line-3 p-4 sm:p-6">
-              {v.body.trim() ? <Markdown source={v.body} /> : <p className="text-[13px] text-ink-3">Rien à afficher pour l&apos;instant.</p>}
+              {v.body.trim() ? <Markdown source={v.body} /> : <p className="text-sm text-ink-3">Rien à afficher pour l&apos;instant.</p>}
             </div>
           )}
         </div>
 
         <label className="flex min-h-12 cursor-pointer items-center justify-between gap-3 rounded-box border border-line px-4 active:bg-chip">
-          <span className="text-[14px] font-semibold">Publiée sur le site</span>
+          <span className="text-sm font-semibold">Publiée sur le site</span>
           <Switch label="Publiée sur le site" checked={v.isPublished} onChange={(x) => set("isPublished", x)} />
         </label>
 
         <div className="mt-1 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-          <Button type="button" variant="chip" upper={false} onClick={onClose}>Annuler</Button>
+          <Button type="button" variant="secondary" upper={false} onClick={onClose}>Annuler</Button>
           <Button type="submit" loading={save.isPending} upper={false}>{page ? "Enregistrer" : "Créer la page"}</Button>
         </div>
       </form>

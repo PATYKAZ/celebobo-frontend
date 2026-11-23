@@ -1,29 +1,28 @@
 import Link from "next/link";
 import { ROUTES } from "@/config/routes";
-import { Block } from "@/shared/ui/Block";
 
 export interface Crumb {
   label: string;
   href?: string;
 }
 
-/** Fil d'Ariane (bloc blanc 1300×81, rad 10) : liens ink-3 (#6E6E6E), séparateur #6C757D, page courante #000. */
+/** Fil d'Ariane : simple ligne au-dessus du contenu (sans bloc), liens ink-3, page courante en ink. */
 export function Breadcrumb({ items, className }: { items: Crumb[]; className?: string }) {
   const all: Crumb[] = [{ label: "Accueil", href: ROUTES.home }, ...items];
   return (
-    <Block pad="none" as="div" className={`flex min-h-[44px] items-center px-4 py-2.5 sm:min-h-[81px] sm:px-[30px] sm:py-4 ${className ?? ""}`}>
+    <div className={`flex min-h-9 items-center px-1 sm:px-2 ${className ?? ""}`}>
       <nav aria-label="Fil d'Ariane" className="min-w-0">
-        <ol className="flex min-w-0 items-center whitespace-nowrap text-[13px] font-bold leading-[21px] sm:flex-wrap sm:text-[14px]">
+        <ol className="flex min-w-0 items-center whitespace-nowrap text-sm font-medium sm:flex-wrap">
           {all.map((c, i) => {
             const last = i === all.length - 1;
             return (
               <li key={`${c.label}-${i}`} className={`flex min-w-0 items-center ${i < all.length - 2 ? "max-sm:hidden" : ""}`}>
                 {last || !c.href ? (
-                  <span aria-current={last ? "page" : undefined} className={`${last ? "text-ink" : "text-ink-3"} max-sm:truncate`}>
+                  <span aria-current={last ? "page" : undefined} className={`${last ? "font-semibold text-ink" : "text-ink-3"} max-sm:truncate`}>
                     {c.label}
                   </span>
                 ) : (
-                  <Link href={c.href} className="inline-flex min-h-11 items-center text-ink-3 transition-colors hover:text-primary sm:min-h-0 sm:py-1">
+                  <Link href={c.href} className="inline-flex min-h-11 items-center text-ink-3 transition-colors hover:text-primary sm:min-h-9">
                     {c.label}
                   </Link>
                 )}
@@ -33,6 +32,6 @@ export function Breadcrumb({ items, className }: { items: Crumb[]; className?: s
           })}
         </ol>
       </nav>
-    </Block>
+    </div>
   );
 }

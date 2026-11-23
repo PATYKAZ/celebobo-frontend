@@ -39,7 +39,7 @@ export function ProductCard({ product, className, priority }: Props) {
   return (
     <motion.article
       layout
-      className={cn("group relative flex h-full min-w-0 flex-col rounded-box p-2.5 transition-shadow duration-300 hover:shadow-[0_10px_34px_rgba(0,0,0,.09)] sm:p-4", className)}
+      className={cn("group relative flex h-full min-w-0 flex-col rounded-box p-2.5 transition-shadow duration-300 hover:shadow-lg sm:p-4", className)}
     >
       {/* Image */}
       <div className="relative">
@@ -84,7 +84,7 @@ export function ProductCard({ product, className, priority }: Props) {
         <button
           onClick={() => add(product)}
           disabled={!product.inStock}
-          className="absolute inset-x-2 bottom-2 hidden h-9 translate-y-[140%] items-center justify-center gap-2 rounded-md bg-primary text-[12px] font-semibold uppercase text-white opacity-0 transition-all duration-300 hover:bg-primary-dark group-hover:translate-y-0 group-hover:opacity-100 disabled:bg-ink-3 sm:flex"
+          className="absolute inset-x-2 bottom-2 hidden h-9 translate-y-[140%] items-center justify-center gap-2 rounded-md bg-primary text-xs font-semibold text-white opacity-0 transition-all duration-300 hover:bg-primary-dark group-hover:translate-y-0 group-hover:opacity-100 disabled:bg-ink-3 sm:flex"
         >
           <Bag2 size={15} variant="Bold" /> {product.inStock ? "Ajouter" : "Indisponible"}
         </button>
@@ -93,30 +93,30 @@ export function ProductCard({ product, className, priority }: Props) {
           onClick={() => add(product)}
           disabled={!product.inStock}
           aria-label="Ajouter au panier"
-          className="touch-target absolute bottom-1.5 right-1.5 grid size-10 place-items-center rounded-full bg-primary text-white shadow-[0_4px_14px_rgba(34,109,104,.45)] transition-transform active:scale-90 disabled:bg-ink-3 disabled:shadow-none sm:hidden"
+          className="touch-target absolute bottom-1.5 right-1.5 grid size-10 place-items-center rounded-full bg-primary text-white shadow-md transition-transform active:scale-90 disabled:bg-ink-3 disabled:shadow-none sm:hidden"
         >
           <Bag2 size={18} variant="Bold" />
         </button>
       </div>
 
       {/* Contenu */}
-      <div className="mt-2.5 flex flex-1 flex-col sm:mt-[19px]">
+      <div className="mt-2.5 flex flex-1 flex-col sm:mt-5">
         {product.reviewsCount > 0 || product.rating ? <Stars rating={product.rating} count={product.reviewsCount} /> : <div className="h-[19.5px]" />}
-        <Link href={href} className="mt-2 line-clamp-2 min-h-[34px] text-[13px] font-bold leading-[17px] transition-colors hover:text-primary sm:mt-[10px] sm:line-clamp-3 sm:min-h-[50px] sm:text-name">
+        <Link href={href} className="mt-2 line-clamp-2 min-h-[34px] text-sm font-bold transition-colors hover:text-primary sm:mt-3 sm:line-clamp-3 sm:min-h-[50px] sm:text-name">
           {product.name}
         </Link>
-        <Price current={pricing.current} original={pricing.original} size="sm" className="mt-1.5 sm:mt-3 sm:[&>span:first-child]:text-[18px]" />
+        <Price current={pricing.current} original={pricing.original} size="sm" className="mt-1.5 sm:mt-3 sm:[&>span:first-child]:text-lg" />
 
         {/* mobile : une simple ligne de texte (pas de pastilles empilées) ; desktop : pastilles du design */}
-        <p className="mt-1.5 text-[11px] font-semibold leading-[15px] text-primary sm:hidden">
+        <p className="mt-1.5 text-xs font-semibold text-primary sm:hidden">
           {product.freeShipping ? "Livraison offerte" : product.shippingFee ? `${formatPrice(product.shippingFee)} livraison` : " "}
         </p>
-        <div className="mt-3 hidden flex-wrap gap-[6px] sm:flex">
+        <div className="mt-3 hidden flex-wrap gap-1.5 sm:flex">
           {product.freeShipping ? <Pill tone="green">Livraison offerte</Pill> : product.shippingFee ? <Pill tone="dark">{formatPrice(product.shippingFee)} livraison</Pill> : null}
           {pricing.onSale && pricing.percent > 0 && <Pill tone="red">-{pricing.percent}%</Pill>}
         </div>
 
-        <p className={cn("mt-auto items-center gap-1.5 pt-2 text-[12px] leading-[20.4px] sm:flex sm:pt-3", product.inStock ? "hidden" : "flex")}>
+        <p className={cn("mt-auto items-center gap-1.5 pt-2 text-xs sm:flex sm:pt-3", product.inStock ? "hidden" : "flex")}>
           {product.inStock ? (
             <>
               <TickCircle size={13} variant="Bold" color="#226D68" /> En stock

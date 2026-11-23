@@ -37,8 +37,8 @@ function ProgrammeSwitch({ label, on, onChange, children }: { label: string; on:
   return (
     <label className="flex min-h-14 cursor-pointer items-center justify-between gap-3 rounded-box border border-line px-4 py-3 active:bg-chip">
       <span>
-        <span className="block text-[14px] font-semibold">{label}</span>
-        <span className="block text-[12px] leading-[17px] text-ink-3">{children}</span>
+        <span className="block text-sm font-semibold">{label}</span>
+        <span className="block text-xs text-ink-3">{children}</span>
       </span>
       <Switch label={label} checked={on} onChange={onChange} />
     </label>
@@ -102,8 +102,8 @@ function Form({ initial }: { initial: Programmes }) {
       </SettingsSection>
 
       <div className="sticky bottom-[calc(var(--tabbar-h)+8px)] z-10 lg:bottom-4">
-        <Block pad="none" className="flex items-center justify-between gap-3 px-4 py-3 shadow-[0_8px_30px_rgba(0,0,0,.08)] sm:px-[30px]">
-          <p className="text-[13px] text-ink-2 max-sm:hidden">Chaque programme n’apparaît en boutique qu’une fois activé.</p>
+        <Block pad="none" className="flex items-center justify-between gap-3 px-4 py-3 shadow-lg sm:px-8">
+          <p className="text-sm text-ink-2 max-sm:hidden">Chaque programme n’apparaît en boutique qu’une fois activé.</p>
           <Button type="submit" loading={save.isPending} upper={false} className="max-sm:w-full">Enregistrer</Button>
         </Block>
       </div>
@@ -123,8 +123,8 @@ function Content() {
         </div>
       ) : isError || !data ? (
         <Block className="text-center">
-          <p className="text-[14px] text-ink-2">{getErrorMessage(error, "Impossible de charger les programmes.")}</p>
-          <Button className="mt-4" variant="chip" upper={false} onClick={() => refetch()}>Réessayer</Button>
+          <p className="text-sm text-ink-2">{getErrorMessage(error, "Impossible de charger les programmes.")}</p>
+          <Button className="mt-4" variant="secondary" upper={false} onClick={() => refetch()}>Réessayer</Button>
         </Block>
       ) : (
         <Form initial={data} />

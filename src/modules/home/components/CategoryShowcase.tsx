@@ -19,13 +19,13 @@ import { ProductCarousel } from "./ProductCarousel";
 function ShowcaseBanner({ b }: { b: HomeBanner }) {
   const t = bannerTone(b, "from-black/85 via-black/55 to-transparent");
   return (
-    <PhotoBanner image={b.image} href={b.href} label={b.title} overlay={t.overlay} className="h-[170px] sm:h-[200px]" sizes="(min-width:1024px) 605px, 100vw" contentClassName="flex flex-col justify-center px-6 sm:px-[30px]">
-      {b.eyebrow && <p className={cn("text-[10px] uppercase tracking-[0.2em]", t.muted)}>{b.eyebrow}</p>}
-      <h3 className={cn("mt-1 line-clamp-2 max-w-[80%] whitespace-pre-line text-[22px] font-medium uppercase leading-[27px] sm:text-[24px] sm:leading-[28.8px]", t.text)}>{b.title}</h3>
-      {b.subtitle && <p className={cn("mt-2 line-clamp-1 max-w-[80%] text-[12px] leading-[20.4px]", t.muted)}>{b.subtitle}</p>}
+    <PhotoBanner image={b.image} href={b.href} label={b.title} overlay={t.overlay} className="h-[170px] sm:h-[200px]" sizes="(min-width:1024px) 605px, 100vw" contentClassName="flex flex-col justify-center px-6 sm:px-8">
+      {b.eyebrow && <p className={cn("text-xs", t.muted)}>{b.eyebrow}</p>}
+      <h3 className={cn("mt-1 line-clamp-2 max-w-[80%] whitespace-pre-line text-xl font-medium sm:text-xl", t.text)}>{b.title}</h3>
+      {b.subtitle && <p className={cn("mt-2 line-clamp-1 max-w-[80%] text-xs", t.muted)}>{b.subtitle}</p>}
       <p className="mt-3 flex items-center gap-4">
-        {b.product && <BannerPrice product={b.product} className={cn("text-[20px]", t.price)} strikeClassName={t.strike} />}
-        <span className="inline-flex h-[33px] w-fit items-center rounded-[8px] bg-primary px-5 text-[11px] font-medium uppercase text-white">{b.cta}</span>
+        {b.product && <BannerPrice product={b.product} className={cn("text-lg", t.price)} strikeClassName={t.strike} />}
+        <span className="inline-flex h-[33px] w-fit items-center rounded-box bg-primary px-5 text-xs font-medium text-white">{b.cta}</span>
       </p>
     </PhotoBanner>
   );
@@ -51,10 +51,10 @@ export function CategoryShowcase({ config, catalog, banner }: { config: Showcase
 
   return (
     <Reveal>
-      <Block pad="none" className="min-w-0 overflow-hidden px-3 pb-4 pt-4 sm:px-[30px] sm:pb-8 sm:pt-[30px]">
+      <Block pad="none" className="min-w-0 overflow-hidden px-3 pb-4 pt-4 sm:px-8 sm:pb-8 sm:pt-8">
         <SectionHeader title={config.title} viewAllHref={config.viewAllHref} />
 
-        <div className="mt-4 grid grid-cols-[minmax(0,1fr)] gap-4 border-b border-line-2/25 pb-5 sm:mt-6 sm:gap-6 sm:pb-7 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-[46px]">
+        <div className="mt-4 grid grid-cols-[minmax(0,1fr)] gap-4 border-b border-line-2/25 pb-5 sm:mt-6 sm:gap-6 sm:pb-7 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-12">
           {shown ? (
             <ShowcaseBanner b={shown} />
           ) : (
@@ -69,8 +69,8 @@ export function CategoryShowcase({ config, catalog, banner }: { config: Showcase
                 <RevealItem key={c.slug}>
                   <Link href={ROUTES.category(c.slug)} className="group flex min-w-0 items-center justify-between gap-2 rounded-box p-1.5 transition-colors hover:bg-primary-50 active:bg-primary-50 sm:gap-3 sm:p-2">
                     <span className="min-w-0">
-                      <span className="block truncate text-[14px] font-bold leading-[16.8px] transition-colors group-hover:text-primary">{c.name}</span>
-                      <span className="mt-1 block text-[12px] leading-[18px] text-ink-2">{c.productsCount} article{c.productsCount > 1 ? "s" : ""}</span>
+                      <span className="block truncate text-sm font-bold transition-colors group-hover:text-primary">{c.name}</span>
+                      <span className="mt-1 block text-xs text-ink-2">{c.productsCount} article{c.productsCount > 1 ? "s" : ""}</span>
                     </span>
                     <span className="relative size-11 shrink-0 overflow-hidden rounded-md bg-chip sm:size-[50px]">
                       {c.image && <Image src={c.image} alt="" fill sizes="50px" className="object-cover transition-transform duration-500 group-hover:scale-125 group-hover:rotate-3" />}

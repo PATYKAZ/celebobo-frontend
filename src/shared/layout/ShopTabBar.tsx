@@ -111,23 +111,23 @@ export function ShopTabBar() {
         footer={
           <div className="space-y-2.5">
             <div className="flex items-center justify-between gap-3 rounded-box border border-line-3 p-3 pl-4">
-              <span className="text-[13px] font-semibold">Afficher les prix en</span>
+              <span className="text-sm font-semibold">Afficher les prix en</span>
               <CurrencySwitch />
             </div>
             <div className="flex items-center justify-between gap-3 rounded-box border border-line-3 p-3 pl-4">
-              <span className="text-[13px] font-semibold">Thème</span>
+              <span className="text-sm font-semibold">Thème</span>
               <ThemeSwitch />
             </div>
             <a href={site.hotlineHref} className="flex items-center justify-between rounded-box bg-primary-50 p-4">
               <span>
-                <span className="block text-[11px] font-bold uppercase tracking-wider text-ink-2">{supportLabel(site)}</span>
-                <span className="text-[20px] font-bold text-primary">{site.hotline}</span>
-                {supportHours(site) && <span className="block text-[12px] text-ink-2">{supportHours(site)}</span>}
+                <span className="block text-xs font-bold text-ink-2">{supportLabel(site)}</span>
+                <span className="text-lg font-bold text-primary">{site.hotline}</span>
+                {supportHours(site) && <span className="block text-xs text-ink-2">{supportHours(site)}</span>}
               </span>
               <span className="grid size-11 place-items-center rounded-full bg-primary text-white"><Call size={20} variant="Bold" /></span>
             </a>
             {isAuthenticated && (
-              <button onClick={() => { setMore(false); logout.mutate(); }} className="flex w-full items-center justify-center gap-2 rounded-box bg-chip py-3 text-[13px] font-bold text-danger active:scale-[0.98]">
+              <button onClick={() => { setMore(false); logout.mutate(); }} className="flex w-full items-center justify-center gap-2 rounded-box bg-chip py-3 text-sm font-bold text-danger active:scale-[0.98]">
                 <Logout size={17} /> Se déconnecter
               </button>
             )}

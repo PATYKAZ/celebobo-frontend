@@ -11,8 +11,8 @@ interface Props {
   usd?: boolean;
 }
 
-const CUR = { sm: "text-[16px] leading-[19px]", md: "text-[18px] leading-[21.6px]", lg: "text-[22px] leading-[26.4px]", xl: "text-[30px] leading-[36px]" };
-const OLD = { sm: "text-[13px]", md: "text-[14px] leading-[16.8px]", lg: "text-[16px] leading-[19.2px]", xl: "text-[18px]" };
+const CUR = { sm: "text-base", md: "text-lg", lg: "text-xl", xl: "text-2xl" };
+const OLD = { sm: "text-sm", md: "text-sm", lg: "text-base", xl: "text-lg" };
 
 /** Prix du design : rouge si promo + ancien prix barré. */
 export function Price({ current, original, size = "md", className, usd }: Props) {
@@ -20,7 +20,7 @@ export function Price({ current, original, size = "md", className, usd }: Props)
   const formatPrice = usd ? formatUsd : display;
   const sale = original != null && original > current;
   return (
-    <div className={cn("flex flex-wrap items-baseline gap-x-[6px]", className)}>
+    <div className={cn("flex flex-wrap items-baseline gap-x-1.5", className)}>
       <span className={cn("font-semibold", CUR[size], sale ? "text-danger" : "text-ink")}>{formatPrice(current)}</span>
       {sale && <span className={cn("font-semibold text-ink-2 line-through", OLD[size])}>{formatPrice(original)}</span>}
     </div>

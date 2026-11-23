@@ -42,17 +42,17 @@ export function MoreSheet({ open, onClose, title = "Plus de pages", sections, fo
           .filter((s) => s.items.length > 0)
           .map((s) => (
             <RevealItem key={s.title}>
-              <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.14em] text-ink-3">{s.title}</p>
+              <p className="mb-2 text-xs font-bold text-ink-3">{s.title}</p>
               <div className="grid grid-cols-4 gap-x-1 gap-y-3">
                 {s.items.map((it) => {
                   const Icon = it.icon;
                   const inner = (
                     <>
-                      <span className={`relative grid size-12 place-items-center rounded-[16px] transition-colors group-active:scale-90 ${it.danger ? "bg-danger-100 text-danger" : "bg-chip text-ink group-hover:bg-primary-100 group-hover:text-primary-dark"}`}>
+                      <span className={`relative grid size-12 place-items-center rounded-lg transition-colors group-active:scale-90 ${it.danger ? "bg-danger-100 text-danger" : "bg-chip text-ink group-hover:bg-primary-100 group-hover:text-primary-dark"}`}>
                         {it.iconNode ?? (Icon ? <Icon size={22} variant="Linear" /> : null)}
-                        {!!it.badge && <span className="absolute -right-1 -top-1 grid min-w-[18px] place-items-center rounded-full bg-danger px-1 text-[10px] font-bold leading-[18px] text-white ring-2 ring-white">{it.badge}</span>}
+                        {!!it.badge && <span className="absolute -right-1 -top-1 grid min-w-[18px] place-items-center rounded-full bg-danger px-1 text-xs font-bold text-white ring-2 ring-surface">{it.badge}</span>}
                       </span>
-                      <span className="line-clamp-2 text-center text-[11px] font-semibold leading-[14px]">{it.label}</span>
+                      <span className="line-clamp-2 text-center text-xs font-semibold">{it.label}</span>
                     </>
                   );
                   const cls = "group flex flex-col items-center gap-1.5 rounded-box p-1 active:bg-chip";

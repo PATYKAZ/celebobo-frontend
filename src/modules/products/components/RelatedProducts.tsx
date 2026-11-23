@@ -20,7 +20,7 @@ export function RelatedProducts({ slug }: { slug: string }) {
   if (!isLoading && !data?.length) return null;
 
   return (
-    <Block pad="none" className="min-w-0 overflow-hidden p-3 sm:p-[30px]">
+    <Block pad="none" className="min-w-0 overflow-hidden p-3 sm:p-8">
       <SectionHeader
         title="Produits similaires"
         viewAllHref={ROUTES.products}

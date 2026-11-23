@@ -37,11 +37,11 @@ export function PointsAmountInput({ available, value, onChange, credit = false }
 
   return (
     <div className={cn("rounded-box border-2 px-4 py-3 transition-colors", active ? "border-primary bg-primary-50" : "border-line-3")}>
-      <p className="flex items-start gap-3 text-[14px] leading-[19px]">
+      <p className="flex items-start gap-3 text-sm">
         <WalletMoney size={22} variant="Bold" className="shrink-0 text-primary" aria-hidden />
         <span className="min-w-0">
           <span className="block font-semibold">{credit ? "Utiliser mon avoir" : "Utiliser mes points de fidélité"}</span>
-          <span className="block text-[12px] text-ink-3">Jusqu’à {amount(available)} sur cette commande · {credit ? "livraison comprise" : "1 point = 1 $"}</span>
+          <span className="block text-xs text-ink-3">Jusqu’à {amount(available)} sur cette commande · {credit ? "livraison comprise" : "1 point = 1 $"}</span>
         </span>
       </p>
       <div className="mt-3 flex items-start gap-2">
@@ -59,12 +59,12 @@ export function PointsAmountInput({ available, value, onChange, credit = false }
           error={over ? `Maximum ${amount(available)} sur cette commande.` : undefined}
           wrapperClassName="min-w-0 flex-1"
         />
-        <Button type="button" variant="dark" upper={false} className="shrink-0 sm:h-[48px]" disabled={wanted === available} onClick={() => onChange(String(available))}>
+        <Button type="button" variant="secondary" upper={false} className="shrink-0 sm:h-[48px]" disabled={wanted === available} onClick={() => onChange(String(available))}>
           Tout utiliser
         </Button>
       </div>
       {active && (
-        <button type="button" onClick={() => onChange("")} className="mt-1 flex min-h-9 items-center text-[13px] font-semibold text-primary hover:underline">
+        <button type="button" onClick={() => onChange("")} className="mt-1 flex min-h-9 items-center text-sm font-semibold text-primary hover:underline">
           {credit ? "Ne pas utiliser d'avoir" : "Ne pas utiliser de points"}
         </button>
       )}

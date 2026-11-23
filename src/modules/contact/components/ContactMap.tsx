@@ -34,10 +34,10 @@ export function ContactMap() {
           allowFullScreen
         />
       </div>
-      <div className="p-4 sm:absolute sm:right-4 sm:top-4 sm:max-w-[340px] sm:rounded-box sm:bg-surface sm:shadow-[0_8px_30px_rgba(0,0,0,.12)]">
-        <p className="flex items-center gap-2 text-[14px] font-bold"><Location size={18} variant="Bold" className="text-primary" /> {SITE.name} Business</p>
-        <p className="mt-1 text-[13px] leading-[19px] text-ink-2">{query}</p>
-        <a href={`https://www.google.com/maps/dir/?api=1&destination=${encoded}`} target="_blank" rel="noreferrer" className="mt-1 inline-flex min-h-11 items-center gap-1.5 text-[13px] font-bold text-primary hover:underline">
+      <div className="p-4 sm:absolute sm:right-4 sm:top-4 sm:max-w-[340px] sm:rounded-box sm:bg-surface sm:shadow-lg">
+        <p className="flex items-center gap-2 text-sm font-bold"><Location size={18} variant="Bold" className="text-primary" /> {SITE.name} Business</p>
+        <p className="mt-1 text-sm text-ink-2">{query}</p>
+        <a href={`https://www.google.com/maps/dir/?api=1&destination=${encoded}`} target="_blank" rel="noreferrer" className="mt-1 inline-flex min-h-11 items-center gap-1.5 text-sm font-bold text-primary hover:underline">
           <Routing size={16} /> Itinéraire
         </a>
       </div>
@@ -71,9 +71,9 @@ function DecorativeMap({ address }: { address: string[] }) {
         </motion.div>
       </div>
       <div className="absolute bottom-4 left-4 right-4 rounded-box bg-surface p-4 sm:right-auto sm:max-w-[320px]">
-        <p className="text-[14px] font-bold">{SITE.name} Business</p>
-        <p className="mt-0.5 text-[13px] text-ink-2">{address.join(", ")}</p>
-        <a href={`https://www.google.com/maps/search/${encodeURIComponent(address.join(", "))}`} target="_blank" rel="noreferrer" className="mt-1 inline-flex min-h-11 items-center text-[13px] font-bold text-primary hover:underline">Itinéraire →</a>
+        <p className="text-sm font-bold">{SITE.name} Business</p>
+        <p className="mt-0.5 text-sm text-ink-2">{address.join(", ")}</p>
+        <a href={`https://www.google.com/maps/search/${encodeURIComponent(address.join(", "))}`} target="_blank" rel="noreferrer" className="mt-1 inline-flex min-h-11 items-center text-sm font-bold text-primary hover:underline">Itinéraire →</a>
       </div>
     </div>
   );

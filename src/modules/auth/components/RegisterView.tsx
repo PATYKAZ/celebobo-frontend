@@ -95,7 +95,7 @@ export function RegisterView() {
             icon={<SmsTracking size={40} variant="Bulk" />}
             title="Vérifiez votre boîte e-mail"
             description={`Nous avons envoyé un lien de confirmation à ${register.data.email}. Cliquez dessus pour activer votre compte, puis connectez-vous.`}
-            action={<Button variant="outline" upper={false} loading={resend.isPending} onClick={resendLink}>Renvoyer l&apos;e-mail</Button>}
+            action={<Button variant="secondary" upper={false} loading={resend.isPending} onClick={resendLink}>Renvoyer l&apos;e-mail</Button>}
           />
         ) : (
           <>
@@ -116,16 +116,16 @@ export function RegisterView() {
                 {(["acceptTerms", "acceptHostingAbroad"] as const).map((k) => (
                   <div key={k}>
                     <Checkbox checked={consents[k]} onChange={toggle(k)} label={<ConsentLabel kind={k === "acceptTerms" ? "terms" : "hosting_abroad"} />} />
-                    {consentError(k) && <p role="alert" className="mt-1 text-[12px] text-danger">{consentError(k)}</p>}
+                    {consentError(k) && <p role="alert" className="mt-1 text-xs text-danger">{consentError(k)}</p>}
                   </div>
                 ))}
                 <Checkbox checked={consents.acceptMarketing} onChange={toggle("acceptMarketing")} label={<ConsentLabel kind="marketing" />} />
               </fieldset>
-              {general && <p role="alert" className="rounded-md bg-danger-50 px-3 py-2 text-[13px] text-danger">{general}</p>}
+              {general && <p role="alert" className="rounded-md bg-danger-50 px-3 py-2 text-sm text-danger">{general}</p>}
               <Button type="submit" size="lg" fullWidth loading={register.isPending}>Créer mon compte</Button>
             </form>
             <GoogleButton next={next} label="S'inscrire avec Google" />
-            <p className="mt-2 text-center text-[12px] text-ink-3">Avec Google, les conditions vous seront demandées juste après la connexion.</p>
+            <p className="mt-2 text-center text-xs text-ink-3">Avec Google, les conditions vous seront demandées juste après la connexion.</p>
           </>
         )}
       </AuthLayoutCard>

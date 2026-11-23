@@ -10,9 +10,9 @@ import { LogoMark } from "./LogoMark";
  */
 function Wordmark({ light }: { light?: boolean }) {
   return (
-    <span aria-hidden className={cn("inline-flex flex-col gap-[3px]", light ? "text-white" : "text-ink")}>
+    <span aria-hidden className={cn("inline-flex flex-col gap-1", light ? "text-white" : "text-ink")}>
       <span className="h-[2px] rounded-full bg-current" />
-      <span className="whitespace-nowrap px-[3px] text-[21px] font-bold leading-[22px] tracking-[0.03em]">CeLE BoBO</span>
+      <span className="whitespace-nowrap px-1 text-lg font-bold">CeLE BoBO</span>
       <span className="h-[2px] rounded-full bg-current" />
     </span>
   );

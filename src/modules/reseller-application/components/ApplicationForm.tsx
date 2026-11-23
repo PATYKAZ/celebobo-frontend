@@ -61,13 +61,13 @@ export function ApplicationForm() {
       {submit.data ? (
         <motion.div key="ok" initial={{ opacity: 0, scale: 0.94 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center py-6 text-center sm:py-10">
           <motion.span initial={{ scale: 0, rotate: -90 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: "spring", stiffness: 300, damping: 12 }} className="grid size-20 place-items-center rounded-full bg-primary text-white"><TickCircle size={42} variant="Bold" /></motion.span>
-          <h3 className="mt-5 text-[22px]">Candidature envoyée !</h3>
-          <p className="mt-2 max-w-[380px] text-[14px] leading-[22px] text-ink-2">Un responsable étudie votre dossier et vous contacte sous 48 h au <strong className="text-ink">{form.phone}</strong>.</p>
-          <dl className="mt-6 w-full max-w-[360px] divide-y divide-line-3 rounded-box bg-page/60 text-left text-[13px]">
-            <div className="flex justify-between px-4 py-3"><dt className="text-ink-3">Référence</dt><dd className="font-bold tracking-wide text-primary">{submit.data.reference}</dd></div>
+          <h3 className="mt-5 text-xl">Candidature envoyée !</h3>
+          <p className="mt-2 max-w-[380px] text-sm text-ink-2">Un responsable étudie votre dossier et vous contacte sous 48 h au <strong className="text-ink">{form.phone}</strong>.</p>
+          <dl className="mt-6 w-full max-w-[360px] divide-y divide-line-3 rounded-box bg-page/60 text-left text-sm">
+            <div className="flex justify-between px-4 py-3"><dt className="text-ink-3">Référence</dt><dd className="font-bold text-primary">{submit.data.reference}</dd></div>
             <div className="flex justify-between px-4 py-3"><dt className="text-ink-3">Reçue le</dt><dd className="font-semibold">{formatDateTime(submit.data.submittedAt)}</dd></div>
           </dl>
-          <Button href={ROUTES.home} variant="chip" className="mt-6" upper={false}>Retour à l&apos;accueil</Button>
+          <Button href={ROUTES.home} variant="secondary" className="mt-6" upper={false}>Retour à l&apos;accueil</Button>
         </motion.div>
       ) : (
         <motion.form key="form" onSubmit={onSubmit} noValidate initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="grid gap-4 sm:grid-cols-2">
@@ -80,7 +80,7 @@ export function ApplicationForm() {
           <div className="sticky bottom-[calc(var(--tabbar-h)+8px)] z-10 -mx-4 bg-surface/90 px-4 py-2 backdrop-blur-md sm:static sm:col-span-2 sm:mx-0 sm:bg-transparent sm:p-0 sm:backdrop-blur-none">
             <Button type="submit" size="lg" loading={submit.isPending} fullWidth>Envoyer ma candidature</Button>
           </div>
-          <p className="text-[12px] text-ink-3 sm:col-span-2">Gratuit et sans engagement. Vos informations ne sont utilisées que pour traiter votre candidature.</p>
+          <p className="text-xs text-ink-3 sm:col-span-2">Gratuit et sans engagement. Vos informations ne sont utilisées que pour traiter votre candidature.</p>
         </motion.form>
       )}
     </AnimatePresence>

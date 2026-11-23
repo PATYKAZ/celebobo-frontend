@@ -18,12 +18,12 @@ function PointsBanner({ points }: { points: Programmes["points"] }) {
         <div className="absolute inset-0 bg-linear-to-r from-primary-dark/90 via-primary/75 to-black/60" />
         <div className="relative ml-auto w-full max-w-[340px] px-6 py-8 sm:mr-12 sm:px-0">
           <Float slow>
-            <p className="flex items-center gap-2 text-[34px] font-bold leading-[42px] text-sun sm:text-[40px] sm:leading-[48px]">
+            <p className="flex items-center gap-2 text-2xl font-bold text-sun sm:text-2xl">
               <WalletMoney size={34} variant="Bold" aria-hidden /> {pct(points.percent)}
             </p>
           </Float>
-          <p className="mt-1 text-[15px] font-semibold text-white">de vos achats en points de fidélité</p>
-          <p className="mt-2 text-[13px] leading-[19px] text-white/85">
+          <p className="mt-1 text-sm font-semibold text-white">de vos achats en points de fidélité</p>
+          <p className="mt-2 text-sm text-white/85">
             Sur chaque commande livrée, 1 point = 1 $. Utilisez-en autant que vous voulez sur vos prochains achats. Valables tant que vous achetez au moins une fois tous les {points.validityMonths} mois.
           </p>
         </div>
@@ -32,7 +32,7 @@ function PointsBanner({ points }: { points: Programmes["points"] }) {
   );
 }
 
-const STORE = "inline-flex h-12 items-center gap-2.5 rounded-[10px] bg-black px-4 text-white ring-1 ring-white/25 transition-transform hover:scale-[1.03] active:scale-95";
+const STORE = "inline-flex h-12 items-center gap-2.5 rounded-box bg-black px-4 text-white ring-1 ring-white/25 transition-transform hover:scale-[1.03] active:scale-95";
 
 /** Liens vers les stores : seuls ceux renseignés dans l'admin s'affichent (aucun envoi par SMS). */
 function AppBanner({ links }: { links: Programmes["appLinks"] }) {
@@ -43,20 +43,20 @@ function AppBanner({ links }: { links: Programmes["appLinks"] }) {
         <div className="absolute inset-0 bg-linear-to-r from-black/90 via-black/65 to-black/30" />
         <div className="relative flex h-full flex-col justify-center gap-4 px-6 py-8 sm:px-10">
           <div>
-            <h3 className="text-[24px] font-medium leading-[28.8px] text-white">Téléchargez notre app</h3>
-            <p className="mt-1 text-[13px] leading-[19px] text-white/80">Suivez vos commandes et discutez avec votre revendeur depuis votre téléphone.</p>
+            <h3 className="text-xl font-medium text-white">Téléchargez notre app</h3>
+            <p className="mt-1 text-sm text-white/80">Suivez vos commandes et discutez avec votre revendeur depuis votre téléphone.</p>
           </div>
           <div className="flex flex-wrap gap-3">
             {links.appStore && (
               <a href={links.appStore} target="_blank" rel="noopener noreferrer" className={STORE}>
                 <Apple size={24} variant="Bold" aria-hidden />
-                <span className="text-left leading-[14px]"><span className="block text-[10px]">Télécharger dans</span><span className="text-[16px] font-semibold">l’App Store</span></span>
+                <span className="text-left"><span className="block text-xs">Télécharger dans</span><span className="text-base font-semibold">l’App Store</span></span>
               </a>
             )}
             {links.playStore && (
               <a href={links.playStore} target="_blank" rel="noopener noreferrer" className={STORE}>
                 <GooglePlay size={24} variant="Bold" aria-hidden />
-                <span className="text-left leading-[14px]"><span className="block text-[10px]">Disponible sur</span><span className="text-[16px] font-semibold">Google Play</span></span>
+                <span className="text-left"><span className="block text-xs">Disponible sur</span><span className="text-base font-semibold">Google Play</span></span>
               </a>
             )}
           </div>

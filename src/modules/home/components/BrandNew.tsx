@@ -26,7 +26,7 @@ export function BrandNew({ products }: { products?: Product[] }) {
 
   return (
     <Reveal>
-      <Block pad="none" className="min-w-0 overflow-hidden px-4 pb-5 pt-4 sm:px-[30px] sm:pb-[30px] sm:pt-[30px]">
+      <Block pad="none" className="min-w-0 overflow-hidden px-4 pb-5 pt-4 sm:px-8 sm:pb-8 sm:pt-8">
         <SectionHeader title="Nouveau pour vous" right={<SliderArrows className="hidden md:flex" onPrev={() => swiper?.slidePrev()} onNext={() => swiper?.slideNext()} canPrev={!edge.begin} canNext={!edge.end} />} />
         <div className="mt-4 sm:mt-7">
           {!cards ? (
@@ -50,11 +50,11 @@ export function BrandNew({ products }: { products?: Product[] }) {
                       <Image src={c.image as string} alt={c.name} fill sizes="303px" className="object-cover transition-transform duration-900 group-hover:scale-110" />
                       <span aria-hidden className="absolute inset-y-0 left-0 w-1/4 translate-x-[-120%] bg-white/25 group-hover:animate-sheen" />
                     </div>
-                    <h3 className="mt-3 text-[16px] leading-[19.2px] sm:mt-5">{c.name}</h3>
-                    <p className="mt-2 line-clamp-2 flex-1 text-[13px] leading-[22.1px] text-ink-2">{c.description}</p>
+                    <h3 className="mt-3 text-base sm:mt-5">{c.name}</h3>
+                    <p className="mt-2 line-clamp-2 flex-1 text-sm text-ink-2">{c.description}</p>
                     <div className="mt-3 flex items-center justify-between gap-3 sm:mt-4">
-                      <span className="text-[16px] font-bold text-primary">{formatPrice(getPricing(c).current)}</span>
-                      <Button href={ROUTES.product(c.slug)} variant="outline" size="sm" className="h-[35px] w-[123px] text-[11px]">
+                      <span className="text-base font-bold text-primary">{formatPrice(getPricing(c).current)}</span>
+                      <Button href={ROUTES.product(c.slug)} variant="secondary" size="sm" className="h-[35px] w-[123px] text-xs">
                         Acheter
                       </Button>
                     </div>

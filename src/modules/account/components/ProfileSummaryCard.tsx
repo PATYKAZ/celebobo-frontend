@@ -64,20 +64,20 @@ export function ProfileSummaryCard({ user, profile, previewAvatar, onPickAvatar 
             }}
           />
         </div>
-        <h2 className="mt-3 text-[19px] leading-[25px] sm:mt-4 sm:text-[20px] sm:leading-[26px]">{name}</h2>
-        <p className="break-all text-[13px] text-ink-3">{user.email}</p>
-        <span className="mt-3 inline-block rounded-full bg-primary-100 px-3 py-1 text-[12px] font-bold text-primary-dark">{ROLE_LABEL[user.role]}</span>
+        <h2 className="mt-3 text-lg sm:mt-4 sm:text-lg">{name}</h2>
+        <p className="break-all text-sm text-ink-3">{user.email}</p>
+        <span className="mt-3 inline-block rounded-full bg-primary-100 px-3 py-1 text-xs font-bold text-primary-dark">{ROLE_LABEL[user.role]}</span>
 
         {code && (
           <div className="mt-4 rounded-box border border-dashed border-primary/50 bg-primary-50 p-3.5 sm:mt-6 sm:p-4">
-            <p className="text-[12px] font-semibold uppercase text-ink-2">Mon code revendeur</p>
+            <p className="text-xs font-semibold text-ink-2">Mon code revendeur</p>
             <div className="mt-2 flex items-center justify-between gap-3">
-              <span className="text-[26px] font-extrabold leading-[32px] tracking-[0.2em] text-primary sm:text-[30px] sm:leading-[36px]">{code}</span>
+              <span className="text-xl font-bold text-primary sm:text-2xl">{code}</span>
               <button onClick={copy} aria-label="Copier le code" className={cn("grid size-11 place-items-center rounded-full transition-colors active:scale-90 sm:size-10", copied ? "bg-primary text-white" : "bg-surface text-ink hover:bg-primary hover:text-white")}>
                 {copied ? <TickCircle size={18} variant="Bold" /> : <Copy size={18} />}
               </button>
             </div>
-            <p className="mt-3 flex items-center gap-2 text-[13px] text-ink-2">
+            <p className="mt-3 flex items-center gap-2 text-sm text-ink-2">
               <People size={16} variant="Bold" className="text-primary" />
               <strong className="text-ink"><CountUp to={profile?.invitedCount ?? 0} /></strong> client(s) invité(s)
             </p>

@@ -2,27 +2,27 @@ import type { ReactNode } from "react";
 import { cn } from "@/shared/lib/cn";
 import { useFormatPrice } from "@/shared/currency/CurrencyProvider";
 
-/** Badge « REMISE $199.00 » (dis-card du design : vert, rad 7). */
+/** Badge « Remise $199.00 » (fond teal, petit rayon). */
 export function SaveBadge({ amount, className, large }: { amount: number; className?: string; large?: boolean }) {
   // prix affichés dans la devise choisie par le visiteur (USD ou FC)
   const formatPrice = useFormatPrice();
   return (
     <div
       className={cn(
-        "inline-flex flex-col rounded-[7px] bg-primary text-white",
-        large ? "rounded-box px-[15px] py-[5px]" : "px-[10px] py-[5px]",
+        "inline-flex flex-col rounded-box bg-primary text-white",
+        large ? "rounded-box px-4 py-1.5" : "px-3 py-1.5",
         className,
       )}
     >
-      <span className={cn("uppercase", large ? "text-[12px] leading-[18px]" : "text-[10px] leading-[15px]")}>Remise</span>
-      <span className={cn("font-medium", large ? "text-[18px] leading-[21.6px]" : "text-[14px] leading-[16.8px]")}>{formatPrice(amount)}</span>
+      <span className="text-xs">Remise</span>
+      <span className={cn("font-medium", large ? "text-lg" : "text-sm")}>{formatPrice(amount)}</span>
     </div>
   );
 }
 
 export function NewBadge({ className }: { className?: string }) {
   return (
-    <span className={cn("inline-block rounded-[5px] bg-ink-dark px-2 py-1 text-[10px] uppercase leading-[15px] text-white", className)}>
+    <span className={cn("inline-flex h-6 items-center rounded-sm bg-ink-dark px-2 text-xs font-medium text-white", className)}>
       Nouveau
     </span>
   );
@@ -37,10 +37,10 @@ const TONES: Record<Tone, string> = {
   gray: "bg-chip text-ink-2",
 };
 
-/** Pastille « LIVRAISON OFFERTE », « CADEAU »… (fond 5 % + texte plein). */
+/** Pastille « Livraison offerte », « Cadeau »… (fond teinté + texte plein, casse de phrase). */
 export function Pill({ tone = "green", children, className }: { tone?: Tone; children: ReactNode; className?: string }) {
   return (
-    <span className={cn("inline-flex h-[21px] items-center rounded-md px-[10px] text-[10px] font-medium uppercase leading-[15px]", TONES[tone], className)}>
+    <span className={cn("inline-flex h-6 items-center whitespace-nowrap rounded-sm px-2 text-xs font-medium", TONES[tone], className)}>
       {children}
     </span>
   );
@@ -57,7 +57,7 @@ export function StatusDot({ tone, children }: { tone: "green" | "orange" | "red"
   } as const;
   const dot = { green: "bg-primary", orange: "bg-star", red: "bg-danger", gray: "bg-ink-3", blue: "bg-info" } as const;
   return (
-    <span className={cn("inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[12px] font-medium leading-[18px]", map[tone])}>
+    <span className={cn("inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-medium", map[tone])}>
       <span className={cn("size-1.5 rounded-full", dot[tone])} />
       {children}
     </span>

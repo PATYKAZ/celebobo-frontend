@@ -56,9 +56,9 @@ export function LoginView() {
           <Input label="Mot de passe" required type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} error={errors.password ?? fieldError(login.error, "password")} leftIcon={<Lock size={17} />} autoComplete="current-password" enterKeyHint="go" />
           <div className="flex items-center justify-between gap-3">
             <Checkbox checked={form.remember} onChange={(e) => setForm({ ...form, remember: e.target.checked })} label="Se souvenir de moi" />
-            <button type="button" onClick={() => setForgot(true)} className="inline-flex min-h-11 items-center text-[13px] font-semibold text-primary hover:underline">Mot de passe oublié ?</button>
+            <button type="button" onClick={() => setForgot(true)} className="inline-flex min-h-11 items-center text-sm font-semibold text-primary hover:underline">Mot de passe oublié ?</button>
           </div>
-          {general && <p role="alert" className="rounded-md bg-danger-50 px-3 py-2 text-[13px] text-danger">{general}</p>}
+          {general && <p role="alert" className="rounded-md bg-danger-50 px-3 py-2 text-sm text-danger">{general}</p>}
           <Button type="submit" size="lg" fullWidth loading={login.isPending}>Se connecter</Button>
         </form>
         <GoogleButton next={next} />

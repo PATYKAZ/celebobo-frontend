@@ -68,14 +68,14 @@ export function DonutChart({ segments, size = 190, centerLabel = "Total", format
         </svg>
         <div className="pointer-events-none absolute inset-0 grid place-items-center text-center">
           <div>
-            <p className="max-w-[110px] truncate text-[22px] font-bold leading-[26px]">{format(shown ? shown.value : total)}</p>
-            <p className="max-w-[110px] truncate text-[12px] text-ink-3">{shown ? shown.label : centerLabel}</p>
+            <p className="max-w-[110px] truncate text-xl font-bold">{format(shown ? shown.value : total)}</p>
+            <p className="max-w-[110px] truncate text-xs text-ink-3">{shown ? shown.label : centerLabel}</p>
           </div>
         </div>
       </div>
       <ul className="grid w-full max-w-[280px] gap-2.5">
         {segments.map((s, i) => (
-          <li key={s.label} onPointerEnter={() => setActive(i)} onPointerDown={() => setActive(i)} onPointerLeave={() => setActive(null)} className={cn("flex cursor-default items-center gap-2.5 min-h-9 rounded-md px-2 py-1 text-[13px] transition-colors", active === i && "bg-chip")}>
+          <li key={s.label} onPointerEnter={() => setActive(i)} onPointerDown={() => setActive(i)} onPointerLeave={() => setActive(null)} className={cn("flex cursor-default items-center gap-2.5 min-h-9 rounded-md px-2 py-1 text-sm transition-colors", active === i && "bg-chip")}>
             <span className="size-3 shrink-0 rounded-full" style={{ background: s.color }} />
             <span className="min-w-0 flex-1 truncate">{s.label}</span>
             <span className="font-bold">{Math.round((s.value / total) * 100)}%</span>

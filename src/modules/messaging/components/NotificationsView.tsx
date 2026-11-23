@@ -38,14 +38,14 @@ function Inner({ embedded }: { embedded?: boolean }) {
           <Breadcrumb items={[{ label: "Notifications" }]} />
         </div>
       )}
-      <Block pad="none" className="p-4 pb-24 sm:p-[30px] lg:pb-[30px]">
+      <Block pad="none" className="p-4 pb-24 sm:p-8 lg:pb-8">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3 sm:mb-6">
           <div className="min-w-0">
-            <h1 className="text-[22px] leading-[28px] sm:text-h-page">Notifications</h1>
-            <p className="mt-1 text-[13px] text-ink-2 sm:text-[14px]">{unread > 0 ? `${unread} non lue${unread > 1 ? "s" : ""}` : "Vous êtes à jour"} · {total} au total</p>
+            <h1 className="text-xl sm:text-h-page">Notifications</h1>
+            <p className="mt-1 text-sm text-ink-2 sm:text-sm">{unread > 0 ? `${unread} non lue${unread > 1 ? "s" : ""}` : "Vous êtes à jour"} · {total} au total</p>
           </div>
           {unread > 0 && (
-            <Button className="hidden lg:inline-flex" variant="chip" size="sm" upper={false} leftIcon={<TickSquare size={16} />} loading={markAll.isPending} onClick={readAll}>
+            <Button className="hidden lg:inline-flex" variant="secondary" size="sm" upper={false} leftIcon={<TickSquare size={16} />} loading={markAll.isPending} onClick={readAll}>
               Tout marquer comme lu
             </Button>
           )}
@@ -78,7 +78,7 @@ function Inner({ embedded }: { embedded?: boolean }) {
             exit={{ opacity: 0, y: 24 }}
             className="fixed inset-x-4 bottom-[calc(var(--tabbar-h)+12px)] z-40 lg:hidden"
           >
-            <Button fullWidth upper={false} size="md" leftIcon={<TickSquare size={18} variant="Bold" />} loading={markAll.isPending} onClick={readAll} className="shadow-[0_10px_28px_rgba(34,109,104,.4)]">
+            <Button fullWidth upper={false} size="md" leftIcon={<TickSquare size={18} variant="Bold" />} loading={markAll.isPending} onClick={readAll} className="shadow-lg">
               Tout marquer comme lu ({unread})
             </Button>
           </motion.div>

@@ -39,11 +39,11 @@ function Content() {
   };
 
   return (
-    <Block pad="none" className="p-4 sm:p-[30px]">
+    <Block pad="none" className="p-4 sm:p-8">
       <div className="flex flex-wrap items-center justify-between gap-3 sm:gap-4">
         <div className="min-w-0">
-          <h1 className="text-[22px] leading-[28px] text-primary sm:text-h-page">Mes adresses</h1>
-          <p className="mt-1 text-[13px] leading-[19px] text-ink-2 sm:text-[14px]">Enregistrez plusieurs adresses et choisissez-en une à chaque commande.</p>
+          <h1 className="text-xl text-primary sm:text-h-page">Mes adresses</h1>
+          <p className="mt-1 text-sm text-ink-2 sm:text-sm">Enregistrez plusieurs adresses et choisissez-en une à chaque commande.</p>
         </div>
         <Button onClick={() => open(null)} leftIcon={<Add size={16} />} className="max-sm:w-full">Ajouter une adresse</Button>
       </div>
@@ -70,22 +70,22 @@ function Content() {
                   <div className="flex items-start gap-3">
                     <span className={cn("grid size-11 shrink-0 place-items-center rounded-full", a.isDefault ? "bg-primary text-white" : "bg-chip")}><Icon size={20} variant="Bold" /></span>
                     <div className="min-w-0 flex-1">
-                      <p className="flex flex-wrap items-center gap-2 text-[16px] font-bold">
+                      <p className="flex flex-wrap items-center gap-2 text-base font-bold">
                         {a.label}
-                        {a.isDefault && <span className="rounded-full bg-primary px-2 py-0.5 text-[10px] font-bold uppercase text-white">Par défaut</span>}
+                        {a.isDefault && <span className="rounded-full bg-primary px-2 py-0.5 text-xs font-bold text-white">Par défaut</span>}
                       </p>
-                      <p className="mt-2 flex items-center gap-2 text-[13px] text-ink-2"><User size={14} /> {a.recipient}</p>
-                      <p className="mt-1 flex items-center gap-2 text-[13px] text-ink-2"><Call size={14} /> {a.phone}</p>
-                      <p className="mt-1 flex items-start gap-2 text-[13px] leading-[19px] text-ink-2"><Location size={14} className="mt-0.5 shrink-0" /> {a.line1}, {a.quarter}, {a.city}, {a.country}</p>
+                      <p className="mt-2 flex items-center gap-2 text-sm text-ink-2"><User size={14} /> {a.recipient}</p>
+                      <p className="mt-1 flex items-center gap-2 text-sm text-ink-2"><Call size={14} /> {a.phone}</p>
+                      <p className="mt-1 flex items-start gap-2 text-sm text-ink-2"><Location size={14} className="mt-0.5 shrink-0" /> {a.line1}, {a.quarter}, {a.city}, {a.country}</p>
                     </div>
                   </div>
                   <div className="mt-3 flex flex-wrap gap-2 sm:mt-4">
                     {!a.isDefault && (
-                      <Button size="xs" variant="outline" upper={false} loading={setDefault.isPending && setDefault.variables === a.id} leftIcon={<Star1 size={13} />} onClick={() => setDefault.mutate(a.id, { onSuccess: () => toast.success("Adresse par défaut mise à jour") })}>
+                      <Button size="xs" variant="secondary" upper={false} loading={setDefault.isPending && setDefault.variables === a.id} leftIcon={<Star1 size={13} />} onClick={() => setDefault.mutate(a.id, { onSuccess: () => toast.success("Adresse par défaut mise à jour") })}>
                         Définir par défaut
                       </Button>
                     )}
-                    <Button size="xs" variant="chip" upper={false} leftIcon={<Edit2 size={13} />} onClick={() => open(a)}>Modifier</Button>
+                    <Button size="xs" variant="secondary" upper={false} leftIcon={<Edit2 size={13} />} onClick={() => open(a)}>Modifier</Button>
                     <Button size="xs" variant="ghost" upper={false} className="text-danger hover:bg-danger-100!" leftIcon={<Trash size={13} />} onClick={() => setToDelete(a)}>Supprimer</Button>
                   </div>
                 </motion.article>

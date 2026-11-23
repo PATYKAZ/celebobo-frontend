@@ -41,23 +41,23 @@ function Content() {
   return (
     <div className="space-y-5">
       <div className="rounded-box bg-primary-50 p-4">
-        <p className="text-[13px] text-primary-dark">Avoir disponible</p>
-        <p className="text-[28px] font-bold text-primary">{formatPrice(available)}</p>
-        <p className="mt-1 flex items-center gap-2 text-[13px] leading-[19px] text-ink-2">
+        <p className="text-sm text-primary-dark">Avoir disponible</p>
+        <p className="text-2xl font-bold text-primary">{formatPrice(available)}</p>
+        <p className="mt-1 flex items-center gap-2 text-sm text-ink-2">
           <Clock size={16} className="shrink-0" />
           {data.nextExpiry ? `À utiliser avant le ${formatDate(data.nextExpiry)} pour la partie la plus ancienne.` : "Un avoir est valable 6 mois."}
         </p>
       </div>
-      <p className="text-[13px] leading-[19px] text-ink-2">L&apos;avoir s&apos;utilise au paiement, sur les articles et la livraison. Il vous est accordé quand vous changez d&apos;avis pendant le délai d&apos;essai de 7 jours. Il n&apos;est ni remboursable en argent ni transférable.</p>
+      <p className="text-sm text-ink-2">L&apos;avoir s&apos;utilise au paiement, sur les articles et la livraison. Il vous est accordé quand vous changez d&apos;avis pendant le délai d&apos;essai de 7 jours. Il n&apos;est ni remboursable en argent ni transférable.</p>
       {data.history.length === 0 ? (
-        <p className="text-[13px] text-ink-3">Aucun mouvement pour le moment.</p>
+        <p className="text-sm text-ink-3">Aucun mouvement pour le moment.</p>
       ) : (
         <ul className="divide-y divide-line-3 rounded-box border border-line-3">
           {data.history.map((m, i) => (
-            <li key={`${m.at}-${i}`} className="flex items-center justify-between gap-3 p-3.5 text-[13px]">
+            <li key={`${m.at}-${i}`} className="flex items-center justify-between gap-3 p-3.5 text-sm">
               <span className="min-w-0">
                 <span className="block font-semibold">{m.kindLabel}{m.orderNumber ? ` · commande ${m.orderNumber}` : ""}</span>
-                <span className="block text-[12px] text-ink-3">{formatDate(m.at)}{m.kind === "issued" && m.expiresAt ? ` · valable jusqu'au ${formatDate(m.expiresAt)}` : ""}{m.note ? ` · ${m.note}` : ""}</span>
+                <span className="block text-xs text-ink-3">{formatDate(m.at)}{m.kind === "issued" && m.expiresAt ? ` · valable jusqu'au ${formatDate(m.expiresAt)}` : ""}{m.note ? ` · ${m.note}` : ""}</span>
               </span>
               <span className={`shrink-0 font-bold ${Number(m.amount) >= 0 ? "text-primary" : "text-danger"}`}>{Number(m.amount) >= 0 ? "+" : "−"}{formatPrice(Math.abs(Number(m.amount)))}</span>
             </li>
@@ -74,8 +74,8 @@ export function StoreCreditView() {
       <Breadcrumb items={[{ label: "Mon compte", href: ROUTES.profile }, { label: "Mon avoir" }]} />
       <AuthGuard fallback={<AccountSkeleton breadcrumb={false} />}>
         <Reveal>
-          <Block pad="none" className="p-4 sm:p-[30px]">
-            <h1 className="mb-4 text-[22px] leading-[28px] text-primary sm:text-h-page">Mon avoir</h1>
+          <Block pad="none" className="p-4 sm:p-8">
+            <h1 className="mb-4 text-xl text-primary sm:text-h-page">Mon avoir</h1>
             <Content />
           </Block>
         </Reveal>

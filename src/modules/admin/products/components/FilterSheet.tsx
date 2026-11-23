@@ -14,11 +14,11 @@ export function FilterTrigger({ count, onClick, className }: { count: number; on
       type="button"
       onClick={onClick}
       aria-haspopup="dialog"
-      className={cn("relative inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-box border px-4 text-[14px] font-semibold transition-colors active:scale-[0.97]", count > 0 ? "border-primary bg-primary-50 text-primary-dark" : "border-line bg-surface", className)}
+      className={cn("relative inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-box border px-4 text-sm font-semibold transition-colors active:scale-[0.97]", count > 0 ? "border-primary bg-primary-50 text-primary-dark" : "border-line bg-surface", className)}
     >
       <Filter size={18} variant={count > 0 ? "Bold" : "Linear"} />
       Filtrer
-      {count > 0 && <span className="grid min-w-5 place-items-center rounded-full bg-primary px-1.5 text-[11px] font-bold leading-5 text-white">{count}</span>}
+      {count > 0 && <span className="grid min-w-5 place-items-center rounded-full bg-primary px-1.5 text-xs font-bold leading-5 text-white">{count}</span>}
     </button>
   );
 }
@@ -39,7 +39,7 @@ export function FilterSheet({ open, onClose, title = "Filtres", onReset, resetDi
     <BottomSheet open={open} onClose={onClose} title={title}>
       <div className="space-y-4 pb-4 pt-1">{children}</div>
       <div className="sticky bottom-0 -mx-5 grid grid-cols-2 gap-3 border-t border-line-3 bg-surface px-5 py-3 pb-safe">
-        <Button variant="chip" upper={false} disabled={resetDisabled} onClick={() => onReset?.()}>Réinitialiser</Button>
+        <Button variant="secondary" upper={false} disabled={resetDisabled} onClick={() => onReset?.()}>Réinitialiser</Button>
         <Button upper={false} onClick={onClose}>Voir les résultats</Button>
       </div>
     </BottomSheet>
@@ -58,7 +58,7 @@ export function ActiveChips({ chips, className }: { chips: FilterChip[]; classNa
   return (
     <ScrollRow bleed className={cn("gap-1.5", className)}>
       {chips.map((c) => (
-        <button key={c.key} type="button" onClick={c.onRemove} aria-label={`Retirer le filtre ${c.label}`} className="inline-flex h-9 items-center gap-1.5 whitespace-nowrap rounded-full bg-primary-100 pl-3.5 pr-2 text-[12px] font-semibold text-primary-dark active:scale-95">
+        <button key={c.key} type="button" onClick={c.onRemove} aria-label={`Retirer le filtre ${c.label}`} className="inline-flex h-9 items-center gap-1.5 whitespace-nowrap rounded-full bg-primary-100 pl-3.5 pr-2 text-xs font-semibold text-primary-dark active:scale-95">
           {c.label}
           <CloseCircle size={16} variant="Bold" />
         </button>

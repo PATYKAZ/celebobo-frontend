@@ -60,10 +60,10 @@ export function ReceiptVerificationView() {
       <Breadcrumb items={[{ label: "Vérifier un reçu de livraison" }]} />
       <div className="grid gap-3 sm:gap-4 lg:grid-cols-[440px_minmax(0,1fr)]">
         <Reveal direction="up" className="min-w-0">
-          <Block pad="none" className="h-full p-4 sm:p-[30px]">
+          <Block pad="none" className="h-full p-4 sm:p-8">
             <span className="grid size-12 place-items-center rounded-full bg-primary-100 text-primary-dark sm:size-14"><DocumentText size={26} variant="Bold" /></span>
-            <h1 className="mt-3 text-[22px] leading-[28px] sm:mt-4 sm:text-h-page">Vérifier un reçu</h1>
-            <p className="mb-5 mt-1 text-[13px] leading-[19px] text-ink-2 sm:mb-6 sm:text-[14px] sm:leading-[21px]">
+            <h1 className="mt-3 text-xl sm:mt-4 sm:text-h-page">Vérifier un reçu</h1>
+            <p className="mb-5 mt-1 text-sm text-ink-2 sm:mb-6 sm:text-sm">
               Chaque reçu de livraison Celebobo est signé. Recopiez le numéro et la signature imprimés en bas du reçu pour vérifier qu&apos;il est authentique et n&apos;a pas été modifié.
             </p>
             <form onSubmit={submit} noValidate className="space-y-4">
@@ -90,7 +90,7 @@ export function ReceiptVerificationView() {
                 }}
                 error={errors.signature}
                 placeholder="64 caractères, ex : 1065ed1319ef…"
-                className="min-h-[84px] font-mono text-[13px]"
+                className="min-h-[84px] font-mono text-sm"
                 autoCapitalize="none"
                 autoCorrect="off"
                 spellCheck={false}
@@ -101,39 +101,39 @@ export function ReceiptVerificationView() {
         </Reveal>
 
         <Reveal direction="up" className="min-w-0">
-          <Block pad="none" className="h-full min-h-[240px] p-4 sm:min-h-[340px] sm:p-[30px]">
+          <Block pad="none" className="h-full min-h-[240px] p-4 sm:min-h-[340px] sm:p-8">
             <AnimatePresence mode="wait">
               {result?.valid ? (
                 <motion.div key="valid" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="grid h-full place-items-center py-4 text-center">
                   <div>
                     <span className="mx-auto grid size-20 place-items-center rounded-full bg-primary-100 text-primary"><ShieldTick size={40} variant="Bold" /></span>
-                    <h2 className="mt-5 text-[22px]">Reçu authentique</h2>
-                    <p className="mx-auto mt-2 max-w-[400px] text-[14px] leading-[21px] text-ink-2">Ce reçu a été émis par Celebobo et son contenu n&apos;a pas été modifié.</p>
-                    <dl className="mx-auto mt-6 grid max-w-[360px] gap-2 rounded-box bg-page/60 p-4 text-left text-[14px]">
+                    <h2 className="mt-5 text-xl">Reçu authentique</h2>
+                    <p className="mx-auto mt-2 max-w-[400px] text-sm text-ink-2">Ce reçu a été émis par Celebobo et son contenu n&apos;a pas été modifié.</p>
+                    <dl className="mx-auto mt-6 grid max-w-[360px] gap-2 rounded-box bg-page/60 p-4 text-left text-sm">
                       <div className="flex justify-between gap-3"><dt className="text-ink-2">Commande</dt><dd className="font-bold">{result.orderNumber}</dd></div>
                       {result.deliveredAt && <div className="flex justify-between gap-3"><dt className="text-ink-2">Remise au client</dt><dd className="font-semibold">{formatDateTime(result.deliveredAt)}</dd></div>}
                       {result.total != null && <div className="flex justify-between gap-3"><dt className="text-ink-2">Total payé</dt><dd className="font-bold text-primary">{formatPrice(result.total)}</dd></div>}
                     </dl>
-                    <p className="mx-auto mt-4 max-w-[400px] text-[12px] leading-[17px] text-ink-3">Comparez ces informations avec celles du reçu : elles doivent être identiques.</p>
+                    <p className="mx-auto mt-4 max-w-[400px] text-xs text-ink-3">Comparez ces informations avec celles du reçu : elles doivent être identiques.</p>
                   </div>
                 </motion.div>
               ) : result ? (
                 <motion.div key="invalid" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="grid h-full place-items-center py-4 text-center">
                   <div>
                     <span className="mx-auto grid size-20 place-items-center rounded-full bg-danger-100 text-danger"><CloseCircle size={40} variant="Bold" /></span>
-                    <h2 className="mt-5 text-[22px]">Reçu non reconnu</h2>
-                    <p className="mx-auto mt-2 max-w-[400px] text-[14px] leading-[21px] text-ink-2">
+                    <h2 className="mt-5 text-xl">Reçu non reconnu</h2>
+                    <p className="mx-auto mt-2 max-w-[400px] text-sm text-ink-2">
                       Ce numéro et cette signature ne correspondent à aucun reçu émis par Celebobo. Vérifiez la saisie ; si le problème persiste, ce reçu n&apos;est pas authentique ou a été modifié.
                     </p>
-                    <Button href={ROUTES.contact} variant="chip" className="mt-5" upper={false}>Contacter le support</Button>
+                    <Button href={ROUTES.contact} variant="secondary" className="mt-5" upper={false}>Contacter le support</Button>
                   </div>
                 </motion.div>
               ) : (
                 <motion.div key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="grid h-full min-h-[220px] place-items-center py-4 text-center sm:min-h-[300px]">
                   <div>
                     <span className="mx-auto grid size-20 place-items-center rounded-full bg-chip text-ink-3"><DocumentText size={36} variant="Bulk" /></span>
-                    <h2 className="mt-5 text-[20px]">Le résultat s&apos;affichera ici</h2>
-                    <p className="mx-auto mt-2 max-w-[360px] text-[14px] leading-[21px] text-ink-2">{verify.isError ? getErrorMessage(verify.error) : "Le numéro et la signature figurent en bas de chaque reçu de livraison."}</p>
+                    <h2 className="mt-5 text-lg">Le résultat s&apos;affichera ici</h2>
+                    <p className="mx-auto mt-2 max-w-[360px] text-sm text-ink-2">{verify.isError ? getErrorMessage(verify.error) : "Le numéro et la signature figurent en bas de chaque reçu de livraison."}</p>
                   </div>
                 </motion.div>
               )}

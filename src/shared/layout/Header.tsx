@@ -47,7 +47,7 @@ function NavItem({ item }: { item: (typeof NAV)[number] }) {
   const hasMenu = "mega" in item || "children" in item;
 
   const label = (
-    <span className={cn("relative flex h-[41px] items-center gap-1 px-[15px] text-[14px] font-bold uppercase leading-[21px] transition-colors hover:text-primary", active && "text-primary")}>
+    <span className={cn("relative flex h-[41px] items-center gap-1 px-4 text-sm font-bold transition-colors hover:text-primary", active && "text-primary")}>
       {item.label}
       {hasMenu && <ArrowDown2 size={11} className="opacity-80 transition-transform group-hover:rotate-180" />}
       <span className={cn("absolute inset-x-[15px] -bottom-px h-[2px] origin-left scale-x-0 rounded-full bg-primary transition-transform duration-300 group-hover:scale-x-100", active && "scale-x-100")} />
@@ -83,12 +83,12 @@ function NavItem({ item }: { item: (typeof NAV)[number] }) {
                         <CategoryIcon name={c.icon} size={18} />
                       </span>
                       <span className="min-w-0">
-                        <span className="block truncate text-[13px] font-semibold leading-[18px] group-hover/i:text-primary">{c.name}</span>
-                        <span className="text-[11px] text-ink-3">{c.productsCount} produits</span>
+                        <span className="block truncate text-sm font-semibold group-hover/i:text-primary">{c.name}</span>
+                        <span className="text-xs text-ink-3">{c.productsCount} produits</span>
                       </span>
                     </Link>
                     {subs.length > 0 && (
-                      <p className="mt-1.5 flex flex-wrap gap-x-3 gap-y-1 pl-12 text-[12px]">
+                      <p className="mt-1.5 flex flex-wrap gap-x-3 gap-y-1 pl-12 text-xs">
                         {subs.map((x) => (
                           <Link key={x.id} href={ROUTES.category(x.slug)} onClick={close} className="text-ink-2 hover:text-primary hover:underline">
                             {x.name}
@@ -100,7 +100,7 @@ function NavItem({ item }: { item: (typeof NAV)[number] }) {
                 );
               })}
             </div>
-            <Link href={ROUTES.products} onClick={close} className="mt-2 block rounded-md bg-primary-50 py-2.5 text-center text-[13px] font-bold text-primary hover:bg-primary hover:text-white">
+            <Link href={ROUTES.products} onClick={close} className="mt-2 block rounded-md bg-primary-50 py-2.5 text-center text-sm font-bold text-primary hover:bg-primary hover:text-white">
               Voir tous les produits
             </Link>
           </div>
@@ -108,7 +108,7 @@ function NavItem({ item }: { item: (typeof NAV)[number] }) {
           <>
             {"children" in item &&
               item.children.map((c) => (
-                <Link key={c.href} href={c.href} onClick={close} className="block rounded-md px-3 py-2.5 text-[13px] font-semibold transition-colors hover:bg-chip hover:text-primary">
+                <Link key={c.href} href={c.href} onClick={close} className="block rounded-md px-3 py-2.5 text-sm font-semibold transition-colors hover:bg-chip hover:text-primary">
                   {c.label}
                 </Link>
               ))}
@@ -132,16 +132,13 @@ function CartButton() {
             initial={{ scale: 0.4 }}
             animate={{ scale: 1 }}
             transition={{ type: "spring", stiffness: 500, damping: 14 }}
-            className="absolute -right-1 -top-1 grid size-5 place-items-center rounded-full bg-primary text-[11px] leading-none text-white ring-2 ring-white"
+            className="absolute -right-1 -top-1 grid size-5 place-items-center rounded-full bg-primary text-xs leading-none text-white ring-2 ring-surface"
           >
             {count}
           </motion.span>
         </AnimatePresence>
       </span>
-      <span className="hidden flex-col xl:flex">
-        <span className="text-[11px] uppercase leading-[16.5px] text-ink-2">Panier</span>
-        <span className="text-[14px] font-bold leading-[21px]">{formatPrice(total)}</span>
-      </span>
+      <span className="hidden text-sm font-bold tabular-nums xl:inline">{formatPrice(total)}</span>
     </Link>
   );
 }
@@ -149,7 +146,7 @@ function CartButton() {
 function AccountMenu() {
   const { user, isAuthenticated, isStaff } = useAuth();
   const logout = useLogout();
-  const item = "flex items-center gap-3 rounded-md px-3 py-2.5 text-[13px] font-semibold transition-colors hover:bg-chip hover:text-primary";
+  const item = "flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-semibold transition-colors hover:bg-chip hover:text-primary";
 
   return (
     <div className="flex items-center gap-3">
@@ -173,8 +170,8 @@ function AccountMenu() {
           isAuthenticated && user ? (
             <div onClick={close}>
               <div className="mb-1 border-b border-line-3 px-3 pb-3 pt-1">
-                <p className="truncate text-[14px] font-bold">{displayName(user)}</p>
-                <p className="truncate text-[12px] text-ink-3">{user.email}</p>
+                <p className="truncate text-sm font-bold">{displayName(user)}</p>
+                <p className="truncate text-xs text-ink-3">{user.email}</p>
               </div>
               <Link href={ROUTES.profile} className={item}><Profile size={17} /> Mon profil</Link>
               <Link href={ROUTES.orders} className={item}><Receipt2 size={17} /> Mes commandes</Link>
@@ -185,20 +182,17 @@ function AccountMenu() {
             </div>
           ) : (
             <div className="p-2" onClick={close}>
-              <Link href={ROUTES.login()} className="block rounded-md bg-primary px-3 py-2.5 text-center text-[13px] font-bold uppercase text-white hover:bg-primary-dark">Connexion</Link>
-              <Link href={ROUTES.register} className="mt-2 block rounded-md bg-chip px-3 py-2.5 text-center text-[13px] font-bold uppercase hover:bg-primary hover:text-white">Inscription</Link>
+              <Link href={ROUTES.login()} className="block rounded-md bg-primary px-3 py-2.5 text-center text-sm font-bold text-white hover:bg-primary-dark">Connexion</Link>
+              <Link href={ROUTES.register} className="mt-2 block rounded-md bg-chip px-3 py-2.5 text-center text-sm font-bold hover:bg-primary hover:text-white">Inscription</Link>
             </div>
           )
         }
       </Popover>
-      <div className="hidden flex-col xl:flex">
-        <span className="text-[11px] uppercase leading-[16.5px] text-ink-2">{isAuthenticated ? "Bienvenue" : "Bienvenue"}</span>
+      <div className="hidden xl:block">
         {isAuthenticated && user ? (
-          <Link href={ROUTES.profile} className="max-w-[130px] truncate text-[14px] font-bold uppercase leading-[21px] hover:text-primary">{user.firstName || user.username}</Link>
+          <Link href={ROUTES.profile} className="block max-w-[130px] truncate text-sm font-bold hover:text-primary">{user.firstName || user.username}</Link>
         ) : (
-          <span className="whitespace-nowrap text-[14px] font-bold uppercase leading-[21px]">
-            <Link href={ROUTES.login()} className="hover:text-primary">Connexion</Link> / <Link href={ROUTES.register} className="hover:text-primary">Inscription</Link>
-          </span>
+          <Link href={ROUTES.login()} className="whitespace-nowrap text-sm font-bold hover:text-primary">Se connecter</Link>
         )}
       </div>
     </div>
@@ -215,25 +209,25 @@ export function Header() {
   return (
     <header className="rounded-box bg-surface max-lg:sticky max-lg:top-0 max-lg:z-40 max-lg:mx-[-15px] max-lg:rounded-none max-lg:border-b max-lg:border-line-3/70 max-lg:pt-safe-t max-lg:bg-surface/95 max-lg:backdrop-blur-md">
       {/* Ligne 1 */}
-      <div className="hidden items-center justify-between px-[30px] pt-[15px] lg:flex">
+      <div className="hidden items-center justify-between px-8 pt-4 lg:flex">
         <div className="flex items-center gap-5">
-          <a href={site.hotlineHref} className="flex h-7 items-center gap-1.5 rounded-md bg-chip px-2.5 text-[12px] leading-[18px]">
+          <a href={site.hotlineHref} className="flex h-7 items-center gap-1.5 rounded-md bg-chip px-2.5 text-xs">
             <Call size={12} variant="Bold" /> {supportLabel(site)}
           </a>
-          <a href={site.hotlineHref} className="text-[12px] font-bold leading-[18px] hover:text-primary">{site.hotline}</a>
-          {supportHours(site) && <span className="text-[12px] leading-[18px] text-ink-2">{supportHours(site)}</span>}
+          <a href={site.hotlineHref} className="text-xs font-bold hover:text-primary">{site.hotline}</a>
+          {supportHours(site) && <span className="text-xs text-ink-2">{supportHours(site)}</span>}
         </div>
-        <div className="flex items-center text-[14px] leading-[21px]">
+        <div className="flex items-center text-sm">
           <Link href={ROUTES.becomeReseller} className="px-5 transition-colors hover:text-primary">Devenir revendeur</Link>
           <Link href={ROUTES.track} className="px-5 transition-colors hover:text-primary">Suivre ma commande</Link>
           {/* devise d'affichage (les paiements restent en USD) ; une seule langue : pas de sélecteur */}
-          <span className="flex items-center gap-2 border-l border-line-2/60 pl-5 text-[13px] text-ink-2">Prix en <CurrencySwitch /></span>
+          <span className="flex items-center gap-2 border-l border-line-2/60 pl-5 text-sm text-ink-2">Prix en <CurrencySwitch /></span>
           <ThemeSwitch compact className="ml-3" />
         </div>
       </div>
 
       {/* Ligne 2 */}
-      <div className="flex min-h-[60px] items-center gap-3 px-4 py-2 lg:min-h-0 lg:px-[30px] lg:pb-[23px] lg:pt-[15px]">
+      <div className="flex min-h-[60px] items-center gap-3 px-4 py-2 lg:min-h-0 lg:px-8 lg:pb-6 lg:pt-4">
         <Logo className="mr-auto lg:mr-0" />
 
         <nav aria-label="Navigation principale" className="ml-8 hidden items-center lg:flex">
@@ -242,17 +236,17 @@ export function Header() {
           ))}
         </nav>
 
-        <div className="ml-auto flex items-center gap-3 sm:gap-[14px]">
+        <div className="ml-auto flex items-center gap-3 sm:gap-4">
           <span className="contents">
             <CircleButton href={ROUTES.messages} label="Messages" className="hidden lg:grid"><Messages2 size={19} variant="Bold" /></CircleButton>
             <span className="relative">
               <CircleButton href={ROUTES.favorites} label="Favoris" className="max-lg:size-11!"><Heart size={19} variant="Bold" /></CircleButton>
-              {favCount > 0 && <span className="pointer-events-none absolute -right-1 -top-1 grid min-w-[18px] place-items-center rounded-full bg-danger px-1 text-[10px] leading-[18px] text-white ring-2 ring-white">{favCount}</span>}
+              {favCount > 0 && <span className="pointer-events-none absolute -right-1 -top-1 grid min-w-[18px] place-items-center rounded-full bg-danger px-1 text-xs text-white ring-2 ring-surface">{favCount}</span>}
             </span>
             {isAuthenticated && (
               <span className="relative">
                 <CircleButton href={isStaff ? ROUTES.admin.notifications : ROUTES.notifications} label="Notifications" className="max-lg:size-11!"><Notification size={19} variant="Bold" /></CircleButton>
-                {notifCount > 0 && <span className="pointer-events-none absolute -right-1 -top-1 grid min-w-[18px] place-items-center rounded-full bg-danger px-1 text-[10px] leading-[18px] text-white ring-2 ring-white">{notifCount > 99 ? "99+" : notifCount}</span>}
+                {notifCount > 0 && <span className="pointer-events-none absolute -right-1 -top-1 grid min-w-[18px] place-items-center rounded-full bg-danger px-1 text-xs text-white ring-2 ring-surface">{notifCount > 99 ? "99+" : notifCount}</span>}
               </span>
             )}
           </span>

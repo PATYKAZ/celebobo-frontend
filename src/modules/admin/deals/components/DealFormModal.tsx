@@ -81,7 +81,7 @@ export function DealFormModal({ deal, onClose }: { deal: AdminDeal | null; onClo
         {deal ? (
           <div className="flex items-center gap-3 rounded-box border border-line-3 p-3">
             <span className="relative size-12 shrink-0 overflow-hidden rounded-md bg-page">{deal.product.image && <Image src={deal.product.image} alt="" fill sizes="48px" className="object-cover" />}</span>
-            <p className="min-w-0 text-[14px] font-bold leading-[18px]">{deal.product.name}</p>
+            <p className="min-w-0 text-sm font-bold">{deal.product.name}</p>
           </div>
         ) : (
           <ProductCombobox
@@ -132,15 +132,15 @@ export function DealFormModal({ deal, onClose }: { deal: AdminDeal | null; onClo
         <Input label="Cadeau offert" value={v.giftLabel} onChange={(e) => set("giftLabel", e.target.value)} maxLength={80} placeholder="Ex. Coque offerte (vide : aucun cadeau)" error={errors.giftLabel} />
 
         <label className="flex min-h-12 cursor-pointer items-center justify-between gap-3 rounded-box border border-line px-4 active:bg-chip">
-          <span className="text-[14px] font-semibold">Offre active</span>
+          <span className="text-sm font-semibold">Offre active</span>
           <Switch label="Offre active" checked={v.isActive} onChange={(x) => set("isActive", x)} />
         </label>
-        <p className="-mt-2 text-[12px] leading-[17px] text-ink-3">
+        <p className="-mt-2 text-xs text-ink-3">
           Pendant l’offre, le prix s’applique partout : accueil, fiche produit, panier et commande. Si plusieurs offres sont en cours, l’accueil montre celle qui se termine en premier.
         </p>
 
         <div className="mt-1 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-          <Button type="button" variant="chip" upper={false} onClick={onClose}>Annuler</Button>
+          <Button type="button" variant="secondary" upper={false} onClick={onClose}>Annuler</Button>
           <Button type="submit" loading={save.isPending} upper={false}>{deal ? "Enregistrer" : "Programmer l'offre"}</Button>
         </div>
       </form>

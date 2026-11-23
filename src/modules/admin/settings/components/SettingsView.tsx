@@ -41,8 +41,8 @@ function Content() {
           </div>
         ) : isError || !data ? (
           <Block className="text-center">
-            <p className="text-[14px] text-ink-2">{getErrorMessage(error, "Impossible de charger les réglages.")}</p>
-            <Button className="mt-4" variant="chip" upper={false} onClick={() => refetch()}>Réessayer</Button>
+            <p className="text-sm text-ink-2">{getErrorMessage(error, "Impossible de charger les réglages.")}</p>
+            <Button className="mt-4" variant="secondary" upper={false} onClick={() => refetch()}>Réessayer</Button>
           </Block>
         ) : (
           <SettingsForm settings={data} />

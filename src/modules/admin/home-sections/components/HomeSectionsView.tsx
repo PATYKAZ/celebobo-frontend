@@ -60,8 +60,8 @@ function Content() {
         </div>
       ) : isError ? (
         <Block className="text-center">
-          <p className="text-[14px] text-ink-2">{getErrorMessage(error, "Impossible de charger les blocs.")}</p>
-          <Button className="mt-4" variant="chip" upper={false} onClick={() => refetch()}>Réessayer</Button>
+          <p className="text-sm text-ink-2">{getErrorMessage(error, "Impossible de charger les blocs.")}</p>
+          <Button className="mt-4" variant="secondary" upper={false} onClick={() => refetch()}>Réessayer</Button>
         </Block>
       ) : list.length === 0 ? (
         <Block>
@@ -80,17 +80,17 @@ function Content() {
               return (
                 <li key={s.id} className={cn("flex flex-col gap-3 rounded-box border border-line-3 p-3 sm:flex-row sm:items-center sm:p-4", !s.isActive && "bg-chip/50")}>
                   <div className="flex min-w-0 flex-1 items-center gap-3">
-                    <span className="grid size-7 shrink-0 place-items-center rounded-full bg-primary-50 text-[12px] font-bold text-primary-dark">{i + 1}</span>
+                    <span className="grid size-7 shrink-0 place-items-center rounded-full bg-primary-50 text-xs font-bold text-primary-dark">{i + 1}</span>
                     <span className="relative size-14 shrink-0 overflow-hidden rounded-md bg-page">
                       {category?.image && <Image src={category.image} alt="" fill sizes="56px" className="object-cover" />}
                     </span>
                     <div className="min-w-0 flex-1">
                       <p className="flex flex-wrap items-center gap-2">
-                        <span className="text-[15px] font-bold leading-[19px]">{nameOf(s)}</span>
-                        <span className={cn("rounded-full px-2 py-0.5 text-[10px] font-bold uppercase", s.kind === "showcase" ? "bg-primary text-white" : "bg-sun text-on-light")}>{s.kind === "showcase" ? "Grand bloc" : "Colonne"}</span>
-                        {!s.isActive && <span className="rounded-full bg-line-3 px-2 py-0.5 text-[10px] font-bold uppercase text-ink">Masqué</span>}
+                        <span className="text-sm font-bold">{nameOf(s)}</span>
+                        <span className={cn("rounded-full px-2 py-0.5 text-xs font-bold", s.kind === "showcase" ? "bg-primary text-white" : "bg-sun text-on-light")}>{s.kind === "showcase" ? "Grand bloc" : "Colonne"}</span>
+                        {!s.isActive && <span className="rounded-full bg-line-3 px-2 py-0.5 text-xs font-bold text-ink">Masqué</span>}
                       </p>
-                      <p className="mt-1 text-[12px] text-ink-3">
+                      <p className="mt-1 text-xs text-ink-3">
                         {category ? (
                           <>
                             {category.parent ? `${category.parent.name} › ` : ""}
@@ -119,7 +119,7 @@ function Content() {
               );
             })}
           </ol>
-          <p className="mt-3 px-1 text-[12px] leading-[17px] text-ink-3">
+          <p className="mt-3 px-1 text-xs text-ink-3">
             Les colonnes qui se suivent partagent une rangée (3 au plus par ligne sur ordinateur). Le visuel de chaque bloc se choisit dans{" "}
             <Link href={ROUTES.admin.banners} className="font-semibold text-primary hover:underline">Bannières de l’accueil</Link> ; sans bannière, le produit le plus vendu ou l’image de la catégorie s’affiche.
           </p>

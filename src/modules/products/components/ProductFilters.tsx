@@ -24,7 +24,7 @@ interface Props {
 function Group({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="border-b border-line-3 py-5 first:pt-0 last:border-0">
-      <h2 className="mb-3 text-[14px] font-bold uppercase leading-[21px]">{title}</h2>
+      <h2 className="mb-3 text-sm font-bold">{title}</h2>
       {children}
     </section>
   );
@@ -75,7 +75,7 @@ function PriceRange({ min, max, onCommit }: { min: number | null; max: number | 
         <input type="range" aria-label="Prix minimum" min={0} max={PRICE_MAX} step={10} value={lo} onChange={(e) => setLo(Math.min(Number(e.target.value), hi - 10))} className={thumb} />
         <input type="range" aria-label="Prix maximum" min={0} max={PRICE_MAX} step={10} value={hi} onChange={(e) => setHi(Math.max(Number(e.target.value), lo + 10))} className={thumb} />
       </div>
-      <div className="mt-3 flex items-center justify-between text-[13px] font-semibold">
+      <div className="mt-3 flex items-center justify-between text-sm font-semibold">
         <span className="rounded-md bg-chip px-2.5 py-1">{formatPrice(lo)}</span>
         <span className="text-ink-3">—</span>
         <span className="rounded-md bg-chip px-2.5 py-1">{hi >= PRICE_MAX ? `${formatPrice(PRICE_MAX)}+` : formatPrice(hi)}</span>
@@ -100,7 +100,7 @@ export function ProductFilters({ state, categories, facets, hideCategories, onCh
             <li>
               <button
                 onClick={() => onChange({ category: null })}
-                className={cn("flex w-full items-center justify-between rounded-md px-2 py-2.5 text-[14px] transition-colors hover:bg-chip active:bg-chip sm:py-1.5 sm:text-[13px]", !state.category && "font-bold text-primary")}
+                className={cn("flex w-full items-center justify-between rounded-md px-2 py-2.5 text-sm transition-colors hover:bg-chip active:bg-chip sm:py-1.5 sm:text-sm", !state.category && "font-bold text-primary")}
               >
                 Toutes les catégories
               </button>
@@ -111,10 +111,10 @@ export function ProductFilters({ state, categories, facets, hideCategories, onCh
                 <li key={c.id}>
                   <button
                     onClick={() => onChange({ category: active ? null : c.slug })}
-                    className={cn("flex w-full items-center justify-between rounded-md px-2 py-2.5 text-[14px] transition-colors hover:bg-chip active:bg-chip sm:py-1.5 sm:text-[13px]", active && "bg-primary-50 font-bold text-primary")}
+                    className={cn("flex w-full items-center justify-between rounded-md px-2 py-2.5 text-sm transition-colors hover:bg-chip active:bg-chip sm:py-1.5 sm:text-sm", active && "bg-primary-50 font-bold text-primary")}
                   >
                     <span className={cn("truncate", c.parent && "pl-3 text-ink-2")}>{c.parent && <span aria-hidden>↳ </span>}{c.name}</span>
-                    <span className={cn("ml-2 rounded-full px-2 text-[11px]", active ? "bg-primary text-white" : "bg-chip text-ink-2")}>{facets ? categoryCount(c, categories, facets) : c.productsCount}</span>
+                    <span className={cn("ml-2 rounded-full px-2 text-xs", active ? "bg-primary text-white" : "bg-chip text-ink-2")}>{facets ? categoryCount(c, categories, facets) : c.productsCount}</span>
                   </button>
                 </li>
               );
@@ -126,7 +126,7 @@ export function ProductFilters({ state, categories, facets, hideCategories, onCh
       <Group title="Prix">
         <PriceRange min={state.minPrice} max={state.maxPrice} onCommit={(minPrice, maxPrice) => onChange({ minPrice, maxPrice })} />
         {facets?.minPrice != null && facets.maxPrice != null && (
-          <p className="mt-2 text-[12px] text-ink-3">Prix des articles trouvés : {formatPrice(facets.minPrice)} – {formatPrice(facets.maxPrice)}</p>
+          <p className="mt-2 text-xs text-ink-3">Prix des articles trouvés : {formatPrice(facets.minPrice)} – {formatPrice(facets.maxPrice)}</p>
         )}
       </Group>
 
@@ -138,7 +138,7 @@ export function ProductFilters({ state, categories, facets, hideCategories, onCh
       </Group>
 
       {activeCount > 0 && (
-        <Button variant="chip" size="sm" fullWidth onClick={onReset} upper={false} className="mt-2">
+        <Button variant="secondary" size="sm" fullWidth onClick={onReset} upper={false} className="mt-2">
           Réinitialiser les filtres ({activeCount})
         </Button>
       )}

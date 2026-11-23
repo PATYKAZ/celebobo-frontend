@@ -40,16 +40,16 @@ export function ResellerCombobox({ options, value, onChange, label = "Assigner Ã
         <>
           <span className="relative">
             <Avatar name={o.name} size={30} />
-            <span className={cn("absolute -bottom-0.5 -right-0.5 size-2.5 rounded-full ring-2 ring-white", DOT[o.availability ?? "online"])} />
+            <span className={cn("absolute -bottom-0.5 -right-0.5 size-2.5 rounded-full ring-2 ring-surface", DOT[o.availability ?? "online"])} />
           </span>
           <span className="min-w-0 flex-1">
-            <span className="block truncate text-[13px] font-semibold leading-[18px]">{o.name}</span>
-            <span className="text-[11px] text-ink-3">
+            <span className="block truncate text-sm font-semibold">{o.name}</span>
+            <span className="text-xs text-ink-3">
               {LABEL[o.availability ?? "online"]}
               {o.code ? ` Â· code ${o.code}` : ""}
             </span>
           </span>
-          {o.openOrders != null && <span className={cn("rounded-full px-2 py-0.5 text-[11px] font-bold", o.openOrders > 4 ? "bg-danger-100 text-danger" : "bg-chip text-ink-2")}>{o.openOrders} en cours</span>}
+          {o.openOrders != null && <span className={cn("rounded-full px-2 py-0.5 text-xs font-bold", o.openOrders > 4 ? "bg-danger-100 text-danger" : "bg-chip text-ink-2")}>{o.openOrders} en cours</span>}
         </>
       )}
       trigger={
