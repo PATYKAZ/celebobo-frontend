@@ -71,6 +71,7 @@ export const ROUTES = {
     invites: "/admin/invites",
     claims: "/admin/reclamations",
     cash: "/admin/encaissements",
+    standing: "/admin/niveau",
     claim: (id: number | string) => `/admin/reclamations/${id}`,
   },
 } as const;

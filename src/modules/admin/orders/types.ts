@@ -48,4 +48,6 @@ export interface ResellerOption {
   openOrders: number;
   /** argent à reverser d'abord (plafond atteint ou plus de 24 h) : pas de nouvelle commande */
   cashBlocked?: string | null;
+  /** suspendu (sanction) jusqu'à cette date : pas de nouvelle commande */
+  suspendedUntil?: string | null;
 }

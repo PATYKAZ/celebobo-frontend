@@ -52,7 +52,9 @@ export type Permission =
   | "claims.manage" // traiter les réclamations : réponse, réception, diagnostic, solution
   | "store_credit.view.own" // son avoir (solde, expiration, mouvements)
   | "cash.view.own" // l'argent encaissé à reverser (revendeur)
-  | "cash.manage"; // enregistrer les reversements des revendeurs
+  | "cash.manage" // enregistrer les reversements des revendeurs
+  | "standing.view.own" // son niveau et ses sanctions, s'expliquer sous 48 h (revendeur)
+  | "standing.manage"; // revoir les niveaux, ouvrir et décider les sanctions
 
 type WithPermissions = Pick<User, "permissions"> | null | undefined;
 
