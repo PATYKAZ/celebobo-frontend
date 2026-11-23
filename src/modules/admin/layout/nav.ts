@@ -1,4 +1,4 @@
-import { Award, Box, MessageText1, Sms, SmsNotification, Star1, UserAdd, Warning2, Category2, Chart2, DocumentText, Element3, Flash, Gallery, Gift, RowVertical, Messages2, MoneyRecive, Notification, People, Profile2User, Setting2, Share, ShieldTick, TicketDiscount, TicketStar, Wallet3, type Icon } from "@/shared/ui/icons";
+import { Award, Box, DocumentDownload, MessageQuestion, MessageText1, Sms, SmsNotification, Star1, UserAdd, Warning2, Category2, Chart2, DocumentText, Element3, Flash, Gallery, Gift, RowVertical, Messages2, MoneyRecive, Notification, People, Profile2User, Setting2, Share, ShieldTick, TicketDiscount, TicketStar, Wallet3, type Icon } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import type { Permission } from "@/modules/auth/permissions";
 import type { UserRole } from "@/modules/auth/types";
@@ -39,6 +39,8 @@ export const ADMIN_NAV: AdminNavItem[] = [
   { section: "Activité", label: "Messages", resellerLabel: "Mes discussions", href: ROUTES.admin.inbox, icon: Messages2, permission: "conversations.moderate", badge: "messages" },
   { section: "Activité", label: "Messages de contact", href: ROUTES.admin.contact, icon: Sms, permission: "contact.inbox" },
   { section: "Activité", label: "Newsletter", href: ROUTES.admin.newsletter, icon: SmsNotification, permission: "newsletter.view" },
+  { section: "Activité", label: "Assistant", href: ROUTES.admin.assistant, icon: MessageQuestion, permission: "assistant.logs" },
+  { section: "Activité", label: "Mes exports", href: ROUTES.admin.exports, icon: DocumentDownload, permission: "jobs.view.own" },
   { section: "Activité", label: "Notifications", href: ROUTES.admin.notifications, icon: Notification, permission: "dashboard.view", badge: "notifications" },
   { section: "Équipe", label: "Revendeurs", href: ROUTES.admin.resellers, icon: People, permission: "resellers.view" },
   { section: "Équipe", label: "Candidatures", href: ROUTES.admin.applications, icon: UserAdd, permission: "reseller_applications.review" },

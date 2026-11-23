@@ -61,7 +61,11 @@ export type Permission =
   | "contact.inbox" // messages du formulaire de contact
   | "newsletter.view" // abonnés à la newsletter, export
   | "reviews.moderate" // publier ou masquer les avis clients
-  | "reseller_applications.review"; // candidatures « Devenir revendeur »
+  | "reseller_applications.review" // candidatures « Devenir revendeur »
+  | "jobs.view.own" // ses exports, imports et rapports (7 jours)
+  | "assistant.logs" // journal des questions posées à l'assistant
+  | "embeddings.reindex" // reconstruire l'index des produits de l'assistant
+  | "presence.view"; // qui est connecté en ce moment
 
 type WithPermissions = Pick<User, "permissions"> | null | undefined;
 

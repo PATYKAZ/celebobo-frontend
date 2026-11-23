@@ -1,4 +1,4 @@
-// Généré par scripts/generate-icons.mjs — ne pas modifier. 123 icônes, variantes Linear / Bold / Bulk.
+// Généré par scripts/generate-icons.mjs — ne pas modifier. 122 icônes, variantes Linear / Bold / Bulk.
 export type { Icon, IconProps, IconVariant } from "./icon";
 export { Add } from "./svg/Add";
 export { Apple } from "./svg/Apple";
@@ -29,7 +29,6 @@ export { Coin1 } from "./svg/Coin1";
 export { Convert } from "./svg/Convert";
 export { Copy } from "./svg/Copy";
 export { Crown } from "./svg/Crown";
-export { Crown1 } from "./svg/Crown1";
 export { Danger } from "./svg/Danger";
 export { Devices } from "./svg/Devices";
 export { DocumentDownload } from "./svg/DocumentDownload";
@@ -61,6 +60,7 @@ export { Login } from "./svg/Login";
 export { Logout } from "./svg/Logout";
 export { Map1 } from "./svg/Map1";
 export { Maximize4 } from "./svg/Maximize4";
+export { MessageQuestion } from "./svg/MessageQuestion";
 export { MessageText1 } from "./svg/MessageText1";
 export { Messages2 } from "./svg/Messages2";
 export { Messages3 } from "./svg/Messages3";
@@ -94,7 +94,6 @@ export { Setting2 } from "./svg/Setting2";
 export { Share } from "./svg/Share";
 export { ShieldTick } from "./svg/ShieldTick";
 export { Shop } from "./svg/Shop";
-export { ShoppingBag } from "./svg/ShoppingBag";
 export { ShoppingCart } from "./svg/ShoppingCart";
 export { Sms } from "./svg/Sms";
 export { SmsNotification } from "./svg/SmsNotification";

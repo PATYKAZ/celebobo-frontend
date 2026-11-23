@@ -79,6 +79,8 @@ export const ROUTES = {
     newsletter: "/admin/newsletter",
     reviews: "/admin/avis",
     stockAlerts: "/admin/alertes-stock",
+    exports: "/admin/exports",
+    assistant: "/admin/assistant",
     claim: (id: number | string) => `/admin/reclamations/${id}`,
   },
 } as const;

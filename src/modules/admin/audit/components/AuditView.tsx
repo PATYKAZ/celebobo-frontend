@@ -11,11 +11,13 @@ import { BottomSheet } from "@/shared/ui/BottomSheet";
 import { Button } from "@/shared/ui/Button";
 import { Input, Select } from "@/shared/ui/Form";
 import { Pagination } from "@/shared/ui/Pagination";
+import { SegmentedControl } from "@/shared/ui/SegmentedControl";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { PermissionGuard } from "@/modules/auth/hooks/useCan";
 import { ROLE_LABEL } from "@/modules/auth/permissions";
 import { PageHeader } from "../../ui/PageHeader";
 import { useAuditLog, useAuditObjectTypes } from "../hooks/useAudit";
+import { AuditEvents } from "./AuditEvents";
 import type { AuditEntity, AuditEntry } from "../types";
 
 const PAGE_SIZE = 12;
@@ -121,6 +123,20 @@ function AuditCard({ e, open, onToggle }: { e: AuditEntry; open: boolean; onTogg
 }
 
 function AuditContent() {
+  const [tab, setTab] = useState<"changes" | "events">("changes");
+  return (
+    <>
+      <PageHeader
+        title="Journal d'audit"
+        description="Historique des actions sensibles : suppressions, modifications de prix, changements de statut, rôles et paiements."
+        actions={<SegmentedControl aria-label="Journal" value={tab} onChange={setTab} options={[{ value: "changes", label: "Modifications" }, { value: "events", label: "Événements métier" }]} />}
+      />
+      {tab === "changes" ? <Changes /> : <AuditEvents />}
+    </>
+  );
+}
+
+function Changes() {
   const [search, setSearch] = useState("");
   const [entity, setEntity] = useState<AuditEntity | "all">("all");
   const [actorId, setActorId] = useState<number | "all">("all");
@@ -147,7 +163,6 @@ function AuditContent() {
 
   return (
     <>
-      <PageHeader title="Journal d'audit" description="Historique des actions sensibles : suppressions, modifications de prix, changements de statut, rôles et paiements." />
       <Block pad="none">
         {/* mobile : recherche + bouton « Filtres » (feuille) */}
         <div className="flex items-center gap-2 p-3 md:hidden">

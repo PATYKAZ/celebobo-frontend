@@ -72,3 +72,13 @@ export function useAddReview(slug: string) {
     },
   });
 }
+
+/** Compteurs des filtres pour les filtres en cours (catégories, prix, en stock, en promotion). */
+export function useProductFacets(params: ProductListParams = {}) {
+  return useQuery({
+    queryKey: productKeys.facets({ ...params, page: undefined, pageSize: undefined, ordering: undefined }),
+    queryFn: () => productsService.facets(params),
+    placeholderData: keepPreviousData,
+    staleTime: 60_000,
+  });
+}

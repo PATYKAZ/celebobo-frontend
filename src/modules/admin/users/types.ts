@@ -3,6 +3,8 @@ import type { Paginated } from "@/shared/lib/api";
 
 export interface UserRow {
   id: number;
+  firstName: string;
+  lastName: string;
   name: string;
   email: string;
   phone: string | null;
@@ -13,6 +15,15 @@ export interface UserRow {
   /** Revendeur qui l'a invité (null = inscription directe) */
   invitedBy: { id: number; name: string } | null;
   codeRevendeur: string | null;
+}
+
+/** Création (invitation par e-mail) ou modification d'un compte depuis le back-office. */
+export interface UserFormValues {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  role: UserRole;
 }
 
 export interface UserListParams {

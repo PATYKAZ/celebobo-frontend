@@ -4,6 +4,7 @@ import type { ProductListParams } from "./types";
 export const productKeys = {
   all: ["products"] as const,
   list: (p: ProductListParams) => ["products", "list", p] as const,
+  facets: (p: ProductListParams) => ["products", "facets", p] as const,
   detail: (slug: string) => ["products", "detail", slug] as const,
   related: (slug: string) => ["products", "related", slug] as const,
   suggest: (q: string) => ["products", "suggest", q] as const,

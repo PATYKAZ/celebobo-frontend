@@ -14,7 +14,7 @@ export interface Column<T> {
   className?: string;
   align?: "left" | "right" | "center";
   /** Masquer sous un breakpoint (tableau desktop) */
-  hideBelow?: "sm" | "md" | "lg" | "xl";
+  hideBelow?: "sm" | "md" | "lg" | "xl" | "2xl";
   /**
    * Rendu « carte » sur mobile (< md) :
    *  - "title"  : en-tête de la carte (défaut : 1ʳᵉ colonne)
@@ -42,7 +42,7 @@ interface Props<T> {
   skeletonRows?: number;
 }
 
-const HIDE = { sm: "hidden sm:table-cell", md: "hidden md:table-cell", lg: "hidden lg:table-cell", xl: "hidden xl:table-cell" } as const;
+const HIDE = { sm: "hidden sm:table-cell", md: "hidden md:table-cell", lg: "hidden lg:table-cell", xl: "hidden xl:table-cell", "2xl": "hidden 2xl:table-cell" } as const;
 const ALIGN = { left: "text-left", right: "text-right", center: "text-center" } as const;
 
 const isAction = (c: { key: string; header: ReactNode }) => c.key === "actions" || c.key === "action" || c.header === "" || c.header == null;

@@ -2,7 +2,7 @@ import { ENDPOINTS } from "@/config/endpoints";
 import { api } from "@/shared/lib/api";
 import { ROLE_TO_API } from "@/modules/auth/services/auth.mapper";
 import type { UserRole } from "@/modules/auth/types";
-import type { UserListParams, UserRow, UsersResponse } from "../types";
+import type { UserFormValues, UserListParams, UserRow, UsersResponse } from "../types";
 import { toRoleCounts, toUserRow, type UserRowDto } from "./users.mapper";
 
 const { users } = ENDPOINTS.admin;
@@ -32,5 +32,29 @@ export const usersService = {
 
   async setActive(id: number, active: boolean): Promise<UserRow> {
     return toUserRow(await api.post<UserRowDto>(active ? users.activate(id) : users.deactivate(id)));
+  },
+
+  /** Le nouveau compte reçoit un e-mail d'invitation pour choisir son mot de passe. */
+  async create(v: UserFormValues): Promise<UserRow> {
+    return toUserRow(
+      await api.post<UserRowDto>(users.list, { firstName: v.firstName.trim(), lastName: v.lastName.trim(), email: v.email.trim(), phoneNumber: v.phone.trim() || null, role: ROLE_TO_API[v.role] }),
+    );
+  },
+
+  async update(id: number, v: Omit<UserFormValues, "role">): Promise<UserRow> {
+    return toUserRow(
+      await api.patch<UserRowDto>(users.detail(id), { firstName: v.firstName.trim(), lastName: v.lastName.trim(), email: v.email.trim(), phoneNumber: v.phone.trim() || null }),
+    );
+  },
+
+  async sendPasswordReset(id: number): Promise<void> {
+    await api.post(users.sendPasswordReset(id));
+  },
+
+  /** Comptes connectés en ce moment parmi `ids` (WebSocket ouvert). */
+  async online(ids: number[]): Promise<Set<number>> {
+    if (!ids.length) return new Set();
+    const { online } = await api.get<{ online: number[] }>(ENDPOINTS.admin.presence, { params: { ids } });
+    return new Set(online);
   },
 };
