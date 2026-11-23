@@ -227,8 +227,20 @@ export const ENDPOINTS = {
       detail: (id: number) => `/bo/variants/${id}/`,
     },
     reviews: {
-      list: "/bo/reviews/",
-      detail: (id: number) => `/bo/reviews/${id}/`,
+      list: "/bo/reviews/", // GET ?status=&rating=&search=&product_id=
+      detail: (id: number) => `/bo/reviews/${id}/`, // PATCH { status: published | hidden }
+    },
+    faq: {
+      list: "/bo/faq/", // GET, POST { question, answer, category, position, isPublished }
+      detail: (id: number) => `/bo/faq/${id}/`, // PATCH, DELETE
+    },
+    contactMessages: {
+      list: "/bo/contact-messages/", // GET ?status=&subject=&search=
+      detail: (id: number) => `/bo/contact-messages/${id}/`, // GET, PATCH { status, note }
+    },
+    newsletter: {
+      subscribers: "/bo/newsletter/subscribers/", // GET ?active=&search=
+      export: "/bo/newsletter/subscribers/export/", // CSV, mêmes filtres
     },
     sales: {
       list: "/bo/sales/",

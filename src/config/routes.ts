@@ -73,6 +73,12 @@ export const ROUTES = {
     cash: "/admin/encaissements",
     standing: "/admin/niveau",
     cagnotte: "/admin/cagnotte",
+    faq: "/admin/faq",
+    applications: "/admin/candidatures",
+    contact: "/admin/contact",
+    newsletter: "/admin/newsletter",
+    reviews: "/admin/avis",
+    stockAlerts: "/admin/alertes-stock",
     claim: (id: number | string) => `/admin/reclamations/${id}`,
   },
 } as const;

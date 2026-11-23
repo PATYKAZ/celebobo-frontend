@@ -57,7 +57,11 @@ export type Permission =
   | "standing.manage" // revoir les niveaux, ouvrir et décider les sanctions
   | "cagnotte.view.own" // ses avantages Cagnotte (client)
   | "cagnotte.pay" // verser les cashbacks Cagnotte par Mobile Money
-  | "cagnotte.manage"; // créer les opérations Cagnotte (admin)
+  | "cagnotte.manage" // créer les opérations Cagnotte (admin)
+  | "contact.inbox" // messages du formulaire de contact
+  | "newsletter.view" // abonnés à la newsletter, export
+  | "reviews.moderate" // publier ou masquer les avis clients
+  | "reseller_applications.review"; // candidatures « Devenir revendeur »
 
 type WithPermissions = Pick<User, "permissions"> | null | undefined;
 
