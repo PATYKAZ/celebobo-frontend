@@ -175,7 +175,7 @@ function CampaignForm({ campaign, onClose }: { campaign: Campaign | null; onClos
             const on = v.categoryIds.includes(c.id);
             return (
               <button key={c.id} type="button" aria-pressed={on} onClick={() => set("categoryIds", on ? v.categoryIds.filter((x) => x !== c.id) : [...v.categoryIds, c.id])} className={`rounded-full px-2.5 py-1 text-xs ${on ? "bg-primary text-white" : "bg-chip"}`}>
-                {c.parentId ? "↳ " : ""}{c.name}
+                {c.name}
               </button>
             );
           })}

@@ -7,7 +7,7 @@ import { Bag2, Heart } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import { cn } from "@/shared/lib/cn";
 import { useFormatPrice } from "@/shared/currency/CurrencyProvider";
-import { NewBadge, Pill, SaveBadge } from "@/shared/ui/Badges";
+import { DiscountBadge, NewBadge, Pill } from "@/shared/ui/Badges";
 import { Button } from "@/shared/ui/Button";
 import { Price } from "@/shared/ui/Price";
 import { Stars } from "@/shared/ui/Stars";
@@ -29,7 +29,7 @@ export function ProductListItem({ product }: { product: Product }) {
     <motion.article layout className="group grid grid-cols-[104px_minmax(0,1fr)] gap-x-3 gap-y-2 rounded-box py-3 transition-shadow hover:shadow-lg sm:flex sm:flex-row sm:gap-5 sm:p-4">
       <Link href={ROUTES.product(product.slug)} className="relative block aspect-square w-full shrink-0 self-start overflow-hidden rounded-box bg-page/40 sm:aspect-4/3 sm:w-[220px]">
         {product.image && <Image src={product.image} alt={product.name} fill sizes="(min-width:640px) 220px, 104px" className="object-cover transition-transform duration-700 group-hover:scale-110" />}
-        <div className="absolute left-2 top-2">{pricing.onSale ? <SaveBadge amount={pricing.saving} /> : isNew(product) ? <NewBadge /> : null}</div>
+        <div className="absolute left-2 top-2">{pricing.onSale && pricing.percent > 0 ? <DiscountBadge percent={pricing.percent} /> : isNew(product) ? <NewBadge /> : null}</div>
       </Link>
       <div className="flex min-w-0 flex-1 flex-col">
         <Stars rating={product.rating} count={product.reviewsCount} />
@@ -42,7 +42,7 @@ export function ProductListItem({ product }: { product: Product }) {
         </ul>
         <div className="mt-2 flex flex-wrap gap-1.5 sm:mt-3">
           {product.freeShipping ? <Pill tone="green">Livraison offerte</Pill> : product.shippingFee ? <Pill tone="dark">{formatPrice(product.shippingFee)} livraison</Pill> : null}
-          <Pill tone={product.inStock ? "gray" : "red"}>{product.inStock ? "En stock" : "Rupture"}</Pill>
+          {!product.inStock && <Pill tone="red">Rupture</Pill>}
         </div>
       </div>
       <div className="col-span-2 flex shrink-0 flex-row items-center justify-between gap-3 border-t border-line-3/70 pt-2 sm:w-[170px] sm:flex-col sm:items-end sm:justify-center sm:border-0 sm:pt-0">

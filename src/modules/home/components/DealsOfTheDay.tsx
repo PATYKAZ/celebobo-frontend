@@ -18,7 +18,6 @@ import { SectionHeader } from "@/shared/ui/SectionHeader";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { Stars } from "@/shared/ui/Stars";
 import { useCart } from "@/modules/cart/hooks/useCart";
-import { getPricing } from "@/modules/products/utils";
 import type { HomeContent, HomeDeal } from "../types";
 import { BannerPrice, bannerTone } from "./BannerBits";
 import { PhotoBanner } from "./PhotoBanner";
@@ -190,7 +189,6 @@ function DealCard({ deal }: { deal: HomeDeal }) {
 
 export function DealsOfTheDay({ content }: { content?: HomeContent }) {
   const picks = content?.picks;
-  const formatPrice = useFormatPrice();
 
   return (
     <section className="grid grid-cols-[minmax(0,1fr)] gap-3 sm:gap-4 xl:grid-cols-[minmax(0,3.3fr)_minmax(0,1fr)]">

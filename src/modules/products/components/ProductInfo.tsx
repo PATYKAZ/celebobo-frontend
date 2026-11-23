@@ -60,18 +60,40 @@ export function ProductInfo({ product, selection, qty, onQtyChange }: { product:
 
   return (
     <div className="flex min-w-0 flex-col">
-      <p className="text-xs font-bold text-primary">{product.category}</p>
-      <h1 className="mt-1.5 text-xl sm:mt-2 sm:text-2xl">{product.name}</h1>
+      {/* titre, avec favoris et partage à portée (ils ne passent plus à la ligne sous les boutons d'achat) */}
+      <div className="flex items-start justify-between gap-3">
+        <h1 className="text-xl sm:text-2xl">{product.name}</h1>
+        <div className="flex shrink-0 gap-2 pt-0.5">
+          <button
+            aria-label={fav ? "Retirer des favoris" : "Ajouter aux favoris"}
+            aria-pressed={fav}
+            onClick={() => toggle(product.id, product.name)}
+            className={cn("grid size-11 place-items-center rounded-full bg-chip transition-colors hover:bg-danger-100 active:scale-90", fav && "bg-danger-100")}
+          >
+            <Heart size={20} variant={fav ? "Bold" : "Linear"} className={fav ? "text-danger" : undefined} />
+          </button>
+          <ProductShareMenu name={product.name} />
+        </div>
+      </div>
 
-      <div className="mt-3 flex flex-wrap items-center gap-3">
-        <Stars rating={product.rating} count={product.reviewsCount} size={15} />
-        <a href="#avis" className="touch-target relative text-sm text-ink-2 underline-offset-2 hover:text-primary hover:underline">Voir les avis</a>
+      <div className="mt-2 flex flex-wrap items-center gap-3">
+        {product.reviewsCount > 0 ? (
+          <>
+            <Stars rating={product.rating} count={product.reviewsCount} size={15} />
+            <a href="#avis" className="touch-target relative text-sm text-ink-2 underline-offset-2 hover:text-primary hover:underline">Voir les avis</a>
+          </>
+        ) : (
+          <a href="#avis" className="touch-target relative text-sm text-ink-2 underline-offset-2 hover:text-primary hover:underline">Pas encore d&apos;avis</a>
+        )}
       </div>
 
       <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 border-y border-line-3 py-4 sm:mt-5 sm:py-5">
         <Price current={current} original={original} size="xl" className="max-sm:[&>span:first-child]:text-xl" />
-        {base.onSale && <Pill tone="red" className="h-[26px] text-xs">-{base.percent}%</Pill>}
-        {base.onSale && <span className="text-sm font-semibold text-primary">Vous économisez {formatPrice(base.saving)}</span>}
+        {base.onSale && (
+          <span className="text-sm font-semibold text-danger">
+            −{base.percent} % · vous économisez {formatPrice(base.saving)}
+          </span>
+        )}
       </div>
 
       <p className="mt-4 text-sm text-ink-2 sm:mt-5">{product.description}</p>
@@ -149,15 +171,6 @@ export function ProductInfo({ product, selection, qty, onQtyChange }: { product:
         >
           Commander maintenant
         </Button>
-        <button
-          aria-label={fav ? "Retirer des favoris" : "Ajouter aux favoris"}
-          aria-pressed={fav}
-          onClick={() => toggle(product.id, product.name)}
-          className={cn("grid size-12 place-items-center rounded-box bg-chip transition-colors hover:bg-danger-100 active:scale-90 sm:size-[45px]", fav && "bg-danger-100")}
-        >
-          <Heart size={20} variant={fav ? "Bold" : "Linear"} color={fav ? "#C4261D" : "currentColor"} />
-        </button>
-        <ProductShareMenu name={product.name} />
       </div>
 
       <div className={cn("mt-5 grid gap-2 sm:mt-6 sm:gap-3", trust.length === 3 ? "grid-cols-3" : "grid-cols-2")}>

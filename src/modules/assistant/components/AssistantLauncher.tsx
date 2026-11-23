@@ -127,7 +127,9 @@ export function AssistantLauncher() {
     setOpen((o) => !o);
   };
 
-  if (HIDDEN(pathname)) return null;
+  // fiche produit sur téléphone : la barre d'achat collante occupe le bas de l'écran, la pastille cacherait le prix
+  // (l'assistant reste dans l'onglet « Plus »)
+  if (HIDDEN(pathname) || (!desktop && pathname.startsWith("/produits/"))) return null;
 
   return (
     <>

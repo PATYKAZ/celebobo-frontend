@@ -46,10 +46,10 @@ export function ProductTabs({ product }: { product: Product }) {
         <AnimatePresence mode="wait">
           <motion.div key={tab} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.25 }}>
             {tab === "description" && (
-              <div className="max-w-[860px] text-sm text-ink-2">
-                <p className="font-semibold text-ink">{product.description}</p>
-                {product.longDescription ? <p className="mt-3">{product.longDescription}</p> : null}
-              </div>
+              // la description courte est déjà sous le titre : ici, la description longue (ou la courte si elle manque)
+              <p className="max-w-[72ch] whitespace-pre-line text-body-lg text-ink-2">
+                {product.longDescription && product.longDescription.trim() !== product.description.trim() ? product.longDescription : product.description}
+              </p>
             )}
             {tab === "features" && (product.features.length ? <Bullets items={product.features} /> : empty)}
             {tab === "care" && (product.charaEntretienList.length ? <Bullets items={product.charaEntretienList} /> : empty)}

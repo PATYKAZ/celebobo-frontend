@@ -107,14 +107,17 @@ export function ProductFilters({ state, categories, facets, hideCategories, onCh
             </li>
             {categories?.map((c) => {
               const active = state.category === c.slug;
+              const count = facets ? categoryCount(c, categories, facets) : c.productsCount;
+              // une catégorie sans résultat n'aide pas à filtrer (sauf si elle est sélectionnée)
+              if (count === 0 && !active) return null;
               return (
                 <li key={c.id}>
                   <button
                     onClick={() => onChange({ category: active ? null : c.slug })}
                     className={cn("flex w-full items-center justify-between rounded-md px-2 py-2.5 text-sm transition-colors hover:bg-chip active:bg-chip sm:py-1.5 sm:text-sm", active && "bg-primary-50 font-bold text-primary")}
                   >
-                    <span className={cn("truncate", c.parent && "pl-3 text-ink-2")}>{c.parent && <span aria-hidden>↳ </span>}{c.name}</span>
-                    <span className={cn("ml-2 rounded-full px-2 text-xs", active ? "bg-primary text-white" : "bg-chip text-ink-2")}>{facets ? categoryCount(c, categories, facets) : c.productsCount}</span>
+                    <span className={cn("truncate", c.parent && "pl-4 text-ink-2")}>{c.name}</span>
+                    <span className={cn("ml-2 rounded-full px-2 text-xs", active ? "bg-primary text-white" : "bg-chip text-ink-2")}>{count}</span>
                   </button>
                 </li>
               );

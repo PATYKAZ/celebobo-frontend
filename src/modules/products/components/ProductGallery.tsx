@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { Bag2, Maximize4 } from "@/shared/ui/icons";
 import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { cn } from "@/shared/lib/cn";
-import { NewBadge, SaveBadge } from "@/shared/ui/Badges";
+import { NewBadge } from "@/shared/ui/Badges";
 import { Modal } from "@/shared/ui/Overlay";
 import type { Product } from "../types";
 import { getPricing, isNew } from "../utils";
@@ -33,7 +33,8 @@ export function ProductGallery({ product, activeImage }: { product: Product; /**
   const [light, setLight] = useState(false);
   const pricing = getPricing(product);
   const current = images[index];
-  const badge = pricing.onSale ? <SaveBadge amount={pricing.saving} large /> : isNew(product) ? <NewBadge /> : null;
+  // la remise est dans la ligne de prix à côté : sur la photo, seulement « Nouveau »
+  const badge = !pricing.onSale && isNew(product) ? <NewBadge /> : null;
 
   const onMove = (e: MouseEvent<HTMLDivElement>) => {
     const r = e.currentTarget.getBoundingClientRect();

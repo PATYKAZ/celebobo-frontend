@@ -16,7 +16,6 @@ import { SectionHeader } from "@/shared/ui/SectionHeader";
 import { SliderArrows } from "@/shared/ui/SliderArrows";
 import { Stars } from "@/shared/ui/Stars";
 import { useFavoriteToggle } from "@/modules/favorites/hooks/useFavorites";
-import type { Product } from "@/modules/products/types";
 import { useRecentlyViewedStore, type ViewedProduct } from "@/modules/products/store/recently-viewed.store";
 
 function MiniCard({ p }: { p: ViewedProduct }) {

@@ -38,7 +38,7 @@ export function ProductShareMenu({ name, url }: Props) {
       align="right"
       label="Partager ce produit"
       panelClassName="w-[230px]"
-      triggerClassName="grid size-[45px] place-items-center rounded-box bg-chip transition-colors hover:bg-primary hover:text-white"
+      triggerClassName="grid size-11 place-items-center rounded-full bg-chip transition-colors hover:bg-primary hover:text-white"
       trigger={<Share size={19} />}
     >
       {(close) => (

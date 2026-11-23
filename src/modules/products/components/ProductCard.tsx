@@ -3,11 +3,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "motion/react";
-import { Bag2, CloseCircle, Heart, TickCircle } from "@/shared/ui/icons";
+import { Bag2, CloseCircle, Heart } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import { cn } from "@/shared/lib/cn";
 import { useFormatPrice } from "@/shared/currency/CurrencyProvider";
-import { NewBadge, Pill, SaveBadge } from "@/shared/ui/Badges";
+import { DiscountBadge, NewBadge, Pill } from "@/shared/ui/Badges";
 import { Price } from "@/shared/ui/Price";
 import { Stars } from "@/shared/ui/Stars";
 import { useCart } from "@/modules/cart/hooks/useCart";
@@ -23,7 +23,7 @@ interface Props {
 
 /**
  * Carte produit standard du design (§2.5) :
- * image + bordure basse, cœur wishlist, badge REMISE/NOUVEAU, étoiles, nom, prix, pastilles, stock.
+ * image, cœur favoris, badge « −x % » ou « Nouveau », étoiles, nom, prix (barré si remise), livraison ; rupture seulement si elle bloque.
  * Animations : zoom/échange d'image au survol, bouton « Ajouter » qui glisse, cœur qui « pop ».
  */
 export function ProductCard({ product, className, priority }: Props) {
@@ -65,7 +65,12 @@ export function ProductCard({ product, className, priority }: Props) {
 
         {/* Badges haut-gauche */}
         <div className="absolute left-0 top-0">
-          {pricing.onSale ? <SaveBadge amount={pricing.saving} /> : isNew(product) ? <NewBadge className="m-0" /> : null}
+          {/* un seul signal de remise : le pourcentage ici, le prix barré plus bas */}
+          {pricing.onSale && pricing.percent > 0 ? (
+            <DiscountBadge percent={pricing.percent} />
+          ) : isNew(product) ? (
+            <NewBadge className="m-0" />
+          ) : null}
         </div>
 
         {/* Wishlist */}
@@ -76,7 +81,7 @@ export function ProductCard({ product, className, priority }: Props) {
           className="touch-target absolute right-1 top-1 grid size-9 place-items-center rounded-full bg-surface/90 text-ink-3 backdrop-blur-sm transition-colors hover:bg-danger-100 hover:text-danger active:scale-90 sm:right-0 sm:top-0 sm:size-[30px] sm:bg-page"
         >
           <motion.span key={String(fav)} initial={{ scale: 0.4 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 500, damping: 12 }} className="grid">
-            <Heart size={15} variant={fav ? "Bold" : "Linear"} color={fav ? "#C4261D" : "currentColor"} />
+            <Heart size={15} variant={fav ? "Bold" : "Linear"} className={fav ? "text-danger" : undefined} />
           </motion.span>
         </button>
 
@@ -100,9 +105,9 @@ export function ProductCard({ product, className, priority }: Props) {
       </div>
 
       {/* Contenu */}
-      <div className="mt-2.5 flex flex-1 flex-col sm:mt-5">
+      <div className="mt-2.5 flex flex-1 flex-col sm:mt-4">
         {product.reviewsCount > 0 || product.rating ? <Stars rating={product.rating} count={product.reviewsCount} /> : <div className="h-[19.5px]" />}
-        <Link href={href} className="mt-2 line-clamp-2 min-h-[34px] text-sm font-bold transition-colors hover:text-primary sm:mt-3 sm:line-clamp-3 sm:min-h-[50px] sm:text-name">
+        <Link href={href} className="mt-2 line-clamp-2 min-h-10 text-sm font-semibold transition-colors hover:text-primary sm:mt-2.5">
           {product.name}
         </Link>
         <Price current={pricing.current} original={pricing.original} size="sm" className="mt-1.5 sm:mt-3 sm:[&>span:first-child]:text-lg" />
@@ -111,22 +116,16 @@ export function ProductCard({ product, className, priority }: Props) {
         <p className="mt-1.5 text-xs font-semibold text-primary sm:hidden">
           {product.freeShipping ? "Livraison offerte" : product.shippingFee ? `${formatPrice(product.shippingFee)} livraison` : " "}
         </p>
-        <div className="mt-3 hidden flex-wrap gap-1.5 sm:flex">
+        <div className="mt-2.5 hidden flex-wrap gap-1.5 sm:flex">
           {product.freeShipping ? <Pill tone="green">Livraison offerte</Pill> : product.shippingFee ? <Pill tone="dark">{formatPrice(product.shippingFee)} livraison</Pill> : null}
-          {pricing.onSale && pricing.percent > 0 && <Pill tone="red">-{pricing.percent}%</Pill>}
         </div>
 
-        <p className={cn("mt-auto items-center gap-1.5 pt-2 text-xs sm:flex sm:pt-3", product.inStock ? "hidden" : "flex")}>
-          {product.inStock ? (
-            <>
-              <TickCircle size={13} variant="Bold" color="#226D68" /> En stock
-            </>
-          ) : (
-            <>
-              <CloseCircle size={13} variant="Bold" color="#C4261D" /> Rupture de stock
-            </>
-          )}
-        </p>
+        {/* la disponibilité ne s'affiche que lorsqu'elle bloque l'achat : « En stock » sur chaque carte n'apporte rien */}
+        {!product.inStock && (
+          <p className="mt-auto flex items-center gap-1.5 pt-2 text-xs font-medium text-danger sm:pt-3">
+            <CloseCircle size={13} variant="Bold" /> Rupture de stock
+          </p>
+        )}
       </div>
     </motion.article>
   );

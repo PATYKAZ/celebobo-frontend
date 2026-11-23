@@ -1,22 +1,12 @@
 import type { ReactNode } from "react";
 import { cn } from "@/shared/lib/cn";
-import { useFormatPrice } from "@/shared/currency/CurrencyProvider";
 
-/** Badge « Remise $199.00 » (fond teal, petit rayon). */
-export function SaveBadge({ amount, className, large }: { amount: number; className?: string; large?: boolean }) {
-  // prix affichés dans la devise choisie par le visiteur (USD ou FC)
-  const formatPrice = useFormatPrice();
+/** Remise d'un produit : le pourcentage seul (le prix barré dit le reste). Un seul signal de remise par carte. */
+export function DiscountBadge({ percent, className }: { percent: number; className?: string }) {
   return (
-    <div
-      className={cn(
-        "inline-flex flex-col rounded-box bg-primary text-white",
-        large ? "rounded-box px-4 py-1.5" : "px-3 py-1.5",
-        className,
-      )}
-    >
-      <span className="text-xs">Remise</span>
-      <span className={cn("font-medium", large ? "text-lg" : "text-sm")}>{formatPrice(amount)}</span>
-    </div>
+    <span className={cn("inline-flex h-6 items-center rounded-sm bg-danger px-2 text-xs font-semibold tabular-nums text-white", className)}>
+      −{percent} %
+    </span>
   );
 }
 

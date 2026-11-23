@@ -89,7 +89,7 @@ function Content() {
                     <div className="min-w-0 flex-1">
                       <p className="flex items-center gap-2 text-sm font-bold">
                         <CategoryIcon name={c.icon} size={17} className="shrink-0 text-primary" />
-                        {c.parent && <span aria-hidden className="text-ink-3">↳</span>}
+                        {c.parent && <span aria-hidden className="ml-1 h-px w-3 bg-line-2" />}
                         <span className="truncate">{c.name}</span>
                         {!c.active && <EyeSlash size={15} className="shrink-0 text-ink-3" />}
                       </p>
