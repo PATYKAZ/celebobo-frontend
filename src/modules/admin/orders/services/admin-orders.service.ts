@@ -15,6 +15,7 @@ interface AssignableResellerDto {
   name: string;
   availability: ResellerAvailability;
   openOrders: number;
+  cashBlocked?: string | null;
 }
 
 const filters = (p: AdminOrderListParams) => ({
@@ -81,6 +82,6 @@ export const adminOrdersService = {
   /** Revendeurs actifs assignables, avec disponibilité et charge. */
   async resellers(): Promise<ResellerOption[]> {
     const list = await api.get<AssignableResellerDto[]>(resellers.assignable);
-    return list.map((r) => ({ id: r.id, name: r.name, code: "—", avatar: null, active: true, availability: r.availability, openOrders: r.openOrders }));
+    return list.map((r) => ({ id: r.id, name: r.name, code: "—", avatar: null, active: true, availability: r.availability, openOrders: r.openOrders, cashBlocked: r.cashBlocked ?? null }));
   },
 };

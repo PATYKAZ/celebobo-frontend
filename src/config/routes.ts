@@ -70,6 +70,7 @@ export const ROUTES = {
     coupons: "/admin/codes-promo",
     invites: "/admin/invites",
     claims: "/admin/reclamations",
+    cash: "/admin/encaissements",
     claim: (id: number | string) => `/admin/reclamations/${id}`,
   },
 } as const;

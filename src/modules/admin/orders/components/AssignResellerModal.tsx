@@ -52,7 +52,7 @@ export function AssignResellerModal({ order, onClose }: Props) {
       .sort((a, b) => Number(b.id === suggested?.id) - Number(a.id === suggested?.id) || Number(b.active) - Number(a.active) || RANK[a.availability] - RANK[b.availability] || a.openOrders - b.openOrders || a.name.localeCompare(b.name));
   }, [data, q, suggested?.id]);
 
-  const disabledReason = (r: ResellerOption) => (!r.active ? "Compte désactivé" : r.id === order?.assignedRevendeur?.id ? "Déjà assigné" : null);
+  const disabledReason = (r: ResellerOption) => (!r.active ? "Compte désactivé" : r.id === order?.assignedRevendeur?.id ? "Déjà assigné" : r.cashBlocked ? `Argent à reverser : ${r.cashBlocked}` : null);
 
   const submit = (resellerId = picked) => {
     if (!order || resellerId == null) return;

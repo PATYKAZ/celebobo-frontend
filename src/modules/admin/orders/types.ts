@@ -46,4 +46,6 @@ export interface ResellerOption {
   availability: ResellerAvailability;
   /** commandes ouvertes (non clôturées) déjà assignées */
   openOrders: number;
+  /** argent à reverser d'abord (plafond atteint ou plus de 24 h) : pas de nouvelle commande */
+  cashBlocked?: string | null;
 }

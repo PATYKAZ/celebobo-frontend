@@ -76,6 +76,12 @@ export const ENDPOINTS = {
     dataExport: "/me/data-export/",
     dataExportDownload: (id: string) => `/me/data-export/${id}/download/`, // ZIP (JSON + HTML), lien valable 48 h
   },
+  /** Argent encaissé par les revendeurs (politique revendeurs, 6) : à reverser sous 24 h, plafond par niveau */
+  cash: {
+    overview: "/bo/cash/", // GET (équipe) : revendeurs qui détiennent de l'argent
+    summary: "/bo/cash/summary/", // GET ?reseller_id= (équipe) ; le revendeur voit le sien
+    remittances: "/bo/cash/remittances/", // POST { resellerId, amount, reference, receivedAt } (Idempotency-Key)
+  },
   /** Avoir (dollars, 6 mois, livraison comprise) : solde, prochaine expiration, mouvements */
   storeCredit: "/me/store-credit/",
   /** Réclamations (politique de garantie) : le client sur ses commandes livrées, l'équipe les traite */
