@@ -37,6 +37,7 @@ export const ADMIN_NAV: AdminNavItem[] = [
   { section: "Activité", label: "Notifications", href: ROUTES.admin.notifications, icon: Notification, permission: "dashboard.view", badge: "notifications" },
   { section: "Équipe", label: "Revendeurs", href: ROUTES.admin.resellers, icon: People, permission: "resellers.view" },
   { section: "Équipe", label: "Commissions", resellerLabel: "Mes commissions", href: ROUTES.admin.commissions, icon: Wallet3, permission: "commissions.view.own" },
+  { section: "Équipe", label: "Encaissements", resellerLabel: "Argent à reverser", href: ROUTES.admin.cash, icon: MoneyRecive, permission: "cash.view.own" },
   { section: "Équipe", label: "Mes invités", href: ROUTES.admin.invites, icon: Share, permission: "commissions.view.own", onlyRoles: ["revendeur"] },
   { section: "Système", label: "Utilisateurs & rôles", href: ROUTES.admin.users, icon: Profile2User, permission: "users.manage" },
   { section: "Système", label: "Journal d'audit", href: ROUTES.admin.audit, icon: DocumentText, permission: "audit.view" },
