@@ -9,7 +9,7 @@ import { camelizeKeys } from "./case";
  * avant, données chargées par le navigateur.
  */
 const INTERNAL = (process.env.API_INTERNAL_URL ?? "").replace(/\/$/, "");
-/** Secret partagé avec Django : exempte le serveur Next de la limite de débit anonyme (cf. docs/BACKEND_CHANGES.md P0-1). */
+/** Secret partagé avec Django : exempte le serveur Next de la limite de débit anonyme (cf. docs/RENDERING.md). */
 const SSR_TOKEN = process.env.SSR_SHARED_SECRET;
 /** Délai maximal : une API lente ne doit pas bloquer le rendu, le navigateur prendra le relais. */
 const TIMEOUT_MS = 4_000;

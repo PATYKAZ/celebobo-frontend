@@ -71,7 +71,7 @@ export function toSlide(b: HomeBanner, id: number): HeroSlide {
 export interface DealDto {
   id: number;
   product: ProductDetailDto;
-  /** demandé au backend (BACKEND_CHANGES 4.1 bis) ; sinon retrouvé par le prix */
+  /** pas encore renvoyé par l'API (cf. docs/INTEGRATION_STATUS.md) : la variante en offre est retrouvée par son prix */
   variantId?: number | null;
   dealPrice: string;
   regularPrice: string;

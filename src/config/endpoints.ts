@@ -189,10 +189,6 @@ export const ENDPOINTS = {
   notificationPreferences: {
     get: "/me/notification-preferences/",
   },
-  orderActions: {
-    cancel: (id: number | string) => `/orders/${id}/cancel/`,
-  },
-
   // ---- Administration (cele-admin/) ------------------------------------
   admin: {
     dashboard: {
@@ -214,7 +210,6 @@ export const ENDPOINTS = {
       list: "/bo/products/",
       detail: (id: number) => `/bo/products/${id}/`,
       duplicate: (id: number) => `/bo/products/${id}/duplicate/`,
-      restore: (id: number) => `/bo/products/${id}/restore/`,
       variants: (id: number) => `/bo/products/${id}/variants/`,
       stockAdjustments: (id: number) => `/bo/products/${id}/stock-adjustments/`,
       stockMovements: (id: number) => `/bo/products/${id}/stock-movements/`,

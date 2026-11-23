@@ -1,9 +1,9 @@
 "use client";
 
-import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useMemo, useSyncExternalStore, type ReactNode } from "react";
 import { formatPrice } from "@/shared/lib/format";
 import { useSiteSettings } from "@/modules/site/hooks/useSiteSettings";
-import { CURRENCY_COOKIE, type DisplayCurrency } from "./currency";
+import { CURRENCY_COOKIE, parseCurrency, type DisplayCurrency } from "./currency";
 
 interface CurrencyContextValue {
   currency: DisplayCurrency;
@@ -14,14 +14,26 @@ interface CurrencyContextValue {
 
 const CurrencyContext = createContext<CurrencyContextValue>({ currency: "USD", rate: 0, setCurrency: () => {} });
 
-/** Devise d'affichage choisie par le visiteur ; `initial` vient du cookie lu par le serveur (layout boutique). */
-export function CurrencyProvider({ initial, children }: { initial: DisplayCurrency; children: ReactNode }) {
-  const [currency, setState] = useState(initial);
+/**
+ * Le choix du visiteur vit dans un cookie lu par le navigateur, pas par le serveur : les pages boutique restent
+ * statiques (mises en cache, régénérées en arrière-plan). Le HTML arrive en USD ; à l'hydratation, React relit le
+ * cookie (useSyncExternalStore : instantané serveur USD, instantané client = cookie) et passe en FC si besoin.
+ */
+const listeners = new Set<() => void>();
+const subscribe = (listener: () => void) => {
+  listeners.add(listener);
+  return () => listeners.delete(listener);
+};
+const readCookie = (): DisplayCurrency =>
+  parseCurrency(document.cookie.split("; ").find((c) => c.startsWith(`${CURRENCY_COOKIE}=`))?.slice(CURRENCY_COOKIE.length + 1));
+const serverSnapshot = (): DisplayCurrency => "USD";
+
+export function CurrencyProvider({ children }: { children: ReactNode }) {
+  const currency = useSyncExternalStore(subscribe, readCookie, serverSnapshot);
   const { usdToCdf } = useSiteSettings();
-  // état client immédiat ; le cookie sert aux prochains rendus serveur (aucun prix n'est rendu par un composant serveur)
   const setCurrency = useCallback((next: DisplayCurrency) => {
-    setState(next);
     document.cookie = `${CURRENCY_COOKIE}=${next}; path=/; max-age=${60 * 60 * 24 * 365}; samesite=lax`;
+    listeners.forEach((listener) => listener());
   }, []);
 
   const value = useMemo(() => ({ currency, rate: usdToCdf, setCurrency }), [currency, usdToCdf, setCurrency]);

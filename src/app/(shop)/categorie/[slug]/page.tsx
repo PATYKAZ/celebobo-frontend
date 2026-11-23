@@ -7,6 +7,11 @@ import { categoryMetadata, loadCategory } from "@/modules/categories/server";
 
 type Props = { params: Promise<{ slug: string }> };
 
+/** Chaque fiche est générée à sa première visite puis servie depuis le cache (régénérée comme la boutique). */
+export function generateStaticParams() {
+  return [];
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { category } = await loadCategory((await params).slug);
   return category ? categoryMetadata(category) : { title: "Catégorie" };

@@ -7,6 +7,11 @@ import { loadProduct, productMetadata, ProductJsonLd } from "@/modules/products/
 
 type Props = { params: Promise<{ slug: string }> };
 
+/** Chaque fiche est générée à sa première visite puis servie depuis le cache (régénérée comme la boutique). */
+export function generateStaticParams() {
+  return [];
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { product } = await loadProduct((await params).slug);
   return product ? productMetadata(product) : { title: "Produit" };

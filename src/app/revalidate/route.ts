@@ -2,7 +2,7 @@ import { timingSafeEqual } from "node:crypto";
 import { revalidateTag } from "next/cache";
 
 /**
- * POST /revalidate — appelé par Django après une modification du catalogue (BACKEND_CHANGES P1-3).
+ * POST /revalidate — appelé par Django après une modification du catalogue (cf. docs/RENDERING.md).
  * En-tête `X-Revalidate-Secret` ; corps `{ "tags": ["product:<slug>", "category:<slug>", "home", "sitemap"] }`.
  * Hors /api/ : nginx envoie /api vers Django, le reste vers Next.
  */

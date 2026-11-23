@@ -10,7 +10,7 @@ import { toProduct, type ProductDetailDto } from "./services/products.mapper";
 import type { Product } from "./types";
 import { getPricing } from "./utils";
 
-/** Étiquette de cache Next d'une fiche (revalidation à la demande depuis Django, cf. BACKEND_CHANGES P1-3). */
+/** Étiquette de cache Next d'une fiche (revalidation à la demande depuis Django, cf. docs/RENDERING.md). */
 export const productTag = (slug: string) => `product:${slug}`;
 
 /**

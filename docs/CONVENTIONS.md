@@ -1,7 +1,12 @@
 # Celebobo — Frontend (Next.js + Tailwind)
 
-Refonte front de Celebobo, basée sur le design « Swoo » (thème vert) — police **Hanken Grotesk**, icônes **Iconsax**.
-Les données viennent de l'API REST Django (Celebobo v2) : chaque module possède sa couche `services/` (mapper + appels API).
+Boutique et back-office de Celebobo (Next.js 16, App Router, Tailwind 4) — police **Alibaba Sans** (auto-hébergée),
+icônes **Iconsax**. Les données viennent de l'API REST Django (dépôt `celebobo`) : chaque module possède sa couche
+`services/` (mapper + appels API).
+
+Autres documents : [RENDERING.md](RENDERING.md) (pages statiques, cache, revalidation, variables du conteneur) ·
+[INTEGRATION_STATUS.md](INTEGRATION_STATUS.md) (fonctions de l'API encore sans écran) · règles métier :
+`docs/business/` du dépôt backend.
 
 ## Démarrer
 
@@ -13,6 +18,17 @@ npm run dev                    # http://localhost:3000
 
 Le front parle à l'API Django (`/api/v1`, cf. dépôt backend). Pour un jeu de données de démonstration,
 lancer `python manage.py seed_demo --admin-email <email>` côté backend (comptes listés en fin de commande).
+
+Contrôles (aussi lancés par la CI, `.github/workflows/ci.yml`) :
+
+```bash
+npm run typecheck
+npm run lint
+npm run build                  # affiche la table des routes : ○ statique, ● première visite, ƒ dynamique
+npm run e2e                    # Playwright ; E2E_BASE_URL (défaut http://localhost:8080), E2E_CHANNEL=chrome
+```
+
+Les tests Playwright (`e2e/`) tournent sur le jeu `seed_demo --e2e` du backend (comptes `*@e2e.celebobo.test`).
 
 ## API Django
 
@@ -49,11 +65,16 @@ src/
     index.ts              API publique du module
 ```
 
-Modules : `products`, `categories`, `auth`, `cart`, `favorites`, `orders`, `messaging`, `home`, `search`, `checkout`,
-`account`, `assistant`, `about`, `contact`, `guide`, et `admin/{layout,ui,dashboard,analytics,products,sales,orders,resellers}`.
+Un dossier par domaine dans `src/modules/` (boutique : `products`, `cart`, `checkout`, `orders`, `points`, `credit`,
+`claims`, `cagnotte`…) et un par écran dans `src/modules/admin/`. Les listes paginées du back-office utilisent
+`useAdminPage` (`modules/admin/ui/paged.ts`).
 
 ### Règles
 - Les fichiers `app/**/page.tsx` ne contiennent **aucune logique** : `export default function Page(){ return <XxxView/> }` (+ `metadata`).
+  Exception : les pages boutique rendues côté serveur (accueil, fiche produit, catégorie) chargent leurs données via
+  `modules/<module>/server.ts(x)` et les passent à React Query (`HydrationBoundary`).
+- **Pages boutique statiques** : aucun `cookies()`, `headers()` ni `searchParams` dans un composant serveur de la
+  boutique, pas de `force-dynamic` (cf. [RENDERING.md](RENDERING.md)). Un état propre au visiteur se lit dans le navigateur.
 - Un composant qui utilise un hook / état / événement est `"use client"`.
 - Données serveur = **React Query** (hooks dans `hooks/`), état local persistant (panier, favoris, session) = **Zustand** (`store/`).
 - Jamais de `fetch` dans un composant : composant → hook → service → `api`.
@@ -61,17 +82,22 @@ Modules : `products`, `categories`, `auth`, `cart`, `favorites`, `orders`, `mess
 - Textes UI en **français**. Montants : `formatPrice()` (format `$1,689.00` du design).
 - Un module importe un autre module uniquement via son `index.ts` / ses `types.ts`, jamais l'inverse en cycle.
 
-## Design (tokens → `tailwind.config.ts`)
+## Design (tokens → `@theme` de `src/app/globals.css`, Tailwind 4)
 
-- Fond de page `bg-page` (#E2E4EB) ; blocs blancs `Block` / `.wh-box` (rad 10), gap vertical 16px, container 1330 (zone utile 1300).
-- Vert `primary` #1ABA1A (boutons, prix « from », badges, actifs) ; rouge `danger` #F1352B (promo) ; étoiles `star` #FFA500.
-- Texte `ink` #000, `ink-2` #666, `ink-3` #999 ; puces `chip` #EBEEF6 ; bordures `line` #CCC / `line-3` #DEE2E6.
+- Fond de page `bg-page` (#DFEEEB) ; blocs blancs `Block` (rad 10), gap vertical 16px, container 1330 (zone utile 1300).
+- Vert sarcelle `primary` #226D68 (`primary-dark` #18534F, `primary-50` pour les fonds) : boutons, prix, badges, actifs ;
+  rouge `danger` #C4261D (promo, erreurs) ; étoiles `star` #D6955B ; avertissement `warn` #8A5A00.
+- Texte `ink` #000, `ink-2` #666, `ink-3` #6E6E6E ; puces `chip` #ECF8F6 ; bordures `line` #CCC / `line-3` #DEE2E6.
+- Thème sombre (classe `dark` sur `<html>`, choix gardé dans le navigateur, posé avant affichage par `THEME_SCRIPT`) :
+  utiliser les jetons, jamais de couleur en dur.
 - Pas d'ombre dans le thème vert (exceptions : survol de carte, popovers, toasts).
-- Échelle typographique : `text-section`, `text-name`, `text-price`, `text-h-page`, `text-body`… (cf. tailwind.config.ts).
+- Échelle typographique : `text-section`, `text-name`, `text-price`, `text-h-page`, `text-body`… (cf. globals.css).
 - Animations : composants `shared/animations` + keyframes Tailwind (`animate-float`, `animate-ken-burns`, `animate-marquee`, `animate-shimmer`…).
   `prefers-reduced-motion` est respecté (MotionConfig + CSS).
-- Icônes : `import { Heart } from "iconsax-reactjs"` — props `size`, `variant` (`Linear` | `Bold` | `Bulk` | `TwoTone` | `Outline` | `Broken`), `color`.
-  ⚠️ Vérifier qu'un nom existe avant usage (ex: `HamburgerMenu`, pas `HambergerMenu` ; pas de `Tablet` → `Devices`).
+- Icônes : `import { Heart } from "@/shared/ui/icons"` — jeu local généré depuis Iconsax (`scripts/generate-icons.mjs`,
+  liste dans `docs/iconsax-icons.txt`), props `size`, `variant` (`Linear` | `Bold` | `Bulk`), `color`. Pour une nouvelle
+  icône : l'importer depuis `@/shared/ui/icons`, puis lancer `node scripts/generate-icons.mjs` (le script lit les imports
+  et échoue si le nom n'existe pas ; vérifier dans la liste, ex. `HamburgerMenu`, pas `HambergerMenu`).
 
 ## v2 — Rôles, temps réel
 
@@ -84,6 +110,7 @@ Modules : `products`, `categories`, `auth`, `cart`, `favorites`, `orders`, `mess
   WebSocket `NEXT_PUBLIC_WS_URL` (passerelle Django Channels), ticket à usage unique `POST /auth/ws-ticket/`, reconnexion avec backoff.
 - **Panier serveur** : invité identifié par `X-Cart-Token` (`cart.store`), fusionné dans le panier du compte à la connexion (`CartOwnerSync`).
 - **Hydratation** : un état propre au navigateur (stores persistés, cache partagé avec l'en-tête) ne s'affiche qu'après `useHydrated()`.
+  La devise d'affichage (USD / FC) est lue dans le cookie `cb_currency` par `CurrencyProvider` côté navigateur.
 
 ## Mobile (mobile-first, breakpoints Tailwind : sm 640 · md 768 · lg 1024)
 
@@ -101,4 +128,3 @@ Modules : `products`, `categories`, `auth`, `cart`, `favorites`, `orders`, `mess
   Colonnes `select`/`checkbox` → case en haut à droite de la carte ; colonne sans en-tête / `actions` → pied de carte (boutons : `max-md:min-h-11`).
 - **Règles** : jamais de défilement horizontal de page (`min-w-0` sur les enfants de grid/flex, Swiper dans un conteneur `min-w-0`) ; cibles tactiles ≥ 44 px ;
   blocs `p-4` sur mobile ; graphiques SVG mesurent leur conteneur (`useChartWidth`, largeur initiale 300) ; les infobulles de graphique s'ouvrent au toucher.
-- **Contrôle** : `node mcheck.mjs <rôle> [--w=390] <chemin…>` (voir le dossier d'audit) liste débordements, petites cibles et erreurs, et sauvegarde des captures.

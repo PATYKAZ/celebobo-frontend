@@ -8,7 +8,7 @@ import { serverGet } from "@/shared/lib/api/server";
 import { toHomeContent, type HomeDto } from "./services/home.mapper";
 import type { HomeContent } from "./types";
 
-/** Étiquette de cache Next de l'accueil (revalidation à la demande, cf. BACKEND_CHANGES P1-3). */
+/** Étiquette de cache Next de l'accueil (revalidation à la demande, cf. docs/RENDERING.md). */
 export const HOME_TAG = "home";
 
 /** Accueil côté serveur ; `null` → contenu éditorial immédiat puis produits chargés par le navigateur, comme avant. */
