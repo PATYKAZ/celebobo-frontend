@@ -102,9 +102,9 @@ function Detail({ s, canRecord }: { s: CashSummary; canRecord: boolean }) {
       </section>
       {canRecord && Number(s.held) > 0 && (
         <section className="rounded-box border border-line-3 p-3.5">
-          <h3 className="mb-2 text-[14px] font-semibold">Enregistrer un reversement</h3>
+          <h3 className="mb-2 text-[14px] font-semibold">Enregistrer un reversement <span className="font-normal text-ink-3">(au plus {formatPrice(Number(s.held))})</span></h3>
           <div className="grid gap-2 sm:grid-cols-[1fr_1fr_auto]">
-            <Input aria-label="Montant reçu ($)" type="number" min="0.01" step="0.01" max={s.held} placeholder={`Montant (max ${s.held} $)`} value={amount} onChange={(e) => setAmount(e.target.value)} />
+            <Input aria-label="Montant reçu ($)" type="number" min="0.01" step="0.01" max={s.held} placeholder="Montant ($)" title={`Au plus ${s.held} $`} value={amount} onChange={(e) => setAmount(e.target.value)} />
             <Input aria-label="Référence Mobile Money" placeholder="Référence Mobile Money" value={reference} onChange={(e) => setReference(e.target.value)} />
             <Button upper={false} disabled={!(Number(amount) > 0)} loading={remit.isPending} onClick={() => remit.mutate()}>Enregistrer</Button>
           </div>

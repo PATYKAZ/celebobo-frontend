@@ -37,13 +37,16 @@ export function AssignResellerModal({ order, onClose }: Props) {
   // l'API ne renvoie la suggestion que si l'inviteur est un revendeur actif
   const suggested = order?.suggestedReseller && order.suggestedReseller.id !== order.assignedRevendeur?.id ? order.suggestedReseller : null;
 
+  // un revendeur qui doit d'abord reverser l'argent encaissé ne reçoit pas de nouvelle commande
+  const suggestedBlocked = suggested ? (data ?? []).find((r) => r.id === suggested.id)?.cashBlocked ?? null : null;
+
   useEffect(() => {
     if (open) {
       setQ("");
-      setPicked(suggested?.id ?? null);
+      setPicked(suggestedBlocked ? null : (suggested?.id ?? null));
       setNote("");
     }
-  }, [open, order?.id, suggested?.id]);
+  }, [open, order?.id, suggested?.id, suggestedBlocked]);
 
   const list = useMemo(() => {
     const s = q.trim().toLowerCase();
@@ -76,8 +79,9 @@ export function AssignResellerModal({ order, onClose }: Props) {
           <span className="min-w-0 flex-1 text-[13px]">
             <span className="block font-semibold">Invité par {suggested.name} — suggéré</span>
             <span className="block text-ink-3">{suggested.invitedAt ? `Client invité le ${formatDate(suggested.invitedAt)}` : "Revendeur qui a invité ce client"}</span>
+            {suggestedBlocked && <span className="block text-danger">Argent à reverser : {suggestedBlocked}</span>}
           </span>
-          <Button size="sm" upper={false} disabled={assign.isPending} onClick={() => submit(suggested.id)}>{reassign ? "Réassigner" : "Assigner"}</Button>
+          {!suggestedBlocked && <Button size="sm" upper={false} disabled={assign.isPending} onClick={() => submit(suggested.id)}>{reassign ? "Réassigner" : "Assigner"}</Button>}
         </div>
       )}
       <Input placeholder="Rechercher par nom ou code…" inputMode="search" value={q} onChange={(e) => setQ(e.target.value)} leftIcon={<SearchNormal1 size={16} />} aria-label="Rechercher un revendeur" />
