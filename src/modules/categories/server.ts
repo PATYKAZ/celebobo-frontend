@@ -7,7 +7,7 @@ import { serverGet } from "@/shared/lib/api/server";
 import { toCategory, type CategoryDto } from "./services/categories.mapper";
 import type { Category } from "./types";
 
-/** Étiquette de cache Next d'une catégorie (revalidation à la demande, cf. BACKEND_CHANGES P1-3). */
+/** Étiquette de cache Next d'une catégorie (revalidation à la demande, cf. docs/RENDERING.md). */
 export const categoryTag = (slug: string) => `category:${slug}`;
 
 /** Liste des catégories (menu de l'en-tête, filtres) ; `null` si l'API ne répond pas. */

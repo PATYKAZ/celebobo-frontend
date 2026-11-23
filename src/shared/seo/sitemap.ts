@@ -4,7 +4,7 @@ import { ENDPOINTS } from "@/config/endpoints";
 import { siteUrl } from "@/config/site-url";
 import { serverGet } from "@/shared/lib/api/server";
 
-/** Étiquette de cache Next du sitemap (revalidation à la demande, cf. BACKEND_CHANGES P1-3). */
+/** Étiquette de cache Next du sitemap (revalidation à la demande, cf. docs/RENDERING.md). */
 export const SITEMAP_TAG = "sitemap";
 const REVALIDATE = 3600;
 
