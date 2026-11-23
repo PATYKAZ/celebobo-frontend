@@ -11,7 +11,7 @@ import { useFormatPrice } from "@/shared/currency/CurrencyProvider";
 import { ROUTES } from "@/config/routes";
 import { Reveal } from "@/shared/animations/Reveal";
 import { cn } from "@/shared/lib/cn";
-import { SaveBadge, Pill } from "@/shared/ui/Badges";
+import { Pill } from "@/shared/ui/Badges";
 import { Button } from "@/shared/ui/Button";
 import { Price } from "@/shared/ui/Price";
 import { SectionHeader } from "@/shared/ui/SectionHeader";
@@ -111,7 +111,6 @@ function DealCard({ deal }: { deal: HomeDeal }) {
         </div>
         <div className="relative aspect-4/3 w-full min-w-0 sm:aspect-405/330 sm:flex-1">
           {gallery[active] && <ZoomImage src={gallery[active]} alt={product.name} />}
-          {onSale && <SaveBadge large amount={saving} className="absolute left-3 top-3 z-10" />}
           <button onClick={addToCart} disabled={!inStock} aria-label="Ajouter au panier" className="absolute right-3 top-3 z-10 grid size-11 place-items-center rounded-full bg-chip-2 transition-all hover:rotate-90 hover:bg-primary hover:text-white disabled:pointer-events-none disabled:opacity-40 sm:size-[30px]">
             <Add size={16} />
           </button>
@@ -120,8 +119,9 @@ function DealCard({ deal }: { deal: HomeDeal }) {
 
       {/* Infos */}
       <div className="min-w-0">
-        <Stars rating={product.rating ?? 5} count={product.reviewsCount} />
-        <Link href={ROUTES.product(product.slug)} className="mt-2 block text-base font-bold transition-colors hover:text-primary">
+        {/* étoiles seulement quand il y a des avis : cinq étoiles vides avec « (0) » n'informent pas */}
+        {product.reviewsCount > 0 && <Stars rating={product.rating ?? 0} count={product.reviewsCount} className="mb-2" />}
+        <Link href={ROUTES.product(product.slug)} className="block text-base font-bold transition-colors hover:text-primary">
           {product.name}
           {variant && <span className="font-semibold text-ink-2"> · {variant.label}</span>}
         </Link>
@@ -147,14 +147,15 @@ function DealCard({ deal }: { deal: HomeDeal }) {
         {deal.endsAt && (
           <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-5">
             <p className="text-sm font-medium sm:max-w-[130px]" title={`Jusqu'au ${endFmt.format(new Date(deal.endsAt))}`}>
-              Dépêchez-vous ! L’offre se termine dans
+              Fin de l’offre dans
             </p>
             <Countdown endsAt={deal.endsAt} />
           </div>
         )}
 
         <div className="mt-5 border-t border-line-3 pt-5 sm:mt-6">
-          {deal.quantity != null && (
+          {/* jauge seulement une fois des ventes réalisées : une barre vide ne dit rien */}
+          {deal.quantity != null && (deal.sold ?? 0) > 0 && (
             <div className="h-2 overflow-hidden rounded-full bg-page" role="progressbar" aria-label="Unités vendues" aria-valuemin={0} aria-valuemax={deal.quantity} aria-valuenow={deal.sold ?? 0}>
               <motion.div initial={{ width: 0 }} whileInView={{ width: `${pct}%` }} viewport={{ once: true }} transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }} className="relative h-full rounded-full bg-primary">
                 <span className="absolute inset-y-0 right-0 w-8 animate-shimmer bg-linear-to-r from-transparent via-white/50 to-transparent bg-size-[200%_100%]" />
@@ -163,11 +164,13 @@ function DealCard({ deal }: { deal: HomeDeal }) {
           )}
           <div className={cn("flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between", deal.quantity != null && "mt-3")}>
             <p className="text-sm text-ink-2">
-              {deal.quantity != null ? (
+              {deal.quantity != null && (deal.sold ?? 0) > 0 ? (
                 <>
                   Vendus : <strong className="text-ink"><CountUp to={deal.sold ?? 0} />/{deal.quantity}</strong>
                   {left ? <> · plus que {left}</> : null}
                 </>
+              ) : deal.quantity != null ? (
+                <><strong className="text-ink">{deal.quantity}</strong> unités à ce prix.</>
               ) : onSale ? (
                 <>Vous économisez <strong className="text-ink">{formatPrice(saving)}</strong> sur le prix habituel.</>
               ) : (
@@ -211,7 +214,6 @@ export function DealsOfTheDay({ content }: { content?: HomeContent }) {
               return (
                 <Reveal key={b.key} delay={i * 0.1} className="h-full min-h-[150px] max-sm:w-[78%] sm:min-h-[170px]">
                   <PhotoBanner image={b.image} href={b.href} label={b.title} overlay={t.overlay} direction="t" className="h-full rounded-box" sizes="296px" contentClassName="flex flex-col justify-end p-5">
-                    {b.eyebrow && <p className={cn("text-xs", t.muted)}>{b.eyebrow}</p>}
                     <p className={cn("mt-1 line-clamp-2 whitespace-pre-line text-base font-semibold", t.text)}>{b.title}</p>
                     {b.product ? (
                       <p className="mt-0.5"><BannerPrice product={b.product} className={cn("text-sm", t.price)} strikeClassName={t.strike} /></p>

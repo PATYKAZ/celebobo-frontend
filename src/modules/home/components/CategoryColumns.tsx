@@ -35,7 +35,6 @@ function Column({ category, title, catalog, banner, index, wide }: { category: C
         <SectionHeader title={title} viewAllHref={href} />
         {banner ? (
           <PhotoBanner image={banner.image} href={banner.href} label={banner.title} overlay={tone.overlay} className="mt-4 h-[150px] sm:mt-6 sm:h-[190px]" sizes="(min-width:1280px) 368px, 100vw" contentClassName="flex flex-col justify-center px-8">
-            {banner.eyebrow && <p className={cn("text-xs", tone.muted)}>{banner.eyebrow}</p>}
             <p className={cn("line-clamp-2 whitespace-pre-line text-sm font-bold", tone.text)}>{banner.title}</p>
             {banner.product ? (
               <p className="mt-1"><BannerPrice product={banner.product} className={cn("text-base", tone.price)} strikeClassName={tone.strike} /></p>

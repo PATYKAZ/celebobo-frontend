@@ -57,10 +57,10 @@ function MiniCard({ p }: { p: ViewedProduct }) {
   );
 }
 
-/** Récemment consultés (store persistant) — repli : meilleures ventes de l'accueil. */
-export function RecentlyViewed({ fallback }: { fallback?: Product[] }) {
+/** Récemment consultés (store persistant) ; rien tant que le visiteur n'a rien consulté. */
+export function RecentlyViewed() {
   const viewed = useRecentlyViewedStore((s) => s.items);
-  const items: ViewedProduct[] = viewed.length ? viewed : (fallback ?? []);
+  const items: ViewedProduct[] = viewed;
   const [swiper, setSwiper] = useState<SwiperType | null>(null);
   const [edge, setEdge] = useState({ begin: true, end: false });
   const sync = (s: SwiperType) => setEdge({ begin: s.isBeginning, end: s.isEnd });
@@ -70,7 +70,7 @@ export function RecentlyViewed({ fallback }: { fallback?: Product[] }) {
     <Reveal>
       <Block pad="none" className="min-w-0 overflow-hidden px-4 pb-5 pt-4 sm:px-8 sm:pb-8 sm:pt-8">
         <SectionHeader
-          title={viewed.length ? "Récemment consultés" : "Vous pourriez aimer"}
+          title="Récemment consultés"
           viewAllHref={ROUTES.products}
           right={<SliderArrows className="hidden md:flex" onPrev={() => swiper?.slidePrev()} onNext={() => swiper?.slideNext()} canPrev={!edge.begin} canNext={!edge.end} />}
         />

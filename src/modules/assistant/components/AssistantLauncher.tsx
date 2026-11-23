@@ -153,7 +153,8 @@ export function AssistantLauncher() {
         >
           {/* bulle d'accroche */}
           <AnimatePresence>
-            {hint && !open && !dragging && (
+            {/* bulle d'accroche sur grand écran seulement : sur téléphone elle recouvrirait le contenu */}
+            {desktop && hint && !open && !dragging && (
               <motion.button
                 initial={{ opacity: 0, scale: 0.85, y: 6 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}

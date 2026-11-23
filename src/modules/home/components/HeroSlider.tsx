@@ -54,11 +54,6 @@ function Slide({ slide, active }: { slide: HeroSlide; active: boolean }) {
         animate={active ? "show" : "hidden"}
         className={cn("relative z-10 flex h-full flex-col justify-end gap-0 px-5 pb-12 text-white sm:max-w-[62%] sm:justify-center sm:px-0 sm:pb-0 sm:pl-15", !dark && "sm:text-on-light")}
       >
-        {slide.eyebrow && (
-          <motion.p variants={item} className={cn("mb-2 text-xs font-semibold text-white/80", !dark && "sm:text-on-light-2")}>
-            {slide.eyebrow}
-          </motion.p>
-        )}
         <motion.h2 variants={item} className="text-xl font-medium sm:text-h-hero">
           {slide.titleLines.map((l) => (
             <span key={l.text} className={cn("block", l.className)}>

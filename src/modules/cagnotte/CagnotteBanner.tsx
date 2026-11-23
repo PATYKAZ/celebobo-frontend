@@ -29,9 +29,10 @@ export function CagnotteBanner() {
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
         <Gift size={28} variant="Bold" className="shrink-0 text-primary" />
         <div className="min-w-0 flex-1">
-          <p className="text-xs font-bold text-primary">Cagnotte · {campaign.name}</p>
           <p className="text-base font-bold sm:text-lg">{campaignHeadline(campaign)}</p>
-          <p className="text-sm text-ink-2">Du {formatDate(campaign.startsAt)} au {formatDate(campaign.endsAt)}</p>
+          <p className="text-sm text-ink-2">
+            <span className="font-semibold text-primary">{campaign.name}</span> · du {formatDate(campaign.startsAt)} au {formatDate(campaign.endsAt)}
+          </p>
         </div>
         <button type="button" onClick={() => setOpen((v) => !v)} aria-expanded={open} className="min-h-11 text-sm font-semibold text-primary underline-offset-2 hover:underline">
           {open ? "Masquer les conditions" : "Voir les conditions"}

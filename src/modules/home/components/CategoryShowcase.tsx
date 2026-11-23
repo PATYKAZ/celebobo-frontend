@@ -1,5 +1,6 @@
 "use client";
 
+import { CategoryIcon } from "@/modules/categories/components/CategoryIcon";
 import Image from "next/image";
 import Link from "next/link";
 import { Reveal, RevealGroup, RevealItem } from "@/shared/animations/Reveal";
@@ -20,8 +21,7 @@ function ShowcaseBanner({ b }: { b: HomeBanner }) {
   const t = bannerTone(b, "from-black/85 via-black/55 to-transparent");
   return (
     <PhotoBanner image={b.image} href={b.href} label={b.title} overlay={t.overlay} className="h-[170px] sm:h-[200px]" sizes="(min-width:1024px) 605px, 100vw" contentClassName="flex flex-col justify-center px-6 sm:px-8">
-      {b.eyebrow && <p className={cn("text-xs", t.muted)}>{b.eyebrow}</p>}
-      <h3 className={cn("mt-1 line-clamp-2 max-w-[80%] whitespace-pre-line text-xl font-medium sm:text-xl", t.text)}>{b.title}</h3>
+      <h3 className={cn("line-clamp-2 max-w-[80%] whitespace-pre-line text-xl font-medium sm:text-xl", t.text)}>{b.title}</h3>
       {b.subtitle && <p className={cn("mt-2 line-clamp-1 max-w-[80%] text-xs", t.muted)}>{b.subtitle}</p>}
       <p className="mt-3 flex items-center gap-4">
         {b.product && <BannerPrice product={b.product} className={cn("text-lg", t.price)} strikeClassName={t.strike} />}
@@ -42,12 +42,13 @@ export function CategoryShowcase({ config, catalog, banner }: { config: Showcase
   const { data: categories } = useFlatCategories();
   // bannière de l'admin (`showcase:<catégorie>`), sinon le produit le plus vendu de la catégorie
   const top = products?.find((p) => p.image);
-  const shown: HomeBanner | null = banner ?? (top ? { ...productBanner(top, "Acheter"), eyebrow: "Le plus demandé", subtitle: top.description } : null);
+  const shown: HomeBanner | null = banner ?? (top ? { ...productBanner(top, "Acheter"), subtitle: top.description } : null);
   // grille : sous-catégories de la catégorie, sinon les catégories prévues, sinon les autres catégories principales
   const subs = (config.subcategories ?? categories?.find((c) => c.slug === config.categorySlug)?.children ?? []).filter((c) => c.productsCount > 0);
   const related = config.related.flatMap((slug) => categories?.find((c) => c.slug === slug && c.productsCount > 0) ?? []);
   const others = (tree ?? []).filter((c) => c.slug !== config.categorySlug && c.productsCount > 0).slice(0, 6);
   const tiles = subs.length ? subs : related.length ? related : others;
+  const thumb = (c: { slug: string; image?: string | null }) => c.image || products?.find((p) => p.categorySlug === c.slug && p.image)?.image || null;
 
   return (
     <Reveal>
@@ -72,8 +73,13 @@ export function CategoryShowcase({ config, catalog, banner }: { config: Showcase
                       <span className="block truncate text-sm font-bold transition-colors group-hover:text-primary">{c.name}</span>
                       <span className="mt-1 block text-xs text-ink-2">{c.productsCount} article{c.productsCount > 1 ? "s" : ""}</span>
                     </span>
-                    <span className="relative size-11 shrink-0 overflow-hidden rounded-md bg-chip sm:size-[50px]">
-                      {c.image && <Image src={c.image} alt="" fill sizes="50px" className="object-cover transition-transform duration-500 group-hover:scale-125 group-hover:rotate-3" />}
+                    {/* vignette : image de la catégorie, sinon photo d'un de ses produits, sinon son icône (jamais de case vide) */}
+                    <span className="relative grid size-11 shrink-0 place-items-center overflow-hidden rounded-md bg-chip text-primary sm:size-[50px]">
+                      {thumb(c) ? (
+                        <Image src={thumb(c) as string} alt="" fill sizes="50px" className="object-cover transition-transform duration-500 group-hover:scale-110" />
+                      ) : (
+                        <CategoryIcon name={c.icon} size={22} />
+                      )}
                     </span>
                   </Link>
                 </RevealItem>

@@ -1,5 +1,7 @@
 "use client";
 
+import { ROUTES } from "@/config/routes";
+import Link from "next/link";
 import Image from "next/image";
 import { Apple, GooglePlay, WalletMoney } from "@/shared/ui/icons";
 import { Float } from "@/shared/animations/MotionImage";
@@ -16,16 +18,22 @@ function PointsBanner({ points }: { points: Programmes["points"] }) {
       <div className="group relative flex h-full min-h-[180px] items-center overflow-hidden rounded-box bg-ink-dark">
         <Image src="/images/products/charger.jpg" alt="" fill sizes="(min-width:1024px) 646px, 100vw" className="object-cover opacity-70 transition-transform duration-900 group-hover:scale-110" />
         <div className="absolute inset-0 bg-linear-to-r from-primary-dark/90 via-primary/75 to-black/60" />
-        <div className="relative ml-auto w-full max-w-[340px] px-6 py-8 sm:mr-12 sm:px-0">
+        {/* contenu en ligne sur toute la largeur : le taux, puis l'explication et le lien vers les conditions */}
+        <div className="relative flex w-full flex-col gap-3 px-6 py-8 sm:flex-row sm:items-center sm:gap-10 sm:px-12">
           <Float slow>
-            <p className="flex items-center gap-2 text-2xl font-bold text-sun sm:text-2xl">
+            <p className="flex shrink-0 items-center gap-3 text-2xl font-bold text-sun">
               <WalletMoney size={34} variant="Bold" aria-hidden /> {pct(points.percent)}
             </p>
           </Float>
-          <p className="mt-1 text-sm font-semibold text-white">de vos achats en points de fidélité</p>
-          <p className="mt-2 text-sm text-white/85">
-            Sur chaque commande livrée, 1 point = 1 $. Utilisez-en autant que vous voulez sur vos prochains achats. Valables tant que vous achetez au moins une fois tous les {points.validityMonths} mois.
-          </p>
+          <div className="max-w-2xl">
+            <p className="text-base font-semibold text-white">de vos achats rendus en points de fidélité</p>
+            <p className="mt-1 text-sm text-white/85">
+              Sur chaque commande livrée, 1 point = 1 $. Utilisez-en autant que vous voulez sur vos prochains achats. Valables tant que vous achetez au moins une fois tous les {points.validityMonths} mois.
+            </p>
+            <Link href={ROUTES.page("programme-de-fidelite")} className="relative z-10 mt-3 inline-flex min-h-11 items-center text-sm font-semibold text-sun underline-offset-4 hover:underline">
+              Voir le programme
+            </Link>
+          </div>
         </div>
       </div>
     </Reveal>
