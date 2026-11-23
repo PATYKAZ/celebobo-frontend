@@ -127,6 +127,8 @@ export interface Order {
   couponCode?: string | null;
   /** Points de fidélité utilisés sur la commande (1 point = 1 $) */
   points?: number;
+  /** Avoir utilisé sur la commande ($, livraison comprise) */
+  storeCredit?: number;
   /** Points de fidélité gagnés une fois la commande livrée (null : rien, ou pas encore) */
   pointsEarned?: number | null;
   shippingFee?: number;
@@ -228,6 +230,8 @@ export interface CreateOrderInput {
   couponCode?: string | null;
   /** Points de fidélité à utiliser (1 point = 1 $) ; 409 `points_unavailable` si le solde ne suffit plus */
   points?: number;
+  /** Avoir à utiliser ($, livraison comprise) ; 409 `store_credit_unavailable` si le solde ne suffit plus */
+  storeCredit?: number;
   /** Adresse du carnet d'adresses choisie */
   addressId?: number | null;
   /** Nouvelle adresse saisie (si pas d'adresse du carnet) */

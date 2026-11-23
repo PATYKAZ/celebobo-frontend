@@ -122,9 +122,10 @@ function Content({ id }: { id: number }) {
                   <span className="text-[13px] text-ink-2">Total de la commande</span>
                   <span className="text-[18px] font-bold text-primary">{formatPrice(order.totalPrice)}</span>
                 </li>
-                {(!!order.points || !!order.pointsEarned) && (
+                {(!!order.points || !!order.storeCredit || !!order.pointsEarned) && (
                   <li className="px-4 pb-3.5 text-right text-[12px] text-ink-2">
                     {!!order.points && <span className="block">dont points de fidélité utilisés : <b className="text-danger">-{formatPrice(order.points)}</b></span>}
+                    {!!order.storeCredit && <span className="block">dont avoir utilisé : <b className="text-danger">-{formatPrice(order.storeCredit)}</b></span>}
                     {!!order.pointsEarned && <span className="block font-semibold text-primary">+{formatPointsEarned(order.pointsEarned)}</span>}
                   </li>
                 )}
@@ -162,6 +163,12 @@ function Content({ id }: { id: number }) {
                       <tr>
                         <td colSpan={3} className="px-5 pt-4 text-right text-[13px] text-ink-2 sm:px-6">Points de fidélité utilisés</td>
                         <td className="px-5 pt-4 text-right font-semibold text-danger sm:px-6">-{formatPrice(order.points)}</td>
+                      </tr>
+                    )}
+                    {!!order.storeCredit && (
+                      <tr>
+                        <td colSpan={3} className="px-5 pt-4 text-right text-[13px] text-ink-2 sm:px-6">Avoir utilisé (pas de commission)</td>
+                        <td className="px-5 pt-4 text-right font-semibold text-danger sm:px-6">-{formatPrice(order.storeCredit)}</td>
                       </tr>
                     )}
                     <tr>

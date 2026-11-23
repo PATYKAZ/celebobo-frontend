@@ -88,10 +88,18 @@ function Content() {
   const [pointsInput, setPointsInput] = useState("");
   const [pointsAvailable, setPointsAvailable] = useState(0);
   const pointsWanted = Math.min(parsePoints(pointsInput), pointsAvailable);
-  const { data: quote, refetch: refetchQuote, isFetching: quoteFetching, pointsSettling } = useCheckoutQuote(lines, form.city, couponCode, pointsWanted, form.pickup);
+  // avoir (dollars, livraison comprise) : même principe que les points
+  const [creditInput, setCreditInput] = useState("");
+  const [creditAvailable, setCreditAvailable] = useState(0);
+  const creditWanted = Math.min(parsePoints(creditInput), creditAvailable);
+  const { data: quote, refetch: refetchQuote, isFetching: quoteFetching, pointsSettling } = useCheckoutQuote(lines, form.city, couponCode, pointsWanted, form.pickup, creditWanted);
   const quotedAvailable = quote?.pointsAvailable ?? 0;
   if (quote && quotedAvailable !== pointsAvailable) setPointsAvailable(quotedAvailable);
   const pointsField = pointsAvailable > 0 ? <PointsAmountInput available={pointsAvailable} value={pointsInput} onChange={(v) => { setPointsInput(v); setSubmitError(null); }} /> : undefined;
+  const quotedCredit = quote?.storeCreditAvailable ?? 0;
+  // le maximum utilisable baisse quand des points sont utilisés : on garde la plus haute valeur vue tant que le client n'a rien saisi
+  if (quote && quotedCredit !== creditAvailable && (creditWanted === 0 || quotedCredit < creditAvailable)) setCreditAvailable(quotedCredit);
+  const creditField = creditAvailable > 0 ? <PointsAmountInput credit available={creditAvailable} value={creditInput} onChange={(v) => { setCreditInput(v); setSubmitError(null); }} /> : undefined;
   const count = cartCount(items);
   const total = cartTotal(items);
   const savings = cartSavings(items);
@@ -164,7 +172,7 @@ function Content() {
     const address = { recipient: form.recipient.trim(), phone: form.phone.trim(), line1: form.address.trim(), quarter: form.quarter.trim(), city: form.city.trim(), country: form.country.trim() };
     try {
       const res = await createOrder.mutateAsync({
-        input: { items: lines, paymentMethod: form.paymentMethod, couponCode, points: quote?.points ?? 0, addressId: form.addressId, address: isNew ? address : null, note: form.note.trim(), pickup: form.pickup },
+        input: { items: lines, paymentMethod: form.paymentMethod, couponCode, points: quote?.points ?? 0, storeCredit: quote?.storeCredit ?? 0, addressId: form.addressId, address: isNew ? address : null, note: form.note.trim(), pickup: form.pickup },
         idempotencyKey: idempotencyKey.current,
       });
       idempotencyKey.current = newKey();
@@ -182,6 +190,13 @@ function Content() {
       }
     } catch (e) {
       // solde de points changé entre le devis et la commande : nouveau devis (points utilisables à jour), le client vérifie le montant
+      if (e instanceof ApiError && e.code === "store_credit_unavailable") {
+        const { data: fresh } = await refetchQuote();
+        const usable = fresh?.storeCreditAvailable ?? 0;
+        if (parsePoints(creditInput) > usable) setCreditInput(usable > 0 ? String(usable) : "");
+        setSubmitError(getErrorMessage(e, "Votre avoir a changé. Vérifiez le montant puis confirmez."));
+        return;
+      }
       if (e instanceof ApiError && e.code === "points_unavailable") {
         qc.invalidateQueries({ queryKey: pointsKeys.all });
         const { data: fresh } = await refetchQuote();
@@ -317,12 +332,12 @@ function Content() {
       </Reveal>
 
       <Reveal delay={0.1} direction="up" className="hidden min-w-0 lg:block">
-        <CartSummary title="Votre commande" subtotal={total} savings={savings} count={count} quote={quote} coupon={<CouponForm quote={cartQuote} />} points={pointsField} />
+        <CartSummary title="Votre commande" subtotal={total} savings={savings} count={count} quote={quote} coupon={<CouponForm quote={cartQuote} />} points={pointsField} credit={creditField} />
       </Reveal>
 
       <BottomSheet open={recap} onClose={() => setRecap(false)} title="Votre commande">
         <div className="-mx-5 pb-2">
-          <CartSummary title="Récapitulatif" subtotal={total} savings={savings} count={count} quote={quote} coupon={<CouponForm quote={cartQuote} />} points={pointsField} />
+          <CartSummary title="Récapitulatif" subtotal={total} savings={savings} count={count} quote={quote} coupon={<CouponForm quote={cartQuote} />} points={pointsField} credit={creditField} />
         </div>
       </BottomSheet>
     </div>

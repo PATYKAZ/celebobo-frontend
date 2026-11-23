@@ -33,6 +33,7 @@ export const ROUTES = {
   points: "/compte/points",
   myData: "/compte/donnees",
   myClaims: "/compte/reclamations",
+  storeCredit: "/compte/avoir",
   myClaim: (id: number | string) => `/compte/reclamations/${id}`,
   newClaim: (orderId: number | string) => `/compte/reclamations/nouvelle?commande=${orderId}`,
   consents: "/compte/consentements",

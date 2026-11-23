@@ -27,6 +27,8 @@ export interface QuoteDto {
   /** points utilisables sur cette commande (solde plafonné au prix des produits), et points appliqués (`points` demandé) */
   pointsAvailable?: string;
   points?: string;
+  storeCreditAvailable?: string;
+  storeCredit?: string;
   deliveryMethod?: "delivery" | "pickup";
   pickupAddress?: string;
   shippingQuoteRequired?: boolean;
@@ -60,6 +62,8 @@ export function toQuote(dto: QuoteDto): CartQuote {
     couponError: dto.couponError || null,
     pointsAvailable: money(dto.pointsAvailable),
     points: money(dto.points),
+    storeCreditAvailable: money(dto.storeCreditAvailable),
+    storeCredit: money(dto.storeCredit),
     pickup: dto.deliveryMethod === "pickup",
     pickupAddress: dto.pickupAddress || null,
     shippingQuoteRequired: dto.shippingQuoteRequired ?? false,
