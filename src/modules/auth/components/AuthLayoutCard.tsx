@@ -44,7 +44,7 @@ export function AuthLayoutCard({ title, subtitle, image, headline, children, foo
 
       <div className="grid lg:grid-cols-[1fr_1.05fr]">
         <Reveal className="mx-auto w-full min-w-0 max-w-[520px] px-4 py-6 sm:px-10 sm:py-14">
-          <h1 className="text-xl text-primary sm:text-h-page">{title}</h1>
+          <h1 className="text-xl sm:text-h-page">{title}</h1>
           <p className="mb-6 mt-1.5 text-sm text-ink-2 sm:mb-8 sm:mt-2">{subtitle}</p>
           {children}
           {footer && <div className="mt-6 border-t border-line-3 pt-5 text-center text-sm text-ink-2 sm:mt-8 sm:pt-6 [&_a]:inline-flex [&_a]:min-h-11 [&_a]:items-center">{footer}</div>}

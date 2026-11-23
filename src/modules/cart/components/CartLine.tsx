@@ -39,7 +39,6 @@ export function CartLine({ item, onQuantity, onRemove }: Props) {
       </Link>
 
       <div className="min-w-0">
-        {item.product.category && <p className="text-xs text-ink-3">{item.product.category}</p>}
         <Link href={href} className="line-clamp-2 text-sm font-bold transition-colors hover:text-primary sm:text-sm">{item.product.name}</Link>
         {item.variantLabel && <span className="mt-1 inline-block rounded-sm bg-chip px-2 py-0.5 text-xs font-semibold">{item.variantLabel}</span>}
         <div className="mt-2 flex flex-wrap items-center gap-2">

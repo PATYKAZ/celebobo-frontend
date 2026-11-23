@@ -11,6 +11,7 @@ import { EmptyState } from "@/shared/ui/EmptyState";
 import { Input } from "@/shared/ui/Form";
 import { useResetPassword } from "../hooks/useAuth";
 import { fieldError, generalError } from "./fieldErrors";
+import { ForgotPasswordModal } from "./ForgotPasswordModal";
 
 /** Lien reçu par e-mail : `/reinitialiser-mot-de-passe?uid=…&token=…`. */
 export function ResetPasswordView() {
@@ -20,6 +21,7 @@ export function ResetPasswordView() {
   const reset = useResetPassword();
   const [form, setForm] = useState({ password: "", passwordConfirm: "" });
   const [errors, setErrors] = useState<{ password?: string; passwordConfirm?: string }>({});
+  const [askLink, setAskLink] = useState(false);
 
   const submit = (e: FormEvent) => {
     e.preventDefault();
@@ -40,8 +42,13 @@ export function ResetPasswordView() {
           <EmptyState
             icon={<CloseCircle size={40} variant="Bulk" />}
             title="Lien invalide ou expiré"
-            description="Demandez un nouveau lien depuis la page de connexion (« Mot de passe oublié ? »)."
-            action={<Button href={ROUTES.login()}>Retour à la connexion</Button>}
+            description="Ce lien a déjà servi ou n'est plus valable. Recevez-en un nouveau par e-mail."
+            action={
+              <div className="flex flex-wrap justify-center gap-2">
+                <Button onClick={() => setAskLink(true)}>Recevoir un nouveau lien</Button>
+                <Button variant="secondary" href={ROUTES.login()}>Retour à la connexion</Button>
+              </div>
+            }
           />
         ) : reset.isSuccess ? (
           <EmptyState
@@ -60,6 +67,7 @@ export function ResetPasswordView() {
           </form>
         )}
       </Block>
+      <ForgotPasswordModal open={askLink} onClose={() => setAskLink(false)} />
     </>
   );
 }
