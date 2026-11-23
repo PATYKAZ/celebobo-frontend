@@ -2,7 +2,7 @@
 
 export type ClaimKind = "defect" | "change_of_mind" | "counterfeit";
 export type ClaimStatus = "submitted" | "answered" | "received" | "repairing" | "closed";
-export type ClaimOutcome = "repair" | "exchange" | "refund" | "not_covered";
+export type ClaimOutcome = "repair" | "exchange" | "refund" | "store_credit" | "not_covered";
 export type ReturnMethod = "shop" | "reseller";
 
 export const KIND_LABEL: Record<ClaimKind, string> = {
@@ -13,7 +13,7 @@ export const KIND_LABEL: Record<ClaimKind, string> = {
 
 export const KIND_HINT: Record<ClaimKind, string> = {
   defect: "Pendant les 7 jours d'essai ou le mois de garantie CeLE BoBO : réparation, échange ou remboursement.",
-  change_of_mind: "Pendant les 7 jours d'essai, produit comme neuf : échange contre un autre produit. Les frais de retour sont à votre charge.",
+  change_of_mind: "Pendant les 7 jours d'essai, produit comme neuf : échange contre un autre produit ou avoir valable 6 mois. Les frais de retour sont à votre charge.",
   counterfeit: "Dans les 12 mois suivant l'achat : remboursement intégral, livraison comprise.",
 };
 
@@ -29,6 +29,7 @@ export const OUTCOME_LABEL: Record<ClaimOutcome, string> = {
   repair: "Réparation",
   exchange: "Échange",
   refund: "Remboursement",
+  store_credit: "Avoir de 6 mois",
   not_covered: "Non couvert : produit rendu",
 };
 
@@ -107,7 +108,7 @@ export interface Diagnosis {
 /** Solutions possibles selon le type et le diagnostic (mêmes règles que l'API). */
 export function outcomesFor(kind: ClaimKind, covered: boolean): ClaimOutcome[] {
   if (!covered) return ["not_covered"];
-  if (kind === "change_of_mind") return ["exchange"];
+  if (kind === "change_of_mind") return ["exchange", "store_credit"];
   if (kind === "counterfeit") return ["refund"];
   return ["repair", "exchange", "refund"];
 }

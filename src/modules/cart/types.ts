@@ -41,6 +41,9 @@ export interface CartQuote {
   pointsAvailable: number;
   /** Points appliqués au total (montant choisi par le client, plafonné par l'API) */
   points: number;
+  /** Avoir utilisable (solde plafonné au reste à payer, livraison comprise) et avoir appliqué ($) */
+  storeCreditAvailable: number;
+  storeCredit: number;
   /** Retrait en boutique choisi (frais 0) */
   pickup: boolean;
   /** Adresse du point de retrait (devis en retrait) */
@@ -70,6 +73,8 @@ export const EMPTY_QUOTE: CartQuote = {
   couponError: null,
   pointsAvailable: 0,
   points: 0,
+  storeCreditAvailable: 0,
+  storeCredit: 0,
   pickup: false,
   pickupAddress: null,
   shippingQuoteRequired: false,

@@ -67,6 +67,7 @@ export interface OrderDto extends OrderSummaryDto {
   couponCode: string;
   /** points de fidélité utilisés (1 point = 1 $) et points gagnés une fois livrée */
   points?: string;
+  storeCredit?: string;
   pointsEarned?: string | null;
   shippingZone: string;
   shippingFee: string;
@@ -177,6 +178,7 @@ export function toOrder(dto: OrderSummaryDto | OrderDto): Order {
     discount: detail ? money(detail.discount) : undefined,
     couponCode: detail?.couponCode || null,
     points: detail ? money(detail.points) : undefined,
+    storeCredit: detail?.storeCredit ? money(detail.storeCredit) : undefined,
     pointsEarned: detail?.pointsEarned == null ? null : money(detail.pointsEarned),
     shippingFee: detail ? money(detail.shippingFee) : undefined,
     shippingZone: detail?.shippingZone || null,

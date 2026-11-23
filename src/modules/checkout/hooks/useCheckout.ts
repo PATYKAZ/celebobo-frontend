@@ -11,17 +11,18 @@ export const checkoutKeys = {
 };
 
 /** Devis de la commande, recalculé quand la ville (zone de livraison), le retrait, les lignes, le code promo ou le nombre de points utilisés changent (ville et points après une courte pause de saisie). */
-export function useCheckoutQuote(lines: QuoteLineInput[], city: string, couponCode: string | null, points = 0, pickup = false) {
+export function useCheckoutQuote(lines: QuoteLineInput[], city: string, couponCode: string | null, points = 0, pickup = false, storeCredit = 0) {
   const debouncedCity = useDebounce(city.trim(), 400);
   const debouncedPoints = useDebounce(points, 400);
+  const debouncedCredit = useDebounce(storeCredit, 400);
   const query = useQuery({
-    queryKey: checkoutKeys.quote(lines, debouncedCity, couponCode, debouncedPoints, pickup),
-    queryFn: () => checkoutService.quote(lines, debouncedCity, couponCode, debouncedPoints, pickup),
+    queryKey: [...checkoutKeys.quote(lines, debouncedCity, couponCode, debouncedPoints, pickup), debouncedCredit],
+    queryFn: () => checkoutService.quote(lines, debouncedCity, couponCode, debouncedPoints, pickup, debouncedCredit),
     enabled: lines.length > 0,
     placeholderData: keepPreviousData,
   });
   // saisie de points pas encore envoyée au devis : le total affiché ne reflète pas encore le choix du client
-  return { ...query, pointsSettling: debouncedPoints !== points };
+  return { ...query, pointsSettling: debouncedPoints !== points || debouncedCredit !== storeCredit };
 }
 
 export function useShippingZones() {

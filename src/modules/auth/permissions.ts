@@ -49,7 +49,8 @@ export type Permission =
   | "loyalty.manage"
   | "coupons.manage" // codes promo : création, conditions, activation
   | "claims.submit.own" // réclamer sur ses commandes livrées (politique de garantie)
-  | "claims.manage"; // traiter les réclamations : réponse, réception, diagnostic, solution
+  | "claims.manage" // traiter les réclamations : réponse, réception, diagnostic, solution
+  | "store_credit.view.own"; // son avoir (solde, expiration, mouvements)
 
 type WithPermissions = Pick<User, "permissions"> | null | undefined;
 

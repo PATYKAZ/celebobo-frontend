@@ -18,18 +18,21 @@ interface Props {
   coupon?: ReactNode;
   /** Montant de points de fidélité à utiliser (paiement) */
   points?: ReactNode;
+  /** Montant d'avoir à utiliser (paiement, livraison comprise) */
+  credit?: ReactNode;
   /** Boutons d'action (CTA) */
   actions?: ReactNode;
   title?: string;
 }
 
 /** Récapitulatif de commande (panier & checkout). */
-export function CartSummary({ subtotal, savings, count, quote, coupon, points, actions, title = "Récapitulatif" }: Props) {
+export function CartSummary({ subtotal, savings, count, quote, coupon, points, credit, actions, title = "Récapitulatif" }: Props) {
   const { currency, rate } = useCurrency();
   const discount = quote?.discount ?? 0;
   const shipping = quote?.shippingFee ?? 0;
   const pointsUsed = quote?.points ?? 0;
-  const total = quote ? Math.max(0, subtotal - discount - pointsUsed) + shipping : subtotal;
+  const creditUsed = quote?.storeCredit ?? 0;
+  const total = quote ? Math.max(0, Math.max(0, subtotal - discount - pointsUsed) + shipping - creditUsed) : subtotal;
   const remaining = quote?.freeShippingRemaining ?? null;
   const progress = remaining == null ? 0 : remaining <= 0 ? 100 : Math.min(100, (subtotal / (subtotal + remaining)) * 100);
 
@@ -51,12 +54,14 @@ export function CartSummary({ subtotal, savings, count, quote, coupon, points, a
 
       {coupon && <div className="mt-5">{coupon}</div>}
       {points && <div className="mt-3">{points}</div>}
+      {credit && <div className="mt-3">{credit}</div>}
 
       <dl className="mt-5 space-y-3 text-[14px]">
         <div className="flex justify-between"><dt className="text-ink-2">Articles ({count})</dt><dd className="font-semibold">{formatPrice(subtotal + savings)}</dd></div>
         {savings > 0 && <div className="flex justify-between"><dt className="text-ink-2">Remises</dt><dd className="font-semibold text-danger">-{formatPrice(savings)}</dd></div>}
         {discount > 0 && <div className="flex justify-between"><dt className="text-ink-2">Code promo{quote?.couponCode ? ` (${quote.couponCode})` : ""}</dt><dd className="font-semibold text-danger">-{formatPrice(discount)}</dd></div>}
         {pointsUsed > 0 && <div className="flex justify-between"><dt className="text-ink-2">Points de fidélité utilisés</dt><dd className="font-semibold text-danger">-{formatPrice(pointsUsed)}</dd></div>}
+        {creditUsed > 0 && <div className="flex justify-between"><dt className="text-ink-2">Avoir utilisé</dt><dd className="font-semibold text-danger">-{formatPrice(creditUsed)}</dd></div>}
         <div className="flex justify-between gap-3">
           <dt className="text-ink-2">{quote?.pickup ? "Retrait sur place" : `Livraison${quote?.shippingZone ? ` · ${quote.shippingZone}` : ""}`}</dt>
           <dd className="text-right font-semibold">

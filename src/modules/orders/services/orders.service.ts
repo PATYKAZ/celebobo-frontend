@@ -41,6 +41,7 @@ export const ordersService = {
         paymentMethod: PAYMENT_TO_API[input.paymentMethod],
         couponCode: input.couponCode || null,
         points: input.points && input.points > 0 ? input.points.toFixed(2) : "0",
+        storeCredit: input.storeCredit && input.storeCredit > 0 ? input.storeCredit.toFixed(2) : "0",
         addressId: input.addressId ?? null,
         address: input.addressId ? null : (input.address ?? null),
         note: input.note ?? "",

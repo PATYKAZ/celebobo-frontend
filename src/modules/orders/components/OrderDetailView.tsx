@@ -209,6 +209,7 @@ export function OrderDetailView({ number }: { number: string }) {
               {order.subtotal != null && <div className="flex justify-between"><dt className="text-ink-2">Sous-total</dt><dd className="font-semibold">{formatPrice(order.subtotal)}</dd></div>}
               {!!order.discount && <div className="flex justify-between"><dt className="text-ink-2">Code promo{order.couponCode ? ` (${order.couponCode})` : ""}</dt><dd className="font-semibold text-danger">-{formatPrice(order.discount)}</dd></div>}
               {!!order.points && <div className="flex justify-between"><dt className="text-ink-2">Points de fidélité utilisés</dt><dd className="font-semibold text-danger">-{formatPrice(order.points)}</dd></div>}
+              {!!order.storeCredit && <div className="flex justify-between"><dt className="text-ink-2">Avoir utilisé</dt><dd className="font-semibold text-danger">-{formatPrice(order.storeCredit)}</dd></div>}
               {order.shippingFee != null && (
                 <div className="flex justify-between gap-3">
                   <dt className="text-ink-2">{order.pickup ? "Retrait sur place" : `Livraison${order.shippingZone ? ` · ${order.shippingZone}` : ""}`}</dt>

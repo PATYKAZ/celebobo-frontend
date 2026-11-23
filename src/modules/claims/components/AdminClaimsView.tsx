@@ -107,6 +107,7 @@ function Actions({ claim }: { claim: Claim }) {
         <Select label="Solution" value={outcome} onChange={(e) => setOutcome(e.target.value as ClaimOutcome)} options={choices.map((o) => ({ value: o, label: OUTCOME_LABEL[o] }))} />
         {outcome === "exchange" && <Input label="N° de série / IMEI du produit donné en échange" value={newSerial} onChange={(e) => setNewSerial(e.target.value)} />}
         {outcome === "not_covered" && <Input label="Devis de réparation payante ($, facultatif)" type="number" min="0" step="0.01" value={quote} onChange={(e) => setQuote(e.target.value)} />}
+        {outcome === "store_credit" && <p className="text-[12px] leading-[17px] text-ink-3">L&apos;unité est retournée sur la commande ; ce que le client avait payé devient un avoir valable 6 mois, livraison comprise.</p>}
         {outcome === "refund" && <p className="text-[12px] leading-[17px] text-ink-3">L&apos;unité est retournée sur la commande : stock, points et remboursement dû suivent, à verser sous 15 jours.</p>}
         <Textarea label="Note du diagnostic" value={note} onChange={(e) => setNote(e.target.value)} className="min-h-[70px]" />
         <Button fullWidth upper={false} loading={steps.diagnose.isPending} onClick={() => steps.diagnose.mutate({ covered, outcome, note, newSerial, quote: quote || null }, { onSuccess: ok("Diagnostic enregistré"), onError: fail })}>Enregistrer le diagnostic</Button>

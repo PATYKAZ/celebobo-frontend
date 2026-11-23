@@ -76,6 +76,8 @@ export const ENDPOINTS = {
     dataExport: "/me/data-export/",
     dataExportDownload: (id: string) => `/me/data-export/${id}/download/`, // ZIP (JSON + HTML), lien valable 48 h
   },
+  /** Avoir (dollars, 6 mois, livraison comprise) : solde, prochaine expiration, mouvements */
+  storeCredit: "/me/store-credit/",
   /** Réclamations (politique de garantie) : le client sur ses commandes livrées, l'équipe les traite */
   claims: {
     claimable: (orderId: number) => `/me/orders/${orderId}/claimable/`, // GET : ce que chaque article peut encore réclamer
