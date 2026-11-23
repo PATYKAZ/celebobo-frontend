@@ -21,8 +21,8 @@ import type { UserRole } from "@/modules/auth/types";
 import { ConfirmDialog } from "../../ui/ConfirmDialog";
 import { DataTable, type Column } from "../../ui/DataTable";
 import { PageHeader } from "../../ui/PageHeader";
-import { useSetUserActive, useSetUserRole, useUsers } from "../hooks/useUsers";
-import { ROLES, ROLE_DESCRIPTION, type UserRow } from "../types";
+import { useOnline, useSaveUser, useSendPasswordReset, useSetUserActive, useSetUserRole, useUsers } from "../hooks/useUsers";
+import { ROLES, ROLE_DESCRIPTION, type UserFormValues, type UserRow } from "../types";
 
 const PAGE_SIZE = 10;
 const ROLE_TONE: Record<UserRole, "gray" | "green" | "blue" | "orange"> = { client: "gray", revendeur: "green", mukubwa: "blue", admin: "orange" };
@@ -80,6 +80,59 @@ function RoleModal({ user, onClose }: { user: UserRow | null; onClose: () => voi
   );
 }
 
+const EMPTY: UserFormValues = { firstName: "", lastName: "", email: "", phone: "", role: "mukubwa" };
+
+/** Nouveau compte (invitation par e-mail) ou modification des coordonnées. */
+function UserFormModal({ user, onClose }: { user: UserRow | null; onClose: () => void }) {
+  const [v, setV] = useState<UserFormValues>(() => (user ? { firstName: user.firstName, lastName: user.lastName, email: user.email, phone: user.phone ?? "", role: user.role } : EMPTY));
+  const save = useSaveUser();
+  const reset = useSendPasswordReset();
+  const set = <K extends keyof UserFormValues>(k: K, value: UserFormValues[K]) => setV((s) => ({ ...s, [k]: value }));
+  const submit = () =>
+    save.mutate(
+      { id: user?.id ?? null, values: v },
+      {
+        onSuccess: () => {
+          toast.success(user ? "Compte modifié" : "Compte créé", user ? v.email : `${v.email} reçoit une invitation pour choisir son mot de passe.`);
+          onClose();
+        },
+        onError: (e) => toast.error("Enregistrement impossible", getErrorMessage(e)),
+      },
+    );
+  return (
+    <>
+      <div className="grid gap-3">
+        <div className="grid gap-3 sm:grid-cols-2">
+          <Input label="Prénom" value={v.firstName} onChange={(e) => set("firstName", e.target.value)} />
+          <Input label="Nom" value={v.lastName} onChange={(e) => set("lastName", e.target.value)} />
+        </div>
+        <Input label="E-mail" type="email" value={v.email} onChange={(e) => set("email", e.target.value)} />
+        <Input label="Téléphone" type="tel" placeholder="+243 …" value={v.phone} onChange={(e) => set("phone", e.target.value)} />
+        {!user && <Select label="Rôle" value={v.role} onChange={(e) => set("role", e.target.value as UserRole)} options={ROLES.map((r) => ({ value: r, label: ROLE_LABEL[r] }))} />}
+        {!user && <p className="text-[12px] leading-[18px] text-ink-3">Le compte reçoit un e-mail d&apos;invitation pour choisir son mot de passe.</p>}
+        {user && (
+          <div className="flex flex-wrap items-center justify-between gap-2 rounded-box bg-chip p-3 text-[12px] leading-[18px] text-ink-2">
+            <span>Mot de passe oublié ? Envoyez-lui un lien pour en choisir un nouveau.</span>
+            <Button
+              size="xs"
+              variant="outline"
+              upper={false}
+              loading={reset.isPending}
+              onClick={() => reset.mutate(user.id, { onSuccess: () => toast.success("Lien envoyé", `${user.email} reçoit un lien pour choisir un nouveau mot de passe.`), onError: (e) => toast.error("Envoi impossible", getErrorMessage(e)) })}
+            >
+              Envoyer le lien
+            </Button>
+          </div>
+        )}
+      </div>
+      <div className="mt-5 grid grid-cols-2 gap-3">
+        <Button variant="chip" upper={false} onClick={onClose}>Annuler</Button>
+        <Button upper={false} loading={save.isPending} disabled={!v.firstName.trim() || !v.email.trim()} onClick={submit}>{user ? "Enregistrer" : "Créer le compte"}</Button>
+      </div>
+    </>
+  );
+}
+
 function UsersContent() {
   const { user: me } = useAuth();
   const [search, setSearch] = useState("");
@@ -91,6 +144,8 @@ function UsersContent() {
   const debounced = useDebounce(search, 300);
   const { data, isLoading } = useUsers({ search: debounced, role, active, page, pageSize: PAGE_SIZE });
   const setActiveMut = useSetUserActive();
+  const [formFor, setFormFor] = useState<UserRow | null | "new">(null);
+  const online = useOnline((data?.results ?? []).map((u) => u.id)).data;
 
   const confirmToggle = () => {
     if (!toggleFor) return;
@@ -114,7 +169,11 @@ function UsersContent() {
         <div className="flex items-center gap-3">
           <Avatar src={u.avatar} name={u.name} size={38} />
           <div className="min-w-0">
-            <p className="truncate font-semibold leading-[18px]">{u.name}{u.id === me?.id && <span className="ml-1.5 text-[11px] font-bold text-primary">(vous)</span>}</p>
+            <p className="truncate font-semibold leading-[18px]">
+              {u.name}
+              {u.id === me?.id && <span className="ml-1.5 text-[11px] font-bold text-primary">(vous)</span>}
+              {online?.has(u.id) && <span className="ml-1.5 inline-flex items-center gap-1 text-[11px] font-bold text-primary"><span className="size-2 rounded-full bg-primary" aria-hidden />en ligne</span>}
+            </p>
             <p className="truncate text-[12px] text-ink-3">{u.email}</p>
           </div>
         </div>
@@ -122,8 +181,8 @@ function UsersContent() {
     },
     { key: "role", header: "Rôle", cell: (u) => <StatusDot tone={ROLE_TONE[u.role]}>{ROLE_LABEL[u.role]}</StatusDot> },
     { key: "phone", header: "Téléphone", hideBelow: "lg", cell: (u) => <span className="text-ink-2">{u.phone ?? "—"}</span> },
-    { key: "inv", header: "Invité par", hideBelow: "lg", mobile: "hide", cell: (u) => <span className="text-ink-2">{u.invitedBy?.name ?? "—"}</span> },
-    { key: "code", header: "Code", hideBelow: "xl", mobile: "hide", cell: (u) => (u.codeRevendeur ? <strong className="tracking-widest">{u.codeRevendeur}</strong> : <span className="text-ink-3">—</span>) },
+    { key: "inv", header: "Invité par", hideBelow: "2xl", mobile: "hide", cell: (u) => <span className="text-ink-2">{u.invitedBy?.name ?? "—"}</span> },
+    { key: "code", header: "Code", hideBelow: "2xl", mobile: "hide", cell: (u) => (u.codeRevendeur ? <strong className="tracking-widest">{u.codeRevendeur}</strong> : <span className="text-ink-3">—</span>) },
     { key: "joined", header: "Inscrit le", hideBelow: "md", cell: (u) => <span className="text-ink-2">{formatDate(u.joinedAt)}</span> },
     { key: "st", header: "Statut", hideBelow: "sm", cell: (u) => <StatusDot tone={u.active ? "green" : "gray"}>{u.active ? "Actif" : "Désactivé"}</StatusDot> },
     {
@@ -134,6 +193,7 @@ function UsersContent() {
         const self = u.id === me?.id;
         return (
           <div className="flex justify-end gap-2">
+            <Button size="xs" variant="chip" upper={false} className="max-md:min-h-11 max-md:px-5" onClick={() => setFormFor(u)}>Modifier</Button>
             <Button size="xs" variant="chip" upper={false} className="max-md:min-h-11 max-md:px-5" disabled={self} onClick={() => setRoleFor(u)} title={self ? "Vous ne pouvez pas modifier votre propre rôle" : undefined}>Rôle</Button>
             <Button size="xs" variant={u.active ? "ghost" : "outline"} upper={false} className="max-md:min-h-11 max-md:px-5" disabled={self} onClick={() => setToggleFor(u)}>{u.active ? "Désactiver" : "Activer"}</Button>
           </div>
@@ -146,7 +206,7 @@ function UsersContent() {
 
   return (
     <>
-      <PageHeader title="Utilisateurs & rôles" description="Gérez les comptes, les rôles (client, revendeur, responsable, administrateur) et l'accès au back-office." />
+      <PageHeader title="Utilisateurs & rôles" description="Gérez les comptes, les rôles (client, revendeur, responsable, administrateur) et l'accès au back-office." actions={<Button upper={false} onClick={() => setFormFor("new")}>Nouveau compte</Button>} />
       <Block pad="none">
         <div className="flex flex-col gap-3 p-3 sm:flex-row sm:flex-wrap sm:items-end sm:gap-4 sm:p-5 sm:px-[30px]">
           <Tabs variant="pill" tabs={tabs} value={role} onChange={(r) => { setRole(r); setPage(1); }} />
@@ -166,6 +226,9 @@ function UsersContent() {
         />
       </Block>
       <RoleModal user={roleFor} onClose={() => setRoleFor(null)} />
+      <Modal open={formFor !== null} onClose={() => setFormFor(null)} title={formFor === "new" ? "Nouveau compte" : formFor ? `Modifier ${formFor.name}` : "Compte"}>
+        {formFor !== null && <UserFormModal key={formFor === "new" ? "new" : formFor.id} user={formFor === "new" ? null : formFor} onClose={() => setFormFor(null)} />}
+      </Modal>
       <ConfirmDialog
         open={!!toggleFor}
         onClose={() => setToggleFor(null)}

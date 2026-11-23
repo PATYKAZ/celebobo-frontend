@@ -11,7 +11,7 @@ import { BottomSheet } from "@/shared/ui/BottomSheet";
 import { Pagination } from "@/shared/ui/Pagination";
 import { useFlatCategories } from "@/modules/categories/hooks/useCategories";
 import { PAGE_SIZE, useProductFilters, type LockedFilters } from "../hooks/useProductFilters";
-import { useProducts } from "../hooks/useProducts";
+import { useProductFacets, useProducts } from "../hooks/useProducts";
 import { ProductFilters } from "./ProductFilters";
 import { ProductGrid } from "./ProductGrid";
 import { ProductListItem } from "./ProductListItem";
@@ -28,6 +28,7 @@ export function ProductListView({ locked, emptyExtra }: Props) {
   const { state, params, set, reset, activeCount } = useProductFilters(locked);
   const { data: categories } = useFlatCategories();
   const { data, isLoading, isFetching } = useProducts(params);
+  const { data: facets } = useProductFacets(params);
   const [view, setView] = useState<ViewMode>("grid");
   const [drawer, setDrawer] = useState(false);
 
@@ -35,7 +36,7 @@ export function ProductListView({ locked, emptyExtra }: Props) {
   const pageCount = Math.ceil((total ?? 0) / PAGE_SIZE);
   const hideCats = locked?.category !== undefined;
   const filters = (
-    <ProductFilters state={state} categories={categories} hideCategories={hideCats} onChange={set} onReset={reset} activeCount={activeCount} />
+    <ProductFilters state={state} categories={categories} facets={facets} hideCategories={hideCats} onChange={set} onReset={reset} activeCount={activeCount} />
   );
 
   return (

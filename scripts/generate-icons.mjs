@@ -9,8 +9,10 @@
  */
 import { readFileSync, readdirSync, writeFileSync, mkdirSync, rmSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const ROOT = new URL("..", import.meta.url).pathname;
+// fileURLToPath : chemin valable aussi sous Windows (URL.pathname y donne « /C:/… »)
+const ROOT = fileURLToPath(new URL("..", import.meta.url));
 const SRC = join(ROOT, "src");
 const OUT = join(SRC, "shared/ui/icons");
 const PKG = join(ROOT, "node_modules/iconsax-reactjs/dist/esm");

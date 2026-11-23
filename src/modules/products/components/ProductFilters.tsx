@@ -7,10 +7,13 @@ import { Checkbox } from "@/shared/ui/Form";
 import { Button } from "@/shared/ui/Button";
 import type { Category } from "@/modules/categories/types";
 import { PRICE_MAX, type ProductFilterState } from "../hooks/useProductFilters";
+import type { ProductFacets } from "../services/products.service";
 
 interface Props {
   state: ProductFilterState;
   categories?: Category[];
+  /** Compteurs pour les filtres en cours ; absents, la liste montre le nombre total d'articles par catégorie. */
+  facets?: ProductFacets;
   /** Masque le groupe catégories (page catégorie). */
   hideCategories?: boolean;
   onChange: (patch: Partial<ProductFilterState>) => void;
@@ -81,7 +84,14 @@ function PriceRange({ min, max, onCommit }: { min: number | null; max: number | 
   );
 }
 
-export function ProductFilters({ state, categories, hideCategories, onChange, onReset, activeCount }: Props) {
+/** Articles d'une catégorie pour les filtres en cours : les siens et ceux de ses sous-catégories. */
+function categoryCount(c: Category, all: Category[], facets: ProductFacets): number {
+  const own = facets.categories[c.slug] ?? 0;
+  return own + all.filter((child) => child.parent?.slug === c.slug).reduce((sum, child) => sum + (facets.categories[child.slug] ?? 0), 0);
+}
+
+export function ProductFilters({ state, categories, facets, hideCategories, onChange, onReset, activeCount }: Props) {
+  const formatPrice = useFormatPrice();
   return (
     <div>
       {!hideCategories && (
@@ -104,7 +114,7 @@ export function ProductFilters({ state, categories, hideCategories, onChange, on
                     className={cn("flex w-full items-center justify-between rounded-md px-2 py-2.5 text-[14px] transition-colors hover:bg-chip active:bg-chip sm:py-1.5 sm:text-[13px]", active && "bg-primary-50 font-bold text-primary")}
                   >
                     <span className={cn("truncate", c.parent && "pl-3 text-ink-2")}>{c.parent && <span aria-hidden>↳ </span>}{c.name}</span>
-                    <span className={cn("ml-2 rounded-full px-2 text-[11px]", active ? "bg-primary text-white" : "bg-chip text-ink-2")}>{c.productsCount}</span>
+                    <span className={cn("ml-2 rounded-full px-2 text-[11px]", active ? "bg-primary text-white" : "bg-chip text-ink-2")}>{facets ? categoryCount(c, categories, facets) : c.productsCount}</span>
                   </button>
                 </li>
               );
@@ -115,12 +125,15 @@ export function ProductFilters({ state, categories, hideCategories, onChange, on
 
       <Group title="Prix">
         <PriceRange min={state.minPrice} max={state.maxPrice} onCommit={(minPrice, maxPrice) => onChange({ minPrice, maxPrice })} />
+        {facets?.minPrice != null && facets.maxPrice != null && (
+          <p className="mt-2 text-[12px] text-ink-3">Prix des articles trouvés : {formatPrice(facets.minPrice)} – {formatPrice(facets.maxPrice)}</p>
+        )}
       </Group>
 
       <Group title="Disponibilité">
         <div className="flex flex-col gap-4 sm:gap-3">
-          <Checkbox label="En stock uniquement" checked={state.inStock} onChange={(e) => onChange({ inStock: e.target.checked })} />
-          <Checkbox label="En promotion" checked={state.onSale} onChange={(e) => onChange({ onSale: e.target.checked })} />
+          <Checkbox label={facets ? `En stock uniquement (${facets.inStock})` : "En stock uniquement"} checked={state.inStock} onChange={(e) => onChange({ inStock: e.target.checked })} />
+          <Checkbox label={facets ? `En promotion (${facets.onSale})` : "En promotion"} checked={state.onSale} onChange={(e) => onChange({ onSale: e.target.checked })} />
         </div>
       </Group>
 

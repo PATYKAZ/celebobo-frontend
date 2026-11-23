@@ -5,6 +5,8 @@ import type { UserRow } from "../types";
 /** Ligne utilisateur du back-office (après camelCase). */
 export interface UserRowDto {
   id: number;
+  firstName: string;
+  lastName: string;
   name: string;
   email: string;
   phoneNumber: string | null;
@@ -20,6 +22,8 @@ export interface UserRowDto {
 
 export const toUserRow = (dto: UserRowDto): UserRow => ({
   id: dto.id,
+  firstName: dto.firstName ?? "",
+  lastName: dto.lastName ?? "",
   name: dto.name,
   email: dto.email,
   phone: dto.phoneNumber,

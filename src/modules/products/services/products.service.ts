@@ -12,9 +12,41 @@ import {
   type SuggestionDto,
 } from "./products.mapper";
 
+interface FacetsDto {
+  categories: { value: string; label: string; count: number }[];
+  minPrice: string | null;
+  maxPrice: string | null;
+  inStock: number;
+  outOfStock: number;
+  onSale: number;
+}
+
+/** Compteurs des filtres de la liste (GET /products/facets/). */
+export interface ProductFacets {
+  /** nombre de produits par slug de catégorie (catégorie directe du produit) */
+  categories: Record<string, number>;
+  minPrice: number | null;
+  maxPrice: number | null;
+  inStock: number;
+  onSale: number;
+}
+
 export const productsService = {
   list(params: ProductListParams = {}): Promise<Paginated<Product>> {
     return api.page<ProductCardDto, Product>(ENDPOINTS.products.list, { params: { ...params } }, toProduct);
+  },
+
+  /** Compteurs des filtres pour la recherche en cours (le filtre catégorie n'entre pas dans les comptes par catégorie). */
+  async facets(params: ProductListParams = {}): Promise<ProductFacets> {
+    const { page: _page, pageSize: _size, ordering: _ordering, ...filters } = params;
+    const dto = await api.get<FacetsDto>(ENDPOINTS.products.facets, { params: { ...filters } });
+    return {
+      categories: Object.fromEntries(dto.categories.map((c) => [c.value, c.count])),
+      minPrice: dto.minPrice == null ? null : Number(dto.minPrice),
+      maxPrice: dto.maxPrice == null ? null : Number(dto.maxPrice),
+      inStock: dto.inStock,
+      onSale: dto.onSale,
+    };
   },
 
   async detail(slug: string): Promise<Product> {

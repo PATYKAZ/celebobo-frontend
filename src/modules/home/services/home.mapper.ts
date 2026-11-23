@@ -71,8 +71,8 @@ export function toSlide(b: HomeBanner, id: number): HeroSlide {
 export interface DealDto {
   id: number;
   product: ProductDetailDto;
-  /** pas encore renvoyé par l'API (cf. docs/INTEGRATION_STATUS.md) : la variante en offre est retrouvée par son prix */
-  variantId?: number | null;
+  /** variante en offre ; null : l'offre porte sur tout le produit */
+  variantId: number | null;
   dealPrice: string;
   regularPrice: string;
   startsAt: string;
@@ -85,8 +85,7 @@ export interface DealDto {
 export function toDeal(dto: DealDto): HomeDeal {
   const product = toProduct(dto.product);
   const dealPrice = money(dto.dealPrice);
-  // offre sur une variante : c'est la seule à porter le prix de l'offre
-  const variant = product.variants.find((v) => (dto.variantId != null ? v.id === dto.variantId : v.price === dealPrice)) ?? null;
+  const variant = dto.variantId != null ? (product.variants.find((v) => v.id === dto.variantId) ?? null) : null;
   return {
     id: dto.id,
     product,

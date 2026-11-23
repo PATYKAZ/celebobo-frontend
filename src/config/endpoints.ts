@@ -331,7 +331,11 @@ export const ENDPOINTS = {
       events: "/bo/audit-logs/events/",
       objectTypes: "/bo/audit-logs/object-types/",
     },
-    presence: "/bo/presence/",
+    presence: "/bo/presence/", // GET ?ids=1&ids=2 → { online: [ids connectés] }
+    assistant: {
+      logs: "/bo/assistant/logs/", // GET ?search=&sentiment=&topic=&date_from=&date_to=
+      reindex: "/bo/embeddings/reindex/", // POST (admin) → 202, reconstruction en arrière-plan
+    },
     me: {
       availability: "/bo/me/availability/",
       referral: "/bo/me/referral/",
