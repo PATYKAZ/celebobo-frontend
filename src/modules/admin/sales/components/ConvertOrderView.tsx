@@ -124,7 +124,7 @@ function ResultCard({ co, active, onSelect }: { co: ConvertibleOrder; active: bo
       disabled={!co.convertible}
       aria-pressed={active}
       className={cn(
-        "flex w-full min-w-0 items-center gap-3 rounded-box border p-3 text-left transition-all active:scale-[0.99]",
+        "flex w-full min-w-0 items-center gap-3 rounded-box border p-3 text-left transition active:scale-[0.99]",
         co.convertible ? "hover:border-primary hover:bg-primary-50" : "cursor-not-allowed bg-page/50 opacity-70",
         active ? "border-primary bg-primary-50" : "border-line-3",
       )}

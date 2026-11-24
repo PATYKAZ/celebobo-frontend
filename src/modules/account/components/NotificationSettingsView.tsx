@@ -22,7 +22,7 @@ function ToggleRow({ label, checked, onChange, children }: { label: string; chec
     <button type="button" role="switch" aria-checked={checked} aria-label={label} onClick={() => onChange(!checked)} className="flex min-h-12 w-full items-center justify-between gap-3 rounded-md text-left active:bg-chip sm:min-h-0 sm:w-auto sm:justify-center sm:active:bg-transparent">
       <span className="text-sm font-medium text-ink-2 sm:hidden">{children}</span>
       <span className={`relative h-7 w-12 shrink-0 rounded-full transition-colors sm:h-6 sm:w-11 ${checked ? "bg-primary" : "bg-line"}`}>
-        <span className={`absolute top-0.5 size-6 rounded-full bg-surface transition-all sm:size-5 ${checked ? "left-[22px] sm:left-[22px]" : "left-0.5"}`} />
+        <span className={`absolute top-0.5 size-6 rounded-full bg-surface transition sm:size-5 ${checked ? "left-[22px] sm:left-[22px]" : "left-0.5"}`} />
       </span>
     </button>
   );

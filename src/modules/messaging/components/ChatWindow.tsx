@@ -379,7 +379,7 @@ export function ChatWindow({ conversationId, onBack, className }: Props) {
               }}
             />
             {/* mobile : « + » ouvre la feuille d'actions */}
-            <button type="button" onClick={() => setActions(true)} aria-label="Plus d'actions" className="grid size-12 shrink-0 place-items-center rounded-full bg-chip text-ink transition-all active:scale-90 sm:hidden">
+            <button type="button" onClick={() => setActions(true)} aria-label="Plus d'actions" className="grid size-12 shrink-0 place-items-center rounded-full bg-chip text-ink transition active:scale-90 sm:hidden">
               <span className="text-xl font-light leading-none">+</span>
             </button>
             {/* ≥ sm : boutons directs */}

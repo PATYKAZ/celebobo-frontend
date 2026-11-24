@@ -60,7 +60,7 @@ export function ApplicationForm() {
     <AnimatePresence mode="wait">
       {submit.data ? (
         <motion.div key="ok" initial={{ opacity: 0, scale: 0.94 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center py-6 text-center sm:py-10">
-          <motion.span initial={{ scale: 0, rotate: -90 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: "spring", stiffness: 300, damping: 12 }} className="grid size-20 place-items-center rounded-full bg-primary text-white"><TickCircle size={42} variant="Bold" /></motion.span>
+          <motion.span initial={{ scale: 0.5, rotate: -90 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: "spring", stiffness: 300, damping: 12 }} className="grid size-20 place-items-center rounded-full bg-primary text-white"><TickCircle size={42} variant="Bold" /></motion.span>
           <h3 className="mt-5 text-xl">Candidature envoyée !</h3>
           <p className="mt-2 max-w-[380px] text-sm text-ink-2">Un responsable étudie votre dossier et vous contacte sous 48 h au <strong className="text-ink">{form.phone}</strong>.</p>
           <dl className="mt-6 w-full max-w-[360px] divide-y divide-line-3 rounded-box bg-page/60 text-left text-sm">

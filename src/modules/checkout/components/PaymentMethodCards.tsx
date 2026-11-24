@@ -32,7 +32,7 @@ export function PaymentMethodCards({ value, onChange, methods }: Props) {
             role="radio"
             aria-checked={selected}
             onClick={() => onChange(m.value)}
-            className={cn("relative flex min-h-[72px] items-center gap-3 rounded-box border-2 p-3.5 text-left transition-all duration-300 active:scale-[0.99] sm:p-4", selected ? "border-primary bg-primary-50" : "border-line-3 bg-surface hover:border-primary/50")}
+            className={cn("relative flex min-h-[72px] items-center gap-3 rounded-box border-2 p-3.5 text-left transition duration-300 active:scale-[0.99] sm:p-4", selected ? "border-primary bg-primary-50" : "border-line-3 bg-surface hover:border-primary/50")}
           >
             <span className={cn("grid size-11 shrink-0 place-items-center rounded-full", b.chip)}>
               {b.icon === "mobile" ? <Mobile size={20} variant="Bold" /> : <Money size={20} variant="Bold" />}
@@ -42,7 +42,7 @@ export function PaymentMethodCards({ value, onChange, methods }: Props) {
               <span className="block text-xs text-ink-3">{b.hint}</span>
             </span>
             {selected && (
-              <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 500, damping: 18 }} className="absolute right-3 top-3 text-primary">
+              <motion.span initial={{ scale: 0.5 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 500, damping: 18 }} className="absolute right-3 top-3 text-primary">
                 <TickCircle size={20} variant="Bold" />
               </motion.span>
             )}

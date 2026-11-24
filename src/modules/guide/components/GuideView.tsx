@@ -38,7 +38,7 @@ function Stepper({ steps }: { steps: Step[] }) {
         const Icon = ICONS[i % ICONS.length];
         return (
           <li key={s.title} className="relative">
-            <motion.span initial={{ scale: 0 }} whileInView={{ scale: 1 }} viewport={{ once: true, amount: 0.8 }} transition={{ type: "spring", stiffness: 300, damping: 15 }} className="absolute left-[-60px] top-0 grid size-11 place-items-center rounded-full bg-primary text-white ring-4 ring-white sm:-left-20 sm:size-[72px]">
+            <motion.span initial={{ scale: 0.5 }} whileInView={{ scale: 1 }} viewport={{ once: true, amount: 0.8 }} transition={{ type: "spring", stiffness: 300, damping: 15 }} className="absolute left-[-60px] top-0 grid size-11 place-items-center rounded-full bg-primary text-white ring-4 ring-white sm:-left-20 sm:size-[72px]">
               <Icon size={22} variant="Bold" />
             </motion.span>
             <Reveal direction="up" className="rounded-box border border-line-3 p-4 transition-colors hover:border-primary sm:p-6">
@@ -83,7 +83,7 @@ export function GuideView() {
         <RevealGroup className="mt-4 grid gap-3 sm:mt-6 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
           {settings.paymentMethods.map((code) => (
             <RevealItem key={code}>
-              <div className="group h-full rounded-box border border-line-3 p-4 transition-all sm:p-5 duration-300 hover:-translate-y-1.5 hover:border-transparent hover:bg-chip">
+              <div className="group h-full rounded-box border border-line-3 p-4 transition sm:p-5 duration-300 hover:-translate-y-1.5 hover:border-transparent hover:bg-chip">
                 <span className={cn("inline-block rounded-md px-3 py-1.5 text-sm font-bold transition-transform duration-300 group-hover:scale-110", paymentMethod(code).cls)}>{paymentMethod(code).label}</span>
                 {PAYMENT_TEXT[code] && <p className="mt-3 text-sm text-ink-2">{PAYMENT_TEXT[code]}</p>}
               </div>

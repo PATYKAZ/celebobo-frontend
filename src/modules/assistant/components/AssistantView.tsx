@@ -31,7 +31,7 @@ export function ProductSuggestion({ product, index }: { product: Product; index:
   const pr = getPricing(product);
   return (
     <motion.div initial={{ opacity: 0, y: 14, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ delay: 0.15 * index + 0.2 }}>
-      <Link href={ROUTES.product(product.slug)} className="group flex w-[200px] shrink-0 flex-col overflow-hidden rounded-box border border-line-3 bg-surface transition-all hover:-translate-y-1 hover:border-primary">
+      <Link href={ROUTES.product(product.slug)} className="group flex w-[200px] shrink-0 flex-col overflow-hidden rounded-box border border-line-3 bg-surface transition hover:-translate-y-1 hover:border-primary">
         <span className="relative block aspect-4/3 overflow-hidden bg-page">
           {product.image && <Image src={product.image} alt={product.name} fill sizes="200px" className="object-cover transition-transform duration-500 group-hover:scale-110" />}
           {pr.onSale && <span className="absolute left-2 top-2 rounded-sm bg-danger px-1.5 py-0.5 text-xs font-bold text-white">-{pr.percent}%</span>}

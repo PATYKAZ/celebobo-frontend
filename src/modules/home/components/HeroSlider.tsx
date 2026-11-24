@@ -81,7 +81,7 @@ function Slide({ slide, active }: { slide: HeroSlide; active: boolean }) {
           </motion.ul>
         )}
         <motion.div variants={item} className="mt-4 sm:mt-5">
-          <Link href={slide.cta.href} className={cn("inline-flex h-11 items-center rounded-box px-5 text-xs font-semibold transition-all active:scale-95 sm:h-[34px] sm:px-4 sm:font-medium", CTA[slide.cta.variant])}>
+          <Link href={slide.cta.href} className={cn("inline-flex h-11 items-center rounded-box px-5 text-xs font-semibold transition active:scale-95 sm:h-[34px] sm:px-4 sm:font-medium", CTA[slide.cta.variant])}>
             {slide.cta.label}
           </Link>
         </motion.div>
@@ -119,7 +119,7 @@ export function HeroSlider({ slides, className }: { slides?: HeroSlide[]; classN
       <div className="absolute inset-x-0 bottom-3 z-20 flex justify-center gap-0.5 sm:hidden">
         {slides.map((s, i) => (
           <button key={s.id} aria-label={`Slide ${i + 1}`} aria-current={i === index} onClick={() => swiper?.slideToLoop(i)} className="touch-target relative grid h-6 w-6 place-items-center">
-            <span className={cn("h-2 rounded-full bg-surface transition-all duration-300", i === index ? "w-6 opacity-100" : "w-2 opacity-50")} />
+            <span className={cn("h-2 rounded-full bg-surface transition duration-300", i === index ? "w-6 opacity-100" : "w-2 opacity-50")} />
           </button>
         ))}
       </div>

@@ -62,10 +62,10 @@ export function ShippingQuoteCard({ meta, canRespond }: Props) {
           <>
             <p className="text-xs text-ink-2">Une fois accepté, ce montant s&apos;ajoute à votre commande et ne peut plus changer.</p>
             <div className="grid grid-cols-2 gap-2">
-              <button onClick={() => answer(true)} disabled={respond.isPending} className="inline-flex h-12 items-center justify-center gap-1.5 rounded-box bg-primary text-sm font-bold text-white transition-all hover:bg-primary-dark active:scale-95 disabled:opacity-60 sm:h-10">
+              <button onClick={() => answer(true)} disabled={respond.isPending} className="inline-flex h-12 items-center justify-center gap-1.5 rounded-box bg-primary text-sm font-bold text-white transition hover:bg-primary-dark active:scale-95 disabled:opacity-60 sm:h-10">
                 <TickCircle size={15} variant="Bold" /> Accepter
               </button>
-              <button onClick={() => answer(false)} disabled={respond.isPending} className="inline-flex h-12 items-center justify-center gap-1.5 rounded-box bg-chip text-sm font-bold transition-all hover:bg-danger hover:text-white active:scale-95 disabled:opacity-60 sm:h-10">
+              <button onClick={() => answer(false)} disabled={respond.isPending} className="inline-flex h-12 items-center justify-center gap-1.5 rounded-box bg-chip text-sm font-bold transition hover:bg-danger hover:text-white active:scale-95 disabled:opacity-60 sm:h-10">
                 <CloseCircle size={15} variant="Bold" /> Refuser
               </button>
             </div>

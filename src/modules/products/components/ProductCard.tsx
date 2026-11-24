@@ -51,7 +51,7 @@ export function ProductCard({ product, className, priority }: Props) {
               fill
               priority={priority}
               sizes="(min-width:1280px) 224px, (min-width:640px) 33vw, 60vw"
-              className={cn("object-cover transition-all duration-700 ease-out group-hover:scale-110", second && "group-hover:opacity-0")}
+              className={cn("object-cover transition duration-500 ease-out group-hover:scale-110", second && "group-hover:opacity-0")}
             />
           ) : (
             <div className="grid h-full place-items-center text-ink-3">
@@ -59,7 +59,7 @@ export function ProductCard({ product, className, priority }: Props) {
             </div>
           )}
           {second && (
-            <Image src={second} alt="" fill sizes="224px" className="object-cover opacity-0 transition-all duration-700 ease-out group-hover:scale-105 group-hover:opacity-100" />
+            <Image src={second} alt="" fill sizes="224px" className="object-cover opacity-0 transition duration-500 ease-out group-hover:scale-105 group-hover:opacity-100" />
           )}
         </Link>
 
@@ -89,7 +89,7 @@ export function ProductCard({ product, className, priority }: Props) {
         <button
           onClick={() => add(product)}
           disabled={!product.inStock}
-          className="absolute inset-x-2 bottom-2 hidden h-9 translate-y-[140%] items-center justify-center gap-2 rounded-md bg-primary text-xs font-semibold text-white opacity-0 transition-all duration-300 hover:bg-primary-dark group-hover:translate-y-0 group-hover:opacity-100 disabled:bg-ink-3 sm:flex"
+          className="absolute inset-x-2 bottom-2 hidden h-9 translate-y-[140%] items-center justify-center gap-2 rounded-md bg-primary text-xs font-semibold text-white opacity-0 transition duration-300 hover:bg-primary-dark group-hover:translate-y-0 group-hover:opacity-100 disabled:bg-ink-3 sm:flex"
         >
           <Bag2 size={15} variant="Bold" /> {product.inStock ? "Ajouter" : "Indisponible"}
         </button>

@@ -103,14 +103,14 @@ function DealCard({ deal }: { deal: HomeDeal }) {
       <div className="flex min-w-0 flex-col-reverse gap-3 sm:flex-row">
         <div className="no-scrollbar flex shrink-0 gap-2.5 overflow-x-auto sm:w-[35px] sm:flex-col sm:gap-4 sm:overflow-visible">
           {gallery.map((g, i) => (
-            <button key={g} onClick={() => setActive(i)} aria-label={`Image ${i + 1}`} className={cn("relative h-16 w-16 shrink-0 overflow-hidden rounded-md border-2 transition-all sm:h-[60px] sm:w-[35px] sm:border", i === active ? "border-primary" : "border-transparent opacity-60 hover:opacity-100")}>
+            <button key={g} onClick={() => setActive(i)} aria-label={`Image ${i + 1}`} className={cn("relative h-16 w-16 shrink-0 overflow-hidden rounded-md border-2 transition sm:h-[60px] sm:w-[35px] sm:border", i === active ? "border-primary" : "border-transparent opacity-60 hover:opacity-100")}>
               <Image src={g} alt="" fill sizes="64px" className="object-cover" />
             </button>
           ))}
         </div>
         <div className="relative aspect-4/3 w-full min-w-0 sm:aspect-405/330 sm:flex-1">
           {gallery[active] && <ZoomImage src={gallery[active]} alt={product.name} />}
-          <button onClick={addToCart} disabled={!inStock} aria-label="Ajouter au panier" className="absolute right-3 top-3 z-10 grid size-11 place-items-center rounded-full bg-chip-2 transition-all hover:rotate-90 hover:bg-primary hover:text-white disabled:pointer-events-none disabled:opacity-40 sm:size-[30px]">
+          <button onClick={addToCart} disabled={!inStock} aria-label="Ajouter au panier" className="absolute right-3 top-3 z-10 grid size-11 place-items-center rounded-full bg-chip-2 transition hover:rotate-90 hover:bg-primary hover:text-white disabled:pointer-events-none disabled:opacity-40 sm:size-[30px]">
             <Add size={16} />
           </button>
         </div>

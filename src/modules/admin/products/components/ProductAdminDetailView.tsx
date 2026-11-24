@@ -111,7 +111,7 @@ function Content({ id }: { id: number }) {
             {p.images.length > 1 && (
               <div className="no-scrollbar mt-3 flex gap-2 overflow-x-auto">
                 {p.images.map((src, i) => (
-                  <button key={src} onClick={() => setActive(i)} aria-label={`Image ${i + 1}`} className={cn("relative size-16 shrink-0 overflow-hidden rounded-md border-2 transition-all active:scale-95", i === active ? "border-primary" : "border-transparent opacity-70 hover:opacity-100")}>
+                  <button key={src} onClick={() => setActive(i)} aria-label={`Image ${i + 1}`} className={cn("relative size-16 shrink-0 overflow-hidden rounded-md border-2 transition active:scale-95", i === active ? "border-primary" : "border-transparent opacity-70 hover:opacity-100")}>
                     <Image src={src} alt="" fill sizes="64px" className="object-cover" />
                   </button>
                 ))}

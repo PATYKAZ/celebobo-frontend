@@ -28,7 +28,7 @@ export function ProductListItem({ product }: { product: Product }) {
   return (
     <motion.article layout className="group grid grid-cols-[104px_minmax(0,1fr)] gap-x-3 gap-y-2 rounded-box py-3 transition-shadow hover:shadow-lg sm:flex sm:flex-row sm:gap-5 sm:p-4">
       <Link href={ROUTES.product(product.slug)} className="relative block aspect-square w-full shrink-0 self-start overflow-hidden rounded-box bg-page/40 sm:aspect-4/3 sm:w-[220px]">
-        {product.image && <Image src={product.image} alt={product.name} fill sizes="(min-width:640px) 220px, 104px" className="object-cover transition-transform duration-700 group-hover:scale-110" />}
+        {product.image && <Image src={product.image} alt={product.name} fill sizes="(min-width:640px) 220px, 104px" className="object-cover transition-transform duration-500 group-hover:scale-110" />}
         <div className="absolute left-2 top-2">{pricing.onSale && pricing.percent > 0 ? <DiscountBadge percent={pricing.percent} /> : isNew(product) ? <NewBadge /> : null}</div>
       </Link>
       <div className="flex min-w-0 flex-1 flex-col">

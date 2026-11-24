@@ -66,7 +66,7 @@ export function TabBar({ items, onMore, moreActive, moreBadge, hideOn }: Props) 
                 <Icon size={22} variant={active ? "Bold" : "Linear"} className="relative" />
                 <AnimatePresence>
                   {!!t.badge && (
-                    <motion.span key={t.badge} initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} className="absolute right-1.5 top-0 grid min-w-[17px] place-items-center rounded-full bg-danger px-1 text-xs font-bold text-white ring-2 ring-surface">
+                    <motion.span key={t.badge} initial={{ scale: 0.5 }} animate={{ scale: 1 }} exit={{ scale: 0 }} className="absolute right-1.5 top-0 grid min-w-[17px] place-items-center rounded-full bg-danger px-1 text-xs font-bold text-white ring-2 ring-surface">
                       {t.badge > 99 ? "99+" : t.badge}
                     </motion.span>
                   )}

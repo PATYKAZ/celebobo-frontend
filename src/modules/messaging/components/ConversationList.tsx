@@ -75,7 +75,7 @@ export function ConversationList({ activeId, onSelect, inbox }: Props) {
         {!inbox && (
           <button
             onClick={() => setCreating(true)}
-            className="inline-flex h-11 items-center gap-1.5 rounded-full bg-primary px-4 text-xs font-bold text-white transition-all hover:bg-primary-dark active:scale-95 disabled:opacity-60 lg:h-9 lg:px-3.5"
+            className="inline-flex h-11 items-center gap-1.5 rounded-full bg-primary px-4 text-xs font-bold text-white transition hover:bg-primary-dark active:scale-95 disabled:opacity-60 lg:h-9 lg:px-3.5"
           >
             <Add size={15} /> Nouvelle
           </button>
@@ -93,7 +93,7 @@ export function ConversationList({ activeId, onSelect, inbox }: Props) {
             <button
               onClick={() => setFilterSheet(true)}
               aria-label="Filtrer par revendeur"
-              className={cn("relative grid size-12 shrink-0 place-items-center rounded-box transition-all active:scale-95 lg:hidden", reseller ? "bg-primary text-white" : "bg-chip text-ink")}
+              className={cn("relative grid size-12 shrink-0 place-items-center rounded-box transition active:scale-95 lg:hidden", reseller ? "bg-primary text-white" : "bg-chip text-ink")}
             >
               <Filter size={20} variant={reseller ? "Bold" : "Linear"} />
               {reseller && <span className="absolute -right-1 -top-1 size-3 rounded-full bg-danger ring-2 ring-surface" />}

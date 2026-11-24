@@ -54,7 +54,7 @@ export function ResellerSheet({ open, onClose, options, value, onChange, onConfi
                 role="option"
                 aria-selected={selected}
                 onClick={() => onChange(String(o.id))}
-                className={cn("flex min-h-[64px] w-full items-center gap-3 rounded-box px-2.5 py-2 text-left transition-all active:scale-[0.985]", selected ? "bg-primary-50 ring-1 ring-primary/40" : "active:bg-chip")}
+                className={cn("flex min-h-[64px] w-full items-center gap-3 rounded-box px-2.5 py-2 text-left transition active:scale-[0.985]", selected ? "bg-primary-50 ring-1 ring-primary/40" : "active:bg-chip")}
               >
                 <span className="relative shrink-0">
                   <Avatar name={o.name} size={44} />

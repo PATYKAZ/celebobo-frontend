@@ -48,7 +48,7 @@ export function AddressPicker({ form, errors, set, onPick, cities = [], zone }: 
                 role="radio"
                 aria-checked={active}
                 onClick={() => set("pickup", m.pickup)}
-                className={cn("flex items-center gap-3 rounded-box border-2 p-3 text-left transition-all sm:p-4", active ? "border-primary bg-primary-50" : "border-line-3 hover:border-primary/50")}
+                className={cn("flex items-center gap-3 rounded-box border-2 p-3 text-left transition sm:p-4", active ? "border-primary bg-primary-50" : "border-line-3 hover:border-primary/50")}
               >
                 <m.icon size={22} variant="Bold" className={cn("shrink-0", active ? "text-primary" : "text-ink-3")} />
                 <span className="min-w-0">
@@ -90,7 +90,7 @@ export function AddressPicker({ form, errors, set, onPick, cities = [], zone }: 
               role="radio"
               aria-checked={active}
               onClick={() => onPick(a.id)}
-              className={cn("relative rounded-box border-2 p-4 text-left transition-all", active ? "border-primary bg-primary-50" : "border-line-3 hover:border-primary/50")}
+              className={cn("relative rounded-box border-2 p-4 text-left transition", active ? "border-primary bg-primary-50" : "border-line-3 hover:border-primary/50")}
             >
               {active && <TickCircle size={20} variant="Bold" className="absolute right-3 top-3 text-primary" />}
               <span className="flex items-center gap-2 text-sm font-bold">
@@ -110,7 +110,7 @@ export function AddressPicker({ form, errors, set, onPick, cities = [], zone }: 
           role="radio"
           aria-checked={isNew}
           onClick={() => onPick(null)}
-          className={cn("flex min-h-[72px] flex-col items-center justify-center gap-2 rounded-box border-2 border-dashed p-4 sm:min-h-[120px] text-sm font-bold transition-all", isNew ? "border-primary bg-primary-50 text-primary-dark" : "border-line hover:border-primary/60 hover:text-primary")}
+          className={cn("flex min-h-[72px] flex-col items-center justify-center gap-2 rounded-box border-2 border-dashed p-4 sm:min-h-[120px] text-sm font-bold transition", isNew ? "border-primary bg-primary-50 text-primary-dark" : "border-line hover:border-primary/60 hover:text-primary")}
         >
           <span className="grid size-10 place-items-center rounded-full bg-surface"><Add size={20} /></span>
           Nouvelle adresse

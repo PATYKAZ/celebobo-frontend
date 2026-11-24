@@ -86,7 +86,7 @@ export function ProductGallery({ product, activeImage }: { product: Product; /**
                 onClick={() => track.current?.scrollTo({ left: i * (track.current?.clientWidth ?? 0), behavior: "smooth" })}
                 className="grid h-8 w-6 place-items-center"
               >
-                <span className={cn("h-2 rounded-full transition-all duration-300", i === index ? "w-6 bg-primary" : "w-2 bg-line")} />
+                <span className={cn("h-2 rounded-full transition duration-300", i === index ? "w-6 bg-primary" : "w-2 bg-line")} />
               </button>
             ))}
           </div>
@@ -102,7 +102,7 @@ export function ProductGallery({ product, activeImage }: { product: Product; /**
                 key={src}
                 aria-label={`Image ${i + 1}`}
                 onClick={() => setIndex(i)}
-                className={cn("relative size-[76px] shrink-0 overflow-hidden rounded-md border-2 bg-page/40 transition-all", i === index ? "border-primary" : "border-transparent opacity-70 hover:opacity-100")}
+                className={cn("relative size-[76px] shrink-0 overflow-hidden rounded-md border-2 bg-page/40 transition", i === index ? "border-primary" : "border-transparent opacity-70 hover:opacity-100")}
               >
                 <Image src={src} alt="" fill sizes="76px" className="object-cover" />
               </button>

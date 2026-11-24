@@ -34,7 +34,7 @@ function MiniCard({ p }: { p: ViewedProduct }) {
     </button>
   );
   return (
-    <div className="group relative flex min-h-[117px] items-start gap-3 rounded-box border border-line-2/20 p-3 transition-all duration-300 hover:border-primary hover:shadow-md sm:items-center">
+    <div className="group relative flex min-h-[117px] items-start gap-3 rounded-box border border-line-2/20 p-3 transition duration-300 hover:border-primary hover:shadow-md sm:items-center">
       <div className="relative shrink-0">
         <Link href={ROUTES.product(p.slug)} className="relative block h-[92px] w-[92px] overflow-hidden rounded-md bg-page/50 sm:h-[90px] sm:w-[120px]" aria-label={p.name}>
           {p.image && <Image src={p.image} alt="" fill sizes="120px" className="object-cover transition-transform duration-500 group-hover:scale-110" />}

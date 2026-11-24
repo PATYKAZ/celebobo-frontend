@@ -50,13 +50,13 @@ function OrderRow({ o }: { o: ResellerOpenOrder }) {
       <div className="mt-3.5 flex items-center gap-2 sm:mt-0 sm:shrink-0 sm:justify-end">
         <span className="mr-1 hidden text-base font-bold sm:inline">{formatPrice(o.total)}</span>
         {o.conversationId != null && (
-          <Link prefetch={false} href={ROUTES.admin.conversation(o.conversationId)} className="relative inline-flex h-12 flex-1 items-center justify-center gap-1.5 rounded-box bg-chip px-3 text-sm font-bold transition-all hover:bg-primary hover:text-white active:scale-95 sm:h-9 sm:flex-none sm:rounded-md sm:text-xs">
+          <Link prefetch={false} href={ROUTES.admin.conversation(o.conversationId)} className="relative inline-flex h-12 flex-1 items-center justify-center gap-1.5 rounded-box bg-chip px-3 text-sm font-bold transition hover:bg-primary hover:text-white active:scale-95 sm:h-9 sm:flex-none sm:rounded-md sm:text-xs">
             <Messages2 size={16} variant="Bold" /> Discussion
             {o.unread > 0 && <span className="absolute -right-1.5 -top-1.5 grid min-w-[20px] place-items-center rounded-full bg-danger px-1 text-xs text-white ring-2 ring-surface">{o.unread}</span>}
           </Link>
         )}
         {next === "livree" && (
-          <Link prefetch={false} href={ROUTES.admin.order(o.id)} className="inline-flex h-12 flex-2 items-center justify-center gap-1.5 rounded-box bg-primary px-3 text-sm font-bold text-white transition-all hover:bg-primary-dark active:scale-95 sm:h-9 sm:flex-none sm:rounded-md sm:text-xs">
+          <Link prefetch={false} href={ROUTES.admin.order(o.id)} className="inline-flex h-12 flex-2 items-center justify-center gap-1.5 rounded-box bg-primary px-3 text-sm font-bold text-white transition hover:bg-primary-dark active:scale-95 sm:h-9 sm:flex-none sm:rounded-md sm:text-xs">
             <TickCircle size={14} variant="Bold" /> Saisir le code de livraison
           </Link>
         )}

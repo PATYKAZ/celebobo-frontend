@@ -120,7 +120,7 @@ export function AssignResellerModal({ order, onClose }: Props) {
                     {reason && <span className="font-semibold text-danger">{reason}</span>}
                   </span>
                 </span>
-                <AnimatePresence>{on && <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} className="text-primary"><TickCircle size={22} variant="Bold" /></motion.span>}</AnimatePresence>
+                <AnimatePresence>{on && <motion.span initial={{ scale: 0.5 }} animate={{ scale: 1 }} exit={{ scale: 0 }} className="text-primary"><TickCircle size={22} variant="Bold" /></motion.span>}</AnimatePresence>
               </button>
             </li>
           );

@@ -57,7 +57,7 @@ export function ImageSlot({ label, value, onChange, main, error }: Props) {
         onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && input.current?.click()}
         aria-label={`Choisir : ${label}`}
         className={cn(
-          "group relative grid cursor-pointer place-items-center overflow-hidden rounded-box border-2 border-dashed transition-all",
+          "group relative grid cursor-pointer place-items-center overflow-hidden rounded-box border-2 border-dashed transition",
           main ? "aspect-square" : "aspect-4/3",
           drag ? "scale-[1.02] border-primary bg-primary-50" : error ? "border-danger bg-danger-50" : "border-line bg-page/40 hover:border-primary",
         )}

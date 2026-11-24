@@ -54,8 +54,8 @@ function Column({ category, title, catalog, banner, index, wide }: { category: C
             ? Array.from({ length: 4 }, (_, i) => <Skeleton key={i} className="mx-auto size-24 rounded-full sm:size-[120px]" />)
             : products.map((p) => (
                 <Link key={p.id} href={ROUTES.product(p.slug)} className="group flex min-w-0 flex-col items-center text-center">
-                  <span className="relative block size-24 max-w-full overflow-hidden rounded-full bg-chip ring-2 ring-transparent transition-all duration-500 group-hover:-translate-y-1.5 group-hover:ring-primary sm:size-[120px]">
-                    <Image src={p.image as string} alt="" fill sizes="120px" className="object-cover transition-transform duration-700 group-hover:scale-125" />
+                  <span className="relative block size-24 max-w-full overflow-hidden rounded-full bg-chip ring-2 ring-transparent transition duration-500 group-hover:-translate-y-1.5 group-hover:ring-primary sm:size-[120px]">
+                    <Image src={p.image as string} alt="" fill sizes="120px" className="object-cover transition-transform duration-500 group-hover:scale-125" />
                   </span>
                   <span className="mt-3 line-clamp-2 text-sm font-bold transition-colors group-hover:text-primary">{p.name}</span>
                   <span className="mt-0.5 text-xs font-semibold text-primary">{formatPrice(getPricing(p).current)}</span>

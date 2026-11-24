@@ -1,7 +1,7 @@
 "use client";
 
 import { Reveal } from "@/shared/animations/Reveal";
-import { Float, TiltCard } from "@/shared/animations/MotionImage";
+import { TiltCard } from "@/shared/animations/MotionImage";
 import { cn } from "@/shared/lib/cn";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import type { HomeContent } from "../types";
@@ -56,7 +56,7 @@ export function HeroSection({ content }: { content?: HomeContent }) {
                 <Reveal key={b.key} delay={0.15 + i * 0.12} className="h-[170px] max-sm:w-[78%] sm:h-[230px] xl:h-[215px]">
                   <TiltCard className="h-full overflow-hidden rounded-box">
                     <PhotoBanner image={b.image} href={b.href} label={b.title} overlay={t.overlay} className="h-full" sizes="(min-width:1280px) 309px, 80vw" contentClassName="flex flex-col justify-center px-6">
-                      <Float slow>
+                      <div>
                         <p className={cn("line-clamp-2 max-w-[75%] whitespace-pre-line text-lg font-semibold", t.text)}>{b.title}</p>
                         {b.product ? (
                           <p className="mt-2">
@@ -66,7 +66,7 @@ export function HeroSection({ content }: { content?: HomeContent }) {
                           b.subtitle && <p className={cn("mt-2 line-clamp-2 max-w-[75%] text-xs", t.muted)}>{b.subtitle}</p>
                         )}
                         <span className="mt-3 flex h-9 w-fit items-center rounded-md bg-primary px-4 text-sm font-semibold text-white">{b.cta}</span>
-                      </Float>
+                      </div>
                     </PhotoBanner>
                   </TiltCard>
                 </Reveal>

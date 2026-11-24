@@ -53,7 +53,7 @@ export function AuthLayoutCard({ title, subtitle, image, headline, children, foo
         <div className="relative hidden min-h-[640px] overflow-hidden bg-ink-dark lg:block">
           <KenBurnsImage src={image} alt="" fill sizes="50vw" priority className="opacity-70" />
           <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-primary/30" />
-          <motion.div animate={{ y: [0, -12, 0] }} transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }} className="absolute right-10 top-10 flex items-center gap-3 rounded-box bg-surface/95 px-4 py-3 text-ink">
+          <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3, ease: [0.23, 1, 0.32, 1] }} className="absolute right-10 top-10 flex items-center gap-3 rounded-box bg-surface/95 px-4 py-3 text-ink">
             <span className="grid size-10 place-items-center rounded-full bg-primary text-white"><Bag2 size={20} variant="Bold" /></span>
             <span className="text-sm"><strong className="block">+12 000 commandes</strong><span className="text-ink-3">livrées avec le sourire</span></span>
           </motion.div>

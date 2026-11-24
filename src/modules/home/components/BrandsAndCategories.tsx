@@ -20,7 +20,7 @@ import type { Brand } from "../types";
 function Wordmark({ brand }: { brand: Brand }) {
   return (
     <span
-      className={cn("inline-block select-none text-[#b4b7c0] grayscale transition-all duration-300 hover:-translate-y-1 hover:scale-110 hover:grayscale-0 dark:brightness-[2.2] dark:hover:brightness-125", brand.className)}
+      className={cn("inline-block select-none text-[#b4b7c0] grayscale transition duration-300 hover:-translate-y-1 hover:scale-110 hover:grayscale-0 dark:brightness-[2.2] dark:hover:brightness-125", brand.className)}
       onMouseEnter={(e) => (e.currentTarget.style.color = brand.color)}
       onMouseLeave={(e) => (e.currentTarget.style.color = "")}
     >
@@ -61,8 +61,8 @@ function FeaturedBrands({ brands }: { brands?: Brand[] }) {
 function CategoryDot({ slug, name, image, size }: { slug: string; name: string; image: string | null; size: number }) {
   return (
     <Link href={ROUTES.category(slug)} className="group flex flex-col items-center gap-2 py-1 active:scale-95">
-      <span className="relative block overflow-hidden rounded-full bg-chip ring-2 ring-transparent transition-all duration-500 group-hover:-translate-y-1 group-hover:ring-primary" style={{ width: size, height: size }}>
-        {image && <Image src={image} alt="" fill sizes={`${size}px`} className="object-cover transition-transform duration-700 group-hover:scale-125" />}
+      <span className="relative block overflow-hidden rounded-full bg-chip ring-2 ring-transparent transition duration-500 group-hover:-translate-y-1 group-hover:ring-primary" style={{ width: size, height: size }}>
+        {image && <Image src={image} alt="" fill sizes={`${size}px`} className="object-cover transition-transform duration-500 group-hover:scale-125" />}
       </span>
       <span className="line-clamp-2 text-center text-xs font-semibold transition-colors group-hover:text-primary sm:text-sm">{name}</span>
     </Link>

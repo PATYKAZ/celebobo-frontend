@@ -178,7 +178,7 @@ export function SearchBar({ className, compact }: { className?: string; compact?
           </button>
         )}
         <span className="grid shrink-0 place-items-center bg-surface pr-1.5">
-          <button type="submit" aria-label="Lancer la recherche" className="grid size-9 place-items-center rounded-full bg-primary text-white transition-all hover:bg-primary-dark active:scale-90">
+          <button type="submit" aria-label="Lancer la recherche" className="grid size-9 place-items-center rounded-full bg-primary text-white transition hover:bg-primary-dark active:scale-90">
             <SearchNormal1 size={17} />
           </button>
         </span>

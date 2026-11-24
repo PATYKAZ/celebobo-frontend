@@ -75,7 +75,7 @@ export function CsvImportModal({ open, onClose }: { open: boolean; onClose: () =
               role="button"
               tabIndex={0}
               onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && input.current?.click()}
-              className={cn("grid cursor-pointer place-items-center gap-2 rounded-box border-2 border-dashed px-4 py-9 text-center transition-all sm:px-6 sm:py-12", drag ? "scale-[1.01] border-primary bg-primary-50" : "border-line bg-page/40 hover:border-primary")}
+              className={cn("grid cursor-pointer place-items-center gap-2 rounded-box border-2 border-dashed px-4 py-9 text-center transition sm:px-6 sm:py-12", drag ? "scale-[1.01] border-primary bg-primary-50" : "border-line bg-page/40 hover:border-primary")}
             >
               <DocumentUpload size={40} variant="Bulk" className="text-primary" />
               <p className="text-sm font-bold"><span className="sm:hidden">Touchez pour choisir un fichier CSV</span><span className="hidden sm:inline">Déposez votre fichier CSV ici ou cliquez pour parcourir</span></p>

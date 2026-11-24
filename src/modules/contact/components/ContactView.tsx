@@ -31,7 +31,7 @@ export function ContactView() {
         {cards.map(({ icon: Icon, title, value, href }) => (
           <RevealItem key={title} className="min-w-0">
             <a href={href} className="group flex h-full flex-col items-start gap-2.5 rounded-box bg-surface p-4 transition-transform duration-300 active:scale-[0.98] sm:flex-row sm:items-center sm:gap-4 sm:p-5 sm:hover:-translate-y-1.5">
-              <span className="grid size-11 shrink-0 sm:size-[52px] place-items-center rounded-full bg-primary-100 text-primary-dark transition-all duration-300 group-hover:rotate-360 group-hover:bg-primary group-hover:text-white"><Icon size={24} variant="Bold" /></span>
+              <span className="grid size-11 shrink-0 sm:size-[52px] place-items-center rounded-full bg-primary-100 text-primary-dark transition duration-300 group-hover:rotate-360 group-hover:bg-primary group-hover:text-white"><Icon size={24} variant="Bold" /></span>
               <span className="min-w-0 max-w-full">
                 <span className="block text-xs text-ink-3">{title}</span>
                 <span className="block wrap-anywhere text-sm font-bold sm:text-sm">{value}</span>
@@ -50,7 +50,7 @@ export function ContactView() {
             <AnimatePresence mode="wait">
               {sent ? (
                 <motion.div key="ok" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center py-8 text-center sm:py-14">
-                  <motion.span initial={{ scale: 0, rotate: -90 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: "spring", stiffness: 300, damping: 12 }} className="grid size-20 place-items-center rounded-full bg-primary text-white"><TickCircle size={42} variant="Bold" /></motion.span>
+                  <motion.span initial={{ scale: 0.5, rotate: -90 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: "spring", stiffness: 300, damping: 12 }} className="grid size-20 place-items-center rounded-full bg-primary text-white"><TickCircle size={42} variant="Bold" /></motion.span>
                   <h2 className="mt-5 text-xl">Message envoyé !</h2>
                   <p className="mt-2 max-w-[400px] text-sm text-ink-2">Merci de nous avoir contactés, nous revenons vers vous sous 24 h à l&apos;adresse <strong className="text-ink">{receipt?.input.email}</strong>.</p>
                   {receipt && (

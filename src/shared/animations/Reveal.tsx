@@ -6,8 +6,8 @@ import { useRef, type ReactNode } from "react";
 type Direction = "up" | "down" | "left" | "right" | "none";
 
 const OFFSET: Record<Direction, { x?: number; y?: number }> = {
-  up: { y: 28 },
-  down: { y: -28 },
+  up: { y: 20 },
+  down: { y: -20 },
   // décalage vertical (et non latéral) : un translateX hors-champ élargit la page sur mobile
   left: { y: 24 },
   right: { y: 24 },
@@ -26,7 +26,7 @@ interface RevealProps extends Omit<HTMLMotionProps<"div">, "children"> {
 }
 
 /** Apparition (fade + translation) quand l'élément entre dans le viewport. */
-export function Reveal({ children, direction = "up", delay = 0, duration = 0.65, once = true, amount = 0.15, ...rest }: RevealProps) {
+export function Reveal({ children, direction = "up", delay = 0, duration = 0.5, once = true, amount = 0.15, ...rest }: RevealProps) {
   return (
     <motion.div
       initial={{ opacity: 0, ...OFFSET[direction] }}

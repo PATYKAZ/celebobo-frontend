@@ -17,7 +17,7 @@ export function ErrorView({ error, reset }: { error: Error & { digest?: string }
       <header className="rounded-box bg-surface px-4 py-3 sm:px-8 sm:py-4"><Logo /></header>
       <main className="mt-3 grid flex-1 place-items-center rounded-box bg-surface px-4 py-10 text-center sm:mt-4 sm:py-16">
         <div>
-          <motion.span initial={{ scale: 0 }} animate={{ scale: 1, rotate: [0, -10, 10, -6, 0] }} transition={{ scale: { type: "spring", stiffness: 260, damping: 12 }, rotate: { duration: 0.7, ease: "easeInOut" } }} className="mx-auto grid size-20 place-items-center rounded-full bg-danger-100 text-danger sm:size-24">
+          <motion.span initial={{ scale: 0.5 }} animate={{ scale: 1, rotate: [0, -10, 10, -6, 0] }} transition={{ scale: { type: "spring", stiffness: 260, damping: 12 }, rotate: { duration: 0.7, ease: "easeInOut" } }} className="mx-auto grid size-20 place-items-center rounded-full bg-danger-100 text-danger sm:size-24">
             <Danger size={46} variant="Bold" />
           </motion.span>
           <h1 className="mt-5 text-xl sm:mt-6 sm:text-2xl">Une erreur est survenue</h1>

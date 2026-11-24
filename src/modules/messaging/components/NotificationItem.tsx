@@ -77,7 +77,7 @@ export function NotificationItem({ notification: n, role, resellers }: Props) {
           <Link
             href={n.link || ROUTES.notifications}
             onClick={() => !n.isRead && markRead.mutate(n.id)}
-            className="group inline-flex min-h-12 w-full items-center justify-center gap-1.5 rounded-box bg-surface text-sm font-bold text-primary ring-1 ring-primary/30 transition-all active:scale-[0.98] sm:min-h-0 sm:w-auto sm:bg-transparent sm:text-sm sm:ring-0"
+            className="group inline-flex min-h-12 w-full items-center justify-center gap-1.5 rounded-box bg-surface text-sm font-bold text-primary ring-1 ring-primary/30 transition active:scale-[0.98] sm:min-h-0 sm:w-auto sm:bg-transparent sm:text-sm sm:ring-0"
           >
             {n.conversationId ? "Ouvrir la discussion" : "Voir la commande"} <ArrowRight2 size={15} className="transition-transform group-hover:translate-x-1" />
           </Link>
@@ -108,7 +108,7 @@ export function NotificationItem({ notification: n, role, resellers }: Props) {
           )}
           {done && (
             <motion.div key="done" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-4 py-3 text-sm font-bold text-white sm:w-auto sm:justify-start sm:py-2">
-              <motion.span initial={{ rotate: -90, scale: 0 }} animate={{ rotate: 0, scale: 1 }} transition={{ type: "spring", stiffness: 400, damping: 12 }}><TickCircle size={18} variant="Bold" /></motion.span>
+              <motion.span initial={{ rotate: -90, scale: 0.5 }} animate={{ rotate: 0, scale: 1 }} transition={{ type: "spring", stiffness: 400, damping: 12 }}><TickCircle size={18} variant="Bold" /></motion.span>
               {discussion ? "Discussion assignée avec succès" : "Commande assignée avec succès"}
             </motion.div>
           )}

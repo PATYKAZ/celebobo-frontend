@@ -125,6 +125,11 @@
   --breakpoint-xs: 480px;
   --breakpoint-3xl: 1400px;
 
+  /* transitions : sortie franche (rapide au départ, douce à l'arrivée) et 200 ms par défaut */
+  --default-transition-duration: 200ms;
+  --default-transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+
   --animate-fade-up: fade-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
   --animate-fade-in: fade-in 0.5s ease both;
   --animate-ken-burns: ken-burns 9s ease-out both;

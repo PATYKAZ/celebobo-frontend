@@ -30,7 +30,7 @@ export function ConversationItem({ conversation: c, active, myId, onSelect, staf
     <button
       onClick={() => onSelect(c.id)}
       aria-current={active}
-      className={cn("relative flex min-h-[76px] w-full items-start gap-3 rounded-box px-3 py-3 text-left transition-all active:scale-[0.985] active:bg-chip", active ? "bg-primary-50" : "hover:bg-chip")}
+      className={cn("relative flex min-h-[76px] w-full items-start gap-3 rounded-box px-3 py-3 text-left transition active:scale-[0.985] active:bg-chip", active ? "bg-primary-50" : "hover:bg-chip")}
     >
       {active && <span className="absolute inset-y-3 left-0 w-[3px] rounded-full bg-primary" />}
       <span className="relative shrink-0">

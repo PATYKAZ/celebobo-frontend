@@ -28,7 +28,7 @@ export function OrderSuccess({ order, conversationId }: { order: Order; conversa
           {CONFETTI.map((c) => (
             <motion.span key={c.id} className="absolute size-2.5 rounded-full" style={{ background: c.c }} initial={{ x: 0, y: 0, opacity: 1, scale: 0 }} animate={{ x: c.x, y: c.y, opacity: 0, scale: 1 }} transition={{ duration: 1.1, delay: 0.35, ease: "easeOut" }} />
           ))}
-          <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 260, damping: 16 }} className="grid size-24 place-items-center rounded-full bg-primary sm:size-28">
+          <motion.span initial={{ scale: 0.5 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 260, damping: 16 }} className="grid size-24 place-items-center rounded-full bg-primary sm:size-28">
             <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
               <motion.path d="M5 12.5l4.5 4.5L19 7.5" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.6, delay: 0.3 }} />
             </svg>

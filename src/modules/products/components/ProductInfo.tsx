@@ -130,7 +130,7 @@ export function ProductInfo({ product, selection, qty, onQtyChange }: { product:
                       disabled={!available && !active}
                       onClick={() => select(o.name, val)}
                       className={cn(
-                        "relative flex h-12 min-w-12 items-center justify-center gap-2 rounded-box border-2 px-4 text-sm font-semibold transition-all active:scale-95 sm:h-10 sm:min-w-0 sm:rounded-md sm:px-3.5 sm:text-sm",
+                        "relative flex h-12 min-w-12 items-center justify-center gap-2 rounded-box border-2 px-4 text-sm font-semibold transition active:scale-95 sm:h-10 sm:min-w-0 sm:rounded-md sm:px-3.5 sm:text-sm",
                         active ? "border-primary bg-primary-50 text-primary-dark" : "border-line-3 hover:border-primary/50",
                         !available && "cursor-not-allowed opacity-45 line-through",
                       )}

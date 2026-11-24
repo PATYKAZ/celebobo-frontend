@@ -28,7 +28,7 @@ const DIR = { r: "bg-linear-to-r", l: "bg-linear-to-l", t: "bg-linear-to-t", b: 
 export function PhotoBanner({ image, href, label, overlay = "from-black/70 via-black/30 to-transparent", direction = "r", className, contentClassName, sizes = "(min-width:1024px) 650px, 100vw", priority, children }: Props) {
   return (
     <div className={cn("group relative overflow-hidden rounded-box bg-chip", className)}>
-      <Image src={image} alt="" fill sizes={sizes} priority={priority} className="object-cover transition-transform duration-900 ease-out group-hover:scale-110" />
+      <Image src={image} alt="" fill sizes={sizes} priority={priority} className="object-cover transition-transform duration-500 ease-out group-hover:scale-110" />
       <div className={cn("absolute inset-0 hidden sm:block", DIR[direction], overlay)} />
       <div className="absolute inset-0 bg-linear-to-r from-black/75 via-black/45 to-black/10 sm:hidden" />
       <div className={cn("relative z-10 h-full max-sm:[&_.text-ink-2]:text-white/80! max-sm:[&_.text-ink-3]:text-white/70! max-sm:[&_.text-ink]:text-white! max-sm:[&_.text-on-light]:text-white! max-sm:[&_.text-on-light-2]:text-white/80!", contentClassName)}>{children}</div>
