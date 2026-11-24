@@ -66,7 +66,7 @@ function NavItem({ item }: { item: (typeof NAV)[number] }) {
     <Popover
       openOn="hover"
       className="group"
-      triggerClassName="outline-hidden"
+      triggerClassName="rounded-md outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
       trigger={label}
       panelClassName={"mega" in item ? "w-[560px] p-4" : "w-[220px]"}
     >

@@ -126,7 +126,7 @@ export function SearchBar({ className, compact }: { className?: string; compact?
 
   return (
     <form ref={box} onSubmit={submit} role="search" className={cn("relative scroll-mt-20", className)}>
-      <div className="flex h-[48px] overflow-hidden rounded-full bg-surface sm:h-[45px]">
+      <div className="flex h-[48px] overflow-hidden rounded-full bg-surface ring-primary-light focus-within:ring-2 sm:h-[45px]">
         {!compact && (
           <div className="relative hidden w-[143px] shrink-0 sm:block">
             <select

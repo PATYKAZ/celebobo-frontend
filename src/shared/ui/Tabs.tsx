@@ -60,7 +60,7 @@ export function Tabs<T extends string>({ tabs, value, onChange, variant = "title
               {t.value === value && <motion.span layoutId={`pill-${id}`} className="absolute inset-0 rounded-full bg-primary" transition={{ type: "spring", stiffness: 400, damping: 32 }} />}
               <span className="relative">
                 {t.label}
-                {t.count != null && <span className="ml-1.5 opacity-70">{t.count}</span>}
+                {t.count != null && <span className="ml-1.5 font-normal tabular-nums">{t.count}</span>}
               </span>
             </ToggleGroup.Item>
           ))}

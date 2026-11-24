@@ -84,7 +84,7 @@ export function ProductGallery({ product, activeImage }: { product: Product; /**
                 aria-selected={i === index}
                 aria-label={`Image ${i + 1}`}
                 onClick={() => track.current?.scrollTo({ left: i * (track.current?.clientWidth ?? 0), behavior: "smooth" })}
-                className="grid h-8 w-6 place-items-center"
+                className="grid size-8 place-items-center"
               >
                 <span className={cn("h-2 rounded-full transition duration-300", i === index ? "w-6 bg-primary" : "w-2 bg-line")} />
               </button>

@@ -83,7 +83,8 @@
   --text-color-primary: #226d68;
   --text-color-primary-dark: #18534f;
   --text-color-danger: #c4261d;
-  --text-color-info: #0d6efd;
+  /* #0A58CA : 6,2:1 sur blanc, 5,4:1 sur sa pastille teintée (l'ancien #0D6EFD tombait sous 4,5:1 sur la pastille) */
+  --text-color-info: #0a58ca;
   --border-color-primary: #226d68;
   /* fonds sombres fixes (bandeaux, pastille Cash) : restent sombres en mode sombre */
   --background-color-ink-dark: #222222;

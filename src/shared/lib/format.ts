@@ -13,18 +13,19 @@ const cdf = new Intl.NumberFormat("fr-CD", { maximumFractionDigits: 0 });
  */
 export const formatPrice = (value: number | string | null | undefined, display?: { currency: "USD" | "CDF"; rate: number }): string => {
   const amount = Number(value ?? 0);
-  if (display?.currency === "CDF" && display.rate > 0) return `${cdf.format(Math.round(amount * display.rate))} FC`;
-  return `${usd.format(amount)} $`;
+  if (display?.currency === "CDF" && display.rate > 0) return `${cdf.format(Math.round(amount * display.rate))}\u00a0FC`;
+  // espace insécable : le symbole ne passe jamais seul à la ligne
+  return `${usd.format(amount)}\u00a0$`;
 };
 
 /** Montant rond sans décimales inutiles : 199 → « 199 $ », 19.5 → « 19,50 $ » (seuils, libellés courts). */
 export const formatPriceShort = (value: number | string | null | undefined): string => {
   const amount = Number(value ?? 0);
-  return Number.isInteger(amount) ? `${usdWhole.format(amount)} $` : formatPrice(amount);
+  return Number.isInteger(amount) ? `${usdWhole.format(amount)}\u00a0$` : formatPrice(amount);
 };
 
 /** Grands montants des graphiques et indicateurs : 46 900 → « 46,9 k $ » ; en dessous de 1 000, le montant court. */
-export const formatMoneyCompact = (value: number): string => (value >= 1000 ? `${compact.format(value)} $` : formatPriceShort(value));
+export const formatMoneyCompact = (value: number): string => (value >= 1000 ? `${compact.format(value)}\u00a0$` : formatPriceShort(value));
 
 export const formatCompact = (value: number) => compact.format(value);
 

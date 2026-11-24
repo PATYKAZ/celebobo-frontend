@@ -34,7 +34,7 @@ export function NewsletterForm() {
         </motion.div>
       ) : (
         <motion.form key="form" onSubmit={submit} noValidate initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-          <div className="flex h-12 items-center gap-2 border-b border-line sm:h-[41px]">
+          <div className="flex h-12 items-center gap-2 border-b border-line transition-colors focus-within:border-primary sm:h-[41px]">
             <Sms size={20} variant="Bold" />
             <input
               type="email"

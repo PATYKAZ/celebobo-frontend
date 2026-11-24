@@ -181,7 +181,7 @@ export function AssistantLauncher() {
             animate={{ scale: dragging ? 1.12 : 1 }}
             transition={{ type: "spring", stiffness: 400, damping: 22 }}
             className={cn(
-              "relative grid size-full place-items-center rounded-full bg-[linear-gradient(145deg,#2E8A84,#18534F)] text-white shadow-md outline-hidden",
+              "relative grid size-full place-items-center rounded-full bg-[linear-gradient(145deg,#2E8A84,#18534F)] text-white shadow-md outline-hidden focus-visible:ring-4 focus-visible:ring-primary-light",
               dragging ? "cursor-grabbing" : "cursor-grab",
             )}
           >
