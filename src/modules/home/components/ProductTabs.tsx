@@ -34,14 +34,14 @@ export function ProductTabs({ catalog }: { catalog: HomeCatalog | null }) {
   const [tab, setTab] = useState<Tab>("best");
   return (
     <Reveal>
-      <Block pad="none" className="min-w-0 px-3 pb-4 pt-4 sm:px-8 sm:pb-8 sm:pt-7">
+      <Block pad="none" className="min-w-0 px-3 pb-4 pt-4 sm:px-5 sm:pb-5 sm:pt-7">
         <div className="flex items-start justify-between gap-4">
           <Tabs tabs={TABS} value={tab} onChange={setTab} className="min-w-0 flex-1" />
           <Link href={ROUTES.products} className="group hidden items-center gap-0.5 pt-1 text-link text-ink-2 hover:text-primary sm:inline-flex">
             Voir tout <ArrowRight2 size={13} variant="Bold" className="transition-transform group-hover:translate-x-1" />
           </Link>
         </div>
-        <div className="mt-3 sm:mt-6">
+        <div className="mt-3 sm:mt-4">
           <AnimatePresence mode="wait" initial={false}>
             <motion.div key={tab} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.25 }}>
               <TabPanel tab={tab} catalog={catalog} />

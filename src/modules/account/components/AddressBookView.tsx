@@ -40,7 +40,7 @@ function Content() {
   };
 
   return (
-    <Block pad="none" className="p-4 sm:p-8">
+    <Block pad="none" className="p-4 sm:p-5">
       <div className="flex flex-wrap items-center justify-between gap-3 sm:gap-4">
         <div className="min-w-0">
           <h1 className="text-xl sm:text-h-page">Mes adresses</h1>
@@ -49,7 +49,7 @@ function Content() {
         <Button onClick={() => open(null)} leftIcon={<Add size={16} />} className="max-sm:w-full">Ajouter une adresse</Button>
       </div>
 
-      <div className="mt-5 grid gap-3 sm:mt-6 sm:gap-4 md:grid-cols-2">
+      <div className="mt-5 grid gap-3 sm:mt-4 sm:gap-4 md:grid-cols-2">
         {isLoading ? (
           <>
             <Skeleton className="h-[170px] rounded-box!" />

@@ -67,13 +67,13 @@ export function RecentlyViewed() {
   if (!items.length) return null;
   return (
     <Reveal>
-      <Block pad="none" className="min-w-0 overflow-hidden px-4 pb-5 pt-4 sm:px-8 sm:pb-8 sm:pt-8">
+      <Block pad="none" className="min-w-0 overflow-hidden px-4 pb-5 pt-4 sm:px-5 sm:pb-5 sm:pt-5">
         <SectionHeader
           title="Récemment consultés"
           viewAllHref={ROUTES.products}
           right={<SliderArrows className="hidden md:flex" onPrev={() => swiper?.slidePrev()} onNext={() => swiper?.slideNext()} canPrev={!edge.begin} canNext={!edge.end} />}
         />
-        <div className="mt-4 sm:mt-6">
+        <div className="mt-4 sm:mt-4">
           <Swiper
             className="w-full"
             onSwiper={(s) => {

@@ -98,7 +98,7 @@ function DealCard({ deal }: { deal: HomeDeal }) {
   const addToCart = () => add(product, 1, variant ? { variantId: variant.id, variantLabel: variant.label, priceDelta: deal.dealPrice - product.price } : undefined);
 
   return (
-    <div className="grid grid-cols-[minmax(0,1fr)] gap-5 rounded-b-box bg-surface p-4 sm:gap-6 sm:p-8 lg:grid-cols-[minmax(0,45fr)_minmax(0,55fr)] lg:gap-9">
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-5 rounded-b-box bg-surface p-4 sm:gap-6 sm:p-5 lg:grid-cols-[minmax(0,45fr)_minmax(0,55fr)] lg:gap-9">
       {/* Galerie */}
       <div className="flex min-w-0 flex-col-reverse gap-3 sm:flex-row">
         <div className="no-scrollbar flex shrink-0 gap-2.5 overflow-x-auto sm:w-[35px] sm:flex-col sm:gap-4 sm:overflow-visible">
@@ -152,7 +152,7 @@ function DealCard({ deal }: { deal: HomeDeal }) {
           </div>
         )}
 
-        <div className="mt-5 border-t border-line-3 pt-5 sm:mt-6">
+        <div className="mt-5 border-t border-line-3 pt-5 sm:mt-4">
           {/* jauge seulement une fois des ventes réalisées : une barre vide ne dit rien */}
           {deal.quantity != null && (deal.sold ?? 0) > 0 && (
             <div className="h-2 overflow-hidden rounded-full bg-page" role="progressbar" aria-label="Unités vendues" aria-valuemin={0} aria-valuemax={deal.quantity} aria-valuenow={deal.sold ?? 0}>
@@ -178,7 +178,7 @@ function DealCard({ deal }: { deal: HomeDeal }) {
             </p>
             <div className="flex gap-2">
               <Button size="sm" variant="secondary" href={ROUTES.product(product.slug)} className="max-sm:flex-1">Voir</Button>
-              <Button size="sm" onClick={addToCart} disabled={!inStock} className="max-sm:flex-1 max-sm:px-8">Ajouter</Button>
+              <Button size="sm" onClick={addToCart} disabled={!inStock} className="max-sm:flex-1 max-sm:px-5">Ajouter</Button>
             </div>
           </div>
         </div>
@@ -193,7 +193,7 @@ export function DealsOfTheDay({ content }: { content?: HomeContent }) {
   return (
     <section className="grid grid-cols-[minmax(0,1fr)] gap-3 sm:gap-4 xl:grid-cols-[minmax(0,3.3fr)_minmax(0,1fr)]">
       <div>
-        <div className="flex h-14 items-center rounded-t-box bg-primary px-4 sm:h-[62px] sm:px-8">
+        <div className="flex h-14 items-center rounded-t-box bg-primary px-4 sm:h-[62px] sm:px-5">
           <SectionHeader title="Offres du jour" viewAllHref={`${ROUTES.products}?onSale=1`} onPrimary className="w-full" />
         </div>
         {!picks ? (
@@ -201,7 +201,7 @@ export function DealsOfTheDay({ content }: { content?: HomeContent }) {
         ) : picks.deal ? (
           <DealCard deal={picks.deal} />
         ) : (
-          <div className="rounded-b-box bg-surface p-6 text-center text-sm text-ink-2 sm:p-10">Pas de promotion en ce moment. Revenez bientôt !</div>
+          <div className="rounded-b-box bg-surface p-6 text-center text-sm text-ink-2 sm:p-6">Pas de promotion en ce moment. Revenez bientôt !</div>
         )}
       </div>
 

@@ -230,7 +230,7 @@ function Content() {
   return (
     <div className="grid gap-3 sm:gap-4 lg:grid-cols-[1fr_380px]">
       <Reveal className="min-w-0">
-        <Block pad="none" className="p-4 sm:p-8">
+        <Block pad="none" className="p-4 sm:p-5">
           <h1 className="text-xl sm:text-h-page">Finaliser la commande</h1>
 
           {/* Mobile : récapitulatif repliable (s'ouvre en feuille) */}
@@ -244,7 +244,7 @@ function Content() {
             <ArrowDown2 size={16} className="text-ink-3" />
           </button>
 
-          <div className="mb-6 mt-5 sm:mb-8 sm:mt-6"><CheckoutStepper step={step} /></div>
+          <div className="mb-6 mt-5 sm:mb-8 sm:mt-4"><CheckoutStepper step={step} /></div>
 
           <AnimatePresence mode="wait" custom={dir}>
             <motion.div

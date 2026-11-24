@@ -31,10 +31,10 @@ function Column({ category, title, catalog, banner, index, wide }: { category: C
 
   return (
     <Reveal delay={index * 0.1} className="h-full">
-      <Block pad="none" className="h-full min-w-0 overflow-hidden px-4 pb-5 pt-4 sm:px-8 sm:pb-8 sm:pt-8">
+      <Block pad="none" className="h-full min-w-0 overflow-hidden px-4 pb-5 pt-4 sm:px-5 sm:pb-5 sm:pt-5">
         <SectionHeader title={title} viewAllHref={href} />
         {banner ? (
-          <PhotoBanner image={banner.image} href={banner.href} label={banner.title} overlay={tone.overlay} className="mt-4 h-[150px] sm:mt-6 sm:h-[190px]" sizes="(min-width:1280px) 368px, 100vw" contentClassName="flex flex-col justify-center px-8">
+          <PhotoBanner image={banner.image} href={banner.href} label={banner.title} overlay={tone.overlay} className="mt-4 h-[150px] sm:mt-4 sm:h-[190px]" sizes="(min-width:1280px) 368px, 100vw" contentClassName="flex flex-col justify-center px-8">
             <p className={cn("line-clamp-2 whitespace-pre-line text-sm font-bold", tone.text)}>{banner.title}</p>
             {banner.product ? (
               <p className="mt-1"><BannerPrice product={banner.product} className={cn("text-base", tone.price)} strikeClassName={tone.strike} /></p>
@@ -43,7 +43,7 @@ function Column({ category, title, catalog, banner, index, wide }: { category: C
             )}
           </PhotoBanner>
         ) : (
-          <PhotoBanner image={category.image ?? products?.[0]?.image ?? "/images/hero/hero-2.jpg"} href={href} label={category.name} overlay="from-black/80 via-black/45 to-transparent" className="mt-4 h-[150px] sm:mt-6 sm:h-[190px]" sizes="(min-width:1280px) 368px, 100vw" contentClassName="flex flex-col justify-center px-8">
+          <PhotoBanner image={category.image ?? products?.[0]?.image ?? "/images/hero/hero-2.jpg"} href={href} label={category.name} overlay="from-black/80 via-black/45 to-transparent" className="mt-4 h-[150px] sm:mt-4 sm:h-[190px]" sizes="(min-width:1280px) 368px, 100vw" contentClassName="flex flex-col justify-center px-8">
             <p className="text-sm font-bold text-white">{category.name}</p>
             <p className="mt-1 text-xs text-white/80">{category.productsCount} article{category.productsCount > 1 ? "s" : ""}</p>
           </PhotoBanner>

@@ -105,7 +105,7 @@ export function OrderDetailView({ number }: { number: string }) {
       <Breadcrumb items={crumbs} />
 
       <Reveal>
-        <Block pad="none" className="p-4 sm:p-8">
+        <Block pad="none" className="p-4 sm:p-5">
           <div className="flex flex-wrap items-center justify-between gap-3 sm:gap-4">
             <div className="min-w-0">
               <Link href={ROUTES.orders} className="mb-1 inline-flex min-h-9 items-center gap-1 text-sm text-ink-3 hover:text-primary sm:mb-2"><ArrowLeft2 size={14} /> Toutes mes commandes</Link>
@@ -163,9 +163,9 @@ export function OrderDetailView({ number }: { number: string }) {
             </div>
           )}
           {/* progression compacte ici ; le détail daté (qui, quand, notes) est dans « Historique » : pas deux frises identiques */}
-          <div className="mt-5 sm:mt-6"><OrderProgress status={order.status} /></div>
+          <div className="mt-5 sm:mt-4"><OrderProgress status={order.status} /></div>
           {order.awaitingShippingQuote && !ORDER_FINAL.includes(order.status) ? (
-            <div className="mt-4 rounded-md bg-star/10 px-3.5 py-3 text-sm text-warn sm:mt-6 sm:px-4">
+            <div className="mt-4 rounded-md bg-star/10 px-3.5 py-3 text-sm text-warn sm:mt-4 sm:px-4">
               <p>
                 Votre zone est livrée <strong>sur devis</strong> : un revendeur vous indique le coût et le délai de livraison dans la discussion. Vous ne payez rien avant d&apos;avoir accepté ces frais, et vous pouvez annuler la commande sans frais jusque-là.
               </p>
@@ -177,7 +177,7 @@ export function OrderDetailView({ number }: { number: string }) {
             </div>
           ) : (
             order.status === "attente" && (
-              <p className="mt-4 rounded-md bg-star/10 px-3.5 py-3 text-sm text-warn sm:mt-6 sm:px-4">
+              <p className="mt-4 rounded-md bg-star/10 px-3.5 py-3 text-sm text-warn sm:mt-4 sm:px-4">
                 Votre commande est <strong>en attente d&apos;assignation</strong>. Vous pouvez l&apos;annuler sans frais jusqu&apos;à son départ en livraison.
               </p>
             )
@@ -187,7 +187,7 @@ export function OrderDetailView({ number }: { number: string }) {
 
       <div className="grid gap-3 sm:gap-4 lg:grid-cols-[minmax(0,1fr)_380px]">
         <Reveal className="min-w-0">
-          <Block pad="none" className="p-4 sm:p-8">
+          <Block pad="none" className="p-4 sm:p-5">
             <h2 className="text-base sm:text-section">Articles</h2>
             <ul className="mt-2 divide-y divide-line-3 sm:mt-4">
               {order.items.map((it) => (
@@ -232,7 +232,7 @@ export function OrderDetailView({ number }: { number: string }) {
         <div className="min-w-0 space-y-3 sm:space-y-4">
           {(order.canRate || order.rating) && <RateResellerCard order={order} />}
           <Reveal delay={0.05}>
-            <Block pad="none" className="space-y-4 p-4 sm:space-y-5 sm:p-8">
+            <Block pad="none" className="space-y-4 p-4 sm:space-y-5 sm:p-5">
               <h2 className="text-base sm:text-section">Informations</h2>
               <InfoRow icon={<Profile size={18} />} label="Revendeur">
                 {order.assignedRevendeur ? <span className="flex items-center gap-2">{order.assignedRevendeur.name} <AvailabilityDot value={availability} withLabel /></span> : <span className="font-normal text-ink-2">Pas encore assigné</span>}
@@ -258,7 +258,7 @@ export function OrderDetailView({ number }: { number: string }) {
             </Block>
           </Reveal>
           <Reveal delay={0.1}>
-            <Block pad="none" className="p-4 sm:p-8">
+            <Block pad="none" className="p-4 sm:p-5">
               <h2 className="mb-4 text-base sm:mb-5 sm:text-section">Historique</h2>
               <OrderTimeline order={order} layout="vertical" />
             </Block>

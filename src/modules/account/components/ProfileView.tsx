@@ -44,7 +44,7 @@ function Content() {
         </div>
       </Reveal>
       <Reveal delay={0.1} className="min-w-0">
-        <Block pad="none" className="p-4 sm:p-8">
+        <Block pad="none" className="p-4 sm:p-5">
           <h1 className="text-xl sm:text-h-page">Mon profil</h1>
           <p className="mb-4 mt-1 text-sm text-ink-2 sm:mb-6 sm:text-sm">Gérez vos informations personnelles et la sécurité de votre compte.</p>
           <Tabs
@@ -56,7 +56,7 @@ function Content() {
               { value: "security", label: "Sécurité" },
             ]}
           />
-          <div className="mt-4 sm:mt-6">
+          <div className="mt-4 sm:mt-4">
             {isLoading ? (
               <div className="space-y-4">
                 <Skeleton className="h-[45px]" />

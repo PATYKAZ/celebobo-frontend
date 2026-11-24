@@ -83,13 +83,13 @@ function Content() {
 
   return (
     <Reveal>
-      <Block pad="none" className="p-4 sm:p-8">
+      <Block pad="none" className="p-4 sm:p-5">
         <h1 className="text-xl sm:text-h-page">Mes données</h1>
         <p className="mt-1 text-sm text-ink-2 sm:text-sm">
           Téléchargez une copie des données que Celebobo garde sur votre compte, dans un fichier ZIP : une page à ouvrir dans votre navigateur et un fichier JSON pour les conserver ou les transmettre à un autre service.
         </p>
 
-        <div className="mt-4 rounded-box border border-line-3 p-4 sm:mt-6 sm:p-5">
+        <div className="mt-4 rounded-box border border-line-3 p-4 sm:mt-4 sm:p-5">
           <p className="text-sm font-bold">Ce que contient le fichier</p>
           <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-ink-2 sm:text-sm">
             {included.map((line) => (
@@ -99,7 +99,7 @@ function Content() {
           <p className="mt-3 text-xs text-ink-3 sm:text-sm">Les coordonnées des autres personnes (revendeurs, autres clients) n&apos;y figurent pas. Le lien de téléchargement reste valable 48 heures ; vous pouvez demander un nouvel export une fois par heure (10 minutes après un échec).</p>
         </div>
 
-        <div className="mt-4 space-y-3 sm:mt-6">
+        <div className="mt-4 space-y-3 sm:mt-4">
           {isLoading ? <Skeleton className="h-16 rounded-box!" /> : job && <ExportState job={job} />}
           <div className="flex flex-wrap items-center gap-3">
             <Button leftIcon={<DocumentDownload size={18} />} loading={request.isPending} disabled={isLoading || preparing || !!waitUntil} onClick={ask} className="max-sm:w-full">

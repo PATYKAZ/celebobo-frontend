@@ -55,13 +55,13 @@ function ProductContent({ product }: { product: Product }) {
         ]}
       />
       <Reveal>
-        <Block pad="none" className="grid grid-cols-[minmax(0,1fr)] gap-5 p-3 sm:gap-8 sm:p-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-12">
+        <Block pad="none" className="grid grid-cols-[minmax(0,1fr)] gap-5 p-3 sm:gap-5 sm:p-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-6">
           <ProductGallery product={product} activeImage={selection.image} />
           <ProductInfo product={product} selection={selection} qty={qty} onQtyChange={setQty} />
         </Block>
       </Reveal>
       <Reveal>
-        <Block pad="none" className="p-4 sm:p-8">
+        <Block pad="none" className="p-4 sm:p-5">
           <ProductTabs product={product} />
         </Block>
       </Reveal>

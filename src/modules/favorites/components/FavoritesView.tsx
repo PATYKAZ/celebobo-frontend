@@ -33,7 +33,7 @@ export function FavoritesView() {
     <>
       <Breadcrumb items={[{ label: "Mes favoris" }]} />
       <Reveal>
-        <Block pad="none" className="flex flex-col gap-3 px-4 py-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-4 sm:px-8 sm:py-6">
+        <Block pad="none" className="flex flex-col gap-3 px-4 py-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-4 sm:px-5 sm:py-6">
           <div className="flex items-center gap-3 sm:gap-4">
             <span className="grid size-11 shrink-0 place-items-center rounded-full bg-danger-100 text-danger sm:size-12"><Heart size={24} variant="Bold" /></span>
             <div>

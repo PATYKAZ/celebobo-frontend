@@ -53,7 +53,7 @@ export function MyClaimsView() {
       <AuthGuard fallback={<AccountSkeleton breadcrumb={false} />}>
         <AccountShell>
         <Reveal>
-          <Block pad="none" className="p-4 sm:p-8">
+          <Block pad="none" className="p-4 sm:p-5">
             <h1 className="text-xl sm:text-h-page">Mes réclamations</h1>
             <p className="mb-4 mt-1 text-sm text-ink-2">Délai d&apos;essai de 7 jours, garantie CeLE BoBO d&apos;un mois et garantie d&apos;authenticité de 12 mois. Pour réclamer, ouvrez la commande livrée.</p>
             <List />
@@ -97,7 +97,7 @@ export function MyClaimView({ id }: { id: number }) {
       <AuthGuard fallback={<AccountSkeleton breadcrumb={false} />}>
         <AccountShell>
         <Reveal>
-          <Block pad="none" className="p-4 sm:p-8">
+          <Block pad="none" className="p-4 sm:p-5">
             <Detail id={id} />
           </Block>
         </Reveal>

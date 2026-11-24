@@ -68,7 +68,7 @@ export function GuideView() {
     <>
       <Breadcrumb items={[{ label: "Guide d'achat" }]} />
 
-      <Block pad="none" className="p-4 text-center sm:p-8">
+      <Block pad="none" className="p-4 text-center sm:p-5">
         <Reveal><h1 className="mx-auto max-w-[640px] text-xl font-bold sm:text-2xl">Comment commander chez <span className="text-primary">Celebobo</span> ?</h1></Reveal>
         <Reveal delay={0.16}><p className="mx-auto mt-3 max-w-[560px] text-sm text-ink-2 sm:mt-4 sm:text-sm">{page?.summary || "Cinq étapes simples, sans paiement en ligne risqué : vous gardez le contrôle du début à la fin."}</p></Reveal>
         <div className="mx-auto max-w-[760px] text-left"><Stepper steps={guideSteps(page?.body)} /></div>
@@ -78,9 +78,9 @@ export function GuideView() {
         </Reveal>
       </Block>
 
-      <Block pad="none" className="p-4 sm:p-8">
+      <Block pad="none" className="p-4 sm:p-5">
         <Reveal><h2 className="text-base sm:text-section">Modes de paiement</h2></Reveal>
-        <RevealGroup className="mt-4 grid gap-3 sm:mt-6 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
+        <RevealGroup className="mt-4 grid gap-3 sm:mt-4 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
           {settings.paymentMethods.map((code) => (
             <RevealItem key={code}>
               <div className="group h-full rounded-box border border-line-3 p-4 transition sm:p-5 duration-300 hover:-translate-y-1.5 hover:border-transparent hover:bg-chip">
@@ -92,7 +92,7 @@ export function GuideView() {
         </RevealGroup>
       </Block>
 
-      <Block pad="none" className="p-4 sm:p-8">
+      <Block pad="none" className="p-4 sm:p-5">
         <Reveal><h2 className="text-base sm:text-section">Politique de livraison</h2></Reveal>
         {!delivery.length && (
           <p className="mt-4 text-sm text-ink-2">
@@ -129,7 +129,7 @@ export function GuideView() {
         </Reveal>
       </Block>
 
-      <Block pad="none" className="p-4 sm:p-8">
+      <Block pad="none" className="p-4 sm:p-5">
         <Reveal><h2 className="text-base sm:text-section">Questions fréquentes</h2></Reveal>
         <div className="mt-4"><Faq /></div>
       </Block>

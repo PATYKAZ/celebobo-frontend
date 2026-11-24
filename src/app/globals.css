@@ -6,13 +6,15 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
-  Pleine largeur à toutes les tailles. Sur grand écran, bordure de 16 px : le même espace qu'entre deux blocs,
-  pour que les blocs arrondis ne soient pas coupés par le bord de l'écran.
+  Boutique : largeur plafonnée à 1440 px et centrée ; au-delà, des marges vides à gauche et à droite aident à se
+  concentrer (comme les grandes boutiques en ligne). Le back-office n'utilise pas ce conteneur : il reste pleine largeur.
+  Bordure de 16 px sur grand écran : le même espace qu'entre deux blocs.
 */
 @utility container {
   width: 100%;
-  /* annule les paliers du container de Tailwind (jusqu'à 1536 px) */
-  max-width: none !important;
+  /* remplace les paliers du container de Tailwind par un plafond unique */
+  max-width: 1440px !important;
+  margin-inline: auto;
   padding-inline: 15px;
   @media (width >= 1024px) {
     padding-inline: 16px;

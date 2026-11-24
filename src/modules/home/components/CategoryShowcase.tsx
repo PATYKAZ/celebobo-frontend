@@ -20,7 +20,7 @@ import { ProductCarousel } from "./ProductCarousel";
 function ShowcaseBanner({ b }: { b: HomeBanner }) {
   const t = bannerTone(b, "from-black/85 via-black/55 to-transparent");
   return (
-    <PhotoBanner image={b.image} href={b.href} label={b.title} overlay={t.overlay} className="h-[170px] sm:h-[200px]" sizes="(min-width:1024px) 605px, 100vw" contentClassName="flex flex-col justify-center px-6 sm:px-8">
+    <PhotoBanner image={b.image} href={b.href} label={b.title} overlay={t.overlay} className="h-[170px] sm:h-[200px]" sizes="(min-width:1024px) 605px, 100vw" contentClassName="flex flex-col justify-center px-6 sm:px-5">
       <h3 className={cn("line-clamp-2 max-w-[80%] whitespace-pre-line text-xl font-medium sm:text-xl", t.text)}>{b.title}</h3>
       {b.subtitle && <p className={cn("mt-2 line-clamp-1 max-w-[80%] text-xs", t.muted)}>{b.subtitle}</p>}
       <p className="mt-3 flex items-center gap-4">
@@ -52,10 +52,10 @@ export function CategoryShowcase({ config, catalog, banner }: { config: Showcase
 
   return (
     <Reveal>
-      <Block pad="none" className="min-w-0 overflow-hidden px-3 pb-4 pt-4 sm:px-8 sm:pb-8 sm:pt-8">
+      <Block pad="none" className="min-w-0 overflow-hidden px-3 pb-4 pt-4 sm:px-5 sm:pb-5 sm:pt-5">
         <SectionHeader title={config.title} viewAllHref={config.viewAllHref} />
 
-        <div className="mt-4 grid grid-cols-[minmax(0,1fr)] gap-4 border-b border-line-2/25 pb-5 sm:mt-6 sm:gap-6 sm:pb-7 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-12">
+        <div className="mt-4 grid grid-cols-[minmax(0,1fr)] gap-4 border-b border-line-2/25 pb-5 sm:mt-4 sm:gap-6 sm:pb-7 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-6">
           {shown ? (
             <ShowcaseBanner b={shown} />
           ) : (
@@ -88,7 +88,7 @@ export function CategoryShowcase({ config, catalog, banner }: { config: Showcase
           )}
         </div>
 
-        <div className="mt-4 sm:mt-6">
+        <div className="mt-4 sm:mt-4">
           <ProductCarousel products={products} loading={isLoading} />
         </div>
       </Block>

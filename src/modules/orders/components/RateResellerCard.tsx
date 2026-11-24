@@ -23,7 +23,7 @@ export function RateResellerCard({ order }: { order: Order }) {
 
   if (order.rating) {
     return (
-      <Block pad="none" className="p-4 sm:p-8">
+      <Block pad="none" className="p-4 sm:p-5">
         <h2 className="text-base sm:text-section">Votre note</h2>
         <div className="mt-3 flex items-center gap-2">
           <Stars rating={order.rating.score} size={18} hideCount />
@@ -49,7 +49,7 @@ export function RateResellerCard({ order }: { order: Order }) {
   };
 
   return (
-    <Block pad="none" className="p-4 sm:p-8">
+    <Block pad="none" className="p-4 sm:p-5">
       <form onSubmit={submit} className="flex flex-col gap-3">
         <h2 className="text-base sm:text-section">Notez {reseller}</h2>
         <p className="text-sm text-ink-2">Comment s&apos;est passée votre commande avec votre revendeur : échanges, délai, remise ?</p>

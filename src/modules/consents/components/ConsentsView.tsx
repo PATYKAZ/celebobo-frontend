@@ -105,7 +105,7 @@ function Content() {
 
   const labels = Object.fromEntries((data?.consents ?? []).map((c) => [c.kind, c.label]));
   return (
-    <Block pad="none" className="mx-auto max-w-[820px] p-4 sm:p-8">
+    <Block pad="none" className="mx-auto max-w-[820px] p-4 sm:p-5">
       <h1 className="flex items-center gap-2 text-xl sm:text-h-page"><ShieldTick size={24} variant="Bold" /> Mes consentements</h1>
       <p className="mb-4 mt-1 text-sm text-ink-2 sm:mb-6 sm:text-sm">
         Ce que vous avez accepté, avec la version de la{" "}

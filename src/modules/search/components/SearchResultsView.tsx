@@ -15,7 +15,7 @@ import { useProducts } from "@/modules/products/hooks/useProducts";
 function PopularSuggestions() {
   const { data, isLoading } = useProducts({ ordering: "-sales", pageSize: 5 });
   return (
-    <div className="mt-4 border-t border-line-3 pt-4 sm:mt-6 sm:pt-6">
+    <div className="mt-4 border-t border-line-3 pt-4 sm:mt-4 sm:pt-6">
       <SectionHeader title="Produits populaires" viewAllHref={ROUTES.products} />
       <ProductGrid products={data?.results} loading={isLoading} skeletons={5} columns={5} className="mt-4" />
     </div>
@@ -28,7 +28,7 @@ function Inner() {
     <>
       <Breadcrumb items={[{ label: "Recherche" }]} />
       <Reveal>
-        <Block pad="none" className="px-4 py-4 sm:px-8 sm:py-6">
+        <Block pad="none" className="px-4 py-4 sm:px-5 sm:py-6">
           <h1 className="wrap-break-word text-xl sm:text-h-page">
             {q ? (
               <>Résultats pour « <span className="rounded-md bg-primary-50 px-1.5 text-primary">{q}</span> »</>

@@ -91,7 +91,7 @@ export function RegisterView() {
       >
         {register.data?.verificationRequired ? (
           <EmptyState
-            className="sm:py-8"
+            className="sm:py-5"
             icon={<SmsTracking size={40} variant="Bulk" />}
             title="Vérifiez votre boîte e-mail"
             description={`Nous avons envoyé un lien de confirmation à ${register.data.email}. Cliquez dessus pour activer votre compte, puis connectez-vous.`}

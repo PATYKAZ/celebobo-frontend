@@ -154,7 +154,7 @@ export function ProductInfo({ product, selection, qty, onQtyChange }: { product:
         {product.freeShipping ? <Pill tone="green">Livraison offerte</Pill> : product.shippingFee ? <Pill tone="dark">{formatPrice(product.shippingFee)} livraison</Pill> : null}
       </div>
 
-      <div className="mt-5 flex flex-wrap items-center gap-3 sm:mt-6">
+      <div className="mt-5 flex flex-wrap items-center gap-3 sm:mt-4">
         {/* mobile : quantité + « Ajouter » vivent dans la barre d'achat collante */}
         <QuantityStepper value={qty} onChange={onQtyChange} max={Math.max(1, stock)} className="max-lg:hidden" />
         <Button size="md" disabled={!inStock} onClick={() => addToCart()} leftIcon={<Bag2 size={18} variant="Bold" />} className="flex-1 max-lg:hidden sm:flex-none">
@@ -173,7 +173,7 @@ export function ProductInfo({ product, selection, qty, onQtyChange }: { product:
         </Button>
       </div>
 
-      <div className={cn("mt-5 grid gap-2 sm:mt-6 sm:gap-3", trust.length === 3 ? "grid-cols-3" : "grid-cols-2")}>
+      <div className={cn("mt-5 grid gap-2 sm:mt-4 sm:gap-3", trust.length === 3 ? "grid-cols-3" : "grid-cols-2")}>
         {trust.map(({ icon: Icon, title, text }) => (
           <div key={title} className="flex flex-col items-center gap-1.5 rounded-box bg-page/60 p-2.5 text-center sm:flex-row sm:gap-3 sm:p-3 sm:text-left">
             <span className="grid size-10 shrink-0 place-items-center rounded-full bg-surface text-primary"><Icon size={20} variant="Bold" /></span>

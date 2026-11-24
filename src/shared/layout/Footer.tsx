@@ -121,7 +121,7 @@ export function Footer() {
 
         {/* Bas de page */}
         <div className="mt-10 flex flex-col items-start gap-5 border-t border-line-3 py-6 lg:mt-12 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-12">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-6">
             <p className="text-sm text-ink-2">© {new Date().getFullYear()} <strong className="text-ink">{SITE.copyright}</strong>. Tous droits réservés.</p>
             <div className="flex flex-wrap gap-2">
               {site.paymentMethods.map((code) => (

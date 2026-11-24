@@ -40,7 +40,7 @@ export function CartSummary({ subtotal, savings, count, quote, coupon, points, c
   const progress = remaining == null ? 0 : remaining <= 0 ? 100 : Math.min(100, (subtotal / (subtotal + remaining)) * 100);
 
   return (
-    <Block pad="none" className="p-4 sm:p-8 lg:sticky lg:top-4">
+    <Block pad="none" className="p-4 sm:p-5 lg:sticky lg:top-4">
       <h2 className="text-section">{title}</h2>
 
       {remaining != null && (
@@ -110,14 +110,14 @@ export function CartSummary({ subtotal, savings, count, quote, coupon, points, c
           Comment ça se passe ?
           <span className="text-ink-3 transition-transform group-open:rotate-180">⌄</span>
         </summary>
-      <ul className="mt-3 space-y-3 text-sm text-ink-2 sm:mt-6 sm:border-t sm:border-line-3 sm:pt-5">
+      <ul className="mt-3 space-y-3 text-sm text-ink-2 sm:mt-4 sm:border-t sm:border-line-3 sm:pt-5">
         <li className="flex gap-2.5"><Messages2 size={18} variant="Bold" className="shrink-0 text-primary" />Votre commande ouvre une discussion avec un revendeur Celebobo pour confirmer le stock et la livraison.</li>
         <li className="flex gap-2.5"><ShieldTick size={18} variant="Bold" className="shrink-0 text-primary" />Paiement par Mobile Money (Orange, Airtel, M-Pesa) ou cash à la livraison — rien n&apos;est débité en ligne.</li>
         <li className="flex gap-2.5"><InfoCircle size={18} variant="Bold" className="shrink-0 text-primary" />Les prix peuvent être ajustés par le revendeur lors de la confirmation.</li>
       </ul>
       </details>
       <div className="hidden sm:block">
-      <ul className="mt-3 space-y-3 text-sm text-ink-2 sm:mt-6 sm:border-t sm:border-line-3 sm:pt-5">
+      <ul className="mt-3 space-y-3 text-sm text-ink-2 sm:mt-4 sm:border-t sm:border-line-3 sm:pt-5">
         <li className="flex gap-2.5"><Messages2 size={18} variant="Bold" className="shrink-0 text-primary" />Votre commande ouvre une discussion avec un revendeur Celebobo pour confirmer le stock et la livraison.</li>
         <li className="flex gap-2.5"><ShieldTick size={18} variant="Bold" className="shrink-0 text-primary" />Paiement par Mobile Money (Orange, Airtel, M-Pesa) ou cash à la livraison — rien n&apos;est débité en ligne.</li>
         <li className="flex gap-2.5"><InfoCircle size={18} variant="Bold" className="shrink-0 text-primary" />Les prix peuvent être ajustés par le revendeur lors de la confirmation.</li>

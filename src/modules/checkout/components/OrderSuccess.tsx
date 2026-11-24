@@ -34,13 +34,13 @@ export function OrderSuccess({ order, conversationId }: { order: Order; conversa
             </svg>
           </motion.span>
         </div>
-        <motion.h2 initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="mt-6 text-xl sm:mt-8 sm:text-2xl">Commande {number} envoyée !</motion.h2>
+        <motion.h2 initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="mt-6 text-xl sm:mt-5 sm:text-2xl">Commande {number} envoyée !</motion.h2>
         <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.65 }} className="mx-auto mt-3 max-w-[480px] text-sm text-ink-2">
           Merci {order.user.name.split(" ")[0]} ! Votre demande a bien été transmise à l&apos;équipe Celebobo.
           {order.awaitingShippingQuote && <> Votre zone est livrée sur devis : un revendeur vous indiquera le coût et le délai de livraison dans la discussion. Vous ne payez rien avant de les avoir acceptés.</>}
           {order.pickup && order.pickupAddress && <> Vous la retirerez dès sa confirmation, à l&apos;adresse : {order.pickupAddress}.</>}
         </motion.p>
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }} className="mt-6 flex flex-col gap-2.5 sm:mt-8 sm:flex-row sm:flex-wrap sm:justify-center sm:gap-3">
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }} className="mt-6 flex flex-col gap-2.5 sm:mt-5 sm:flex-row sm:flex-wrap sm:justify-center sm:gap-3">
           {conversationId && <Button href={ROUTES.conversation(conversationId)} size="lg" className="max-sm:w-full" leftIcon={<Messages2 size={17} variant="Bold" />} rightIcon={<ArrowRight size={16} />}>Ouvrir la discussion</Button>}
           <Button href={ROUTES.orderDetail(number)} variant="secondary" size="lg" className="max-sm:w-full" leftIcon={<Receipt2 size={17} variant="Bold" />}>Voir ma commande</Button>
           <Button href={ROUTES.products} variant="secondary" size="lg" className="max-sm:w-full">Continuer mes achats</Button>

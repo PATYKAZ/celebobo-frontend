@@ -31,10 +31,10 @@ function Wordmark({ brand }: { brand: Brand }) {
 
 function FeaturedBrands({ brands }: { brands?: Brand[] }) {
   return (
-    <Block pad="none" className="min-w-0 overflow-hidden px-4 py-4 sm:px-8 sm:py-6 lg:min-h-[227px]">
+    <Block pad="none" className="min-w-0 overflow-hidden px-4 py-4 sm:px-5 sm:py-6 lg:min-h-[227px]">
       <SectionHeader title="Marques à la une" viewAllHref={ROUTES.products} />
       {!brands ? (
-        <Skeleton className="mt-5 h-[60px] sm:mt-8 sm:h-[110px]" />
+        <Skeleton className="mt-5 h-[60px] sm:mt-5 sm:h-[110px]" />
       ) : (
         <>
           <RevealGroup stagger={0.05} className="mt-8 hidden grid-cols-5 items-center gap-y-9 md:grid">
@@ -76,7 +76,7 @@ function TopCategories() {
   const sync = (s: SwiperType) => setEdge({ begin: s.isBeginning, end: s.isEnd });
 
   return (
-    <Block pad="none" className="min-w-0 overflow-hidden px-4 py-4 sm:px-8 sm:py-6 lg:min-h-[227px]">
+    <Block pad="none" className="min-w-0 overflow-hidden px-4 py-4 sm:px-5 sm:py-6 lg:min-h-[227px]">
       <SectionHeader
         title={<><span className="sm:hidden">Catégories</span><span className="hidden sm:inline">Top catégories</span></>}
         viewAllHref={ROUTES.products}

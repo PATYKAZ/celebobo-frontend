@@ -43,13 +43,13 @@ export function ContactView() {
 
       <div className="grid gap-3 sm:gap-4 lg:grid-cols-[1.35fr_1fr]">
         <Reveal direction="up" className="min-w-0">
-          <Block pad="none" className="h-full p-4 sm:p-8">
+          <Block pad="none" className="h-full p-4 sm:p-5">
             <h1 className="text-xl sm:text-h-page">Écrivez-nous</h1>
             <p className="mt-1 text-sm text-ink-2 sm:text-sm">Une question ? Notre équipe vous répond sous 24 h.</p>
 
             <AnimatePresence mode="wait">
               {sent ? (
-                <motion.div key="ok" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center py-8 text-center sm:py-14">
+                <motion.div key="ok" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center py-8 text-center sm:py-8">
                   <motion.span initial={{ scale: 0.5, rotate: -90 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: "spring", stiffness: 300, damping: 12 }} className="grid size-20 place-items-center rounded-full bg-primary text-white"><TickCircle size={42} variant="Bold" /></motion.span>
                   <h2 className="mt-5 text-xl">Message envoyé !</h2>
                   <p className="mt-2 max-w-[400px] text-sm text-ink-2">Merci de nous avoir contactés, nous revenons vers vous sous 24 h à l&apos;adresse <strong className="text-ink">{receipt?.input.email}</strong>.</p>
@@ -63,7 +63,7 @@ export function ContactView() {
                   <Button className="mt-6" variant="secondary" upper={false} onClick={reset}>Envoyer un autre message</Button>
                 </motion.div>
               ) : (
-                <motion.form key="form" onSubmit={onSubmit} noValidate initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-5 grid gap-4 sm:mt-6 sm:grid-cols-2">
+                <motion.form key="form" onSubmit={onSubmit} noValidate initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-5 grid gap-4 sm:mt-4 sm:grid-cols-2">
                   <Input name="name" label="Nom complet" required value={values.name} onChange={onChange} error={errors.name} placeholder="Aline Mbuyi" autoComplete="name" />
                   <Input name="email" type="email" label="E-mail" required value={values.email} onChange={onChange} error={errors.email} placeholder="vous@exemple.com" autoComplete="email" inputMode="email" autoCapitalize="none" enterKeyHint="next" />
                   <Input name="phone" type="tel" label="Téléphone" value={values.phone} onChange={onChange} error={errors.phone} placeholder="+243 …" autoComplete="tel" inputMode="tel" enterKeyHint="next" />
@@ -79,17 +79,17 @@ export function ContactView() {
         </Reveal>
 
         <Reveal direction="up" className="min-w-0">
-          <Block pad="none" className="h-full p-4 sm:p-8">
+          <Block pad="none" className="h-full p-4 sm:p-5">
             <div className="flex items-center gap-3">
               <span className="grid size-11 place-items-center rounded-full bg-chip"><Clock size={22} variant="Bold" /></span>
               <h2 className="text-base sm:text-section">Horaires d&apos;ouverture</h2>
             </div>
-            <ul className="mt-4 divide-y divide-line-3 sm:mt-6">
+            <ul className="mt-4 divide-y divide-line-3 sm:mt-4">
               {site.openingHours.map(({ days: d, hours: h }) => (
                 <li key={d} className="flex items-start justify-between gap-3 py-3 text-sm sm:items-center sm:gap-4 sm:py-3.5 sm:text-sm"><span className="font-semibold">{d}</span><span className="text-right text-ink-2">{h}</span></li>
               ))}
             </ul>
-            <div className="mt-4 rounded-box bg-primary-50 p-4 sm:mt-6 sm:p-5">
+            <div className="mt-4 rounded-box bg-primary-50 p-4 sm:mt-4 sm:p-5">
               <p className="text-xs text-ink-2">Urgence ? Appelez-nous</p>
               <a href={site.hotlineHref} className="mt-1 flex min-h-11 items-center text-xl font-bold text-primary sm:text-xl">{site.hotline}</a>
             </div>

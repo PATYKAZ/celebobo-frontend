@@ -39,7 +39,7 @@ function Content() {
   const countOf = (f: Filter) => (data?.results ?? []).filter((o) => f === "all" || GROUPS[f].includes(o.status)).length;
 
   return (
-    <Block pad="none" className="p-4 sm:p-8">
+    <Block pad="none" className="p-4 sm:p-5">
       <div className="flex flex-wrap items-center justify-between gap-3 sm:gap-4">
         <div className="min-w-0">
           <h1 className="text-xl sm:text-h-page">Mes commandes</h1>
@@ -63,7 +63,7 @@ function Content() {
         />
       </div>
 
-      <div className="mt-4 space-y-3 sm:mt-6 sm:space-y-4">
+      <div className="mt-4 space-y-3 sm:mt-4 sm:space-y-4">
         {isLoading ? (
           Array.from({ length: 3 }, (_, i) => <Skeleton key={i} className="h-[92px] w-full rounded-box!" />)
         ) : isError ? (

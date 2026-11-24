@@ -27,7 +27,7 @@ export function CmsPageView({ slug }: { slug: string }) {
       <Breadcrumb items={[{ label: page?.title ?? "Informations" }]} />
       <div className="grid gap-3 sm:gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
         <Reveal className="min-w-0">
-          <Block pad="none" className="p-4 sm:p-8 lg:p-10">
+          <Block pad="none" className="p-4 sm:p-5 lg:p-10">
             {isLoading ? (
               <div className="space-y-4">
                 <Skeleton className="h-6 w-40" />

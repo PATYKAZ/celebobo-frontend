@@ -19,9 +19,9 @@ export function RecommendedProducts({ excludeIds = [] }: { excludeIds?: number[]
 
   return (
     <Reveal>
-      <Block pad="none" className="p-4 sm:p-8">
+      <Block pad="none" className="p-4 sm:p-5">
         <SectionHeader title="Vous aimerez aussi" viewAllHref={ROUTES.products} right={<SliderArrows onPrev={() => scroll(-1)} onNext={() => scroll(1)} className="max-sm:hidden" />} />
-        <div ref={track} className="no-scrollbar -mx-4 mt-4 flex snap-x snap-mandatory gap-2 overflow-x-auto scroll-px-4 px-4 sm:-mx-2 sm:mt-6 sm:scroll-px-2 sm:gap-1 sm:px-2">
+        <div ref={track} className="no-scrollbar -mx-4 mt-4 flex snap-x snap-mandatory gap-2 overflow-x-auto scroll-px-4 px-4 sm:-mx-2 sm:mt-4 sm:scroll-px-2 sm:gap-1 sm:px-2">
           {isLoading
             ? Array.from({ length: 5 }, (_, i) => <div key={i} className="w-[168px] shrink-0 sm:w-[224px]"><ProductCardSkeleton /></div>)
             : items?.map((p) => (

@@ -23,7 +23,7 @@ function MyRecentOrders() {
   const { data: mine } = useOrders({ status: "all", page: 1, pageSize: 5 });
   if (!mine || mine.results.length === 0) return null;
   return (
-    <div className="mt-6 border-t border-line-3 pt-5 sm:mt-8">
+    <div className="mt-6 border-t border-line-3 pt-5 sm:mt-5">
       <p className="text-xs font-bold text-ink-3">Mes commandes récentes</p>
       <ul className="mt-3 space-y-2">
         {mine.results.map((o) => (
@@ -80,7 +80,7 @@ export function TrackingView() {
 
       <div className="grid gap-3 sm:gap-4 lg:grid-cols-[420px_minmax(0,1fr)]">
         <Reveal direction="up" className="min-w-0">
-          <Block pad="none" className="h-full p-4 sm:p-8">
+          <Block pad="none" className="h-full p-4 sm:p-5">
             <span className="grid size-12 place-items-center rounded-full bg-primary-100 text-primary-dark sm:size-14"><Box1 size={26} variant="Bold" /></span>
             <h1 className="mt-3 text-xl sm:mt-4 sm:text-h-page">Suivre ma commande</h1>
             <p className="mb-5 mt-1 text-sm text-ink-2 sm:mb-6 sm:text-sm">Pas besoin de compte : entrez votre numéro de commande et l&apos;e-mail ou le téléphone utilisé.</p>
@@ -96,7 +96,7 @@ export function TrackingView() {
         </Reveal>
 
         <Reveal direction="up" className="min-w-0">
-          <Block pad="none" className="h-full min-h-[240px] p-4 sm:min-h-[340px] sm:p-8">
+          <Block pad="none" className="h-full min-h-[240px] p-4 sm:min-h-[340px] sm:p-5">
             <AnimatePresence mode="wait">
               {result ? (
                 <motion.div key={result.number} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
@@ -110,7 +110,7 @@ export function TrackingView() {
                   </div>
                   <div className="mt-5 md:hidden"><OrderProgress status={result.status} /></div>
                   <div className="mt-8 hidden md:block"><OrderTimeline order={result} /></div>
-                  <div className="mt-6 grid gap-6 sm:mt-8 sm:gap-8 md:grid-cols-2">
+                  <div className="mt-6 grid gap-6 sm:mt-5 sm:gap-5 md:grid-cols-2">
                     <div>
                       <p className="mb-3 text-xs font-bold text-ink-3">Historique</p>
                       <OrderTimeline order={result} layout="vertical" />

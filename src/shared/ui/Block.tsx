@@ -2,7 +2,7 @@ import type { HTMLAttributes } from "react";
 import { cn } from "@/shared/lib/cn";
 
 interface Props extends HTMLAttributes<HTMLDivElement> {
-  /** Padding interne : "none" | "md" (30px, standard design) | "sm" (20px) */
+  /** Padding interne : "none" | "md" (20 px, standard) | "sm" (16–20 px) */
   pad?: "none" | "sm" | "md";
   as?: "div" | "section" | "article" | "aside" | "main";
 }
@@ -11,7 +11,7 @@ interface Props extends HTMLAttributes<HTMLDivElement> {
 export function Block({ pad = "md", as: Tag = "div", className, ...rest }: Props) {
   return (
     <Tag
-      className={cn("rounded-box bg-surface", pad === "md" && "p-5 sm:p-8", pad === "sm" && "p-4 sm:p-5", className)}
+      className={cn("rounded-box bg-surface", pad === "md" && "p-4 sm:p-5", pad === "sm" && "p-4 sm:p-5", className)}
       {...rest}
     />
   );

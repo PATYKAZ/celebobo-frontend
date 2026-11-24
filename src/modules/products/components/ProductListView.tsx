@@ -2,16 +2,15 @@
 
 import { SearchStatus } from "@/shared/ui/icons";
 import { AnimatePresence } from "motion/react";
-import { useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { RevealGroup, RevealItem } from "@/shared/animations/Reveal";
 import { Block } from "@/shared/ui/Block";
 import { Button } from "@/shared/ui/Button";
 import { EmptyState } from "@/shared/ui/EmptyState";
 import { BottomSheet } from "@/shared/ui/BottomSheet";
-import { Pagination } from "@/shared/ui/Pagination";
 import { useFlatCategories } from "@/modules/categories/hooks/useCategories";
-import { PAGE_SIZE, useProductFilters, type LockedFilters } from "../hooks/useProductFilters";
-import { useProductFacets, useProducts } from "../hooks/useProducts";
+import { useProductFilters, type LockedFilters } from "../hooks/useProductFilters";
+import { useInfiniteProducts, useProductFacets } from "../hooks/useProducts";
 import { ProductFilters } from "./ProductFilters";
 import { ProductGrid } from "./ProductGrid";
 import { ProductListItem } from "./ProductListItem";
@@ -23,24 +22,41 @@ interface Props {
   emptyExtra?: ReactNode;
 }
 
-/** Liste filtrable (sidebar + barre d'outils + grille/liste + pagination), partagée par produits / catégorie / recherche. */
+/**
+ * Liste filtrable (sidebar + barre d'outils + grille/liste), partagée par produits / catégorie / recherche.
+ * Défilement infini : le lot suivant se charge à l'approche du bas (plus de pagination numérotée).
+ */
+const BATCH = 24;
+
 export function ProductListView({ locked, emptyExtra }: Props) {
   const { state, params, set, reset, activeCount } = useProductFilters(locked);
   const { data: categories } = useFlatCategories();
-  const { data, isLoading, isFetching } = useProducts(params);
+  // la page de l'URL ne sert plus : on charge par lots successifs
+  const { page: _page, pageSize: _size, ...listParams } = params;
+  const { data, isLoading, isFetching, isFetchingNextPage, hasNextPage, fetchNextPage } = useInfiniteProducts(listParams, BATCH);
+  const products = useMemo(() => data?.pages.flatMap((pg) => pg.results) ?? [], [data]);
+  const sentinel = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = sentinel.current;
+    if (!el || !hasNextPage) return;
+    const io = new IntersectionObserver((entries) => {
+      if (entries[0]?.isIntersecting && !isFetchingNextPage) fetchNextPage();
+    }, { rootMargin: "600px 0px" });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
   const { data: facets } = useProductFacets(params);
   const [view, setView] = useState<ViewMode>("grid");
   const [drawer, setDrawer] = useState(false);
 
-  const total = data?.count;
-  const pageCount = Math.ceil((total ?? 0) / PAGE_SIZE);
+  const total = data?.pages[0]?.count;
   const hideCats = locked?.category !== undefined;
   const filters = (
     <ProductFilters state={state} categories={categories} facets={facets} hideCategories={hideCats} onChange={set} onReset={reset} activeCount={activeCount} />
   );
 
   return (
-    <Block pad="none" className="grid grid-cols-[minmax(0,1fr)] gap-0 p-3 sm:p-8 lg:grid-cols-[250px_minmax(0,1fr)] lg:gap-8">
+    <Block pad="none" className="grid grid-cols-[minmax(0,1fr)] gap-0 p-3 sm:p-5 lg:grid-cols-[250px_minmax(0,1fr)] lg:gap-8">
       <aside className="hidden lg:block">
         <div className="sticky top-4">{filters}</div>
       </aside>
@@ -72,16 +88,16 @@ export function ProductListView({ locked, emptyExtra }: Props) {
           activeFilters={activeCount}
         />
 
-        <div className={isFetching && !isLoading ? "pointer-events-none opacity-60 transition-opacity" : "transition-opacity"}>
+        <div className={isFetching && !isLoading && !isFetchingNextPage ? "pointer-events-none opacity-60 transition-opacity" : "transition-opacity"}>
           {isLoading ? (
-            <ProductGrid loading skeletons={PAGE_SIZE} columns={4} className="mt-3" />
-          ) : data && data.results.length > 0 ? (
+            <ProductGrid loading skeletons={10} columns={4} className="mt-3" />
+          ) : products.length > 0 ? (
             view === "grid" ? (
-              <ProductGrid key={`${state.page}-${state.ordering}`} products={data.results} columns={4} className="mt-3" />
+              <ProductGrid key={state.ordering} products={products} columns={4} className="mt-3" />
             ) : (
-              <RevealGroup key={`l-${state.page}-${state.ordering}`} stagger={0.05} className="mt-3 flex flex-col divide-y divide-line-3">
+              <RevealGroup key={`l-${state.ordering}`} stagger={0.05} className="mt-3 flex flex-col divide-y divide-line-3">
                 <AnimatePresence>
-                  {data.results.map((p) => (
+                  {products.map((p) => (
                     <RevealItem key={p.id}>
                       <ProductListItem product={p} />
                     </RevealItem>
@@ -102,15 +118,14 @@ export function ProductListView({ locked, emptyExtra }: Props) {
           )}
         </div>
 
-        <Pagination
-          page={state.page}
-          pageCount={pageCount}
-          onChange={(p) => {
-            set({ page: p });
-            window.scrollTo({ top: 0, behavior: "smooth" });
-          }}
-          className="pt-6 sm:pt-8"
-        />
+        {/* repère de chargement du lot suivant + état de la liste */}
+        <div ref={sentinel} aria-hidden className="h-px" />
+        {isFetchingNextPage && <ProductGrid loading skeletons={5} columns={4} className="mt-1" />}
+        {products.length > 0 && total != null && (
+          <p className="py-5 text-center text-sm text-ink-3" aria-live="polite">
+            {hasNextPage ? `${products.length} sur ${total} produits` : `${total} produit${total > 1 ? "s" : ""} — vous avez tout vu`}
+          </p>
+        )}
       </div>
     </Block>
   );

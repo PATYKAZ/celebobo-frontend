@@ -46,10 +46,10 @@ function deviceName(ua: string) {
 function DevicesList({ current }: { current: number | null }) {
   const { data: devices, isLoading } = usePushDevices();
   const remove = useRemoveDevice();
-  if (isLoading) return <Skeleton className="mt-4 h-16 rounded-box! sm:mt-6" />;
+  if (isLoading) return <Skeleton className="mt-4 h-16 rounded-box! sm:mt-4" />;
   if (!devices?.length) return null;
   return (
-    <div className="mt-4 rounded-box border border-line-3 sm:mt-6">
+    <div className="mt-4 rounded-box border border-line-3 sm:mt-4">
       <p className="flex items-center gap-2 border-b border-line-3 bg-page/50 px-4 py-3 text-xs font-semibold text-ink-3 sm:px-5"><Devices size={14} /> Appareils abonnés aux notifications push</p>
       <ul className="divide-y divide-line-3">
         {devices.map((d) => {
@@ -90,11 +90,11 @@ function Content() {
 
   return (
     <Reveal>
-      <Block pad="none" className="p-4 sm:p-8">
+      <Block pad="none" className="p-4 sm:p-5">
         <h1 className="text-xl sm:text-h-page">Notifications & préférences</h1>
         <p className="mt-1 text-sm text-ink-2 sm:text-sm">Choisissez comment être prévenu de l&apos;avancement de vos commandes et de vos messages.</p>
 
-        <div className={`mt-4 flex flex-wrap items-center gap-3 rounded-box p-3.5 text-sm sm:mt-6 sm:p-4 sm:text-sm ${pushCopy.tone}`}>
+        <div className={`mt-4 flex flex-wrap items-center gap-3 rounded-box p-3.5 text-sm sm:mt-4 sm:p-4 sm:text-sm ${pushCopy.tone}`}>
           <NotificationBing size={22} variant="Bold" />
           <span className="min-w-0 flex-1">{pushCopy.text}</span>
           {(push.state === "default" || (push.state === "granted" && !push.currentDevice)) && (
@@ -105,7 +105,7 @@ function Content() {
         </div>
         <DevicesList current={push.currentDevice} />
 
-        <div className="mt-4 overflow-hidden rounded-box border border-line-3 sm:mt-6">
+        <div className="mt-4 overflow-hidden rounded-box border border-line-3 sm:mt-4">
           <div className="hidden grid-cols-[1fr_90px_90px] gap-4 border-b border-line-3 bg-page/50 px-5 py-3 text-xs font-semibold text-ink-3 sm:grid">
             <span>Événement</span>
             <span className="flex items-center justify-center gap-1"><Sms size={14} /> E-mail</span>

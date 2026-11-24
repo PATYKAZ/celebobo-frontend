@@ -1,6 +1,6 @@
 "use client";
 
-import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { keepPreviousData, useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuthStore } from "@/modules/auth/store/auth.store";
 import { productsService } from "../services/products.service";
 import { productKeys } from "../keys";
@@ -15,6 +15,17 @@ export function useProducts(params: ProductListParams = {}, enabled = true) {
     queryFn: () => productsService.list(params),
     placeholderData: keepPreviousData,
     enabled,
+  });
+}
+
+/** Listes boutique en défilement infini : lots de `pageSize` produits, le suivant chargé à l'approche du bas. */
+export function useInfiniteProducts(params: Omit<ProductListParams, "page">, pageSize = 24) {
+  return useInfiniteQuery({
+    queryKey: [...productKeys.list({ ...params, pageSize }), "infinite"] as const,
+    queryFn: ({ pageParam }) => productsService.list({ ...params, page: pageParam, pageSize }),
+    initialPageParam: 1,
+    getNextPageParam: (last, pages) => (pages.length * pageSize < last.count ? pages.length + 1 : undefined),
+    placeholderData: keepPreviousData,
   });
 }
 

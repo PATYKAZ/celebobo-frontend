@@ -44,7 +44,7 @@ export function CartView() {
       ) : (
         <div className="grid gap-3 sm:gap-4 lg:grid-cols-[1fr_380px]">
           <Reveal className="min-w-0">
-            <Block pad="none" className="p-4 sm:p-8">
+            <Block pad="none" className="p-4 sm:p-5">
               <div className="flex items-center justify-between gap-3">
                 <h1 className="text-xl sm:text-h-page">Mon panier <span className="text-sm font-medium text-ink-3 sm:text-base">({count})</span></h1>
                 <button onClick={() => setConfirmClear(true)} className="flex min-h-11 items-center gap-1.5 rounded-full px-2 text-sm text-ink-2 transition-colors hover:text-danger active:scale-95">

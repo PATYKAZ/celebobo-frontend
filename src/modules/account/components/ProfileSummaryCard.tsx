@@ -65,7 +65,7 @@ export function ProfileSummaryCard({ user, profile, previewAvatar, onPickAvatar 
         <span className="mt-3 inline-block rounded-full bg-primary-100 px-3 py-1 text-xs font-bold text-primary-dark">{ROLE_LABEL[user.role]}</span>
 
         {code && (
-          <div className="mt-4 rounded-box border border-dashed border-primary/50 bg-primary-50 p-3.5 sm:mt-6 sm:p-4">
+          <div className="mt-4 rounded-box border border-dashed border-primary/50 bg-primary-50 p-3.5 sm:mt-4 sm:p-4">
             <p className="text-xs font-semibold text-ink-2">Mon code revendeur</p>
             <div className="mt-2 flex items-center justify-between gap-3">
               <span className="text-xl font-bold text-primary sm:text-2xl">{code}</span>

@@ -38,7 +38,7 @@ function Inner({ embedded }: { embedded?: boolean }) {
           <Breadcrumb items={[{ label: "Notifications" }]} />
         </div>
       )}
-      <Block pad="none" className="p-4 pb-24 sm:p-8 lg:pb-8">
+      <Block pad="none" className="p-4 pb-24 sm:p-5 lg:pb-8">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3 sm:mb-6">
           <div className="min-w-0">
             <h1 className="text-xl sm:text-h-page">Notifications</h1>
@@ -64,7 +64,7 @@ function Inner({ embedded }: { embedded?: boolean }) {
                 ))}
               </AnimatePresence>
             </ul>
-            <Pagination page={page} pageCount={pageCount} onChange={setPage} className="mt-6 sm:mt-8" />
+            <Pagination page={page} pageCount={pageCount} onChange={setPage} className="mt-6 sm:mt-5" />
           </>
         )}
       </Block>

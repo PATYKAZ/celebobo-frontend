@@ -137,7 +137,7 @@ export function NewClaimView() {
       <AuthGuard fallback={<AccountSkeleton breadcrumb={false} />}>
         <AccountShell>
         <Reveal>
-          <Block pad="none" className="p-4 sm:p-8">
+          <Block pad="none" className="p-4 sm:p-5">
             <h1 className="mb-4 text-xl sm:text-h-page">Faire une réclamation</h1>
             <Content />
           </Block>

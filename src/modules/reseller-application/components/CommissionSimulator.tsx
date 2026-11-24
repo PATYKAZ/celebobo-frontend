@@ -12,7 +12,7 @@ export function CommissionSimulator() {
   const pct = (sales / 6000) * 100;
 
   return (
-    <div className="rounded-box bg-ink-dark p-4 text-white sm:p-8">
+    <div className="rounded-box bg-ink-dark p-4 text-white sm:p-5">
       <p className="text-sm font-semibold text-white/60">Simulateur de gains</p>
       <p className="mt-3 text-sm text-white/80">Si je vends chaque mois pour…</p>
       <p className="mt-1 text-2xl font-bold text-sun sm:text-2xl">{formatPrice(sales)}</p>
@@ -30,7 +30,7 @@ export function CommissionSimulator() {
       />
       <div className="mt-1 flex justify-between text-xs text-white/50"><span>200 $</span><span>6 000 $</span></div>
 
-      <div className="mt-5 grid grid-cols-2 gap-2.5 sm:mt-6 sm:gap-3">
+      <div className="mt-5 grid grid-cols-2 gap-2.5 sm:mt-4 sm:gap-3">
         <div className="min-w-0 rounded-box bg-white/10 p-3 sm:p-4">
           <p className="text-xs text-white/60 sm:text-xs">Commission jusqu&apos;à / mois</p>
           <p className="mt-1 text-xl font-bold text-primary-light sm:text-2xl"><CountUp key={Math.round(amount)} to={amount} duration={0.6} format={formatPrice} /></p>

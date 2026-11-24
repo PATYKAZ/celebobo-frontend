@@ -17,7 +17,7 @@ export function GreenBar() {
     { icon: ShieldTick, label: "Paiement mobile sécurisé" },
   ];
   return (
-    <section aria-label="Recherche et avantages" className="mt-px rounded-box bg-primary px-4 py-3 max-lg:mx-[-15px] max-lg:rounded-none max-lg:px-5 sm:px-8 lg:py-4">
+    <section aria-label="Recherche et avantages" className="mt-px rounded-box bg-primary px-4 py-3 max-lg:mx-[-15px] max-lg:rounded-none max-lg:px-5 sm:px-5 lg:py-4">
       <div className="flex flex-col gap-4 lg:h-[45px] lg:flex-row lg:items-center lg:justify-between">
         <SearchBar className="w-full lg:w-[517px]" />
         <ul className="hidden items-center gap-8 text-sm font-medium text-white xl:flex">

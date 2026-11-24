@@ -209,7 +209,7 @@ export function Header() {
   return (
     <header className="rounded-box bg-surface max-lg:sticky max-lg:top-0 max-lg:z-40 max-lg:mx-[-15px] max-lg:rounded-none max-lg:border-b max-lg:border-line-3/70 max-lg:pt-safe-t max-lg:bg-surface/95 max-lg:backdrop-blur-md">
       {/* Ligne 1 */}
-      <div className="hidden items-center justify-between px-8 pt-4 lg:flex">
+      <div className="hidden items-center justify-between px-6 pt-3 lg:flex">
         <div className="flex items-center gap-5">
           <a href={site.hotlineHref} className="flex h-7 items-center gap-1.5 rounded-md bg-chip px-2.5 text-xs">
             <Call size={12} variant="Bold" /> {supportLabel(site)}
@@ -227,7 +227,7 @@ export function Header() {
       </div>
 
       {/* Ligne 2 */}
-      <div className="flex min-h-[60px] items-center gap-3 px-4 py-2 lg:min-h-0 lg:px-8 lg:pb-6 lg:pt-4">
+      <div className="flex min-h-[60px] items-center gap-3 px-4 py-2 lg:min-h-0 lg:px-6 lg:pb-4 lg:pt-3">
         <Logo className="mr-auto lg:mr-0" />
 
         <nav aria-label="Navigation principale" className="ml-8 hidden items-center lg:flex">

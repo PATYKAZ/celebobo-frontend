@@ -69,7 +69,7 @@ export function ResellerApplicationView() {
         <section className="relative overflow-hidden rounded-box bg-ink-dark text-white">
           <ParallaxImage src="/images/about/team-1.jpg" alt="" fill sizes="1300px" strength={30} wrapperClassName="absolute inset-0 opacity-35" />
           <div className="absolute inset-0 bg-linear-to-r from-ink-dark via-ink-dark/80 to-transparent" />
-          <div className="relative grid gap-6 px-4 py-9 sm:gap-8 sm:px-12 sm:py-14 lg:grid-cols-[1.2fr_1fr] lg:py-20">
+          <div className="relative grid gap-6 px-4 py-9 sm:gap-5 sm:px-12 sm:py-8 lg:grid-cols-[1.2fr_1fr] lg:py-20">
             <div>
               <h1 className="text-2xl font-bold">Vendez la tech.<br /><span className="text-sun">Gagnez à chaque vente.</span></h1>
               <p className="mt-3 max-w-[520px] text-sm text-white/80 sm:mt-4 sm:text-base">Rejoignez le réseau de revendeurs Celebobo : des commandes qui vous sont assignées, des commissions de 5 à 10 % et un espace pour tout suivre.</p>
@@ -95,9 +95,9 @@ export function ResellerApplicationView() {
       </Reveal>
 
       {/* Avantages */}
-      <Block pad="none" className="p-4 sm:p-8">
+      <Block pad="none" className="p-4 sm:p-5">
         <h2 className="text-base sm:text-section">Pourquoi nous rejoindre</h2>
-        <RevealGroup className="mt-4 grid gap-x-10 gap-y-6 sm:mt-6 sm:grid-cols-2 lg:grid-cols-3">
+        <RevealGroup className="mt-4 grid gap-x-10 gap-y-6 sm:mt-4 sm:grid-cols-2 lg:grid-cols-3">
           {BENEFITS.map(({ icon: Icon, title, text }) => (
             <RevealItem key={title}>
               <div className="flex h-full gap-4">
@@ -116,9 +116,9 @@ export function ResellerApplicationView() {
       <div id="gains" className="grid scroll-mt-6 gap-3 sm:gap-4 lg:grid-cols-2">
         <Reveal direction="up" className="min-w-0"><CommissionSimulator /></Reveal>
         <Reveal direction="up" className="min-w-0">
-          <Block pad="none" className="h-full p-4 sm:p-8">
+          <Block pad="none" className="h-full p-4 sm:p-5">
             <h2 className="text-base sm:text-section">Comment ça marche</h2>
-            <ol className="relative mt-5 space-y-6 sm:mt-6 sm:space-y-8">
+            <ol className="relative mt-5 space-y-6 sm:mt-4 sm:space-y-8">
               <span aria-hidden className="absolute bottom-4 left-[19px] top-4 w-[2px] bg-line-3" />
               {STEPS.map((s, i) => (
                 <li key={s.title} className="relative flex gap-4">
@@ -134,14 +134,14 @@ export function ResellerApplicationView() {
       {/* Candidature */}
       <div id="candidater" className="grid scroll-mt-6 gap-3 sm:gap-4 lg:grid-cols-[1.3fr_1fr]">
         <Reveal className="min-w-0">
-          <Block pad="none" className="p-4 sm:p-8">
+          <Block pad="none" className="p-4 sm:p-5">
             <h2 className="text-xl sm:text-h-page">Déposez votre candidature</h2>
             <p className="mb-4 mt-1 text-sm text-ink-2 sm:mb-6 sm:text-sm">Réponse sous 48 h.</p>
             <ApplicationForm />
           </Block>
         </Reveal>
         <Reveal delay={0.1} className="min-w-0">
-          <Block pad="none" className="p-4 sm:p-8">
+          <Block pad="none" className="p-4 sm:p-5">
             <h2 className="mb-4 text-base sm:mb-5 sm:text-section">Questions fréquentes</h2>
             <Faq />
           </Block>

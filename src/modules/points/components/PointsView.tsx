@@ -76,13 +76,13 @@ function Content() {
 
   return (
     <Reveal>
-      <Block pad="none" className="p-4 sm:p-8">
+      <Block pad="none" className="p-4 sm:p-5">
         <h1 className="text-xl sm:text-h-page">Mes points</h1>
         <p className="mt-1 text-sm text-ink-2 sm:text-sm">
           {data?.closesAt ? "Utilisez vos points au paiement : vous choisissez combien en utiliser (1 point = 1 $)." : <>À chaque commande livrée, vous gagnez {points.percent ? `${points.percent.toLocaleString("fr-FR")} %` : "un pourcentage"} de ce que vous payez pour vos articles en points de fidélité (1 point = 1 $). Au paiement, vous choisissez combien de points utiliser.{isReseller && points.referralPercent ? ` Vous recevez aussi ${points.referralPercent.toLocaleString("fr-FR")} % des factures de vos clients invités pendant ${points.referralMonths} mois, payées sans points ni coupon.` : null}</>}
         </p>
 
-        <div className="mt-4 sm:mt-6">
+        <div className="mt-4 sm:mt-4">
           {isLoading ? (
             <div className="space-y-3">
               <div className="grid gap-3 sm:grid-cols-3">{[0, 1, 2].map((i) => <Skeleton key={i} className="h-[104px] rounded-box!" />)}</div>

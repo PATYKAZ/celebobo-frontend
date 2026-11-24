@@ -6,8 +6,7 @@ import { motion } from "motion/react";
 import { Bag2, CloseCircle, Heart } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import { cn } from "@/shared/lib/cn";
-import { useFormatPrice } from "@/shared/currency/CurrencyProvider";
-import { DiscountBadge, NewBadge, Pill } from "@/shared/ui/Badges";
+import { DiscountBadge, NewBadge } from "@/shared/ui/Badges";
 import { Price } from "@/shared/ui/Price";
 import { Stars } from "@/shared/ui/Stars";
 import { useCart } from "@/modules/cart/hooks/useCart";
@@ -27,8 +26,6 @@ interface Props {
  * Animations : zoom/échange d'image au survol, bouton « Ajouter » qui glisse, cœur qui « pop ».
  */
 export function ProductCard({ product, className, priority }: Props) {
-  // prix affichés dans la devise choisie par le visiteur (USD ou FC)
-  const formatPrice = useFormatPrice();
   const { add } = useCart();
   const { isFavorite, toggle } = useFavoriteToggle();
   const pricing = getPricing(product);
@@ -39,7 +36,7 @@ export function ProductCard({ product, className, priority }: Props) {
   return (
     <motion.article
       layout
-      className={cn("group relative flex h-full min-w-0 flex-col rounded-box p-2.5 transition-shadow duration-300 hover:shadow-lg sm:p-4", className)}
+      className={cn("group relative flex h-full min-w-0 flex-col rounded-box p-2 transition-shadow duration-300 hover:shadow-md sm:p-3", className)}
     >
       {/* Image */}
       <div className="relative">
@@ -105,20 +102,15 @@ export function ProductCard({ product, className, priority }: Props) {
       </div>
 
       {/* Contenu */}
-      <div className="mt-2.5 flex flex-1 flex-col sm:mt-4">
+      <div className="mt-2 flex flex-1 flex-col sm:mt-2.5">
         {product.reviewsCount > 0 || product.rating ? <Stars rating={product.rating} count={product.reviewsCount} /> : <div className="h-[19.5px]" />}
-        <Link href={href} className="mt-2 line-clamp-2 min-h-10 text-sm font-semibold transition-colors hover:text-primary sm:mt-2.5">
+        <Link href={href} className="mt-1 line-clamp-2 min-h-10 text-sm font-medium transition-colors hover:text-primary">
           {product.name}
         </Link>
         <Price current={pricing.current} original={pricing.original} size="sm" className="mt-1.5 sm:mt-3 sm:[&>span:first-child]:text-lg" />
 
-        {/* mobile : une simple ligne de texte (pas de pastilles empilées) ; desktop : pastilles du design */}
-        <p className="mt-1.5 text-xs font-semibold text-primary sm:hidden">
-          {product.freeShipping ? "Livraison offerte" : product.shippingFee ? `${formatPrice(product.shippingFee)} livraison` : " "}
-        </p>
-        <div className="mt-2.5 hidden flex-wrap gap-1.5 sm:flex">
-          {product.freeShipping ? <Pill tone="green">Livraison offerte</Pill> : product.shippingFee ? <Pill tone="dark">{formatPrice(product.shippingFee)} livraison</Pill> : null}
-        </div>
+        {/* une seule information secondaire : la livraison offerte (les frais et pastilles restent sur la fiche) */}
+        {product.freeShipping && <p className="mt-1 text-xs font-medium text-primary">Livraison offerte</p>}
 
         {/* la disponibilité ne s'affiche que lorsqu'elle bloque l'achat : « En stock » sur chaque carte n'apporte rien */}
         {!product.inStock && (
