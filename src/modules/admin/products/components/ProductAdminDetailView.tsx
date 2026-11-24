@@ -85,7 +85,7 @@ function Content({ id }: { id: number }) {
             {canManage && trashed && (
               <Button upper={false} leftIcon={<Refresh2 size={17} />} loading={restore.isPending} onClick={() => restore.mutate([p.id], { onSuccess: () => toast.success("Produit restauré", p.name), onError: (e) => toast.error("Restauration impossible", getErrorMessage(e)) })}>Restaurer</Button>
             )}
-            {canManage && !trashed && <Button variant="danger" upper={false} leftIcon={<Trash size={17} />} onClick={() => setConfirm("trash")}>Corbeille</Button>}
+            {canManage && !trashed && <Button variant="ghost" upper={false} className="text-danger hover:bg-danger-50" leftIcon={<Trash size={17} />} onClick={() => setConfirm("trash")}>Corbeille</Button>}
           </>
         }
       />

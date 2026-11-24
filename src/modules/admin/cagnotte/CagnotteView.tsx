@@ -232,7 +232,7 @@ function Campaigns() {
               <div className="flex flex-wrap gap-2 pt-1">
                 {c.state === "upcoming" && <Button size="sm" variant="secondary" upper={false} onClick={() => setEditing(c)}>Modifier</Button>}
                 {c.state === "upcoming" && <Button size="sm" variant="ghost" upper={false} loading={remove.isPending && remove.variables === c.id} onClick={() => remove.mutate(c.id)}>Supprimer</Button>}
-                {c.state === "running" && <Button size="sm" variant="danger" upper={false} loading={end.isPending} onClick={() => end.mutate(c.id)}>Y mettre fin maintenant</Button>}
+                {c.state === "running" && <Button size="sm" variant="ghost" upper={false} className="text-danger hover:bg-danger-50" loading={end.isPending} onClick={() => end.mutate(c.id)}>Y mettre fin maintenant</Button>}
               </div>
             </li>
           ))}

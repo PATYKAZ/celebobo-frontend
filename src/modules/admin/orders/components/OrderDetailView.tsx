@@ -85,13 +85,14 @@ function Content({ id }: { id: number }) {
   return (
     <>
       <PageHeader
-        title={`Commande #${order.id}`}
+        title={`Commande ${order.number || `#${order.id}`}`}
         description={`Passée le ${formatDateTime(order.createdAt)} par ${order.user.name}`}
         actions={
-          <>
-            <Button href={ROUTES.admin.orders} variant="secondary" size="sm" upper={false} leftIcon={<ArrowLeft2 size={16} />}>Commandes</Button>
+          // une seule rangée : le statut garde sa largeur au lieu d'occuper la moitié de l'écran sur téléphone
+          <div className="col-span-2 flex items-center justify-between gap-3 sm:justify-start">
+            <Button href={ROUTES.admin.orders} variant="secondary" size="sm" upper={false} leftIcon={<ArrowLeft2 size={16} />} className="max-sm:w-auto!">Commandes</Button>
             <OrderStatusDot status={order.status} />
-          </>
+          </div>
         }
       >
         <StatusStepper order={order} />

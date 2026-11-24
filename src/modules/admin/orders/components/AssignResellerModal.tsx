@@ -68,7 +68,7 @@ export function AssignResellerModal({ order, onClose }: Props) {
       { orderId: order.id, resellerId, note: note.trim() || undefined },
       {
         onSuccess: () => {
-          toast.success(reassign ? "Commande réassignée" : "Commande assignée", `Commande #${order.id}`);
+          toast.success(reassign ? "Commande réassignée" : "Commande assignée", `Commande ${order.number || `#${order.id}`}`);
           onClose();
         },
         onError: (e) => toast.error("Assignation impossible", getErrorMessage(e)),

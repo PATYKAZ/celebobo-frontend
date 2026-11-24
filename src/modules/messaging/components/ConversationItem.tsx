@@ -53,7 +53,7 @@ export function ConversationItem({ conversation: c, active, myId, onSelect, staf
             <span className="rounded-sm bg-chip px-1.5 py-0.5 text-xs font-bold text-ink-2">Support</span>
           )}
           {c.concluded && <span className="rounded-sm bg-ink-dark/10 px-1.5 py-0.5 text-xs font-bold text-ink-dark">Clôturée</span>}
-          {staff && unassigned && <span className="rounded-sm bg-danger-100 px-1.5 py-0.5 text-xs font-bold text-danger">Non assignée</span>}
+          {staff && unassigned && <span className="whitespace-nowrap rounded-sm bg-star/15 px-1.5 py-0.5 text-xs font-semibold text-warn">Non assignée</span>}
           {staff && c.assignedRevendeur && <span className="truncate rounded-sm bg-primary-50 px-1.5 py-0.5 text-xs font-bold text-primary-dark">{c.assignedRevendeur.name}</span>}
           {staff && c.awaitingReply && <span className="rounded-sm bg-star/15 px-1.5 py-0.5 text-xs font-bold text-warn">Réponse attendue</span>}
         </div>

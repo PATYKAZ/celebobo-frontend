@@ -65,7 +65,7 @@ export function StatusActionBar({ order, onAssign }: { order: Order; onAssign?: 
       { orderId: order.id, to: pending, note: note.trim() || undefined, deliveryCode: delivering ? cleanCode : undefined, reason: delivering ? reason.trim() : undefined },
       {
         onSuccess: () => {
-          toast.success(`Statut : ${ORDER_STATUS_LABEL[pending]}`, `Commande #${order.id}`);
+          toast.success(`Statut : ${ORDER_STATUS_LABEL[pending]}`, `Commande ${order.number || `#${order.id}`}`);
           close();
         },
         onError: (e) => {
