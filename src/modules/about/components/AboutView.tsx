@@ -19,7 +19,6 @@ function aboutContent(body?: string) {
   const paragraph = story?.blocks.find((b) => b.type === "paragraph");
   const list = sections.flatMap((s) => s.blocks).find((b) => b.type === "list");
   return {
-    badge: story?.heading ?? STORY.badge,
     story: paragraph?.type === "paragraph" ? plainText(paragraph.text) : STORY.text,
     points: list?.type === "list" ? list.items.map(plainText) : MISSION.points,
   };
@@ -37,8 +36,7 @@ export function AboutView() {
       <Block pad="none" className="relative overflow-hidden">
         <div className="grid items-center gap-8 lg:grid-cols-2">
           <div className="p-4 pt-6 sm:p-10 lg:p-15">
-            <Reveal><span className="inline-block rounded-full bg-primary-50 px-4 py-1.5 text-xs font-bold text-primary">{content.badge}</span></Reveal>
-            <Reveal delay={0.08}><h1 className="mt-4 text-2xl font-bold sm:mt-5 sm:text-2xl">La technologie, <span className="text-primary">simplement</span> et en confiance.</h1></Reveal>
+            <Reveal><h1 className="text-2xl font-bold">La technologie, <span className="text-primary">simplement</span> et en confiance.</h1></Reveal>
             <Reveal delay={0.16}><p className="mt-4 max-w-[520px] text-sm text-ink-2 sm:mt-5 sm:text-sm">{content.story}</p></Reveal>
             <Reveal delay={0.24} className="mt-6 flex flex-col gap-2.5 sm:mt-8 sm:flex-row sm:flex-wrap sm:gap-3">
               <Button href={ROUTES.products} size="lg" className="max-sm:w-full">Découvrir la boutique</Button>
@@ -93,15 +91,15 @@ export function AboutView() {
 
       {/* Valeurs */}
       <Block pad="none" className="p-4 sm:p-8">
-        <Reveal><h2 className="text-center text-base sm:text-section">Nos valeurs</h2></Reveal>
-        <RevealGroup className="mt-5 grid gap-3 sm:mt-8 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
+        <Reveal><h2 className="text-base sm:text-section">Nos valeurs</h2></Reveal>
+        <RevealGroup className="mt-5 grid gap-x-10 gap-y-6 sm:mt-6 sm:grid-cols-2 lg:grid-cols-4">
           {VALUES.map(({ icon: Icon, title, text }) => (
             <RevealItem key={title}>
-              <div className="group flex h-full gap-3.5 rounded-box border border-line-3 p-4 transition-all duration-300 hover:-translate-y-1.5 hover:border-primary hover:bg-primary-50 sm:block sm:p-6">
-                <span className="grid size-11 shrink-0 place-items-center rounded-full bg-chip transition-colors duration-300 group-hover:bg-primary group-hover:text-white sm:size-12"><Icon size={22} variant="Bold" /></span>
+              <div className="flex h-full gap-4">
+                <span className="grid size-11 shrink-0 place-items-center rounded-full bg-primary-100 text-primary-dark"><Icon size={22} variant="Bold" /></span>
                 <div className="min-w-0">
-                  <h3 className="text-base sm:mt-4 sm:text-lg">{title}</h3>
-                  <p className="mt-1 text-sm text-ink-2 sm:mt-2 sm:text-sm">{text}</p>
+                  <h3 className="text-base">{title}</h3>
+                  <p className="mt-1 text-sm text-ink-2">{text}</p>
                 </div>
               </div>
             </RevealItem>
@@ -112,8 +110,6 @@ export function AboutView() {
       {/* CTA */}
       <Reveal>
         <div className="relative overflow-hidden rounded-box bg-primary px-4 py-9 text-center text-white sm:px-6 sm:py-16">
-          <span aria-hidden className="absolute -left-10 -top-10 size-48 rounded-full bg-white/10" />
-          <span aria-hidden className="absolute -bottom-16 right-10 size-64 rounded-full bg-white/10" />
           <h2 className="relative text-xl sm:text-2xl">Prêt à faire votre première commande ?</h2>
           <p className="relative mx-auto mt-3 max-w-[520px] text-sm text-white/85">Rejoignez des milliers de clients qui font confiance à Celebobo.</p>
           <div className="relative mt-6 flex flex-col gap-2.5 sm:mt-7 sm:flex-row sm:flex-wrap sm:justify-center sm:gap-3">

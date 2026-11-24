@@ -71,8 +71,7 @@ export function ResellerApplicationView() {
           <div className="absolute inset-0 bg-linear-to-r from-ink-dark via-ink-dark/80 to-transparent" />
           <div className="relative grid gap-6 px-4 py-9 sm:gap-8 sm:px-12 sm:py-14 lg:grid-cols-[1.2fr_1fr] lg:py-20">
             <div>
-              <span className="inline-block rounded-full bg-primary px-3 py-1 text-xs font-bold">Programme revendeur</span>
-              <h1 className="mt-4 text-2xl font-bold sm:mt-5 sm:text-2xl">Vendez la tech.<br /><span className="text-sun">Gagnez à chaque vente.</span></h1>
+              <h1 className="text-2xl font-bold">Vendez la tech.<br /><span className="text-sun">Gagnez à chaque vente.</span></h1>
               <p className="mt-3 max-w-[520px] text-sm text-white/80 sm:mt-4 sm:text-base">Rejoignez le réseau de revendeurs Celebobo : des commandes qui vous sont assignées, des commissions de 5 à 10 % et un espace pour tout suivre.</p>
               <div className="mt-6 flex flex-col gap-2.5 sm:mt-7 sm:flex-row sm:flex-wrap sm:gap-3">
                 <Button href="#candidater" size="lg" className="max-sm:w-full">Candidater maintenant</Button>
@@ -98,14 +97,14 @@ export function ResellerApplicationView() {
       {/* Avantages */}
       <Block pad="none" className="p-4 sm:p-8">
         <h2 className="text-base sm:text-section">Pourquoi nous rejoindre</h2>
-        <RevealGroup className="mt-4 grid gap-3 sm:mt-6 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
+        <RevealGroup className="mt-4 grid gap-x-10 gap-y-6 sm:mt-6 sm:grid-cols-2 lg:grid-cols-3">
           {BENEFITS.map(({ icon: Icon, title, text }) => (
             <RevealItem key={title}>
-              <div className="group flex h-full gap-3.5 rounded-box border border-line-3 p-4 transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 sm:block sm:p-5">
-                <span className="grid size-11 shrink-0 place-items-center rounded-full bg-primary-100 text-primary-dark transition-all duration-500 group-hover:rotate-360 group-hover:bg-primary group-hover:text-white sm:size-12"><Icon size={22} variant="Bold" /></span>
+              <div className="flex h-full gap-4">
+                <span className="grid size-11 shrink-0 place-items-center rounded-full bg-primary-100 text-primary-dark sm:size-12"><Icon size={22} variant="Bold" /></span>
                 <div className="min-w-0">
-                  <h3 className="text-sm sm:mt-4 sm:text-base">{title}</h3>
-                  <p className="mt-1 text-sm text-ink-2 sm:mt-1.5 sm:text-sm">{text}</p>
+                  <h3 className="text-base">{title}</h3>
+                  <p className="mt-1 text-sm text-ink-2">{text}</p>
                 </div>
               </div>
             </RevealItem>

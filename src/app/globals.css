@@ -328,6 +328,18 @@
   font-size: 32px;
   line-height: 40px;
 }
+/* chiffres-vitrines seulement (404, note moyenne) : hors échelle de lecture, une seule taille d'affichage */
+@utility text-display {
+  font-size: clamp(64px, 12vw, 128px);
+  line-height: 0.9;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+@utility text-display-sm {
+  font-size: 48px;
+  line-height: 1;
+  font-weight: 700;
+}
 @utility text-h-page {
   font-size: 24px;
   line-height: 32px;

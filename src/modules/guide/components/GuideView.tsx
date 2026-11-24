@@ -69,8 +69,7 @@ export function GuideView() {
       <Breadcrumb items={[{ label: "Guide d'achat" }]} />
 
       <Block pad="none" className="p-4 text-center sm:p-8">
-        <Reveal><span className="inline-block rounded-full bg-primary-50 px-4 py-1.5 text-xs font-bold text-primary">{page?.title ?? "Guide d'achat"}</span></Reveal>
-        <Reveal delay={0.08}><h1 className="mx-auto mt-4 max-w-[640px] text-xl font-bold sm:text-2xl">Comment commander chez <span className="text-primary">Celebobo</span> ?</h1></Reveal>
+        <Reveal><h1 className="mx-auto max-w-[640px] text-xl font-bold sm:text-2xl">Comment commander chez <span className="text-primary">Celebobo</span> ?</h1></Reveal>
         <Reveal delay={0.16}><p className="mx-auto mt-3 max-w-[560px] text-sm text-ink-2 sm:mt-4 sm:text-sm">{page?.summary || "Cinq étapes simples, sans paiement en ligne risqué : vous gardez le contrôle du début à la fin."}</p></Reveal>
         <div className="mx-auto max-w-[760px] text-left"><Stepper steps={guideSteps(page?.body)} /></div>
         <Reveal className="mt-8 flex flex-col gap-2.5 sm:mt-10 sm:flex-row sm:flex-wrap sm:justify-center sm:gap-3">

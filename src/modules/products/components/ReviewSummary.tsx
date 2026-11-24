@@ -11,7 +11,7 @@ export function ReviewSummary({ reviews }: { reviews: Review[] }) {
   return (
     <div className="flex flex-col gap-6 rounded-box bg-page/60 p-5 sm:flex-row sm:items-center sm:gap-10">
       <div className="text-center">
-        <p className="text-2xl font-bold leading-none">{avg.toFixed(1)}</p>
+        <p className="text-display-sm tabular-nums">{avg.toFixed(1)}</p>
         <Stars rating={avg} size={16} hideCount className="mt-2 justify-center" />
         <p className="mt-1 text-xs text-ink-2">{total} avis</p>
       </div>

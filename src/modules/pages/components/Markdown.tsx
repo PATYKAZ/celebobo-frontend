@@ -66,7 +66,7 @@ export function MarkdownBlocks({ blocks }: { blocks: MdBlock[] }) {
 /** Rendu du Markdown du back-office (sous-ensemble sûr, sans HTML brut). */
 export function Markdown({ source, className }: { source: string; className?: string }) {
   return (
-    <div className={cn("text-sm text-ink-2 sm:text-sm", className)}>
+    <div className={cn("max-w-[72ch] text-sm text-ink-2 sm:text-body-lg", className)}>
       <MarkdownBlocks blocks={parseMarkdown(source)} />
     </div>
   );

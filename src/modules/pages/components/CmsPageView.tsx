@@ -38,8 +38,7 @@ export function CmsPageView({ slug }: { slug: string }) {
               <EmptyState icon={<DocumentText size={44} variant="Bulk" />} title="Page introuvable" description="Cette page n'existe pas ou n'est plus publiée." action={<Button href={ROUTES.home}>Retour à l&apos;accueil</Button>} />
             ) : (
               <article>
-                <span className="inline-block rounded-full bg-primary-50 px-4 py-1.5 text-xs font-bold text-primary">Informations</span>
-                <h1 className="mt-4 text-xl font-bold sm:text-2xl">{page.title}</h1>
+                <h1 className="text-xl font-bold sm:text-2xl">{page.title}</h1>
                 {page.summary && <p className="mt-2 text-sm text-ink-2 sm:text-base">{page.summary}</p>}
                 {page.version || page.effectiveOn ? (
                   <p className="mt-3 inline-block rounded-md bg-page/70 px-3 py-1.5 text-xs font-semibold text-ink-2">

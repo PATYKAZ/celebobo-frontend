@@ -16,7 +16,6 @@ export const VALUES = [
 ];
 
 export const STORY = {
-  badge: "Notre histoire",
   text: "Celebobo est née d'un constat : acheter du matériel high-tech de qualité en RD Congo doit être simple, transparent et sécurisé. Nous mettons en relation des clients et un réseau de revendeurs de confiance.",
 };
 
