@@ -45,7 +45,7 @@ function ConvertPanel({ co, onDone }: { co: ConvertibleOrder; onDone: () => void
       { orderId: o.id, input: { lines: o.items.map((i) => ({ itemId: i.id, unitPrice: Number(prices[i.id]) })), method, soldAt, venduA } },
       {
         onSuccess: (sales) => {
-          toast.success(`${sales.length} vente${sales.length > 1 ? "s" : ""} enregistrée${sales.length > 1 ? "s" : ""}`, `Commande #${o.id} convertie · ${formatPrice(total)}`);
+          toast.success(`${sales.length} vente${sales.length > 1 ? "s" : ""} enregistrée${sales.length > 1 ? "s" : ""}`, `Commande ${o.number || `#${o.id}`} convertie · ${formatPrice(total)}`);
           onDone();
         },
         onError: (er) => {
@@ -204,7 +204,7 @@ function ConvertOrderContent() {
             <div className="grid min-h-[320px] place-items-center text-center">
               <div className="max-w-[360px]">
                 <span className="mx-auto grid size-16 place-items-center rounded-full bg-primary-50 text-primary"><TickCircle size={30} variant="Bulk" /></span>
-                <h3 className="mt-4 text-lg">{blockedPreset ? `Commande #${blockedPreset.order.id} non convertible` : "Choisissez une commande"}</h3>
+                <h3 className="mt-4 text-lg">{blockedPreset ? `Commande ${blockedPreset.order.number || `#${blockedPreset.order.id}`} non convertible` : "Choisissez une commande"}</h3>
                 <p className="mt-2 text-sm text-ink-2">{blockedPreset ? blockedPreset.blockedReason : "Les lignes de la commande seront préremplies : produit, quantité et prix de la commande."}</p>
               </div>
             </div>

@@ -4,7 +4,7 @@ import { Coin1, MoneyRecive, Timer1, Wallet3 } from "@/shared/ui/icons";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { cn } from "@/shared/lib/cn";
-import { formatCompact, formatDate, formatPrice } from "@/shared/lib/format";
+import { formatMoneyCompact, formatDate, formatPrice } from "@/shared/lib/format";
 import { Avatar } from "@/shared/ui/Avatar";
 import { Button } from "@/shared/ui/Button";
 import { Drawer } from "@/shared/ui/Overlay";
@@ -22,7 +22,7 @@ import { PayStatementModal } from "./PayStatementModal";
 import { StatementDrawer } from "./StatementDrawer";
 import { payoutDay, StatementsList } from "./StatementsList";
 
-const money = (n: number) => (n >= 1000 ? `$${formatCompact(n)}` : formatPrice(n).replace(".00", ""));
+const money = formatMoneyCompact;
 
 export function CommissionsView() {
   return (

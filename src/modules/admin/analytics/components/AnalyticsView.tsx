@@ -2,7 +2,7 @@
 
 import { Bag2, Chart2, MoneyRecive, ShoppingCart } from "@/shared/ui/icons";
 import { useState } from "react";
-import { formatCompact, formatPrice } from "@/shared/lib/format";
+import { formatMoneyCompact, formatPrice } from "@/shared/lib/format";
 import { Select } from "@/shared/ui/Form";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { Tabs } from "@/shared/ui/Tabs";
@@ -21,7 +21,7 @@ import { ResellerPerformanceCard, SlowMoversCard } from "./InsightsSections";
 
 // teintes de la marque (teal et sable) alternées clair / foncé pour rester distinctes ; plus de bleu, rouge ou violet hors palette
 const PALETTE = ["#18534F", "#D6955B", "#4A9A92", "#9C6233", "#9FD0C9", "#EBC79F", "#2E7A74", "#B9874F", "#6E7F7C", "#C9D3D1"];
-const money = (n: number) => (n >= 1000 ? `$${formatCompact(n)}` : formatPrice(n).replace(".00", ""));
+const money = formatMoneyCompact;
 
 export function AnalyticsView() {
   return (
@@ -88,7 +88,7 @@ function AnalyticsContent() {
         </ChartCard>
         <ChartCard title="Par catégorie" subtitle="Part du chiffre d'affaires" delay={0.1}>
           {data ? (
-            <DonutChart title="Répartition par catégorie" legendSide={false} size={180} centerLabel="Total" format={(n) => `$${formatCompact(n)}`} segments={data.byCategory.slice(0, 8).map((c, i) => ({ label: c.name, value: c.value, color: PALETTE[i % PALETTE.length] }))} />
+            <DonutChart title="Répartition par catégorie" legendSide={false} size={180} centerLabel="Total" format={formatMoneyCompact} segments={data.byCategory.slice(0, 8).map((c, i) => ({ label: c.name, value: c.value, color: PALETTE[i % PALETTE.length] }))} />
           ) : (
             <Skeleton className="mx-auto h-[180px] w-[180px] rounded-full" />
           )}

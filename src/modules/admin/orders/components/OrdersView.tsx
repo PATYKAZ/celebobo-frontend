@@ -104,7 +104,7 @@ function OrdersContent() {
         <div className="min-w-0">
           {/* mobile : n° + statut en en-tête de carte */}
           <div className="mb-1 flex items-center justify-between gap-2 sm:hidden">
-            <span className="text-sm font-bold text-primary">#{o.id}</span>
+            <span className="text-sm font-bold text-primary">{o.number || `#${o.id}`}</span>
             <OrderStatusDot status={o.status} />
           </div>
           <p className="truncate font-semibold">{o.user.name}</p>
@@ -138,7 +138,7 @@ function OrdersContent() {
       align: "right",
       cell: (o) => (
         <div className="flex items-center justify-end gap-1.5" onClick={(e) => e.stopPropagation()}>
-          <Link prefetch={false} href={ROUTES.admin.order(o.id)} aria-label={`Voir la commande #${o.id}`} title="Voir" className="grid size-11 place-items-center rounded-full bg-chip transition-colors hover:bg-primary hover:text-white active:scale-90 sm:size-8"><Eye size={16} /></Link>
+          <Link prefetch={false} href={ROUTES.admin.order(o.id)} aria-label={`Voir la commande ${o.number || `#${o.id}`}`} title="Voir" className="grid size-11 place-items-center rounded-full bg-chip transition-colors hover:bg-primary hover:text-white active:scale-90 sm:size-8"><Eye size={16} /></Link>
           {canAssign && !["livree", "annulee", "retournee"].includes(o.status) && (
             <button onClick={() => setAssigning(o)} aria-label={o.assignedRevendeur ? "Réassigner" : "Assigner"} title={o.assignedRevendeur ? "Réassigner" : "Assigner"} className="grid size-11 place-items-center rounded-full bg-chip transition-colors hover:bg-primary hover:text-white active:scale-90 sm:size-8">
               {o.assignedRevendeur ? <UserTick size={16} /> : <UserAdd size={16} />}

@@ -28,7 +28,7 @@ export function CommissionSimulator() {
         className="mt-5 h-2 w-full cursor-pointer touch-pan-y appearance-none rounded-full accent-primary [&::-webkit-slider-thumb]:size-6"
         style={{ background: `linear-gradient(90deg,#226D68 ${pct}%,rgba(255,255,255,.18) ${pct}%)` }}
       />
-      <div className="mt-1 flex justify-between text-xs text-white/50"><span>$200</span><span>$6,000</span></div>
+      <div className="mt-1 flex justify-between text-xs text-white/50"><span>200 $</span><span>6 000 $</span></div>
 
       <div className="mt-5 grid grid-cols-2 gap-2.5 sm:mt-6 sm:gap-3">
         <div className="min-w-0 rounded-box bg-white/10 p-3 sm:p-4">

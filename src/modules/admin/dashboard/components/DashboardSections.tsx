@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ArrowRight2, Crown, Messages2, Notification } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import { RevealGroup, RevealItem } from "@/shared/animations/Reveal";
-import { formatCompact, formatDateTime, formatPrice, formatRelative } from "@/shared/lib/format";
+import { formatMoneyCompact, formatDateTime, formatPrice, formatRelative } from "@/shared/lib/format";
 import { Avatar } from "@/shared/ui/Avatar";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { StatusDot } from "@/shared/ui/Badges";
@@ -25,7 +25,7 @@ export function RevenueChart({ data }: { data?: DashboardData }) {
         <AreaLineChart
           title="Revenus et bénéfices"
           labels={data.series.labels}
-          format={(n) => (n >= 1000 ? `${formatCompact(n)}` : formatPrice(n).replace(".00", ""))}
+          format={formatMoneyCompact}
           series={[
             { key: "revenue", label: "Revenu", color: "#226D68", data: data.series.revenue },
             { key: "profit", label: "Bénéfice", color: "#D6955B", data: data.series.profit },
@@ -45,7 +45,7 @@ export function MethodsDonut({ data }: { data?: DashboardData }) {
         <DonutChart
           title="Répartition par moyen de paiement"
           centerLabel="Revenu total"
-          format={(n) => `$${formatCompact(n)}`}
+          format={formatMoneyCompact}
           legendSide={false}
           segments={data.methods.map((m) => ({ label: PAYMENT_LABELS[m.method], value: m.total, color: PAYMENT_COLORS[m.method] }))}
         />

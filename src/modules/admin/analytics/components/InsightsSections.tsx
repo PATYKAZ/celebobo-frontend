@@ -3,14 +3,14 @@
 import Image from "next/image";
 import { motion } from "motion/react";
 import { Clock } from "@/shared/ui/icons";
-import { formatCompact, formatPrice } from "@/shared/lib/format";
+import { formatMoneyCompact } from "@/shared/lib/format";
 import { Avatar } from "@/shared/ui/Avatar";
 import { Pill } from "@/shared/ui/Badges";
 import { ChartCard } from "../../charts";
 import { DataTable, type Column } from "../../ui/DataTable";
 import type { AnalyticsData, ResellerPerformance, ResellerPerformanceRow, SlowMover } from "../types";
 
-const money = (n: number) => (n >= 1000 ? `$${formatCompact(n)}` : formatPrice(n).replace(".00", ""));
+const money = formatMoneyCompact;
 
 /** Produits en stock sans vente récente. */
 export function SlowMoversCard({ data }: { data?: AnalyticsData }) {

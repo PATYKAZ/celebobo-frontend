@@ -12,7 +12,7 @@ export function GreenBar() {
   const site = useSiteSettings();
   const { freeThreshold } = site.shipping;
   const perks = [
-    { icon: Truck, label: freeThreshold !== null ? `Livraison offerte dès ${formatPrice(freeThreshold).replace(/\.00$/, "")}` : "Livraison rapide" },
+    { icon: Truck, label: freeThreshold !== null ? `Livraison offerte dès ${formatPrice(freeThreshold).replace(/,00 \$$/, " $")}` : "Livraison rapide" },
     ...(site.returnDays > 0 ? [{ icon: Refresh2, label: `Retour sous ${returnPeriod(site.returnDays)}` }] : []),
     { icon: ShieldTick, label: "Paiement mobile sécurisé" },
   ];

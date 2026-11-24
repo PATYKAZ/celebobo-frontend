@@ -7,7 +7,7 @@ import { Suspense, useEffect, useState } from "react";
 import { Add, ArrowSwapVertical, Box, DocumentDownload, DocumentUpload, Edit2, Eye, EyeSlash, Filter, Refresh2, Star1, Tag, Trash, Warning2, Wallet3, Clock } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import { cn } from "@/shared/lib/cn";
-import { formatCompact, formatDate, formatPrice } from "@/shared/lib/format";
+import { formatMoneyCompact, formatDate, formatPrice } from "@/shared/lib/format";
 import { getErrorMessage } from "@/shared/lib/api";
 import { useDebounce } from "@/shared/hooks/useDebounce";
 import { Block } from "@/shared/ui/Block";
@@ -242,7 +242,7 @@ function Content() {
         <StatCard label="En promotion" value={stats?.onSale ?? 0} icon={<Tag size={22} variant="Bold" />} tone="red" delay={0.05} />
         <StatCard label="Stock bas" value={stats?.lowStock ?? 0} icon={<Warning2 size={22} variant="Bold" />} tone="orange" delay={0.1} />
         <StatCard label="En rupture" value={stats?.outOfStock ?? 0} icon={<Warning2 size={22} variant="Bold" />} tone="dark" delay={0.15} />
-        <StatCard label="Valeur du stock (achat)" value={stats?.stockValue ?? 0} format={(n) => (n >= 1000000 ? `$${formatCompact(n)}` : formatPrice(n))} icon={<Wallet3 size={22} variant="Bold" />} tone="blue" delay={0.2} className="col-span-2 xl:col-span-1" />
+        <StatCard label="Valeur du stock (achat)" value={stats?.stockValue ?? 0} format={(n) => (n >= 1000000 ? formatMoneyCompact(n) : formatPrice(n))} icon={<Wallet3 size={22} variant="Bold" />} tone="blue" delay={0.2} className="col-span-2 xl:col-span-1" />
       </div>
 
       <Block pad="none" className="overflow-hidden">
