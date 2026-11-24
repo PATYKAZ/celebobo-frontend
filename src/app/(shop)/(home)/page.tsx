@@ -5,8 +5,8 @@ import { homeKeys } from "@/modules/home/keys";
 import { HomeJsonLd, loadHome } from "@/modules/home/server";
 
 export const metadata: Metadata = {
-  title: "Accueil — la boutique high-tech de confiance",
-  description: "Smartphones, ordinateurs, audio, gaming et accessoires : offres du jour, meilleures ventes et nouveautés chez Celebobo.",
+  title: "Accueil — mode, maison, beauté et électronique livrés au Kivu",
+  description: "Mode, maison et cuisine, beauté, alimentation, bébé, électroménager et téléphones : offres du jour, meilleures ventes et nouveautés chez Celebobo.",
   alternates: { canonical: "/" },
 };
 

@@ -16,11 +16,11 @@ export const VALUES = [
 ];
 
 export const STORY = {
-  text: "Celebobo est née d'un constat : acheter du matériel high-tech de qualité en RD Congo doit être simple, transparent et sécurisé. Nous mettons en relation des clients et un réseau de revendeurs de confiance.",
+  text: "Celebobo est née d'un constat : acheter des produits de qualité en RD Congo, des vêtements à l'électroménager, doit être simple, transparent et sécurisé. Nous mettons en relation des clients et un réseau de revendeurs de confiance.",
 };
 
 export const MISSION = {
   title: "Notre mission",
-  text: "Rendre la technologie accessible à tous : smartphones, ordinateurs, audio, gaming et accessoires, aux meilleurs prix, avec un service humain. Pas de paiement en ligne risqué : vous échangez avec un vrai revendeur, vous payez par Mobile Money ou en cash à la livraison.",
+  text: "Rendre le quotidien plus simple : mode, maison, beauté, alimentation, bébé, électroménager et téléphones, aux meilleurs prix, avec un service humain. Pas de paiement en ligne risqué : vous échangez avec un vrai revendeur, vous payez par Mobile Money ou en cash à la livraison.",
   points: ["Prix transparents, promotions régulières", "Revendeurs vérifiés et formés", "Garantie 12 mois sur tous les produits", "Support 7j/7 par discussion ou WhatsApp"],
 };

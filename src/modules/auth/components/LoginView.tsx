@@ -48,7 +48,7 @@ export function LoginView() {
         title="Connexion"
         subtitle="Heureux de vous revoir ! Connectez-vous pour suivre vos commandes et discuter avec votre revendeur."
         image="/images/hero/hero-1.jpg"
-        headline="Votre high-tech, livré en toute confiance."
+        headline="Tout votre quotidien, livré en toute confiance."
         footer={<>Pas encore de compte ? <Link href={`${ROUTES.register}${searchSuffix}`} className="font-bold text-primary hover:underline">Créer un compte</Link></>}
       >
         <form onSubmit={submit} noValidate className="space-y-4 sm:space-y-5">

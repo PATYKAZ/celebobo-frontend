@@ -116,6 +116,8 @@ export interface HomeDto {
   categories: { category: { slug: string }; products: ProductCardDto[] }[];
   /** blocs catégorie choisis dans le back-office, dans l'ordre ; vide → blocs par défaut */
   sections?: SectionDto[];
+  /** marques mises en avant dans le back-office */
+  brands?: { slug: string; name: string; logo: string; productsCount: number }[];
 }
 
 /** Section de l'accueil (après camelCase) : catégorie avec ses sous-catégories, ses meilleures ventes. */
@@ -182,6 +184,18 @@ export function pickHomeProducts(catalog: HomeCatalog, scheduled: HomeDeal | nul
 
 const escape = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
+/**
+ * Marques à la une : celles mises en avant dans le back-office (style du wordmark si la marque est connue,
+ * sinon wordmark neutre) ; à défaut, les marques connues présentes dans les noms des produits de l'accueil.
+ */
+export function featuredBrands(dto: HomeDto, catalog: HomeCatalog): Brand[] {
+  if (!dto.brands?.length) return brandsInCatalog(catalog);
+  return dto.brands.map((b) => {
+    const known = BRANDS.find((k) => k.name.toLowerCase() === b.name.toLowerCase());
+    return known ?? { name: b.name, className: "text-base font-bold", color: "var(--color-primary)" };
+  });
+}
+
 /** Marques dont au moins un produit de l'accueil porte le nom (ou un alias : iPhone → Apple). */
 export function brandsInCatalog(catalog: HomeCatalog): Brand[] {
   const names = [...catalog.deals, ...catalog.newArrivals, ...catalog.bestSellers, ...Object.values(catalog.byCategory).flat()].map((p) => p.name);
@@ -206,7 +220,7 @@ export function toHomeContent(dto: HomeDto): HomeContent {
     catalog,
     placements,
     picks: pickHomeProducts(catalog, dto.deal ? toDeal(dto.deal) : null, placements),
-    brands: brandsInCatalog(catalog),
+    brands: featuredBrands(dto, catalog),
     slides: slides.length ? slides : content.slides,
     blocks: dto.sections?.length ? toBlocks(dto.sections) : content.blocks,
   };

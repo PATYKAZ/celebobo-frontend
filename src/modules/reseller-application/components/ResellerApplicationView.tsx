@@ -71,7 +71,7 @@ export function ResellerApplicationView() {
           <div className="absolute inset-0 bg-linear-to-r from-ink-dark via-ink-dark/80 to-transparent" />
           <div className="relative grid gap-6 px-4 py-9 sm:gap-5 sm:px-12 sm:py-8 lg:grid-cols-[1.2fr_1fr] lg:py-20">
             <div>
-              <h1 className="text-2xl font-bold">Vendez la tech.<br /><span className="text-sun">Gagnez à chaque vente.</span></h1>
+              <h1 className="text-2xl font-bold">Vendez de tout.<br /><span className="text-sun">Gagnez à chaque vente.</span></h1>
               <p className="mt-3 max-w-[520px] text-sm text-white/80 sm:mt-4 sm:text-base">Rejoignez le réseau de revendeurs Celebobo : des commandes qui vous sont assignées, des commissions de 5 à 10 % et un espace pour tout suivre.</p>
               <div className="mt-6 flex flex-col gap-2.5 sm:mt-7 sm:flex-row sm:flex-wrap sm:gap-3">
                 <Button href="#candidater" size="lg" className="max-sm:w-full">Candidater maintenant</Button>

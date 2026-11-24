@@ -36,7 +36,7 @@ export function AboutView() {
       <Block pad="none" className="relative overflow-hidden">
         <div className="grid items-center gap-8 lg:grid-cols-2">
           <div className="p-4 pt-6 sm:p-6 lg:p-8">
-            <Reveal><h1 className="text-2xl font-bold">La technologie, <span className="text-primary">simplement</span> et en confiance.</h1></Reveal>
+            <Reveal><h1 className="text-2xl font-bold">Tout pour la maison et la famille, <span className="text-primary">au même endroit</span>.</h1></Reveal>
             <Reveal delay={0.16}><p className="mt-4 max-w-[520px] text-sm text-ink-2 sm:mt-5 sm:text-sm">{content.story}</p></Reveal>
             <Reveal delay={0.24} className="mt-6 flex flex-col gap-2.5 sm:mt-5 sm:flex-row sm:flex-wrap sm:gap-3">
               <Button href={ROUTES.products} size="lg" className="max-sm:w-full">Découvrir la boutique</Button>

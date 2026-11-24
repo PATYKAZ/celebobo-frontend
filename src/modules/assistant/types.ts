@@ -18,4 +18,4 @@ export interface AssistantReply {
   products?: Product[];
 }
 
-export const SUGGESTIONS = ["Quel smartphone choisir ?", "Comment commander ?", "Délais de livraison", "Quelles promotions en ce moment ?"];
+export const SUGGESTIONS = ["Une idée de cadeau ?", "Comment commander ?", "Délais de livraison", "Quelles promotions en ce moment ?"];

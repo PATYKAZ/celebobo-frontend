@@ -1,8 +1,8 @@
 import { ROUTES } from "@/config/routes";
 import type { Brand, CategoryColumn, HomeBlock, HomeContent, ShowcaseConfig } from "./types";
 
-const p = (n: string) => `/images/products/${n}.jpg`;
-const h = (n: string) => `/images/hero/${n}.jpg`;
+/** Photo Pexels (domaine autorisé dans next.config) pour le contenu de secours. */
+const px = (id: number) => `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=1600`;
 
 /** Marques connues : seules celles présentes dans le catalogue s'affichent (cf. home.mapper). */
 export const BRANDS: Brand[] = [
@@ -20,6 +20,10 @@ export const BRANDS: Brand[] = [
   { name: "Infinix", className: "text-xl font-bold tracking-tight", color: "#2DB24A" },
   { name: "Lenovo", className: "text-xl font-bold tracking-tight", color: "#E2231A" },
   { name: "ANKER", className: "text-xl font-bold", color: "#00A7E1" },
+  { name: "LG", className: "text-2xl font-bold", color: "#A50034" },
+  { name: "PHILIPS", className: "text-lg font-bold tracking-wide", color: "#0B5ED7" },
+  { name: "Moulinex", className: "text-xl font-bold italic", color: "#E2001A" },
+  { name: "MICHELIN", className: "text-lg font-bold", color: "#27509B" },
 ];
 
 /**
@@ -36,55 +40,54 @@ export function buildHomeContent(): HomeContent {
     slides: [
       {
         id: 1,
-        image: h("hero-2"),
+        image: px(35714343),
         tone: "dark",
-        eyebrow: "Celebobo",
+        eyebrow: "",
         titleLines: [
-          { text: "Travaillez", className: "text-primary" },
-          { text: "sans limites", className: "text-white" },
-          { text: "avec le Mac", className: "text-white" },
+          { text: "Nouvelle collection", className: "text-white" },
+          { text: "wax", className: "text-primary-light" },
         ],
-        text: "Ordinateurs et smartphones neufs, livrés à Bukavu, à Goma et dans tout le pays.",
-        cta: { label: "Découvrir", href: ROUTES.category("ordinateurs-portables"), variant: "primary" },
+        text: "Robes, pagnes et sacs, livrés à Bukavu, à Goma et dans tout le pays.",
+        cta: { label: "Découvrir", href: ROUTES.category("mode-femme-homme"), variant: "primary" },
         overlay: "from-black/80 via-black/45 to-transparent",
       },
       {
         id: 2,
-        image: p("gaming-setup"),
+        image: px(28726706),
         tone: "dark",
-        eyebrow: "Gaming",
+        eyebrow: "",
         titleLines: [
-          { text: "ÉQUIPEZ", className: "text-white font-normal" },
-          { text: "VOTRE SETUP", className: "text-primary font-bold" },
+          { text: "Équipez", className: "text-white font-normal" },
+          { text: "votre cuisine", className: "text-primary-light font-bold" },
         ],
-        text: "Consoles, manettes et accessoires gaming.",
-        cta: { label: "Acheter", href: ROUTES.category("gaming"), variant: "white" },
+        text: "Casseroles, vaisselle et linge de maison.",
+        cta: { label: "Acheter", href: ROUTES.category("maison-cuisine"), variant: "white" },
         overlay: "from-black/85 via-black/50 to-transparent",
       },
       {
         id: 3,
-        image: h("hero-1"),
-        tone: "light",
-        eyebrow: "Audio",
+        image: px(8583864),
+        tone: "dark",
+        eyebrow: "",
         titleLines: [
-          { text: "Casques", className: "sm:text-on-light font-bold" },
-          { text: "sans fil", className: "sm:text-on-light font-light" },
+          { text: "Électroménager", className: "text-white font-bold" },
+          { text: "à prix doux", className: "text-white font-light" },
         ],
-        text: "Casques, écouteurs et enceintes sans fil.",
-        cta: { label: "Acheter", href: ROUTES.category("audio"), variant: "dark" },
-        overlay: "from-[#f4e6d0]/95 via-[#f4e6d0]/65 to-transparent",
+        text: "Réfrigérateurs, ventilateurs, blenders et micro-ondes.",
+        cta: { label: "Acheter", href: ROUTES.category("electromenager"), variant: "white" },
+        overlay: "from-black/80 via-black/45 to-transparent",
       },
     ],
     brands: null,
     showcases: [
-      { title: "Top smartphones & tablettes", categorySlug: "smartphones", viewAllHref: ROUTES.category("smartphones"), related: ["smartphones", "tablettes", "montres-connectees", "accessoires", "audio", "gaming"] },
-      { title: "Meilleurs ordinateurs", categorySlug: "ordinateurs-portables", viewAllHref: ROUTES.category("ordinateurs-portables"), related: ["ordinateurs-portables", "tablettes", "accessoires", "audio", "gaming", "smartphones"] },
+      { title: "Mode femme & homme", categorySlug: "mode-femme-homme", viewAllHref: ROUTES.category("mode-femme-homme"), related: ["mode-femme-homme", "beaute-sante", "bebe-enfants"] },
+      { title: "Maison & cuisine", categorySlug: "maison-cuisine", viewAllHref: ROUTES.category("maison-cuisine"), related: ["maison-cuisine", "electromenager", "alimentation-boissons"] },
     ],
-    columns: [{ categorySlug: "audio" }, { categorySlug: "gaming" }, { categorySlug: "montres-connectees" }],
+    columns: [{ categorySlug: "beaute-sante" }, { categorySlug: "electromenager" }, { categorySlug: "bebe-enfants" }],
     seo: {
-      title: "Celebobo – la boutique high-tech de confiance en RD Congo",
+      title: "Celebobo – la boutique en ligne de confiance au Kivu",
       paragraphs: [
-        "Celebobo vous propose une sélection de smartphones, ordinateurs, tablettes, casques, montres connectées et accessoires choisis pour leur fiabilité. Chaque commande est suivie par un revendeur dédié avec lequel vous échangez directement dans l'application, de la confirmation à la livraison.",
+        "Celebobo réunit au même endroit la mode, la maison et la cuisine, la beauté, l'alimentation, les articles pour bébé, l'électroménager et les téléphones. Chaque commande est suivie par un revendeur dédié avec lequel vous échangez directement dans l'application, de la confirmation à la livraison.",
         // {retour} : phrase sur le délai de retour, complétée avec les réglages du site (cf. HomeView)
         "Payez comme vous le souhaitez : Orange Money, Airtel Money, M-Pesa ou cash à la livraison.{retour} Notre service client vous accompagne avant et après votre achat.",
         "Devenez revendeur Celebobo, invitez vos proches avec votre code personnel et développez votre activité avec un catalogue complet, des prix compétitifs et des outils de suivi de vos ventes.",

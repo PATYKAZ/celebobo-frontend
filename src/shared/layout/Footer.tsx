@@ -75,7 +75,7 @@ export function Footer() {
         <div className="grid gap-8 lg:grid-cols-[260px_repeat(5,1fr)] lg:gap-6">
           {/* Colonne 1 */}
           <div>
-            <h2 className="text-base font-bold">Celebobo — la tech en confiance</h2>
+            <h2 className="text-base font-bold">Celebobo — la boutique en ligne du Kivu</h2>
             <p className="mt-6 text-sm text-ink-2">{supportLabel(site)}</p>
             <a href={site.hotlineHref} className="mt-1 flex min-h-11 items-center text-lg font-bold tabular-nums text-primary hover:underline">{site.hotline}</a>
             {!site.supportAlwaysOpen && site.openingHours.length > 0 && (

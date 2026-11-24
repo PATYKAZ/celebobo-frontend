@@ -16,7 +16,7 @@ export function ProductsPageView() {
         <Block pad="none" className="flex flex-wrap items-end justify-between gap-2 px-4 py-4 sm:px-5 sm:py-6">
           <div>
             <h1 className="text-xl sm:text-h-page">Tous les produits</h1>
-            <p className="mt-1 text-sm text-ink-2 sm:text-sm">Smartphones, ordinateurs, audio, gaming et accessoires — sélectionnés par Celebobo.</p>
+            <p className="mt-1 text-sm text-ink-2 sm:text-sm">Mode, maison, beauté, alimentation, bébé, électroménager et téléphones — sélectionnés par Celebobo.</p>
           </div>
         </Block>
       </Reveal>

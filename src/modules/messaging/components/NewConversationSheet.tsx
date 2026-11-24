@@ -41,7 +41,7 @@ export function NewConversationSheet({ open, onClose, onCreated }: Props) {
     <BottomSheet open={open} onClose={onClose} title="Nouvelle discussion">
       <div className="space-y-4 pb-2 pt-1">
         <p className="text-sm text-ink-2">Une question sur un produit, une livraison ou votre compte ? Notre équipe vous répond ici.</p>
-        <Input label="Sujet (optionnel)" value={subject} maxLength={160} onChange={(e) => setSubject(e.target.value)} placeholder="Ex. : garantie d'un smartphone" />
+        <Input label="Sujet (optionnel)" value={subject} maxLength={160} onChange={(e) => setSubject(e.target.value)} placeholder="Ex. : échange de taille" />
         <Textarea label="Message" value={message} maxLength={4000} onChange={(e) => setMessage(e.target.value)} placeholder="Décrivez votre demande…" className="min-h-[110px]" error={error} />
         <div className="flex flex-col-reverse gap-2.5 pt-1 sm:flex-row sm:justify-end">
           <Button variant="secondary" upper={false} onClick={onClose}>Annuler</Button>

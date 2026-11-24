@@ -2,7 +2,7 @@
 export const SITE = {
   name: "Celebobo",
   tagline: "Business Market",
-  description: "Celebobo — votre boutique high-tech : smartphones, ordinateurs, audio, gaming et accessoires, avec livraison rapide et revendeurs de confiance.",
+  description: "Celebobo — la boutique en ligne du Kivu : mode, maison, beauté, alimentation, bébé, électroménager et téléphones, avec livraison rapide et revendeurs de confiance.",
   hotline: "+243 970 000 000",
   hotlineHref: "tel:+243970000000",
   email: "contact@celebobo.com",
