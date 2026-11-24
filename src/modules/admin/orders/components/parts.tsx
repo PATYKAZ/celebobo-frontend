@@ -40,6 +40,18 @@ export function AvailabilityDot({ value, withLabel, className }: { value: Availa
 
 /** Pile de miniatures des articles d'une commande. */
 export function Thumbs({ order }: { order: Order }) {
+  // listes : l'API ne détaille pas les lignes, seulement la vignette du 1er article et le nombre d'articles
+  if (!order.items.length) {
+    if (!order.previewImage && !order.itemsCount) return <span className="text-ink-3">—</span>;
+    return (
+      <span className="flex items-center gap-2">
+        <span className="relative size-9 shrink-0 overflow-hidden rounded-full bg-page">
+          {order.previewImage && <Image src={order.previewImage} alt={order.previewName ?? ""} fill sizes="36px" className="object-cover" />}
+        </span>
+        {(order.itemsCount ?? 0) > 1 && <span className="text-xs font-semibold text-ink-2">+{(order.itemsCount ?? 0) - 1}</span>}
+      </span>
+    );
+  }
   const extra = order.items.length - 3;
   return (
     <div className="flex items-center">

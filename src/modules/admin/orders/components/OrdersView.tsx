@@ -20,7 +20,7 @@ import { StatCard } from "../../ui/StatCard";
 import { useAdminOrders } from "../hooks/useAdminOrders";
 import type { AdminOrderListParams, OrderTab } from "../types";
 import { AssignResellerModal } from "./AssignResellerModal";
-import { AvailabilityDot, OrderStatusDot, PAYMENT_LABEL, RefundBadge, Thumbs } from "./parts";
+import { AvailabilityDot, OrderStatusDot, RefundBadge, Thumbs } from "./parts";
 import { ResellerFilter } from "./ResellerFilter";
 import { useResellerOptions } from "../hooks/useAdminOrders";
 import { useAppRouter } from "@/shared/hooks/useAppRouter";
@@ -95,7 +95,7 @@ function OrdersContent() {
   };
 
   const columns: Column<Order>[] = [
-    { key: "id", header: "N°", mobile: "hide", cell: (o) => <Link prefetch={false} href={ROUTES.admin.order(o.id)} className="font-bold text-primary hover:underline">#{o.id}</Link> },
+    { key: "id", header: "N°", mobile: "hide", cell: (o) => <Link prefetch={false} href={ROUTES.admin.order(o.id)} className="whitespace-nowrap font-bold text-primary hover:underline">{o.number || `#${o.id}`}</Link> },
     {
       key: "client",
       header: "Client",
@@ -131,7 +131,6 @@ function OrdersContent() {
       hideBelow: "lg",
       cell: (o) => <ResellerCell order={o} />,
     },
-    { key: "pay", header: "Paiement", hideBelow: "xl", mobile: "hide", cell: (o) => <span className="text-sm text-ink-2">{o.paymentMethod ? PAYMENT_LABEL[o.paymentMethod] : "—"}</span> },
     { key: "date", header: "Date", hideBelow: "sm", cell: (o) => <span className="whitespace-nowrap text-sm text-ink-2">{formatDate(o.createdAt)}</span> },
     {
       key: "actions",

@@ -7,7 +7,7 @@ import { Suspense, useEffect, useState } from "react";
 import { Add, ArrowSwapVertical, Box, DocumentDownload, DocumentUpload, Edit2, Eye, EyeSlash, Filter, Refresh2, Star1, Tag, Trash, Warning2, Wallet3, Clock } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import { cn } from "@/shared/lib/cn";
-import { formatDate, formatPrice } from "@/shared/lib/format";
+import { formatCompact, formatDate, formatPrice } from "@/shared/lib/format";
 import { getErrorMessage } from "@/shared/lib/api";
 import { useDebounce } from "@/shared/hooks/useDebounce";
 import { Block } from "@/shared/ui/Block";
@@ -189,7 +189,7 @@ function Content() {
     {
       key: "deadline",
       header: "À vendre avant",
-      hideBelow: "xl",
+      hideBelow: "2xl",
       cell: (p) => (p.dateWish ? <div className="flex flex-col items-start gap-1"><span className="text-sm text-ink-2">{formatDate(p.dateWish)}</span><DeadlineBadge dateWish={p.dateWish} /></div> : <span className="text-ink-3">—</span>),
     },
     {
@@ -197,7 +197,7 @@ function Content() {
       header: "Note",
       hideBelow: "xl",
       mobile: "hide",
-      cell: (p) => (p.rating ? <span className="inline-flex items-center gap-1 font-semibold"><Star1 size={14} variant="Bold" color="#D6955B" />{p.rating.toFixed(1)} <span className="font-normal text-ink-3">({p.reviewsCount})</span></span> : <span className="text-ink-3">—</span>),
+      cell: (p) => (p.rating ? <span className="inline-flex items-center gap-1 font-semibold"><Star1 size={14} variant="Bold" className="text-star" />{p.rating.toFixed(1)}{p.reviewsCount > 0 && <span className="font-normal text-ink-3">({p.reviewsCount})</span>}</span> : <span className="text-ink-3">—</span>),
     },
     {
       key: "actions",
@@ -242,7 +242,7 @@ function Content() {
         <StatCard label="En promotion" value={stats?.onSale ?? 0} icon={<Tag size={22} variant="Bold" />} tone="red" delay={0.05} />
         <StatCard label="Stock bas" value={stats?.lowStock ?? 0} icon={<Warning2 size={22} variant="Bold" />} tone="orange" delay={0.1} />
         <StatCard label="En rupture" value={stats?.outOfStock ?? 0} icon={<Warning2 size={22} variant="Bold" />} tone="dark" delay={0.15} />
-        <StatCard label="Valeur du stock (achat)" value={stats?.stockValue ?? 0} format={formatPrice} icon={<Wallet3 size={22} variant="Bold" />} tone="blue" delay={0.2} className="col-span-2 xl:col-span-1" />
+        <StatCard label="Valeur du stock (achat)" value={stats?.stockValue ?? 0} format={(n) => (n >= 1000000 ? `$${formatCompact(n)}` : formatPrice(n))} icon={<Wallet3 size={22} variant="Bold" />} tone="blue" delay={0.2} className="col-span-2 xl:col-span-1" />
       </div>
 
       <Block pad="none" className="overflow-hidden">

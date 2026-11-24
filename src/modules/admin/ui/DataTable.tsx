@@ -53,8 +53,10 @@ const isSelect = (c: { key: string }) => c.key === "select" || c.key === "checkb
  * ≥ md : tableau classique (lignes animées, squelettes). < md : liste de cartes empilées, plus lisible au doigt.
  */
 export function DataTable<T>({ columns, rows, rowKey, loading, empty, onRowClick, page, pageCount, onPageChange, className, skeletonRows = 6 }: Props<T>) {
-  const th = (c: Column<T>) => cn("whitespace-nowrap px-4 py-3 text-xs font-semibold text-ink-2", ALIGN[c.align ?? "left"], c.hideBelow && HIDE[c.hideBelow]);
-  const td = (c: Column<T>) => cn("px-4 py-3.5 align-middle text-sm", ALIGN[c.align ?? "left"], c.hideBelow && HIDE[c.hideBelow], c.className);
+  // colonne d'actions collée à droite : quand le tableau déborde de sa carte, les boutons restent visibles
+  const STICKY = "sticky right-0 z-10 whitespace-nowrap bg-surface shadow-[-8px_0_12px_-10px_rgba(15,40,37,0.18)]";
+  const th = (c: Column<T>) => cn("whitespace-nowrap px-4 py-3 text-xs font-semibold text-ink-2", ALIGN[c.align ?? "left"], c.hideBelow && HIDE[c.hideBelow], isAction(c) && cn(STICKY, "bg-[color-mix(in_srgb,var(--color-page)_50%,var(--color-surface))]"));
+  const td = (c: Column<T>) => cn("px-4 py-3.5 align-middle text-sm", ALIGN[c.align ?? "left"], c.hideBelow && HIDE[c.hideBelow], c.className, isAction(c) && cn(STICKY, "group-hover/row:bg-[color-mix(in_srgb,var(--color-primary)_5%,var(--color-surface))]"));
 
   // classement des colonnes pour le rendu carte
   const selectCol = columns.find(isSelect);
@@ -91,7 +93,7 @@ export function DataTable<T>({ columns, rows, rowKey, loading, empty, onRowClick
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: Math.min(i, 12) * 0.03, duration: 0.35 }}
                     onClick={onRowClick ? () => onRowClick(row) : undefined}
-                    className={cn("border-b border-line-3/70 transition-colors hover:bg-primary-50", onRowClick && "cursor-pointer")}
+                    className={cn("group/row border-b border-line-3/70 transition-colors hover:bg-primary-50", onRowClick && "cursor-pointer")}
                   >
                     {columns.map((c) => (
                       <td key={c.key} className={td(c)}>{c.cell(row, i)}</td>

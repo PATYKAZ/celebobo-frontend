@@ -117,7 +117,7 @@ function SalesListContent() {
       ),
     },
     { key: "client", header: "Vendu à", hideBelow: "md", cell: (s) => <span>{s.venduA ?? s.buyer?.name ?? "—"}</span> },
-    ...(canAll ? [{ key: "seller", header: "Vendeur", hideBelow: "xl" as const, cell: (s: Sale) => <span className="text-ink-2">{s.seller?.name ?? "—"}</span> }] : []),
+    ...(canAll ? [{ key: "seller", header: "Vendeur", hideBelow: "2xl" as const, cell: (s: Sale) => <span className="text-ink-2">{s.seller?.name ?? "—"}</span> }] : []),
     { key: "date", header: "Date", hideBelow: "lg", cell: (s) => <span className="whitespace-nowrap text-ink-2">{formatDateTime(s.dateAchat)}</span> },
     { key: "method", header: "Paiement", hideBelow: "sm", cell: (s) => <MethodBadge method={s.method} /> },
     {
@@ -131,7 +131,7 @@ function SalesListContent() {
         </div>
       ),
     },
-    { key: "profit", header: "Bénéfice", align: "right", hideBelow: "lg", mobile: "hide", cell: (s) => <span className={cn("font-semibold", s.profit < 0 ? "text-danger" : "text-primary-dark", dim(s))}>{formatPrice(s.profit)}</span> },
+    { key: "profit", header: "Bénéfice", align: "right", hideBelow: "xl", mobile: "hide", cell: (s) => <span className={cn("font-semibold", s.profit < 0 ? "text-danger" : "text-primary-dark", dim(s))}>{formatPrice(s.profit)}</span> },
     {
       key: "status",
       header: "Statut",

@@ -195,7 +195,7 @@ function UsersContent() {
           <div className="flex justify-end gap-2">
             <Button size="xs" variant="secondary" upper={false} className="max-md:min-h-11 max-md:px-5" onClick={() => setFormFor(u)}>Modifier</Button>
             <Button size="xs" variant="secondary" upper={false} className="max-md:min-h-11 max-md:px-5" disabled={self} onClick={() => setRoleFor(u)} title={self ? "Vous ne pouvez pas modifier votre propre rôle" : undefined}>Rôle</Button>
-            <Button size="xs" variant={u.active ? "ghost" : "secondary"} upper={false} className="max-md:min-h-11 max-md:px-5" disabled={self} onClick={() => setToggleFor(u)}>{u.active ? "Désactiver" : "Activer"}</Button>
+            <Button size="xs" variant={u.active ? "ghost" : "secondary"} upper={false} className={cn("max-md:min-h-11 max-md:px-5", u.active && "text-danger hover:bg-danger-50")} disabled={self} onClick={() => setToggleFor(u)}>{u.active ? "Désactiver" : "Activer"}</Button>
           </div>
         );
       },
