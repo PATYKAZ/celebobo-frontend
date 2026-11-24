@@ -40,7 +40,7 @@ export function DonutChart({ segments, size = 190, centerLabel = "Total", format
       <div className="relative shrink-0" style={{ width: size, height: size }}>
         <svg width={size} height={size} role="img" aria-label={title} className="-rotate-90">
           <title>{title}</title>
-          <circle cx={c} cy={c} r={r} fill="none" stroke="#EBEEF6" strokeWidth={stroke} />
+          <circle cx={c} cy={c} r={r} fill="none" stroke="var(--color-chip)" strokeWidth={stroke} />
           {segments.map((s, i) => {
             const len = (s.value / total) * 100;
             const start = starts[i];

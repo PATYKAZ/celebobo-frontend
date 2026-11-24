@@ -51,7 +51,7 @@ export function CartLine({ item, onQuantity, onRemove }: Props) {
         <QuantityStepper value={item.quantity} onChange={onQuantity} size={mobile ? "md" : "sm"} />
         <div className="text-right sm:w-[110px]">
           <p className="text-xs text-ink-3 sm:hidden">Total</p>
-          <motion.p key={item.quantity} initial={{ scale: 1.15, color: "#226D68" }} animate={{ scale: 1, color: "#000" }} className="text-base font-bold">
+          <motion.p key={item.quantity} initial={{ scale: 1.15, opacity: 0.6 }} animate={{ scale: 1, opacity: 1 }} className="text-base font-bold tabular-nums text-ink">
             {formatPrice(unit * item.quantity)}
           </motion.p>
         </div>

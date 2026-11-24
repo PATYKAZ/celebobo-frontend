@@ -59,7 +59,7 @@ export function InviteCard({ code, invitedCount }: { code: string; invitedCount?
                 target="_blank"
                 rel="noreferrer"
                 aria-disabled={!link}
-                className="inline-flex h-12 items-center justify-center gap-1.5 rounded-box bg-[#25D366] text-sm font-bold text-white transition-all hover:opacity-90 active:scale-95 aria-disabled:pointer-events-none aria-disabled:opacity-50 sm:h-9 sm:rounded-md sm:text-xs"
+                className="inline-flex h-12 items-center justify-center gap-1.5 rounded-box bg-[#25D366] text-sm font-bold text-on-light transition-all hover:opacity-90 active:scale-95 aria-disabled:pointer-events-none aria-disabled:opacity-50 sm:h-9 sm:rounded-md sm:text-xs"
               >
                 <Whatsapp size={16} variant="Bold" /> WhatsApp
               </a>

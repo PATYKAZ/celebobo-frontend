@@ -33,7 +33,7 @@ export function Heatmap({ data, hours }: { data: number[][]; hours: number[] }) 
                   animate={inView ? { opacity: 1, scale: 1 } : {}}
                   transition={{ delay: (d + i) * 0.025, type: "spring", stiffness: 300, damping: 20 }}
                   className="aspect-square min-h-[24px] rounded-sm transition-transform hover:z-10 hover:scale-125"
-                  style={{ background: v === 0 ? "#EBEEF6" : `rgba(34,109,104,${0.15 + (v / max) * 0.85})` }}
+                  style={{ background: v === 0 ? "var(--color-chip)" : `rgba(34,109,104,${0.15 + (v / max) * 0.85})` }}
                 />
               ))}
             </div>
