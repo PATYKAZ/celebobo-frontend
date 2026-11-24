@@ -112,7 +112,7 @@ export function AreaLineChart({ labels, series, height: heightProp = 280, format
           <g pointerEvents="none">
             <line x1={x(hover)} x2={x(hover)} y1={P.t} y2={y(0)} stroke="#999" strokeOpacity={0.5} strokeDasharray="4 4" />
             {series.map((s) => (
-              <circle key={s.key} cx={x(hover)} cy={y(s.data[hover])} r={5} fill="#fff" stroke={s.color} strokeWidth={3} />
+              <circle key={s.key} cx={x(hover)} cy={y(s.data[hover])} r={5} fill="var(--color-surface)" stroke={s.color} strokeWidth={3} />
             ))}
           </g>
         )}

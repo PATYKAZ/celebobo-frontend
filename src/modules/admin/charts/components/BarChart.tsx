@@ -36,7 +36,7 @@ function niceMax(v: number) {
   return (n <= 1 ? 1 : n <= 2 ? 2 : n <= 5 ? 5 : 10) * p;
 }
 
-export function BarChart({ data, orientation = "vertical", height = 280, color = "#226D68", lineColor = "#222222", format = (n) => String(Math.round(n)), title, lineLabel }: Props) {
+export function BarChart({ data, orientation = "vertical", height = 280, color = "#226D68", lineColor = "#D6955B", format = (n) => String(Math.round(n)), title, lineLabel }: Props) {
   if (orientation === "horizontal") return <HBars data={data} color={color} format={format} title={title} />;
   return <VBars data={data} height={height} color={color} lineColor={lineColor} format={format} title={title} lineLabel={lineLabel} />;
 }
@@ -54,7 +54,8 @@ function VBars({ data, height: heightProp, color, lineColor, format, title, line
   const slot = w / Math.max(1, data.length);
   const bw = Math.min(40, slot * 0.58);
   /** étiquettes de l'axe : une sur N pour ne jamais se chevaucher */
-  const labelStep = Math.max(1, Math.ceil(36 / Math.max(1, slot)));
+  // une étiquette tous les ~64 px : les dates (« 13 sept. ») ne se chevauchent plus
+  const labelStep = Math.max(1, Math.ceil(64 / Math.max(1, slot)));
   const y = (v: number) => P.t + h - (v / max) * h;
   const hasLine = data.some((d) => d.line != null);
   const linePts = data.map((d, i) => [P.l + slot * i + slot / 2, y(d.line ?? 0)] as const);
@@ -92,7 +93,8 @@ function VBars({ data, height: heightProp, color, lineColor, format, title, line
         {hasLine && (
           <g pointerEvents="none">
             <motion.path d={`M${linePts.map((p) => p.join(",")).join(" L")}`} fill="none" stroke={lineColor} strokeWidth={2.5} strokeLinejoin="round" initial={{ pathLength: 0 }} animate={inView ? { pathLength: 1 } : {}} transition={{ duration: 1.2, delay: 0.6 }} />
-            {linePts.map((p, i) => <motion.circle key={i} cx={p[0]} cy={p[1]} r={3.5} fill="#fff" stroke={lineColor} strokeWidth={2} initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 0.9 + i * 0.04 }} />)}
+            {/* points seulement quand il y a de la place : sur 90 jours ils s'empilaient en chapelet sur l'axe */}
+            {slot >= 14 && linePts.map((p, i) => <motion.circle key={i} cx={p[0]} cy={p[1]} r={3.5} fill="var(--color-surface)" stroke={lineColor} strokeWidth={2} initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 0.9 + i * 0.04 }} />)}
           </g>
         )}
       </svg>

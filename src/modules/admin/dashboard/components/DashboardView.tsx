@@ -52,9 +52,14 @@ function DashboardContent() {
   return (
     <>
       <PageHeader
-        title={`${hello()}, ${user?.firstName || "équipe"} 👋`}
+        title={`${hello()}, ${user?.firstName || "équipe"}`}
         description={data ? `Activité de Celebobo · ${data.periodLabel}` : "Voici l'activité de Celebobo : ventes, marges et commandes à traiter."}
-        actions={<Button variant="secondary" size="md" leftIcon={<DocumentDownload size={18} />} loading={exporting} onClick={exportPdf}>Exporter PDF</Button>}
+        actions={
+          <div className="flex flex-wrap gap-2">
+            <Button variant="secondary" size="md" href={ROUTES.admin.analytics} leftIcon={<Chart2 size={18} />}>Analytique</Button>
+            <Button variant="secondary" size="md" leftIcon={<DocumentDownload size={18} />} loading={exporting} onClick={exportPdf}>Exporter PDF</Button>
+          </div>
+        }
       >
         <Tabs variant="pill" tabs={PERIODS} value={period} onChange={setPeriod} />
       </PageHeader>
@@ -82,17 +87,9 @@ function DashboardContent() {
         <RecentSalesTable data={data} />
         <PendingOrdersCard data={data} />
       </div>
-      <div className="grid min-w-0 gap-3 sm:gap-4 xl:grid-cols-3">
+      <div className="grid min-w-0 gap-3 sm:gap-4 xl:grid-cols-2">
         <TopProductsCard data={data} />
         <TopResellerCard data={data} />
-        <div className="flex items-center justify-center rounded-box bg-primary p-8 text-white">
-          <div className="max-w-[420px] text-center">
-            <Chart2 size={44} variant="Bulk" className="mx-auto animate-float" />
-            <h3 className="mt-3 text-xl">Plongez dans l&apos;analytique</h3>
-            <p className="mt-2 text-sm text-white/85">Valeur du stock, rotation lente, performance des revendeurs, heures de pointe…</p>
-            <Button href={ROUTES.admin.analytics} variant="secondary" className="mt-5">Voir l&apos;analytique</Button>
-          </div>
-        </div>
       </div>
     </>
   );

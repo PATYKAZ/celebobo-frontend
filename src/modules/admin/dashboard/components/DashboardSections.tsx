@@ -81,15 +81,15 @@ export function RecentSalesTable({ data }: { data?: DashboardData }) {
       cell: (s) => (
         <div className="flex items-center gap-3">
           <span className="relative size-10 shrink-0 overflow-hidden rounded-md bg-page">{s.productImage && <Image src={s.productImage} alt="" fill sizes="40px" className="object-cover" />}</span>
-          <span className="line-clamp-1 max-w-[220px] font-semibold">{s.productName}</span>
+          <span className="line-clamp-2 min-w-[140px] max-w-[220px] font-semibold">{s.productName}</span>
         </div>
       ),
     },
-    { key: "buyer", header: "Vendu à", hideBelow: "md", cell: (s) => <span className="flex items-center gap-2"><Avatar name={s.buyer} size={26} />{s.buyer}</span> },
-    { key: "seller", header: "Vendeur", hideBelow: "xl", cell: (s) => <span className="text-ink-2">{s.seller}</span> },
-    { key: "method", header: "Paiement", hideBelow: "lg", cell: (s) => <span className="inline-flex items-center gap-1.5 text-sm"><span className="size-2 rounded-full" style={{ background: PAYMENT_COLORS[s.method] }} />{PAYMENT_LABELS[s.method]}</span> },
-    { key: "date", header: "Date", hideBelow: "sm", cell: (s) => <span className="text-ink-2">{formatDateTime(s.date)}</span> },
-    { key: "price", header: "Montant", align: "right", cell: (s) => <strong>{formatPrice(s.priceFinal)}</strong> },
+    { key: "buyer", header: "Vendu à", hideBelow: "md", cell: (s) => <span className="flex items-center gap-2 whitespace-nowrap"><Avatar name={s.buyer} size={26} />{s.buyer}</span> },
+    { key: "seller", header: "Vendeur", hideBelow: "2xl", cell: (s) => <span className="whitespace-nowrap text-ink-2">{s.seller}</span> },
+    { key: "method", header: "Paiement", hideBelow: "2xl", cell: (s) => <span className="inline-flex items-center gap-1.5 whitespace-nowrap text-sm"><span className="size-2 shrink-0 rounded-full" style={{ background: PAYMENT_COLORS[s.method] }} />{PAYMENT_LABELS[s.method]}</span> },
+    { key: "date", header: "Date", hideBelow: "sm", cell: (s) => <span className="whitespace-nowrap tabular-nums text-ink-2">{formatDateTime(s.date)}</span> },
+    { key: "price", header: "Montant", align: "right", cell: (s) => <strong className="whitespace-nowrap tabular-nums">{formatPrice(s.priceFinal)}</strong> },
   ];
   return (
     <ChartCard title="Ventes récentes" subtitle="Dernières transactions enregistrées" className="xl:col-span-2" legend={<Link href={ROUTES.admin.sales} className="group inline-flex min-h-10 items-center gap-1 text-sm font-semibold text-primary">Tout voir <ArrowRight2 size={13} className="transition-transform group-hover:translate-x-1" /></Link>}>

@@ -102,7 +102,7 @@ export function ResellerDashboardView() {
 
   return (
     <>
-      <PageHeader title={`Bonjour, ${first} 👋`} description={`Votre espace revendeur · ${data.period.label}`} actions={<AvailabilityToggle value={data.availability} />} />
+      <PageHeader title={`Bonjour, ${first}`} description={`Votre espace revendeur · ${data.period.label}`} actions={<AvailabilityToggle value={data.availability} />} />
 
       <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
         <StatCard label="Commandes ouvertes" value={data.orders.open} icon={<Box size={22} variant="Bold" />} tone="blue" />

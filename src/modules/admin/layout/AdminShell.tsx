@@ -37,7 +37,8 @@ function NavList() {
   const pathname = usePathname();
   const items = useVisibleNav();
   const counts = { messages: useUnreadMessagesCount(), notifications: useUnreadNotificationsCount() };
-  const [closed, setClosed] = useState<Record<string, boolean>>({});
+  // sections de configuration repliées au départ (elles s'ouvrent quand on y est) : l'activité du jour reste visible sans défiler
+  const [closed, setClosed] = useState<Record<string, boolean>>({ Catalogue: true, Système: true });
 
   const sections = useMemo(() => {
     const out: { title: string; items: typeof items }[] = [];
@@ -64,7 +65,7 @@ function NavList() {
             >
               <ArrowDown2 size={12} className={cn("transition-transform", !open && "-rotate-90")} />
               <span className="flex-1">{s.title}</span>
-              <span className={cn("grid min-w-5 place-items-center rounded-full px-1.5 text-xs", unread ? "bg-danger-100 text-danger" : "bg-chip text-ink-2")}>{unread || s.items.length}</span>
+              {unread > 0 && <span className="grid min-w-5 place-items-center rounded-full bg-danger-100 px-1.5 text-xs font-semibold tabular-nums text-danger">{unread}</span>}
             </button>
             <AnimatePresence initial={false}>
               {open && (
@@ -149,8 +150,11 @@ export function AdminShell({ children }: { children: ReactNode }) {
         <header className="flex items-center gap-2.5 rounded-box bg-surface px-3 py-2.5 sm:gap-3 sm:px-6 sm:py-3">
           <span className="lg:hidden"><Logo compact /></span>
           <div className="min-w-0 flex-1">
-            <p className="truncate text-xs text-ink-3 sm:text-xs">{user?.role === "revendeur" ? "Espace revendeur" : "Back-office"}</p>
-            <p className="truncate text-sm font-bold sm:text-base">{current?.label ?? "Administration"}</p>
+            {/* simple repère (section · page) : le titre de la page est dans son en-tête, pas répété en gras ici */}
+            <p className="truncate text-sm text-ink-2">
+              <span className="max-sm:hidden">{user?.role === "revendeur" ? "Espace revendeur" : current?.section ?? "Back-office"} · </span>
+              <span className="font-semibold text-ink">{current?.label ?? "Administration"}</span>
+            </p>
           </div>
           <div className="flex shrink-0 items-center gap-2 sm:gap-3">
             {/* la messagerie a son onglet dans la barre mobile */}

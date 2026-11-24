@@ -19,7 +19,8 @@ import { DEFAULT_FILTERS, RANGES, type AnalyticsFilters } from "../types";
 import { Heatmap } from "./Heatmap";
 import { ResellerPerformanceCard, SlowMoversCard } from "./InsightsSections";
 
-const PALETTE = ["#226D68", "#222222", "#D6955B", "#0D6EFD", "#F1352B", "#7E57C2", "#00A8A8", "#999999", "#E91E8C", "#8BC34A"];
+// teintes de la marque (teal et sable) alternées clair / foncé pour rester distinctes ; plus de bleu, rouge ou violet hors palette
+const PALETTE = ["#18534F", "#D6955B", "#4A9A92", "#9C6233", "#9FD0C9", "#EBC79F", "#2E7A74", "#B9874F", "#6E7F7C", "#C9D3D1"];
 const money = (n: number) => (n >= 1000 ? `$${formatCompact(n)}` : formatPrice(n).replace(".00", ""));
 
 export function AnalyticsView() {
@@ -78,7 +79,7 @@ function AnalyticsContent() {
       </section>
 
       <div className="grid min-w-0 gap-3 sm:gap-4 xl:grid-cols-3">
-        <ChartCard title="Ventes par période" subtitle="Revenu (barres) et bénéfice (ligne)" className="xl:col-span-2" legend={<><LegendDot color="#226D68" label="Revenu" /><LegendDot color="#222222" label="Bénéfice" /></>}>
+        <ChartCard title="Ventes par période" subtitle="Revenu (barres) et bénéfice (ligne)" className="xl:col-span-2" legend={<><LegendDot color="#226D68" label="Revenu" /><LegendDot color="#D6955B" label="Bénéfice" /></>}>
           {data ? (
             <BarChart title="Ventes par période" format={money} lineLabel="Bénéfice" data={data.monthly.labels.map((l, i) => ({ label: l, value: data.monthly.revenue[i], line: data.monthly.profit[i] }))} />
           ) : (

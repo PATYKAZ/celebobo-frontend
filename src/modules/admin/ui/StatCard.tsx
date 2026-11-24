@@ -20,32 +20,33 @@ interface Props {
   className?: string;
 }
 
+// une seule teinte d'icône : la couleur sert aux variations (hausse / baisse), pas à décorer chaque carte
 const TONE = {
-  green: "bg-primary-100 text-primary-dark",
-  red: "bg-danger-100 text-danger",
-  orange: "bg-star/15 text-warn",
-  blue: "bg-info/10 text-info",
-  dark: "bg-ink-dark/10 text-ink-dark",
+  green: "bg-chip text-ink-2",
+  red: "bg-chip text-ink-2",
+  orange: "bg-chip text-ink-2",
+  blue: "bg-chip text-ink-2",
+  dark: "bg-chip text-ink-2",
 };
 
 /**
- * Carte KPI du back-office : icône ronde, valeur animée, variation.
+ * Carte KPI du back-office : libellé, valeur animée (chiffres tabulaires), variation ; icône neutre.
  * Mobile : compacte (placée en grille 2 colonnes par les pages : `grid grid-cols-2 gap-3 lg:grid-cols-3`),
  * libellé de comparaison masqué < sm pour ne pas déborder.
  */
 export function StatCard({ label, value, format, icon, tone = "green", delta, deltaLabel = "vs période précédente", delay = 0, className }: Props) {
   const up = (delta ?? 0) >= 0;
   return (
-    <Reveal delay={delay} className={cn("group relative min-w-0 rounded-box bg-surface p-3.5 transition-transform duration-300 sm:p-5 sm:hover:-translate-y-1", className)}>
+    <Reveal delay={delay} className={cn("relative min-w-0 rounded-box bg-surface p-3.5 sm:p-5", className)}>
       {/* mobile : l'icône flotte en haut à droite → le montant dispose de toute la largeur de la carte */}
       <div className="flex items-start justify-between gap-2 sm:gap-3">
         <div className="min-w-0 flex-1">
           <p className="line-clamp-2 min-h-[32px] pr-10 text-xs text-ink-2 sm:min-h-0 sm:pr-0 sm:text-sm">{label}</p>
-          <p className="mt-1 whitespace-nowrap text-[clamp(17px,5.4vw,22px)] font-bold sm:mt-2 sm:truncate sm:text-xl">
+          <p className="mt-1 whitespace-nowrap text-[clamp(17px,5.4vw,22px)] font-bold tabular-nums sm:mt-2 sm:truncate sm:text-xl">
             <CountUp to={value} format={format} />
           </p>
         </div>
-        <span className={cn("absolute right-3 top-3 grid size-9 shrink-0 place-items-center rounded-full transition-transform duration-500 group-hover:rotate-12 group-hover:scale-110 sm:static sm:size-11 [&_svg]:size-[18px] sm:[&_svg]:size-5", TONE[tone])}>{icon}</span>
+        <span className={cn("absolute right-3 top-3 grid size-9 shrink-0 place-items-center rounded-full sm:static sm:size-11 [&_svg]:size-[18px] sm:[&_svg]:size-5", TONE[tone])}>{icon}</span>
       </div>
       {delta != null && (
         <p className="mt-2 flex flex-wrap items-center gap-1.5 text-xs sm:mt-3">
