@@ -1,5 +1,6 @@
 "use client";
 
+import { AccountShell } from "@/modules/account/components/AccountShell";
 import { AnimatePresence, motion } from "motion/react";
 import { Add, Briefcase, Call, Edit2, Home2, Location, Trash, User, Star1 } from "@/shared/ui/icons";
 import { useState } from "react";
@@ -42,7 +43,7 @@ function Content() {
     <Block pad="none" className="p-4 sm:p-8">
       <div className="flex flex-wrap items-center justify-between gap-3 sm:gap-4">
         <div className="min-w-0">
-          <h1 className="text-xl text-primary sm:text-h-page">Mes adresses</h1>
+          <h1 className="text-xl sm:text-h-page">Mes adresses</h1>
           <p className="mt-1 text-sm text-ink-2 sm:text-sm">Enregistrez plusieurs adresses et choisissez-en une à chaque commande.</p>
         </div>
         <Button onClick={() => open(null)} leftIcon={<Add size={16} />} className="max-sm:w-full">Ajouter une adresse</Button>
@@ -118,7 +119,9 @@ export function AddressBookView() {
     <>
       <Breadcrumb items={[{ label: "Mon compte", href: ROUTES.profile }, { label: "Adresses" }]} />
       <AuthGuard fallback={<AccountSkeleton breadcrumb={false} />}>
+        <AccountShell>
         <Content />
+        </AccountShell>
       </AuthGuard>
     </>
   );

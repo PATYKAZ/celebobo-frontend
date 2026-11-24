@@ -1,5 +1,6 @@
 "use client";
 
+import { AccountShell } from "@/modules/account/components/AccountShell";
 import { Devices, Monitor, Mobile, Notification, NotificationBing, Sms, Trash } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
 import { Reveal } from "@/shared/animations/Reveal";
@@ -90,7 +91,7 @@ function Content() {
   return (
     <Reveal>
       <Block pad="none" className="p-4 sm:p-8">
-        <h1 className="text-xl text-primary sm:text-h-page">Notifications & préférences</h1>
+        <h1 className="text-xl sm:text-h-page">Notifications & préférences</h1>
         <p className="mt-1 text-sm text-ink-2 sm:text-sm">Choisissez comment être prévenu de l&apos;avancement de vos commandes et de vos messages.</p>
 
         <div className={`mt-4 flex flex-wrap items-center gap-3 rounded-box p-3.5 text-sm sm:mt-6 sm:p-4 sm:text-sm ${pushCopy.tone}`}>
@@ -137,7 +138,9 @@ export function NotificationSettingsView() {
     <>
       <Breadcrumb items={[{ label: "Mon compte", href: ROUTES.profile }, { label: "Notifications" }]} />
       <AuthGuard fallback={<AccountSkeleton breadcrumb={false} />}>
+        <AccountShell>
         <Content />
+        </AccountShell>
       </AuthGuard>
     </>
   );

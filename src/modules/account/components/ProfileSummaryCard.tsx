@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "motion/react";
 import { Camera, Copy, People, TickCircle } from "@/shared/ui/icons";
 import { useRef, useState } from "react";
 import { useMediaQuery } from "@/shared/hooks/useMediaQuery";
@@ -43,14 +42,11 @@ export function ProfileSummaryCard({ user, profile, previewAvatar, onPickAvatar 
 
   return (
     <Block className="overflow-hidden p-0!">
-      <div className="relative h-16 bg-primary sm:h-24">
-        <motion.span aria-hidden className="absolute -right-6 -top-10 size-40 rounded-full bg-white/10" animate={{ scale: [1, 1.15, 1] }} transition={{ duration: 6, repeat: Infinity }} />
-        <motion.span aria-hidden className="absolute left-10 top-8 size-20 rounded-full bg-white/10" animate={{ y: [0, -8, 0] }} transition={{ duration: 5, repeat: Infinity }} />
-      </div>
+      <div className="h-16 bg-primary sm:h-20" />
       <div className="px-4 pb-5 sm:px-6 sm:pb-6">
         <div className="relative -mt-10 w-fit sm:-mt-12">
-          <Avatar src={previewAvatar ?? profile?.avatar ?? user.avatar} name={name} size={small ? 80 : 96} className="ring-4 ring-white" />
-          <button onClick={() => input.current?.click()} aria-label="Changer la photo" className="absolute -bottom-1 -right-1 grid size-10 place-items-center sm:size-9 rounded-full bg-primary text-white ring-4 ring-white transition-transform hover:scale-110">
+          <Avatar src={previewAvatar ?? profile?.avatar ?? user.avatar} name={name} size={small ? 80 : 96} className="ring-4 ring-surface" />
+          <button onClick={() => input.current?.click()} aria-label="Changer la photo" className="absolute -bottom-1 -right-1 grid size-10 place-items-center sm:size-9 rounded-full bg-primary text-white ring-4 ring-surface transition-transform hover:scale-110">
             <Camera size={17} variant="Bold" />
           </button>
           <input

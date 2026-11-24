@@ -1,5 +1,6 @@
 "use client";
 
+import { AccountShell } from "@/modules/account/components/AccountShell";
 import { Bag2 } from "@/shared/ui/icons";
 import { useState } from "react";
 import { ROUTES } from "@/config/routes";
@@ -41,7 +42,7 @@ function Content() {
     <Block pad="none" className="p-4 sm:p-8">
       <div className="flex flex-wrap items-center justify-between gap-3 sm:gap-4">
         <div className="min-w-0">
-          <h1 className="text-xl text-primary sm:text-h-page">Mes commandes</h1>
+          <h1 className="text-xl sm:text-h-page">Mes commandes</h1>
           <p className="mt-1 text-sm text-ink-2 sm:text-sm">Suivez l&apos;avancement de vos commandes et échangez avec votre revendeur.</p>
         </div>
         <Tabs
@@ -92,9 +93,11 @@ function Content() {
 export function OrderHistoryView() {
   return (
     <>
-      <Breadcrumb items={[{ label: "Mon compte" }, { label: "Commandes" }]} />
+      <Breadcrumb items={[{ label: "Mon compte", href: ROUTES.profile }, { label: "Commandes" }]} />
       <AuthGuard fallback={<ListPageSkeleton label="Chargement de vos commandes" breadcrumb={false} />}>
+        <AccountShell>
         <Content />
+        </AccountShell>
       </AuthGuard>
     </>
   );

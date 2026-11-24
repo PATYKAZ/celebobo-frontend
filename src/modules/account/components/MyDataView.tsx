@@ -1,5 +1,6 @@
 "use client";
 
+import { AccountShell } from "@/modules/account/components/AccountShell";
 import Link from "next/link";
 import { ROUTES } from "@/config/routes";
 import { Reveal } from "@/shared/animations/Reveal";
@@ -83,7 +84,7 @@ function Content() {
   return (
     <Reveal>
       <Block pad="none" className="p-4 sm:p-8">
-        <h1 className="text-xl text-primary sm:text-h-page">Mes données</h1>
+        <h1 className="text-xl sm:text-h-page">Mes données</h1>
         <p className="mt-1 text-sm text-ink-2 sm:text-sm">
           Téléchargez une copie des données que Celebobo garde sur votre compte, dans un fichier ZIP : une page à ouvrir dans votre navigateur et un fichier JSON pour les conserver ou les transmettre à un autre service.
         </p>
@@ -135,7 +136,9 @@ export function MyDataView() {
     <>
       <Breadcrumb items={[{ label: "Mon compte", href: ROUTES.profile }, { label: "Mes données" }]} />
       <AuthGuard fallback={<AccountSkeleton breadcrumb={false} />}>
+        <AccountShell>
         <Content />
+        </AccountShell>
       </AuthGuard>
     </>
   );

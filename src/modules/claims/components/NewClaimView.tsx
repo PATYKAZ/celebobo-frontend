@@ -1,5 +1,6 @@
 "use client";
 
+import { AccountShell } from "@/modules/account/components/AccountShell";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
@@ -134,12 +135,14 @@ export function NewClaimView() {
     <>
       <Breadcrumb items={[{ label: "Mon compte", href: ROUTES.profile }, { label: "Mes réclamations", href: ROUTES.myClaims }, { label: "Nouvelle réclamation" }]} />
       <AuthGuard fallback={<AccountSkeleton breadcrumb={false} />}>
+        <AccountShell>
         <Reveal>
           <Block pad="none" className="p-4 sm:p-8">
-            <h1 className="mb-4 text-xl text-primary sm:text-h-page">Faire une réclamation</h1>
+            <h1 className="mb-4 text-xl sm:text-h-page">Faire une réclamation</h1>
             <Content />
           </Block>
         </Reveal>
+        </AccountShell>
       </AuthGuard>
     </>
   );

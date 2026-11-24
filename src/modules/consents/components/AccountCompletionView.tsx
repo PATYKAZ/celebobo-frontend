@@ -77,7 +77,7 @@ function Content() {
 
   return (
     <Block className="mx-auto max-w-[640px]">
-      <h1 className="flex items-center gap-2 text-xl text-primary sm:text-h-page">
+      <h1 className="flex items-center gap-2 text-xl sm:text-h-page">
         <ShieldTick size={24} variant="Bold" /> Avant de continuer
       </h1>
       <p className="mb-5 mt-2 text-sm text-ink-2">

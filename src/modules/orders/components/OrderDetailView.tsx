@@ -162,8 +162,8 @@ export function OrderDetailView({ number }: { number: string }) {
               </p>
             </div>
           )}
-          <div className="mt-5 md:hidden"><OrderProgress status={order.status} /></div>
-          <div className="mt-8 hidden md:block"><OrderTimeline order={order} /></div>
+          {/* progression compacte ici ; le détail daté (qui, quand, notes) est dans « Historique » : pas deux frises identiques */}
+          <div className="mt-5 sm:mt-6"><OrderProgress status={order.status} /></div>
           {order.awaitingShippingQuote && !ORDER_FINAL.includes(order.status) ? (
             <div className="mt-4 rounded-md bg-star/10 px-3.5 py-3 text-sm text-warn sm:mt-6 sm:px-4">
               <p>

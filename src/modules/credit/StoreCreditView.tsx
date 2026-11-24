@@ -1,5 +1,6 @@
 "use client";
 
+import { AccountShell } from "@/modules/account/components/AccountShell";
 import { useQuery } from "@tanstack/react-query";
 import { Clock, WalletMoney } from "@/shared/ui/icons";
 import { ENDPOINTS } from "@/config/endpoints";
@@ -73,12 +74,14 @@ export function StoreCreditView() {
     <>
       <Breadcrumb items={[{ label: "Mon compte", href: ROUTES.profile }, { label: "Mon avoir" }]} />
       <AuthGuard fallback={<AccountSkeleton breadcrumb={false} />}>
+        <AccountShell>
         <Reveal>
           <Block pad="none" className="p-4 sm:p-8">
-            <h1 className="mb-4 text-xl text-primary sm:text-h-page">Mon avoir</h1>
+            <h1 className="mb-4 text-xl sm:text-h-page">Mon avoir</h1>
             <Content />
           </Block>
         </Reveal>
+        </AccountShell>
       </AuthGuard>
     </>
   );

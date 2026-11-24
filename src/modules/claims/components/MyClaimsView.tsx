@@ -1,5 +1,6 @@
 "use client";
 
+import { AccountShell } from "@/modules/account/components/AccountShell";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -50,13 +51,15 @@ export function MyClaimsView() {
     <>
       <Breadcrumb items={[{ label: "Mon compte", href: ROUTES.profile }, { label: "Mes réclamations" }]} />
       <AuthGuard fallback={<AccountSkeleton breadcrumb={false} />}>
+        <AccountShell>
         <Reveal>
           <Block pad="none" className="p-4 sm:p-8">
-            <h1 className="text-xl text-primary sm:text-h-page">Mes réclamations</h1>
+            <h1 className="text-xl sm:text-h-page">Mes réclamations</h1>
             <p className="mb-4 mt-1 text-sm text-ink-2">Délai d&apos;essai de 7 jours, garantie CeLE BoBO d&apos;un mois et garantie d&apos;authenticité de 12 mois. Pour réclamer, ouvrez la commande livrée.</p>
             <List />
           </Block>
         </Reveal>
+        </AccountShell>
       </AuthGuard>
     </>
   );
@@ -69,7 +72,7 @@ function Detail({ id }: { id: number }) {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-xl text-primary sm:text-h-page">Réclamation {c.number}</h1>
+        <h1 className="text-xl sm:text-h-page">Réclamation {c.number}</h1>
         <p className="mt-1 text-sm text-ink-2">{c.productName}{c.serial ? ` · ${c.serial}` : ""} · commande {c.orderNumber}</p>
       </div>
       <p className="rounded-box bg-page/70 p-3.5 text-sm"><b>{c.kindLabel}</b> — {c.description}</p>
@@ -92,11 +95,13 @@ export function MyClaimView({ id }: { id: number }) {
     <>
       <Breadcrumb items={[{ label: "Mon compte", href: ROUTES.profile }, { label: "Mes réclamations", href: ROUTES.myClaims }, { label: "Détail" }]} />
       <AuthGuard fallback={<AccountSkeleton breadcrumb={false} />}>
+        <AccountShell>
         <Reveal>
           <Block pad="none" className="p-4 sm:p-8">
             <Detail id={id} />
           </Block>
         </Reveal>
+        </AccountShell>
       </AuthGuard>
     </>
   );

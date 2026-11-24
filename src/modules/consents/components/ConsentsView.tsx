@@ -1,5 +1,6 @@
 "use client";
 
+import { AccountShell } from "@/modules/account/components/AccountShell";
 import { useState } from "react";
 import { ShieldTick } from "@/shared/ui/icons";
 import { ROUTES } from "@/config/routes";
@@ -105,7 +106,7 @@ function Content() {
   const labels = Object.fromEntries((data?.consents ?? []).map((c) => [c.kind, c.label]));
   return (
     <Block pad="none" className="mx-auto max-w-[820px] p-4 sm:p-8">
-      <h1 className="flex items-center gap-2 text-xl text-primary sm:text-h-page"><ShieldTick size={24} variant="Bold" /> Mes consentements</h1>
+      <h1 className="flex items-center gap-2 text-xl sm:text-h-page"><ShieldTick size={24} variant="Bold" /> Mes consentements</h1>
       <p className="mb-4 mt-1 text-sm text-ink-2 sm:mb-6 sm:text-sm">
         Ce que vous avez accepté, avec la version de la{" "}
         <a href={ROUTES.page("politique-de-confidentialite")} target="_blank" rel="noopener" className="font-semibold text-ink underline">politique de confidentialité</a> et la date. Vous pouvez retirer chaque consentement à tout moment.
@@ -148,11 +149,13 @@ function Content() {
 export function ConsentsView() {
   return (
     <>
-      <Breadcrumb items={[{ label: "Mon compte" }, { label: "Mes consentements" }]} />
+      <Breadcrumb items={[{ label: "Mon compte", href: ROUTES.profile }, { label: "Mes consentements" }]} />
       <AuthGuard fallback={<AccountSkeleton breadcrumb={false} />}>
+        <AccountShell>
         <Reveal direction="up">
           <Content />
         </Reveal>
+        </AccountShell>
       </AuthGuard>
     </>
   );

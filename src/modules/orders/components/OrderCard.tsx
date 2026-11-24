@@ -30,29 +30,29 @@ export function OrderCard({ order: summary, defaultOpen = false }: { order: Orde
 
   return (
     <article className="overflow-hidden rounded-box border border-line-3 bg-surface transition-colors hover:border-primary/40">
-      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-3 p-4 sm:flex sm:flex-wrap sm:gap-x-8 sm:px-6">
-        <div className="min-w-0 max-sm:col-start-1 max-sm:row-start-1 sm:min-w-[110px]">
+      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-3 p-4 sm:grid-cols-[150px_150px_110px_minmax(0,1fr)_auto] sm:gap-x-6 sm:px-6">
+        <div className="min-w-0 max-sm:col-start-1 max-sm:row-start-1">
           <p className="text-xs text-ink-3">Commande</p>
           <Link href={ROUTES.orderDetail(number)} className="inline-flex min-h-9 items-center pr-3 text-base font-bold hover:text-primary">{number}</Link>
         </div>
-        <div className="min-w-0 max-sm:col-start-1 max-sm:row-start-2 sm:min-w-[130px]">
+        <div className="min-w-0 max-sm:col-start-1 max-sm:row-start-2">
           <p className="text-xs text-ink-3">Passée le</p>
           <p className="text-sm font-semibold">{formatDateTime(order.createdAt)}</p>
         </div>
         <div className="max-sm:col-start-2 max-sm:row-start-2 max-sm:text-right">
           <p className="text-xs text-ink-3">Total</p>
-          <p className="text-base font-bold text-primary">{formatPrice(order.totalPrice)}</p>
+          <p className="text-base font-bold tabular-nums text-primary">{formatPrice(order.totalPrice)}</p>
         </div>
-        <div className="flex -space-x-3 max-sm:col-span-2 max-sm:row-start-3">
+        <div className="flex min-w-0 -space-x-3 max-sm:col-span-2 max-sm:row-start-3">
           {thumbs.slice(0, 3).map((it) => (
-            <span key={it.id} className="relative size-11 overflow-hidden rounded-full border-2 border-white bg-page">
+            <span key={it.id} className="relative size-11 overflow-hidden rounded-full border-2 border-surface bg-page">
               {it.image && <Image src={it.image} alt={it.name} fill sizes="44px" className="object-cover" />}
             </span>
           ))}
-          {thumbs.length > 3 && <span className="grid size-11 place-items-center rounded-full border-2 border-white bg-chip text-xs font-bold">+{thumbs.length - 3}</span>}
+          {thumbs.length > 3 && <span className="grid size-11 place-items-center rounded-full border-2 border-surface bg-chip text-xs font-bold">+{thumbs.length - 3}</span>}
           {!order.items.length && summary.previewName && <span className="ml-5 hidden max-w-[220px] self-center truncate text-sm text-ink-2 lg:block">{summary.previewName}{count > 1 ? ` + ${count - 1}` : ""}</span>}
         </div>
-        <div className="flex items-center justify-end gap-2 max-sm:col-start-2 max-sm:row-start-1 sm:ml-auto sm:gap-3">
+        <div className="flex items-center justify-end gap-2 max-sm:col-start-2 max-sm:row-start-1 sm:gap-3">
           <OrderStatusBadge status={order.status} />
           <button onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-label="Détails de la commande" className="grid size-11 place-items-center rounded-full bg-chip transition-colors hover:bg-primary hover:text-white active:scale-90 sm:size-9">
             <ArrowDown2 size={16} className={cn("transition-transform duration-300", open && "rotate-180")} />
